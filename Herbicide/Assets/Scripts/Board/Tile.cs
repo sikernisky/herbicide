@@ -1,0 +1,301 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Assertions;
+
+/// <summary>
+/// Represents a set of space in the TileGrid with unique (X, Y) coordinates.
+/// Tiles may be floored and placed on.
+/// </summary>
+public abstract class Tile : MonoBehaviour, ISurface
+{
+    /// <summary>
+    /// (X, Y) coordinates of this Tile.
+    /// </summary>
+    private Vector2Int coordinates;
+
+    /// <summary>
+    /// The IPlaceable on this Tile; null if Tile is unoccupied.
+    /// </summary>
+    private IPlaceable occupant;
+
+    /// <summary>
+    /// The flooring on this Tile; null if there is none.
+    /// </summary>
+    private Flooring flooring;
+
+    /// <summary>
+    /// true if this Tile is spawned in a TileGrid.
+    /// </summary>
+    private bool defined;
+
+    /// <summary>
+    /// This Tile's SpriteRenderer component.
+    /// </summary>
+    private SpriteRenderer tileRenderer;
+
+    /// <summary>
+    /// This Tile's four neighbors.
+    /// </summary>
+    private Tile[] neighbors;
+
+    /// <summary>
+    /// This Tile's Type.
+    /// </summary>
+    protected abstract TileType type { get; }
+
+    /// <summary>
+    /// Represents a Type of Tile.
+    /// </summary>
+    public enum TileType
+    {
+        GRASS
+    }
+
+
+    /// <summary>
+    /// Defines this Tile to be within a TileGrid at coordinates (x, y).
+    /// </summary>
+    /// <param name="x">the x-coordinate of this Tile</param>
+    /// <param name="y">the y-coordinate of this Tile</param>
+    /// <param name="type">the type of this Tile</param>
+    public virtual void Define(int x, int y)
+    {
+        if (defined || x < 0 || y < 0) return;
+        coordinates = new Vector2Int(x, y);
+        tileRenderer = GetComponent<SpriteRenderer>();
+    }
+
+    /// <summary>
+    /// Returns the X-Coordinate of this Tile.
+    /// </summary>
+    /// <returns>the X-Coordinate of this Tile.</returns>
+    public int GetX()
+    {
+        return coordinates.x;
+    }
+
+    /// <summary>
+    /// Returns the Y-Coordinate of this Tile.
+    /// </summary>
+    /// <returns>the Y-Coordinate of this Tile.</returns>
+    public int GetY()
+    {
+        return coordinates.y;
+    }
+
+    /// <summary>
+    /// Returns true if this Tile is occupied.
+    /// </summary>
+    /// <returns>true if this Tile is occupied.</returns>
+    public bool Occupied()
+    {
+        return occupant != null;
+    }
+
+    /// <summary>
+    /// Sets the Sprite of this Tile's SpriteRenderer component.
+    /// </summary>
+    /// <param name="newSprite">the new Sprite.</param>
+    protected void SetSprite(Sprite newSprite)
+    {
+        if (newSprite == null) return;
+        if (tileRenderer == null) tileRenderer = GetComponent<SpriteRenderer>();
+        tileRenderer.sprite = newSprite;
+    }
+
+    /// <summary>
+    /// Returns true if two integers are of different parities.
+    /// </summary>
+    /// <param name="x">the first integer</param>
+    /// <param name="y">the second integer</param>
+    /// <returns>true if two integers are of different parities.</returns>
+    protected bool DifferentParities(int x, int y)
+    {
+        return (x % 2 == 0 && y % 2 != 0) ||
+            (x % 2 != 0 && y % 2 == 0);
+    }
+
+    /// <summary>
+    /// Returns this Tile's TileType.
+    /// </summary>
+    /// <returns>this Tile's TileType.</returns>
+    public TileType GetTileType()
+    {
+        return type;
+    }
+
+    /// <summary>
+    /// Returns true if this Tile has a flooring on it.
+    /// </summary>
+    /// <returns>true if this Tile has a flooring; otherwise, false.</returns>
+    public bool Floored()
+    {
+        return flooring != null;
+    }
+
+    /// <summary>
+    /// Returns the Flooring on this Tile, or null if there is none.
+    /// </summary>
+    /// <returns>the Flooring on this Tile, or null if there is none.
+    /// </returns>
+    private Flooring GetFlooring()
+    {
+        return flooring;
+    }
+
+    /// <summary>
+    /// Returns true if this Tile can be floored with a Flooring. If so,
+    /// floors the Tile.
+    /// </summary>
+    /// <param name="flooring">the GameObject with a Flooring component to check
+    ///  with.</param>
+    /// <returns>true if this Tile can be floored with a Flooring; otherwise,
+    /// false.</returns>
+    public bool Floor(GameObject flooring, ISurface[] neighbors)
+    {
+        //Safety checks
+        if (flooring == null || neighbors == null || Floored()) return false;
+        if (flooring.GetComponent<Flooring>() == null) return false;
+
+        //Update this Tile
+        UpdateNeighbors(neighbors);
+
+        //Make the new flooring
+        GameObject gob = Instantiate(flooring);
+        Flooring newFlooring = gob.GetComponent<Flooring>();
+        newFlooring.Define(GetTileType(), GetFlooringNeighbors());
+        newFlooring.transform.position = transform.position;
+        newFlooring.transform.localScale = transform.localScale;
+        this.flooring = newFlooring;
+
+        return true;
+    }
+
+    /// <summary>
+    /// Returns an array of this Tile's neighbors' Flooring components.
+    /// </summary>
+    /// <returns>an array of this Tile's neighbors' Flooring components.
+    /// </returns>
+    private Flooring[] GetFlooringNeighbors()
+    {
+        Assert.IsNotNull(neighbors);
+        Flooring[] flooringNeighbors = new Flooring[neighbors.Length];
+        for (int i = 0; i < neighbors.Length; i++)
+        {
+            if (neighbors[i] != null) flooringNeighbors[i] = neighbors[i].GetFlooring();
+        }
+        return flooringNeighbors;
+    }
+
+
+    /// <summary>
+    /// Returns true if an IPlaceable can be placed on this Tile.
+    /// If it can, places the IPlaceable.
+    /// </summary>
+    /// <param name="candidate">The IPlaceable to place.</param>
+    /// <param name="neighbors">This ISurface's neighbors.</param>
+    /// <returns>true if an IPlaceable can be placed on this ISurface;
+    /// otherwise, false.</returns>
+    public virtual bool Place(IPlaceable candidate, ISurface[] neighbors)
+    {
+        //Safety check
+        if (candidate == null || neighbors == null) return false;
+        foreach (ISurface surface in neighbors)
+        {
+            Assert.IsNotNull(surface as Tile);
+        }
+
+        //1. If has a flooring, pass event to that flooring.
+        if (Floored())
+        {
+            Flooring[] flooringNeighbors = new Flooring[4];
+            for (int i = 0; i < flooringNeighbors.Length; i++)
+            {
+                Tile t = (Tile)neighbors[i];
+                flooringNeighbors[i] = t.GetFlooring();
+            }
+            return GetFlooring().Place(candidate, flooringNeighbors);
+        }
+
+        if (!CanPlace(candidate, neighbors)) return false;
+
+        //Placement on Tile logic here
+
+        return true;
+    }
+
+    /// <summary>
+    /// Returns true if an IPlaceable can be placed on this Tile.
+    /// </summary>
+    /// <param name="candidate">The IPlaceable to place.</param>
+    /// <param name="neighbors">This ISurface's neighbors.</param>
+    /// <returns>true if an IPlaceable can be placed on this ISurface;
+    /// otherwise, false.</returns>
+    public virtual bool CanPlace(IPlaceable candidate, ISurface[] neighbors)
+    {
+        if (candidate == null || neighbors == null) return false;
+        if (Occupied()) return false;
+
+        return true;
+    }
+
+    /// <summary>
+    /// Returns true if there is an IPlaceable on this Tile that can
+    /// be removed. If so, removes the IPlaceable.
+    /// </summary>
+    /// <param name="neighbors">This Tiles's neighbors.</param>
+    /// <returns>true if an IPlaceable can be removed from this Tile;
+    /// otherwise, false.</returns>
+    public virtual bool Remove(ISurface[] neighbors)
+    {
+        if (!Occupied() || neighbors == null) return false;
+
+        //TODO: Implement
+
+        return true;
+
+    }
+
+    /// <summary>
+    /// Returns true if there is an IPlaceable on this Tile that can
+    /// be removed.
+    /// </summary>
+    /// <param name="neighbors">This Tile's neighbors.</param>
+    /// <returns>true if an IPlaceable can be removed from this Tile;
+    /// otherwise, false.</returns>
+    public virtual bool CanRemove(IPlaceable candidate, ISurface[] neighbors)
+    {
+        if (!Occupied() || candidate == null || neighbors == null) return false;
+
+        throw new System.NotImplementedException();
+    }
+
+    /// <summary>
+    /// Updates this Tile's array of neighbors. If it has a Flooring component,
+    /// updates the neighbors of that component too. 
+    /// </summary>
+    /// <param name="newNeighbors">this Tile's new neighbors.</param>
+    public void UpdateNeighbors(ISurface[] newNeighbors)
+    {
+        Assert.IsNotNull(newNeighbors);
+
+        Tile[] tileNeighbors = new Tile[4];
+        for (int i = 0; i < newNeighbors.Length; i++)
+        {
+            tileNeighbors[i] = newNeighbors[i] as Tile;
+        }
+        neighbors = tileNeighbors;
+
+        if (Floored()) flooring.UpdateNeighbors(GetFlooringNeighbors());
+    }
+
+    /// <summary>
+    /// Returns this Tile's four neighbors.
+    /// </summary>
+    /// <returns>this Tile's four neighbors.</returns>
+    public ISurface[] GetNeighbors()
+    {
+        return neighbors;
+    }
+}

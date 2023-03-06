@@ -11,9 +11,9 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
+  - BaseTile
+  - Flooring
+  - Placeable
   - 
   - 
   - 
@@ -40,4 +40,10 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: BaseTile
+    uniqueID: 1001279129
+    locked: 0
+  - name: Flooring
+    uniqueID: 3697966197
     locked: 0
