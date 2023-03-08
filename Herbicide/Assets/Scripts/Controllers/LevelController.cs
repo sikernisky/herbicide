@@ -48,6 +48,7 @@ public class LevelController : MonoBehaviour
         SetSingleton();
         Assert.IsNotNull(instance, "method SetSingleton() should set the " +
             "levelcontroller singleton (currently null.)");
+        FlooringFactory.SetSingleton(instance);
         TileGrid.SetSingleton(instance);
         CameraController.SetSingleton(instance);
         InputController.SetSingleton(instance);

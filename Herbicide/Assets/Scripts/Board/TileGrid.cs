@@ -74,8 +74,7 @@ public class TileGrid : MonoBehaviour
     /// </summary>
     public enum TileType
     {
-        GRASS,
-        SOIL
+        GRASS
     }
 
     /// <summary>
@@ -86,6 +85,14 @@ public class TileGrid : MonoBehaviour
         SOIL
     }
 
+    /// <summary>
+    /// Sprite assets for GrassTiles.<br></br>
+    /// 
+    /// index 0 --> dark Grass Tile<br></br>
+    /// index 1 --> lite Grass Tile
+    /// </summary>
+    [SerializeField]
+    public Sprite[] grassSprites;
 
     /// <summary>
     /// Detects any player input on a Tile and handles it based on the type
@@ -186,9 +193,9 @@ public class TileGrid : MonoBehaviour
                 float yWorldPos = CoordinateToPosition(y);
                 if (InCircle(grassDiameter, xWorldPos, yWorldPos))
                 {
-                    Tile t = MakeTile(xWorldPos, yWorldPos,
-                        TileTypeToPrefab(TileType.GRASS));
-                    t.Define(x, y);
+                    Tile t = MakeTile(xWorldPos, yWorldPos, TileType.GRASS);
+                    int spriteIndex = DifferentParities(x, y) ? 1 : 0;
+                    t.Define(x, y, GetTileSprite(TileType.GRASS, spriteIndex));
                     AddTile(t);
                 }
             }
@@ -233,15 +240,18 @@ public class TileGrid : MonoBehaviour
     /// </summary>
     /// <param name="xPos">The X-world position of the Tile.</param>
     /// <param name="yPos">The Y-world position of the Tile.</param>
-    /// <param name="prefab">The Tile prefab.</param>
+    /// <param name="type">The TileType of the Tile prefab.</param>
     /// <returns>The instantiated Tile that should be in the TileGrid.
     /// </returns>
-    private Tile MakeTile(float xPos, float yPos, GameObject prefab)
+    private Tile MakeTile(float xPos, float yPos, TileType type)
     {
+        GameObject prefab = TileTypeToPrefab(type);
         Tile tile = Instantiate(prefab).GetComponent<Tile>();
         Transform tileTransform = tile.transform;
+        tile.name = type.ToString();
         tileTransform.position = new Vector3(xPos, yPos, 1);
         tileTransform.localScale = Vector2.one * TILE_SIZE;
+        tileTransform.SetParent(instance.transform);
 
         return tile;
     }
@@ -336,6 +346,7 @@ public class TileGrid : MonoBehaviour
         if (tile == null) return;
 
         //Tile was clicked up. Put click logic here.
+        FloorTile(tile, FlooringType.SOIL);
     }
 
     /// <summary>
@@ -558,5 +569,36 @@ public class TileGrid : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    /// <summary>
+    /// Returns true if two integers are of different parities.
+    /// </summary>
+    /// <param name="x">the first integer</param>
+    /// <param name="y">the second integer</param>
+    /// <returns>true if two integers are of different parities.</returns>
+    private bool DifferentParities(int x, int y)
+    {
+        return (x % 2 == 0 && y % 2 != 0) ||
+            (x % 2 != 0 && y % 2 == 0);
+    }
+    /// <summary>
+    /// Returns the correct Sprite asset for a Tile given its type and an index.
+    /// </summary>
+    /// <param name="type">the type of Tile</param>
+    /// <param name="index">the Sprite index of the Tile </param>
+    /// <returns>the correct Sprite asset for a Tile given its type and an index.
+    /// </returns>
+    private Sprite GetTileSprite(TileType type, int index)
+    {
+        if (index < 0) return null;
+
+        if (type == TileType.GRASS)
+        {
+            if (index >= grassSprites.Length) return null;
+            return grassSprites[index];
+        }
+
+        return null;
     }
 }

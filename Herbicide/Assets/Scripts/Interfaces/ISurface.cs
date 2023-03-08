@@ -63,4 +63,21 @@ public interface ISurface
     /// </summary>
     /// <returns>this ISurface's four neighbors.</returns>
     ISurface[] GetNeighbors();
+
+    /// <summary>
+    /// Asserts that this ISurface is defined.
+    /// </summary>
+    void AssertDefined();
+
+    /// <summary>
+    /// Returns the X-coordinate of this ISurface.
+    /// </summary>
+    /// <returns>the X-coordinate of this ISurface.</returns>
+    int GetX();
+
+    /// <summary>
+    /// Returns the Y-coordinate of this ISurface.
+    /// </summary>
+    /// <returns>the Y-coordinate of this ISurface.</returns>
+    int GetY();
 }

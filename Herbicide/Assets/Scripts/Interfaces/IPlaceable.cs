@@ -8,4 +8,5 @@ using UnityEngine;
 /// </summary>
 public interface IPlaceable
 {
+    //TODO: Implement in future sprint
 }

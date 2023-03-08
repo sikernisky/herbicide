@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 /// <summary>
 /// Represents a GameObject that can be placed on a Tile to expand its
@@ -9,10 +10,9 @@ using UnityEngine;
 public abstract class Flooring : MonoBehaviour, ISurface
 {
     /// <summary>
-    /// Tile set for this Flooring
+    /// (X, Y) coordinates of this Flooring
     /// </summary>
-    [SerializeField]
-    private List<Sprite> tileSet;
+    private Vector2Int coordinates;
 
     /// <summary>
     /// Index of the Sprite in tile set this Flooring takes on
@@ -44,6 +44,11 @@ public abstract class Flooring : MonoBehaviour, ISurface
     /// </summary>
     private IPlaceable occupant;
 
+    /// <summary>
+    /// true if this Flooring is defined
+    /// </summary>
+    private bool defined;
+
 
     /// <summary>
     /// Defines this Flooring on a Tile, setting its Sprite based on an
@@ -51,12 +56,15 @@ public abstract class Flooring : MonoBehaviour, ISurface
     /// </summary>
     /// <param name="typeOn">type of Tile this Flooring sits on</param>
     /// <param name="neighbors">this Flooring's neighbors</param>
-    public virtual void Define(Tile.TileType typeOn, ISurface[] neighbors)
+    public virtual void Define(int x, int y, Tile.TileType typeOn, ISurface[] neighbors)
     {
         if (neighbors == null) return;
         if (flooringRenderer == null)
             flooringRenderer = GetComponent<SpriteRenderer>();
 
+        defined = true;
+        coordinates = new Vector2Int(x, y);
+        name = type.ToString() + " (" + GetX() + ", " + GetY() + ")";
         UpdateNeighbors(neighbors);
         this.typeOn = typeOn;
     }
@@ -67,6 +75,7 @@ public abstract class Flooring : MonoBehaviour, ISurface
     /// <param name="newNeighbors">this Floorings's new neighbors.</param>
     public void UpdateNeighbors(ISurface[] newNeighbors)
     {
+        AssertDefined();
         Flooring[] flooringNeighbors = new Flooring[newNeighbors.Length];
         for (int i = 0; i < newNeighbors.Length; i++)
         {
@@ -82,6 +91,7 @@ public abstract class Flooring : MonoBehaviour, ISurface
     /// <returns>this Flooring's four neighbors.</returns>
     public ISurface[] GetNeighbors()
     {
+        AssertDefined();
         return neighbors;
     }
 
@@ -92,21 +102,11 @@ public abstract class Flooring : MonoBehaviour, ISurface
     /// <param name="newIndex">the new index to set to.</param>
     public void SetTilingIndex(int newIndex)
     {
-        if (!ValidTilingIndex(newIndex)) return;
+        AssertDefined();
+        if (!FlooringFactory.ValidFlooringIndex(newIndex)) return;
         if (flooringRenderer == null) flooringRenderer = GetComponent<SpriteRenderer>();
-        flooringRenderer.sprite = tileSet[newIndex];
+        flooringRenderer.sprite = FlooringFactory.GetFlooringSprite(type, newIndex);
         tilingIndex = newIndex;
-    }
-
-    /// <summary>
-    /// Returns true if an index is a valid tiling index.
-    /// </summary>
-    /// <param name="index">the index to check</param>
-    /// <returns>true if the index is a valid tiling index; otherwise,
-    /// false.</returns>
-    private bool ValidTilingIndex(int index)
-    {
-        return index >= 0 && index < tileSet.Count;
     }
 
     /// <summary>
@@ -116,6 +116,7 @@ public abstract class Flooring : MonoBehaviour, ISurface
     /// </returns>
     public bool Occupied()
     {
+        AssertDefined();
         return occupant != null;
     }
 
@@ -130,6 +131,7 @@ public abstract class Flooring : MonoBehaviour, ISurface
     /// otherwise, false.</returns>
     public bool Place(IPlaceable candidate, ISurface[] neighbors)
     {
+        AssertDefined();
         if (candidate == null || neighbors == null) return false;
         if (!CanPlace(candidate, neighbors)) return false;
 
@@ -149,6 +151,7 @@ public abstract class Flooring : MonoBehaviour, ISurface
     /// otherwise, false.</returns>
     public bool CanPlace(IPlaceable candidate, ISurface[] neighbors)
     {
+        AssertDefined();
         if (candidate == null || neighbors == null) return false;
 
         return true;
@@ -163,6 +166,7 @@ public abstract class Flooring : MonoBehaviour, ISurface
     /// otherwise, false.</returns>
     public bool Remove(ISurface[] neighbors)
     {
+        AssertDefined();
         if (!Occupied() || neighbors == null) return false;
 
         throw new System.NotImplementedException();
@@ -177,6 +181,7 @@ public abstract class Flooring : MonoBehaviour, ISurface
     /// otherwise, false.</returns>
     public bool CanRemove(IPlaceable candidate, ISurface[] neighbors)
     {
+        AssertDefined();
         if (!Occupied() || candidate == null || neighbors == null) return false;
 
         throw new System.NotImplementedException();
@@ -191,4 +196,41 @@ public abstract class Flooring : MonoBehaviour, ISurface
     /// <returns>the index representing the correct Sprite in this 
     /// Flooring's tile set.</returns>
     protected abstract int GetTilingIndex(ISurface[] neighbors);
+
+    /// <summary>
+    /// Returns this Tile's TileType.
+    /// </summary>
+    /// <returns>this Tile's TileType.</returns>
+    public TileGrid.FlooringType GetTileType()
+    {
+        AssertDefined();
+        return type;
+    }
+
+    /// <summary>
+    /// Returns the X-coordinate of this ISurface.
+    /// </summary>
+    /// <returns>the X-coordinate of this ISurface.</returns>
+    public int GetX()
+    {
+        return coordinates.x;
+    }
+
+    /// <summary>
+    /// Returns the X-coordinate of this ISurface.
+    /// </summary>
+    /// <returns>the X-coordinate of this ISurface.</returns>
+    public int GetY()
+    {
+        return coordinates.y;
+    }
+
+
+    /// <summary>
+    /// Asserts that this Flooring is defined.
+    /// </summary>
+    public void AssertDefined()
+    {
+        Assert.IsTrue(defined);
+    }
 }

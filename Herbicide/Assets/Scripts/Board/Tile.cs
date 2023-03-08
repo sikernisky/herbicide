@@ -58,12 +58,18 @@ public abstract class Tile : MonoBehaviour, ISurface
     /// </summary>
     /// <param name="x">the x-coordinate of this Tile</param>
     /// <param name="y">the y-coordinate of this Tile</param>
-    /// <param name="type">the type of this Tile</param>
-    public virtual void Define(int x, int y)
+    /// <param name="texture">the Sprite asset of this Tile</param>
+    public virtual void Define(int x, int y, Sprite texture)
     {
+        //Safety checks
         if (defined || x < 0 || y < 0) return;
+        if (texture == null) return;
+
         coordinates = new Vector2Int(x, y);
         tileRenderer = GetComponent<SpriteRenderer>();
+        SetSprite(texture);
+        name = type.ToString() + " (" + x + ", " + y + ")";
+        defined = true;
     }
 
     /// <summary>
@@ -72,6 +78,7 @@ public abstract class Tile : MonoBehaviour, ISurface
     /// <returns>the X-Coordinate of this Tile.</returns>
     public int GetX()
     {
+        AssertDefined();
         return coordinates.x;
     }
 
@@ -81,6 +88,7 @@ public abstract class Tile : MonoBehaviour, ISurface
     /// <returns>the Y-Coordinate of this Tile.</returns>
     public int GetY()
     {
+        AssertDefined();
         return coordinates.y;
     }
 
@@ -90,6 +98,7 @@ public abstract class Tile : MonoBehaviour, ISurface
     /// <returns>true if this Tile is occupied.</returns>
     public bool Occupied()
     {
+        AssertDefined();
         return occupant != null;
     }
 
@@ -105,23 +114,12 @@ public abstract class Tile : MonoBehaviour, ISurface
     }
 
     /// <summary>
-    /// Returns true if two integers are of different parities.
-    /// </summary>
-    /// <param name="x">the first integer</param>
-    /// <param name="y">the second integer</param>
-    /// <returns>true if two integers are of different parities.</returns>
-    protected bool DifferentParities(int x, int y)
-    {
-        return (x % 2 == 0 && y % 2 != 0) ||
-            (x % 2 != 0 && y % 2 == 0);
-    }
-
-    /// <summary>
     /// Returns this Tile's TileType.
     /// </summary>
     /// <returns>this Tile's TileType.</returns>
     public TileType GetTileType()
     {
+        AssertDefined();
         return type;
     }
 
@@ -131,6 +129,7 @@ public abstract class Tile : MonoBehaviour, ISurface
     /// <returns>true if this Tile has a flooring; otherwise, false.</returns>
     public bool Floored()
     {
+        AssertDefined();
         return flooring != null;
     }
 
@@ -141,6 +140,7 @@ public abstract class Tile : MonoBehaviour, ISurface
     /// </returns>
     private Flooring GetFlooring()
     {
+        AssertDefined();
         return flooring;
     }
 
@@ -155,8 +155,12 @@ public abstract class Tile : MonoBehaviour, ISurface
     public bool Floor(GameObject flooring, ISurface[] neighbors)
     {
         //Safety checks
-        if (flooring == null || neighbors == null || Floored()) return false;
+        AssertDefined();
+        if (flooring == null || neighbors == null) return false;
         if (flooring.GetComponent<Flooring>() == null) return false;
+
+        //Already floored
+        if (Floored()) return false;
 
         //Update this Tile
         UpdateNeighbors(neighbors);
@@ -164,9 +168,10 @@ public abstract class Tile : MonoBehaviour, ISurface
         //Make the new flooring
         GameObject gob = Instantiate(flooring);
         Flooring newFlooring = gob.GetComponent<Flooring>();
-        newFlooring.Define(GetTileType(), GetFlooringNeighbors());
+        newFlooring.Define(GetX(), GetY(), GetTileType(), GetFlooringNeighbors());
         newFlooring.transform.position = transform.position;
         newFlooring.transform.localScale = transform.localScale;
+        newFlooring.transform.SetParent(transform);
         this.flooring = newFlooring;
 
         return true;
@@ -179,6 +184,7 @@ public abstract class Tile : MonoBehaviour, ISurface
     /// </returns>
     private Flooring[] GetFlooringNeighbors()
     {
+        AssertDefined();
         Assert.IsNotNull(neighbors);
         Flooring[] flooringNeighbors = new Flooring[neighbors.Length];
         for (int i = 0; i < neighbors.Length; i++)
@@ -187,7 +193,6 @@ public abstract class Tile : MonoBehaviour, ISurface
         }
         return flooringNeighbors;
     }
-
 
     /// <summary>
     /// Returns true if an IPlaceable can be placed on this Tile.
@@ -200,6 +205,7 @@ public abstract class Tile : MonoBehaviour, ISurface
     public virtual bool Place(IPlaceable candidate, ISurface[] neighbors)
     {
         //Safety check
+        AssertDefined();
         if (candidate == null || neighbors == null) return false;
         foreach (ISurface surface in neighbors)
         {
@@ -234,6 +240,7 @@ public abstract class Tile : MonoBehaviour, ISurface
     /// otherwise, false.</returns>
     public virtual bool CanPlace(IPlaceable candidate, ISurface[] neighbors)
     {
+        AssertDefined();
         if (candidate == null || neighbors == null) return false;
         if (Occupied()) return false;
 
@@ -249,6 +256,7 @@ public abstract class Tile : MonoBehaviour, ISurface
     /// otherwise, false.</returns>
     public virtual bool Remove(ISurface[] neighbors)
     {
+        AssertDefined();
         if (!Occupied() || neighbors == null) return false;
 
         //TODO: Implement
@@ -266,6 +274,7 @@ public abstract class Tile : MonoBehaviour, ISurface
     /// otherwise, false.</returns>
     public virtual bool CanRemove(IPlaceable candidate, ISurface[] neighbors)
     {
+        AssertDefined();
         if (!Occupied() || candidate == null || neighbors == null) return false;
 
         throw new System.NotImplementedException();
@@ -278,6 +287,7 @@ public abstract class Tile : MonoBehaviour, ISurface
     /// <param name="newNeighbors">this Tile's new neighbors.</param>
     public void UpdateNeighbors(ISurface[] newNeighbors)
     {
+        AssertDefined();
         Assert.IsNotNull(newNeighbors);
 
         Tile[] tileNeighbors = new Tile[4];
@@ -296,6 +306,27 @@ public abstract class Tile : MonoBehaviour, ISurface
     /// <returns>this Tile's four neighbors.</returns>
     public ISurface[] GetNeighbors()
     {
+        AssertDefined();
         return neighbors;
+    }
+
+    /// <summary>
+    /// Asserts that this Tile has been formally defined with a type and coordinates
+    /// by the TileGrid.
+    /// </summary>
+    public void AssertDefined()
+    {
+        Assert.IsTrue(defined, "Tile not defined.");
+    }
+
+    /// <summary>
+    /// Returns the string representation of this Tile:<br></br>
+    /// 
+    /// "(X, Y)"
+    /// </summary>
+    /// <returns>the string representation of this Tile</returns>
+    public override string ToString()
+    {
+        return "(" + GetX() + ", " + GetY() + ")";
     }
 }
