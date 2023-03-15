@@ -40,9 +40,9 @@ public abstract class Flooring : MonoBehaviour, ISurface
     private SpriteRenderer flooringRenderer;
 
     /// <summary>
-    /// The IPlaceable on this Flooring.
+    /// The PlaceableObject on this Flooring.
     /// </summary>
-    private IPlaceable occupant;
+    private PlaceableObject occupant;
 
     /// <summary>
     /// true if this Flooring is defined
@@ -96,6 +96,25 @@ public abstract class Flooring : MonoBehaviour, ISurface
     }
 
     /// <summary>
+    /// Returns this Floorings's four neighbors' PlaceableObjects.
+    /// </summary>
+    /// <returns>this Floorings's four neighbors' PlaceableObjects.</returns>
+    public PlaceableObject[] GetPlaceableObjectNeighbors()
+    {
+        AssertDefined();
+        if (neighbors == null) return null;
+
+        PlaceableObject[] placeableNeighbors = new PlaceableObject[4];
+        for (int i = 0; i < neighbors.Length; i++)
+        {
+            ISurface neighbor = neighbors[i];
+            if (neighbor != null) placeableNeighbors[i] = neighbor.GetPlaceableObject();
+        }
+
+        return placeableNeighbors;
+    }
+
+    /// <summary>
     /// Sets this Flooring's tiling index and updates its Sprite to reflect
     /// that index.
     /// </summary>
@@ -136,6 +155,16 @@ public abstract class Flooring : MonoBehaviour, ISurface
         if (!CanPlace(candidate, neighbors)) return false;
 
         //Placement logic here
+        GameObject prefabClone = candidate.MakePlaceableObject();
+        Assert.IsNotNull(prefabClone);
+        PlaceableObject placeableObject = prefabClone.GetComponent<PlaceableObject>();
+        Assert.IsNotNull(placeableObject);
+
+        prefabClone.transform.position = transform.position;
+        prefabClone.transform.localScale = Vector3.one;
+        prefabClone.transform.SetParent(transform);
+        occupant = placeableObject;
+        occupant.Setup(GetPlaceableObjectNeighbors());
         SetTilingIndex(GetTilingIndex(neighbors));
 
         return true;
@@ -225,12 +254,21 @@ public abstract class Flooring : MonoBehaviour, ISurface
         return coordinates.y;
     }
 
-
     /// <summary>
     /// Asserts that this Flooring is defined.
     /// </summary>
     public void AssertDefined()
     {
         Assert.IsTrue(defined);
+    }
+
+    /// <summary>
+    /// Returns the PlaceableObject on this Flooring.
+    /// </summary>
+    /// <returns>the PlaceableObject on this Flooring; null if there
+    /// is none</returns>
+    public PlaceableObject GetPlaceableObject()
+    {
+        return occupant;
     }
 }

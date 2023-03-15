@@ -338,15 +338,35 @@ public class TileGrid : MonoBehaviour
 
     /// <summary>
     /// Checks if the player clicked up on some Tile. If so, triggers
-    /// the mouse up event for that Tile.
+    /// the mouse up event for that Tile. The event checks for the possibilities,
+    /// in order:<br><br>
+    /// 
+    /// (1) Is the player trying to place something on this Tile?
+    /// (2) Is the player trying to use something on this Tile?
     /// </summary>
     private void CheckTileMouseUp()
     {
         Tile tile = InputController.TileClickedUp();
         if (tile == null) return;
 
-        //Tile was clicked up. Put click logic here.
-        FloorTile(tile, FlooringType.SOIL);
+        //(1) and (2): Placing and Using
+        if (PlacementController.Placing())
+        {
+            ISlottable placingItem = PlacementController.GetObjectPlacing();
+            IPlaceable itemPlaceable = placingItem as IPlaceable;
+            IUsable itemUsable = placingItem as IUsable;
+            ISurface[] tileNeighbors = GetNeighbors(tile);
+            if (tile.CanPlace(itemPlaceable, tileNeighbors))
+            {
+                tile.Place(itemPlaceable, tileNeighbors);
+                InventoryController.StopPlacingFromSlot();
+            }
+            else if (tile.CanUse(itemUsable, tileNeighbors))
+            {
+                //tile.Use(itemUsable, tileNeighbors);
+                //InventoryController.StopPlacingFromSlot();
+            }
+        }
     }
 
     /// <summary>
@@ -359,7 +379,6 @@ public class TileGrid : MonoBehaviour
         if (tile == null) return;
 
         //Tile was hovered over. Put hover logic here.
-
     }
 
     /// <summary>

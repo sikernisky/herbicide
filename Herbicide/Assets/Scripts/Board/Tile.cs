@@ -17,7 +17,7 @@ public abstract class Tile : MonoBehaviour, ISurface
     /// <summary>
     /// The IPlaceable on this Tile; null if Tile is unoccupied.
     /// </summary>
-    private IPlaceable occupant;
+    private PlaceableObject occupant;
 
     /// <summary>
     /// The flooring on this Tile; null if there is none.
@@ -199,8 +199,8 @@ public abstract class Tile : MonoBehaviour, ISurface
     /// If it can, places the IPlaceable.
     /// </summary>
     /// <param name="candidate">The IPlaceable to place.</param>
-    /// <param name="neighbors">This ISurface's neighbors.</param>
-    /// <returns>true if an IPlaceable can be placed on this ISurface;
+    /// <param name="neighbors">This Tile's neighbors.</param>
+    /// <returns>true if an IPlaceable can be placed on this Tile;
     /// otherwise, false.</returns>
     public virtual bool Place(IPlaceable candidate, ISurface[] neighbors)
     {
@@ -209,7 +209,7 @@ public abstract class Tile : MonoBehaviour, ISurface
         if (candidate == null || neighbors == null) return false;
         foreach (ISurface surface in neighbors)
         {
-            Assert.IsNotNull(surface as Tile);
+            if (surface != null) Assert.IsNotNull(surface as Tile);
         }
 
         //1. If has a flooring, pass event to that flooring.
@@ -218,6 +218,7 @@ public abstract class Tile : MonoBehaviour, ISurface
             Flooring[] flooringNeighbors = new Flooring[4];
             for (int i = 0; i < flooringNeighbors.Length; i++)
             {
+                if (neighbors[i] == null) continue;
                 Tile t = (Tile)neighbors[i];
                 flooringNeighbors[i] = t.GetFlooring();
             }
@@ -226,7 +227,17 @@ public abstract class Tile : MonoBehaviour, ISurface
 
         if (!CanPlace(candidate, neighbors)) return false;
 
-        //Placement on Tile logic here
+        //2. Placement on Tile logic here
+        GameObject prefabClone = candidate.MakePlaceableObject();
+        Assert.IsNotNull(prefabClone);
+        PlaceableObject placeableObject = prefabClone.GetComponent<PlaceableObject>();
+        Assert.IsNotNull(placeableObject);
+
+        prefabClone.transform.position = transform.position;
+        prefabClone.transform.localScale = Vector3.one;
+        prefabClone.transform.SetParent(transform);
+        occupant = placeableObject;
+        occupant.Setup(GetPlaceableObjectNeighbors());
 
         return true;
     }
@@ -235,10 +246,44 @@ public abstract class Tile : MonoBehaviour, ISurface
     /// Returns true if an IPlaceable can be placed on this Tile.
     /// </summary>
     /// <param name="candidate">The IPlaceable to place.</param>
-    /// <param name="neighbors">This ISurface's neighbors.</param>
-    /// <returns>true if an IPlaceable can be placed on this ISurface;
+    /// <param name="neighbors">This Tile's neighbors.</param>
+    /// <returns>true if an IPlaceable can be placed on this Tile;
     /// otherwise, false.</returns>
     public virtual bool CanPlace(IPlaceable candidate, ISurface[] neighbors)
+    {
+        AssertDefined();
+        if (candidate == null || neighbors == null) return false;
+        if (Occupied()) return false;
+
+        return true;
+    }
+
+    /// <summary>
+    /// Returns true if an IUsable can be used on this Tile.
+    /// If it can, uses the IUsable.
+    /// </summary>
+    /// <param name="candidate">The IUsable to use.</param>
+    /// <param name="neighbors">This Tile's neighbors.</param>
+    /// <returns>true if an IUsable can be used on this Tile;
+    /// otherwise, false.</returns>
+    public virtual bool Use(IUsable candidate, ISurface[] neighbors)
+    {
+        //Safety check
+        AssertDefined();
+
+        //TODO: Implement in future sprint
+
+        return false;
+    }
+
+    /// <summary>
+    /// Returns true if an IUsable can be used on this Tile.
+    /// </summary>
+    /// <param name="candidate">The IUsable to use.</param>
+    /// <param name="neighbors">This Tile's neighbors.</param>
+    /// <returns>true if an IUsable can be placed on this Tile;
+    /// otherwise, false.</returns>
+    public virtual bool CanUse(IUsable candidate, ISurface[] neighbors)
     {
         AssertDefined();
         if (candidate == null || neighbors == null) return false;
@@ -308,6 +353,35 @@ public abstract class Tile : MonoBehaviour, ISurface
     {
         AssertDefined();
         return neighbors;
+    }
+
+    /// <summary>
+    /// Returns this Tile's four neighbors' PlaceableObjects.
+    /// </summary>
+    /// <returns>this Tile's four neighbors' PlaceableObjects.</returns>
+    public PlaceableObject[] GetPlaceableObjectNeighbors()
+    {
+        AssertDefined();
+        if (neighbors == null) return null;
+
+        PlaceableObject[] placeableNeighbors = new PlaceableObject[4];
+        for (int i = 0; i < neighbors.Length; i++)
+        {
+            ISurface neighbor = neighbors[i];
+            if (neighbor != null) placeableNeighbors[i] = neighbor.GetPlaceableObject();
+        }
+
+        return placeableNeighbors;
+    }
+
+    /// <summary>
+    /// Returns the PlaceableObject on this Tile.
+    /// </summary>
+    /// <returns>the PlaceableObject on this Tile; null if
+    /// it is unoccupied.</returns>
+    public PlaceableObject GetPlaceableObject()
+    {
+        return occupant;
     }
 
     /// <summary>

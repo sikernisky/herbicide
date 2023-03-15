@@ -65,6 +65,19 @@ public interface ISurface
     ISurface[] GetNeighbors();
 
     /// <summary>
+    /// Returns this ISurface's four neighbors' PlaceableObjects.
+    /// </summary>
+    /// <returns>this ISurface's four neighbors' PlaceableObjects.</returns>
+    PlaceableObject[] GetPlaceableObjectNeighbors();
+
+    /// <summary>
+    /// Returns the PlaceableObject on this ISurface.
+    /// </summary>
+    /// <returns> the PlaceableObject on this ISurface;
+    /// null if it has none.</returns>
+    PlaceableObject GetPlaceableObject();
+
+    /// <summary>
     /// Asserts that this ISurface is defined.
     /// </summary>
     void AssertDefined();
