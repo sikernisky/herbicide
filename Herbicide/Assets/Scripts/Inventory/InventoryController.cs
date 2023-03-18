@@ -169,12 +169,13 @@ public class InventoryController : MonoBehaviour
     /// logic.
     /// </summary>
     /// <param name="levelController">reference to the LevelController singleton</param>
-    public static void CheckInventoryInputEvents(LevelController levelController)
+    /// <param name="didEscape">if the player pressed escape</param>
+    public static void CheckInventoryInputEvents(LevelController levelController, bool didEscape)
     {
         //Safety check
         if (levelController == null) return;
 
-        if (InputController.DidEscapeDown())
+        if (didEscape)
         {
             if (PlacementController.Placing())
             {

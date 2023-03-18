@@ -385,6 +385,15 @@ public abstract class Tile : MonoBehaviour, ISurface
     }
 
     /// <summary>
+    /// Sets the color of this Tile's SpriteRenderer.
+    /// </summary>
+    /// <param name="paintColor">the color with which to paint this Tile.</param>
+    public void PaintTile(Color32 paintColor)
+    {
+        tileRenderer.color = paintColor;
+    }
+
+    /// <summary>
     /// Asserts that this Tile has been formally defined with a type and coordinates
     /// by the TileGrid.
     /// </summary>

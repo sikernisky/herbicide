@@ -60,6 +60,22 @@ public class TileGrid : MonoBehaviour
     private bool generated;
 
     /// <summary>
+    /// Red color for debugging and pathfinding.
+    /// </summary>
+    public static readonly Color32 PATHFINDING_RED = new Color32(255, 0, 0, 255);
+
+    /// <summary>
+    /// Blue color for debugging and pathfinding.
+    /// </summary>
+    public static readonly Color32 PATHFINDING_BLUE = new Color32(0, 0, 255, 255);
+
+
+    /// <summary>
+    /// The placed IPlaceables in the grid, indexed by coordinate
+    /// </summary>
+    private IPlaceable[,] placedObjects;
+
+    /// <summary>
     /// THE TileGrid instance
     /// </summary>
     private static TileGrid instance;
@@ -109,10 +125,21 @@ public class TileGrid : MonoBehaviour
         instance.CheckTileMouseExit();
     }
 
+    /// <summary>
+    /// Updates the PlacementController to act upon any active placement events.
+    /// </summary>
+    /// <param name="levelController">the LevelController singleton</param>
+    public static void CheckGridPlacementEvents(LevelController levelController)
+    {
+        if (levelController == null) return;
+
+        instance.CheckPlacementEvent();
+    }
 
     /// <summary>
     /// Sets the `instance` field of the TileGrid class. If already set,
-    /// does nothing.
+    /// does nothing. Also instantiates the 2D arrays to hold the Tiles
+    /// and items placed on them.
     /// </summary>
     /// <param name="levelController">the LevelController making this
     /// singleton.</param>
@@ -122,22 +149,31 @@ public class TileGrid : MonoBehaviour
         if (instance != null) return;
         if (levelController == null) return;
 
+        //Set singleton.
         TileGrid[] grid = FindObjectsOfType<TileGrid>();
         Assert.IsTrue(grid != null && grid.Length == 1, "Too many / not " +
             "enough TileGrids found.");
-
         instance = grid[0];
+
+        //Initialize tiles and placed objects arrays.
+        instance.tiles = new Tile[instance.grassDiameter, instance.grassDiameter];
+        instance.placedObjects = new IPlaceable[instance.grassDiameter, instance.grassDiameter];
     }
 
+
+
     /// <summary>
-    /// Generates the TileGrid and the Tiles within it.
+    /// Returns the correct position of the Camera after generating
+    /// the TileGrid and the Tiles within it.
     /// </summary>
     /// <param name="levelController">the LevelController spawning the grid.</param>
-    public static void SpawnGrid(LevelController levelController)
+    /// <returns>the position for the Camera, that if set to, represents the center
+    /// of the TileGrid.</returns>
+    public static Vector2 SpawnGrid(LevelController levelController)
     {
         //Safety checks
-        if (levelController == null) return;
-        if (instance.IsGenerated()) return;
+        if (levelController == null) return Vector2.zero;
+        if (instance.IsGenerated()) return Vector2.zero;
 
         //Make the tiles and flooring
         instance.MakeGrass();
@@ -158,21 +194,23 @@ public class TileGrid : MonoBehaviour
         }
 
         //Finishing touches
-        instance.SnapCameraToGrid();
         instance.SetGenerated();
+        return instance.GetCameraPositionOnGrid();
     }
 
     /// <summary>
-    /// Sets the Camera's position to the center of the TileGrid. The center
+    /// Returns the Camera's position at the center of the TileGrid. The center
     /// of the TileGrid is at the world position of the grass tiles' center
     /// tile.
     /// </summary>
-    private void SnapCameraToGrid()
+    /// <returns>the position for the Camera, that if set to, represents the center
+    /// of the TileGrid.</returns>
+    private Vector2 GetCameraPositionOnGrid()
     {
         Vector2Int centerCoords = GetCenterCoordinates(grassDiameter);
         float centerXPos = CoordinateToPosition(centerCoords.x);
         float centerYPos = CoordinateToPosition(centerCoords.y);
-        CameraController.MoveCamera(new Vector2(centerXPos, centerYPos));
+        return new Vector2(centerXPos, centerYPos);
     }
 
     /// <summary>
@@ -356,16 +394,11 @@ public class TileGrid : MonoBehaviour
             IPlaceable itemPlaceable = placingItem as IPlaceable;
             IUsable itemUsable = placingItem as IUsable;
             ISurface[] tileNeighbors = GetNeighbors(tile);
-            if (tile.CanPlace(itemPlaceable, tileNeighbors))
+            if (PlaceOnTile(tile, itemPlaceable, tileNeighbors))
             {
-                tile.Place(itemPlaceable, tileNeighbors);
                 InventoryController.StopPlacingFromSlot();
             }
-            else if (tile.CanUse(itemUsable, tileNeighbors))
-            {
-                //tile.Use(itemUsable, tileNeighbors);
-                //InventoryController.StopPlacingFromSlot();
-            }
+            //else use on tile.
         }
     }
 
@@ -379,6 +412,15 @@ public class TileGrid : MonoBehaviour
         if (tile == null) return;
 
         //Tile was hovered over. Put hover logic here.
+    }
+
+    /// <summary>
+    /// Checks for placement events. Updates the PlacementController to
+    /// act accordingly if there is an avtive event.
+    /// </summary>
+    private void CheckPlacementEvent()
+    {
+        PlacementController.CheckPlacementEvents(instance);
     }
 
     /// <summary>
@@ -417,7 +459,6 @@ public class TileGrid : MonoBehaviour
         return flooringPrefabs[(int)type];
     }
 
-
     /// <summary>
     /// Returns a world position that corresponds to a Tile's
     /// coordinate.
@@ -425,7 +466,7 @@ public class TileGrid : MonoBehaviour
     /// <param name="coord">the coordinate to convert.</param>
     /// <returns>the world position representation of a Tile coordinate.
     /// </returns>
-    private float CoordinateToPosition(int coord)
+    public static float CoordinateToPosition(int coord)
     {
         return coord * TILE_SIZE;
     }
@@ -437,7 +478,7 @@ public class TileGrid : MonoBehaviour
     /// <param name="coord">the world position to convert.</param>
     /// <returns>the Tile coordinate representation of a world position.
     /// </returns>
-    private int PositionToCoordinate(float pos)
+    public static int PositionToCoordinate(float pos)
     {
         return (int)pos / (int)TILE_SIZE;
     }
@@ -548,20 +589,89 @@ public class TileGrid : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns true if the placing of an IPlaceable on this Tile will be
+    /// Returns true if the placing of an IPlaceable on a Tile will be
     /// successful. If so, places it. Otherwise, does nothing and returns false.
     /// </summary>
     /// <param name="candidate">The IPlaceable to place.</param>
     /// <param name="target">The Tile to place on.</param>
+    /// <param name="neighbors">The Tile's neighbors' IPlaceables.</param>
     /// <returns>true if the IPlaceable was placed; otherwise, false.</returns>
-    public static bool PlaceOnTile(Tile target, IPlaceable candidate)
+    public static bool PlaceOnTile(Tile target, IPlaceable candidate, ISurface[] neighbors)
     {
         //Safety checks
-        if (target == null || candidate == null) return false;
+        if (target == null || candidate == null || neighbors == null) return false;
         Assert.IsNotNull(target as ISurface);
 
         //TODO: IMPLEMENT
-        return target.Place(candidate, instance.GetNeighbors(target));
+        bool result = target.Place(candidate, instance.GetNeighbors(target));
+        if (result) instance.TrackPlaceable(candidate, target.GetX(), target.GetY());
+        return result;
+    }
+
+    /// <summary>
+    /// Returns true if the clearing of an IPlaceable off a Tile will be
+    /// successful. If so, clears it. Otherwise, does nothing and returns false.
+    /// </summary>
+    /// <param name="target">The Tile to place on.</param>
+    /// <param name="neighbors">The Tile's neighbors' IPlaceables.</param>
+    /// <returns>true if the IPlaceable was placed; otherwise, false.</returns>
+    public static bool ClearTile(Tile target, ISurface[] neighbors)
+    {
+        //Safety checks
+        if (target == null || neighbors == null) return false;
+        Assert.IsNotNull(target as ISurface);
+
+        //TODO: IMPLEMENT
+        bool result = target.Remove(instance.GetNeighbors(target));
+        if (result) instance.UnTrackPlaceable(target.GetX(), target.GetY());
+        return result;
+    }
+
+    /// <summary>
+    /// Paints a tile at (x, y) a color.
+    /// </summary>
+    /// <param name="x">The X-Coordinate of the Tile.</param>
+    /// <param name="y">The Y-Coordinate of the Tile.</param>
+    /// <param name="color">The color to paint with.</param>
+    public static void PaintTile(int x, int y, Color32 color)
+    {
+        Tile t = instance.TileExistsAt(new Vector2Int(x, y));
+        if (t == null) return;
+
+        t.PaintTile(color);
+    }
+
+    /// <summary>
+    /// Adds an IPlaceable to the TileGrid's array of IPlaceables. 
+    /// </summary>
+    /// <param name="x">the X-Coordinate of the surface holding the item</param>
+    /// <param name="y">the Y-Coordinate of the surface holding the item</param>
+
+    private void TrackPlaceable(IPlaceable item, int x, int y)
+    {
+
+        if (item == null) return;
+        if (!TileExistsAt(new Vector2Int(x, y))) return;
+        if (placedObjects == null) return;
+        Assert.IsNull(placedObjects[x, y]);
+
+        placedObjects[x, y] = item;
+    }
+
+    /// <summary>
+    /// Remocves an IPlaceable to the TileGrid's array of IPlaceables. 
+    /// </summary>
+    /// <param name="item">the item to remove</param>
+    /// <param name="x">the X-Coordinate of the surface holding the item</param>
+    /// <param name="y">the Y-Coordinate of the surface holding the item</param>
+
+    private void UnTrackPlaceable(int x, int y)
+    {
+        if (!TileExistsAt(new Vector2Int(x, y))) return;
+        if (placedObjects == null) return;
+        Assert.IsNotNull(placedObjects[x, y]);
+
+        placedObjects[x, y] = null;
     }
 
     /// <summary>

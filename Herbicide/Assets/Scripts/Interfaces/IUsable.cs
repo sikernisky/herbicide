@@ -8,5 +8,5 @@ using UnityEngine;
 /// </summary>
 public interface IUsable : ISlottable
 {
-
+    //TODO: Implement in future sprint
 }

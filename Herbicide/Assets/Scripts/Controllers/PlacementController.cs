@@ -56,10 +56,10 @@ public class PlacementController : MonoBehaviour
     /// if something needs to be placed or returned. If something is being
     /// placed, glues its subject to the mouse.
     /// </summary>
-    /// <param name="levelController">the LevelController singleton</param>
-    public static void CheckPlacementEvents(LevelController levelController)
+    /// <param name="levelController">the TileGrid singleton</param>
+    public static void CheckPlacementEvents(TileGrid tileGrid)
     {
-        if (levelController == null) return;
+        if (tileGrid == null) return;
         if (instance == null) return;
 
         if (Placing()) instance.GlueSubjectToMouse();
