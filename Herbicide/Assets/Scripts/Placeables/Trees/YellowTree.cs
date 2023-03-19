@@ -9,6 +9,11 @@ using UnityEngine;
 public class YellowTree : Tree
 {
     /// <summary>
+    /// Name of this YellowTree.
+    /// </summary>
+    protected override string NAME => "Yellow Tree";
+
+    /// <summary>
     /// Type of this YellowTree
     /// </summary>
     public override TreeType type => TreeType.YELLOW;

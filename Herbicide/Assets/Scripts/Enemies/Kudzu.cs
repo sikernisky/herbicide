@@ -30,7 +30,12 @@ public class Kudzu : MovingEnemy
     /// <summary>
     /// Kudzu's attack range.
     /// </summary>
-    protected override float ATTACK_RANGE => 2f;
+    protected override float ATTACK_RANGE => 1f;
+
+    /// <summary>
+    /// Kudzu's name.
+    /// </summary>
+    protected override string NAME => "Kudzu";
 
     /// <summary>
     /// Attacks a target.
@@ -38,7 +43,7 @@ public class Kudzu : MovingEnemy
     /// <param name="target">The target to attack.</param>
     public override void Attack(PlaceableObject target)
     {
-        throw new System.NotImplementedException();
+        return;
     }
 
     /// <summary>
@@ -46,16 +51,6 @@ public class Kudzu : MovingEnemy
     /// </summary>
     public override void OnDie()
     {
-        throw new System.NotImplementedException();
+        base.OnDie();
     }
-
-    /// <summary>
-    /// Performs an action when this Kudzu spawns.
-    /// </summary>
-    public override void OnSpawn()
-    {
-        Debug.Log("Spawned a Kudzu.");
-    }
-
-
 }

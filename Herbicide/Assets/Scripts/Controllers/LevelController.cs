@@ -125,9 +125,11 @@ public class LevelController : MonoBehaviour
         MovingEnemy movingEnemy = nextEnemy as MovingEnemy;
         int controllerId = EnemyManager.GetNumEnemiesSpawned() - 1; //start at 0
 
+        //Enemies need to spawn at edge of TileGrid.
+        //Assert.IsTrue(TileGrid.IsEdgeTile(nextSpawnPos.x, nextSpawnPos.y));
+
         if (movingEnemy != null)
         {
-            TileGrid.PaintTile(nextSpawnPos.x, nextSpawnPos.y, TileGrid.PATHFINDING_RED);
             MovingEnemyController mec =
                 new MovingEnemyController(movingEnemy, spawnWorldPos, controllerId);
             AddEnemyController(mec);
@@ -142,7 +144,7 @@ public class LevelController : MonoBehaviour
         if (enemyControllers == null) return;
         foreach (EnemyController controller in enemyControllers)
         {
-            controller.UpdateEnemy();
+            controller.UpdateEnemy(TileGrid.GetAllPlacedObjects());
         }
     }
 

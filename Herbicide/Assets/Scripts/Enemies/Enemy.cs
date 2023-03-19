@@ -30,6 +30,11 @@ public abstract class Enemy : MonoBehaviour
     protected abstract float ATTACK_RANGE { get; }
 
     /// <summary>
+    /// Name of this enemy.
+    /// </summary>
+    protected abstract string NAME { get; }
+
+    /// <summary>
     /// How much health this Enemy currently has
     /// </summary>
     private int health;
@@ -45,22 +50,46 @@ public abstract class Enemy : MonoBehaviour
     [SerializeField]
     private SpriteRenderer enemyRenderer;
 
+    /// <summary>
+    /// This Enemy's target.
+    /// </summary>
+    private PlaceableObject target;
+
 
     /// <summary>
     /// Attacks some target.
     /// </summary>
     /// <param name="target">the thing to attack.</param>
-    public abstract void Attack(PlaceableObject target);
+    public virtual void Attack(PlaceableObject target)
+    {
+        Debug.Log("Attacking a " + target.GetName());
+    }
 
     /// <summary>
-    /// Performs some action when this Enemy is spawned.
+    /// Called when this Enemy spawns. Sets its health and attack range
+    /// to their starting values.
     /// </summary>
-    public abstract void OnSpawn();
+    public virtual void Spawn()
+    {
+        SetHealth(STARTING_HEALTH);
+        SetAttackRange(ATTACK_RANGE);
+    }
+
+    public void Hello()
+    {
+        Debug.Log("Hello");
+    }
 
     /// <summary>
-    /// Performs some action when this Enemy dies.
+    /// Called when this Enemy dies. Destroys its Enemy script and 
+    /// GameObject.
     /// </summary>
-    public abstract void OnDie();
+    public virtual void OnDie()
+    {
+        Enemy e = this;
+        Destroy(gameObject);
+        Destroy(e);
+    }
 
     /// <summary>
     /// Sets the health of this Enemy if it is within its max and min
@@ -73,6 +102,26 @@ public abstract class Enemy : MonoBehaviour
         health = newHealth;
     }
 
+    /// <summary>
+    /// Sets the non-negative attack range of this Enemy.
+    /// </summary>
+    /// <param name="newRange">the new attack range to set to</param>
+    protected virtual void SetAttackRange(float newRange)
+    {
+        if (newRange < 0) return;
+        attackRange = newRange;
+    }
+
+
+
+    /// <summary>
+    /// Returns the attack range of this Enemy.
+    /// </summary>
+    /// <returns>the attack range of this Enemy.</returns>
+    public float GetAttackRange()
+    {
+        return attackRange;
+    }
 
     /// <summary>
     /// Returns a GameObject copy of this Enemy with default values.
@@ -97,6 +146,15 @@ public abstract class Enemy : MonoBehaviour
     public void SetSprite(Sprite s)
     {
         if (s != null) enemyRenderer.sprite = s;
+    }
+
+    /// <summary>
+    /// Returns this Enemy's name.
+    /// </summary>
+    /// <returns>the name of this Enemy.</returns>
+    public string GetName()
+    {
+        return NAME;
     }
 
 }

@@ -52,6 +52,36 @@ public abstract class Tile : MonoBehaviour, ISurface
         GRASS
     }
 
+    //-------------PATHFINDING-------------
+
+    /// <summary>
+    /// A* pathfinding cost of moving to this Tile
+    /// </summary>
+    private int movementCost;
+
+    /// <summary>
+    /// A* pathfinding cost of moving to the target Tile
+    /// </summary>
+    private int heuristicCost;
+
+    /// <summary>
+    /// A* pathfinding cost of the movement and heuristic costs combined
+    /// </summary>
+    private int totalCost;
+
+    /// <summary>
+    /// A* pathfinding Tile from which this Tile was reached
+    /// </summary>
+    private Tile pathfindParent;
+
+    /// <summary>
+    /// true if an Enemy can walk on this Tile
+    /// </summary>
+    public abstract bool WALKABLE { get; }
+
+
+    //-------------PATHFINDING-------------
+
 
     /// <summary>
     /// Defines this Tile to be within a TileGrid at coordinates (x, y).
@@ -411,5 +441,68 @@ public abstract class Tile : MonoBehaviour, ISurface
     public override string ToString()
     {
         return "(" + GetX() + ", " + GetY() + ")";
+    }
+
+    /// <summary>
+    /// Returns the pathfinding movement cost of this Tile.
+    /// </summary>
+    /// <returns>the Pathfinding movement cost of this Tile.</returns>
+    public int GetMovementCost()
+    {
+        return movementCost;
+    }
+
+    /// <summary>
+    /// Sets the pathfinding movement cost of this Tile.
+    /// </summary>
+    /// <param name="newCost">the updated movement cost</param>
+    public void SetMovementCost(int newCost)
+    {
+        if (newCost >= 0) movementCost = newCost;
+    }
+
+    /// <summary>
+    /// Returns the pathfinding heuristic cost of this Tile.
+    /// </summary>
+    /// <returns>the pathfinding heuristic cost of this Tile</returns>
+    public int GetHeuristicCost()
+    {
+        return heuristicCost;
+    }
+
+    /// <summary>
+    /// Sets the pathfinding heuristic cost of this Tile.
+    /// </summary>
+    /// <param name="newCost">the new heuristic cost of this Tile</param>
+    public void SetHeuristicCost(int newCost)
+    {
+        if (newCost >= 0) heuristicCost = newCost;
+    }
+
+    /// <summary>
+    /// Returns this Tile's pathfinding parent.
+    /// </summary>
+    /// <returns>this Tile's pathfinding parent.</returns>
+    public Tile GetPathfindingParent()
+    {
+        return pathfindParent;
+    }
+
+    /// <summary>
+    /// Sets this Tile's pathfinding parent.
+    /// </summary>
+    /// <param name="newParent">this Tile's pathfinding parent.</param>
+    public void SetPathfindingParent(Tile newParent)
+    {
+        pathfindParent = newParent;
+    }
+
+    /// <summary>
+    /// Returns this Tile's pathfinding movement and heuristic cost, combined.
+    /// </summary>
+    /// <returns>this Tile's pathfinding movement and heuristic cost, combined.</returns>
+    public int GetTotalPathfindingCost()
+    {
+        return GetMovementCost() + GetHeuristicCost();
     }
 }

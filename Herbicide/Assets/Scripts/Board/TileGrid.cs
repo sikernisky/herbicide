@@ -71,9 +71,9 @@ public class TileGrid : MonoBehaviour
 
 
     /// <summary>
-    /// The placed IPlaceables in the grid, indexed by coordinate
+    /// The placed PlaceableObjects in the grid, indexed by coordinate
     /// </summary>
-    private IPlaceable[,] placedObjects;
+    private PlaceableObject[,] placedObjects;
 
     /// <summary>
     /// THE TileGrid instance
@@ -157,10 +157,8 @@ public class TileGrid : MonoBehaviour
 
         //Initialize tiles and placed objects arrays.
         instance.tiles = new Tile[instance.grassDiameter, instance.grassDiameter];
-        instance.placedObjects = new IPlaceable[instance.grassDiameter, instance.grassDiameter];
+        instance.placedObjects = new PlaceableObject[instance.grassDiameter, instance.grassDiameter];
     }
-
-
 
     /// <summary>
     /// Returns the correct position of the Camera after generating
@@ -604,7 +602,11 @@ public class TileGrid : MonoBehaviour
 
         //TODO: IMPLEMENT
         bool result = target.Place(candidate, instance.GetNeighbors(target));
-        if (result) instance.TrackPlaceable(candidate, target.GetX(), target.GetY());
+        if (result)
+        {
+            PlaceableObject placedObject = target.GetPlaceableObject();
+            instance.TrackPlaceable(placedObject, target.GetX(), target.GetY());
+        }
         return result;
     }
 
@@ -628,6 +630,33 @@ public class TileGrid : MonoBehaviour
     }
 
     /// <summary>
+    /// Returns true if a Tile at (x, y) exists and lives on the edge of the
+    /// TileGrid. The edge of the TileGrid is determined to be the circumference
+    /// of the spawned grass Tiles.
+    /// </summary>
+    /// <param name="x">The x-coordinate of the Tile to check</param>
+    /// <param name="y">The y-coordinate of the Tile to check</param>
+    /// <returns></returns>
+    public static bool IsEdgeTile(int x, int y)
+    {
+        //Get the center tile and the candidate tile
+        Vector2Int centerCoords = instance.GetCenterCoordinates(instance.grassDiameter);
+        Tile centerTile = instance.TileExistsAt(centerCoords);
+        if (centerTile == null) return false;
+        Tile candidate = instance.TileExistsAt(new Vector2Int(x, y));
+        if (candidate == null) return false;
+
+        //Compute distances
+        Vector3 centerWorldPos = centerTile.transform.position;
+        Vector3 candidateWorldPos = candidate.transform.position;
+        float worldDistance = Vector3.Distance(centerWorldPos, candidateWorldPos);
+        float distanceRoundedUp = Mathf.Ceil(worldDistance);
+
+        //Needs to be >= radius to be on edge
+        return distanceRoundedUp >= instance.grassDiameter / 2;
+    }
+
+    /// <summary>
     /// Paints a tile at (x, y) a color.
     /// </summary>
     /// <param name="x">The X-Coordinate of the Tile.</param>
@@ -642,12 +671,12 @@ public class TileGrid : MonoBehaviour
     }
 
     /// <summary>
-    /// Adds an IPlaceable to the TileGrid's array of IPlaceables. 
+    /// Adds a PlaceableObject to the TileGrid's array of IPlaceables. 
     /// </summary>
     /// <param name="x">the X-Coordinate of the surface holding the item</param>
     /// <param name="y">the Y-Coordinate of the surface holding the item</param>
 
-    private void TrackPlaceable(IPlaceable item, int x, int y)
+    private void TrackPlaceable(PlaceableObject item, int x, int y)
     {
 
         if (item == null) return;
@@ -674,6 +703,7 @@ public class TileGrid : MonoBehaviour
         placedObjects[x, y] = null;
     }
 
+
     /// <summary>
     /// Returns true if the flooring of a Floorable on this Tile will be
     /// successful. If so, floors it. Otherwise, does nothing and returns false.
@@ -698,6 +728,43 @@ public class TileGrid : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    /// <summary>
+    /// Returns true if some world coordinates lie within the range of a Tile
+    /// in the TileGrid.
+    /// </summary>
+    /// <param name="worldCoords">the coordinates to check.</param>
+    /// <returns>true if some world coordinates lie within the range of a Tile
+    /// in the TileGrid; otherwise, false.</returns>
+    public static bool OnTile(Vector2 worldCoords)
+    {
+        int coordX = PositionToCoordinate(worldCoords.x);
+        int coordY = PositionToCoordinate(worldCoords.y);
+
+        Tile t = instance.TileExistsAt(new Vector2Int(coordX, coordY));
+        return t != null;
+    }
+
+    /// <summary>
+    /// Returns a list of PlaceableObjects that are currently placed on
+    /// the TileGrid.
+    /// </summary>
+    /// <returns>a list of all PlaceableObjects currently on the grid.</returns>
+    public static List<PlaceableObject> GetAllPlacedObjects()
+    {
+        List<PlaceableObject> accum = new List<PlaceableObject>();
+        int rowCount = instance.placedObjects.GetLength(0);
+        int colCount = instance.placedObjects.GetLength(1);
+        for (int x = 0; x < rowCount; x++)
+        {
+            for (int y = 0; y < colCount; y++)
+            {
+                PlaceableObject placeableObject = instance.placedObjects[x, y];
+                if (placeableObject != null) accum.Add(placeableObject);
+            }
+        }
+        return accum;
     }
 
     /// <summary>
@@ -729,5 +796,165 @@ public class TileGrid : MonoBehaviour
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// Returns the next position in a path towards a target position.
+    /// </summary>
+    /// <param name="start">The starting position.</param>
+    /// <param name="goal">The goal position.</param>
+    /// <returns>the next position in a path towards a target position.</returns>
+    public static Vector3 GetNextPositionInPath(Vector2 start, Vector2 goal)
+    {
+        int startX = PositionToCoordinate(start.x);
+        int startY = PositionToCoordinate(start.y);
+        Vector2Int startCoords = new Vector2Int(startX, startY);
+
+        int goalX = PositionToCoordinate(goal.x);
+        int goalY = PositionToCoordinate(goal.y);
+        Vector2Int goalCoords = new Vector2Int(goalX, goalY);
+
+        Tile startTile = instance.TileExistsAt(startCoords);
+        Tile goalTile = instance.TileExistsAt(goalCoords);
+
+        if (startTile == null || goalTile == null) return default;
+
+        List<Tile> result = instance.AStarPathfind(startTile, goalTile);
+        if (result.Count == 0) return default;
+
+        foreach (Tile t in result)
+        {
+            t.PaintTile(PATHFINDING_RED);
+        }
+
+        return result[0].transform.position;
+    }
+
+    /// <summary>
+    /// Returns a list of Tiles representing the path from one Tile to another.
+    /// Generates this path via A* pathfinding.
+    /// </summary>
+    /// <param name="startTile">The starting Tile</param>
+    /// <param name="targetTile">The goal Tile</param>
+    /// <returns>a list of Tiles representing the path from one Tile to another.</returns>
+    public List<Tile> AStarPathfind(Tile startTile, Tile targetTile)
+    {
+        List<Tile> openSet = new List<Tile>();
+        HashSet<Tile> closedSet = new HashSet<Tile>();
+        openSet.Add(startTile);
+
+        while (openSet.Count > 0)
+        {
+            Tile currentNode = openSet[0];
+            for (int i = 1; i < openSet.Count; i++)
+            {
+                if (openSet[i].GetTotalPathfindingCost() < currentNode.GetTotalPathfindingCost() ||
+                    openSet[i].GetTotalPathfindingCost() == currentNode.GetTotalPathfindingCost() &&
+                    openSet[i].GetHeuristicCost() < currentNode.GetHeuristicCost())
+                {
+                    currentNode = openSet[i];
+                }
+            }
+
+            openSet.Remove(currentNode);
+            closedSet.Add(currentNode);
+
+            if (currentNode == targetTile)
+            {
+                return RetracePath(startTile, targetTile);
+            }
+
+            foreach (Tile neighbor in GetPNeighbors(currentNode))
+            {
+                if (neighbor == null || !neighbor.WALKABLE ||
+                    closedSet.Contains(neighbor))
+                {
+                    continue;
+                }
+
+                int newMovementCostToNeighbor = currentNode.GetMovementCost() + 1;
+                if (newMovementCostToNeighbor < neighbor.GetMovementCost() ||
+                    !openSet.Contains(neighbor))
+                {
+                    neighbor.SetMovementCost(newMovementCostToNeighbor);
+                    neighbor.SetHeuristicCost(GetDistance(neighbor, targetTile));
+                    neighbor.SetPathfindingParent(currentNode);
+
+                    if (!openSet.Contains(neighbor))
+                    {
+                        openSet.Add(neighbor);
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Returns a list of Tiles representing the retraced path from
+    /// a starting Tile and an ending Tile.
+    /// </summary>
+    /// <param name="startTile">The starting Tile</param>
+    /// <param name="endTile">The ending Tile</param>
+    /// <returns>a list of Tiles representing the retraced path from
+    /// a starting Tile and an ending Tile.</returns>
+    private List<Tile> RetracePath(Tile startTile, Tile endTile)
+    {
+        List<Tile> path = new List<Tile>();
+        Tile currentNode = endTile;
+
+        while (currentNode != startTile)
+        {
+            path.Add(currentNode);
+            currentNode = currentNode.GetPathfindingParent();
+        }
+        path.Reverse();
+
+        return path;
+    }
+
+    /// <summary>
+    /// Returns the distance (in coordinates) between two Tiles.
+    /// </summary>
+    /// <param name="tileA">The first Tile.</param>
+    /// <param name="tileB">The second Tile.</param>
+    /// <returns>the distance (in coordinates) between two Tiles.</returns>
+    private int GetDistance(Tile tileA, Tile tileB)
+    {
+        int dstX = Mathf.Abs(tileA.GetX() - tileB.GetX());
+        int dstY = Mathf.Abs(tileA.GetY() - tileB.GetY());
+
+        return dstX + dstY;
+    }
+
+    /// <summary>
+    /// Gets the four neighboring Tiles of a Tile, for pathfinding purposes. 
+    /// </summary>
+    /// <param name="tile">Tile of which to get neighbors.</param>
+    /// <returns>the four neighboring Tiles of a Tile, for pathfinding purposes. </returns>
+    private List<Tile> GetPNeighbors(Tile tile)
+    {
+        List<Tile> neighbors = new List<Tile>();
+
+        int[] xOffsets = { -1, 0, 1, 0 };
+        int[] yOffsets = { 0, 1, 0, -1 };
+
+        for (int i = 0; i < 4; i++)
+        {
+            int checkX = tile.GetX() + xOffsets[i];
+            int checkY = tile.GetY() + yOffsets[i];
+
+            if (checkX >= 0 && checkX < tiles.GetLength(0) && checkY >= 0 && checkY < tiles.GetLength(1))
+            {
+                neighbors.Add(tiles[checkX, checkY]);
+            }
+            else
+            {
+                neighbors.Add(null);
+            }
+        }
+
+        return neighbors;
     }
 }

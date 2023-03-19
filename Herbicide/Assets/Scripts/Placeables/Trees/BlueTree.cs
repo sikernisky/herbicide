@@ -9,6 +9,11 @@ using UnityEngine;
 public class BlueTree : Tree
 {
     /// <summary>
+    /// Name of this BlueTree.
+    /// </summary>
+    protected override string NAME => "Blue Tree";
+
+    /// <summary>
     /// Type of this BlueTree
     /// </summary>
     public override TreeType type => TreeType.BLUE;

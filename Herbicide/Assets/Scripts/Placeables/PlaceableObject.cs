@@ -9,6 +9,11 @@ using UnityEngine;
 public abstract class PlaceableObject : MonoBehaviour, IPlaceable
 {
     /// <summary>
+    /// Name of this PlaceableObject.
+    /// </summary>
+    protected abstract string NAME { get; }
+
+    /// <summary>
     /// SpriteRenderer component for this PlaceableObject;
     /// </summary>
     private SpriteRenderer placeableRenderer;
@@ -62,4 +67,13 @@ public abstract class PlaceableObject : MonoBehaviour, IPlaceable
     /// <returns>the GameObject that represents this PlaceableObject on the grid.
     /// </returns>
     public abstract GameObject MakePlaceableObject();
+
+    /// <summary>
+    /// Returns this PlaceableObject's name.
+    /// </summary>
+    /// <returns>this PlaceableObject's name.</returns>
+    public string GetName()
+    {
+        return NAME;
+    }
 }

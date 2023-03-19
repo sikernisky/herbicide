@@ -8,6 +8,7 @@ using UnityEngine;
 public class Tower : PlaceableObject
 {
     //TODO: Implement in future sprint.
+    protected override string NAME => throw new System.NotImplementedException();
 
 
     public override Sprite GetInventorySprite()

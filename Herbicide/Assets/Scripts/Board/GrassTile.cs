@@ -24,4 +24,9 @@ public class GrassTile : Tile
     /// Type of this GrassTile.
     /// </summary>
     protected override TileType type => Tile.TileType.GRASS;
+
+    /// <summary>
+    /// true if an Enemy can walk on this GrassTile.
+    /// </summary>
+    public override bool WALKABLE => true;
 }

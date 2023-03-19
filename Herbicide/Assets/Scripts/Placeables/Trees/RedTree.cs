@@ -9,6 +9,11 @@ using UnityEngine;
 public class RedTree : Tree
 {
     /// <summary>
+    /// Name of this RedTree.
+    /// </summary>
+    protected override string NAME => "Red Tree";
+
+    /// <summary>
     /// Type of this RedTree
     /// </summary>
     public override TreeType type => TreeType.RED;
