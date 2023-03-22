@@ -37,10 +37,7 @@ public class MovingEnemyController : EnemyController
         MovingEnemy enemy = GetEnemy() as MovingEnemy;
         Assert.IsNotNull(enemy);
 
-
-        SelectTarget(targets);
         SelectMovementTarget();
-        UpdateState();
 
         if (GetState() == EnemyState.CHASE) enemy.MoveTo(GetMovementTarget());
     }
@@ -57,7 +54,6 @@ public class MovingEnemyController : EnemyController
         if (targets == null) return;
         if (targets.Count == 0) return;
 
-        Debug.Log("Selected: " + targets[0]);
         SetTarget(targets[0]);
     }
 

@@ -1370,8 +1370,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemies:
   - {fileID: -8973593739574351958, guid: 5fcaa2ef01e0846eaac9cf5396b7d367, type: 3}
+  - {fileID: -8973593739574351958, guid: 5fcaa2ef01e0846eaac9cf5396b7d367, type: 3}
   spawnPositions:
-  - {x: 4, y: 4}
+  - {x: 1, y: 4}
+  - {x: 1, y: 7}
 --- !u!4 &681630349
 Transform:
   m_ObjectHideFlags: 0
@@ -2629,14 +2631,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grassDiameter: 11
-  soilRadius: 2
+  soilRadius: 1
   tilePrefabs:
   - {fileID: 2795909062356037013, guid: 2d2b2931664844fda9afba109f469f25, type: 3}
   flooringPrefabs:
   - {fileID: 2820041071631143976, guid: f60b5b24b7c724f339146675294bb7a7, type: 3}
   grassSprites:
-  - {fileID: -198536926, guid: 54168f64e88c845d69d9c0cb9b3d4da7, type: 3}
-  - {fileID: 1195054743, guid: 54168f64e88c845d69d9c0cb9b3d4da7, type: 3}
+  - {fileID: 207245124, guid: 54168f64e88c845d69d9c0cb9b3d4da7, type: 3}
+  - {fileID: 486027566, guid: 54168f64e88c845d69d9c0cb9b3d4da7, type: 3}
 --- !u!4 &1414023762
 Transform:
   m_ObjectHideFlags: 0
@@ -2773,22 +2775,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   soilFlooringSprites:
-  - {fileID: 1596737732, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
-  - {fileID: -1190084512, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
-  - {fileID: 393414611, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
-  - {fileID: 662520374, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
-  - {fileID: 964121014, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
-  - {fileID: -1752238102, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
-  - {fileID: -2091271566, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
-  - {fileID: 1102480805, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
-  - {fileID: -486252252, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
-  - {fileID: -967746284, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
-  - {fileID: -1500955503, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
-  - {fileID: 36788838, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
-  - {fileID: 1705305801, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
-  - {fileID: -217855940, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
-  - {fileID: -856620271, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
-  - {fileID: 1917746013, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
+  - {fileID: 2009982327, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
+  - {fileID: 1884967349, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
+  - {fileID: -361677707, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
+  - {fileID: -1537823403, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
+  - {fileID: -643678258, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
+  - {fileID: 1741327842, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
+  - {fileID: -1587228926, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
+  - {fileID: 75936050, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
+  - {fileID: 1560915998, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
+  - {fileID: 2118067445, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
+  - {fileID: -971061452, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
+  - {fileID: -30419281, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
+  - {fileID: 1637998362, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
+  - {fileID: -1132332877, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
+  - {fileID: 1337711660, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
+  - {fileID: 158639252, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
 --- !u!1 &1663136989
 GameObject:
   m_ObjectHideFlags: 0

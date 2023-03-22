@@ -83,6 +83,7 @@ public abstract class EnemyController
         if (targets == null) return;
 
         if (!TileGrid.OnTile(enemy.transform.position)) KillEnemy();
+        UpdateState();
         SelectTarget(targets);
     }
 

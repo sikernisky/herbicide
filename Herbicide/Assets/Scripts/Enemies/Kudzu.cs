@@ -10,7 +10,7 @@ public class Kudzu : MovingEnemy
     /// <summary>
     /// Kudzu's base speed.
     /// </summary>
-    protected override float BASE_SPEED => 2f;
+    protected override float BASE_SPEED => 1f;
 
     /// <summary>
     /// Kudzu's starting health.

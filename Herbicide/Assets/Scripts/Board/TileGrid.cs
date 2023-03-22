@@ -877,7 +877,7 @@ public class TileGrid : MonoBehaviour
                     !openSet.Contains(neighbor))
                 {
                     neighbor.SetMovementCost(newMovementCostToNeighbor);
-                    neighbor.SetHeuristicCost(GetDistance(neighbor, targetTile));
+                    neighbor.SetHeuristicCost(GetManhattanDistance(neighbor, targetTile));
                     neighbor.SetPathfindingParent(currentNode);
 
                     if (!openSet.Contains(neighbor))
@@ -920,7 +920,7 @@ public class TileGrid : MonoBehaviour
     /// <param name="tileA">The first Tile.</param>
     /// <param name="tileB">The second Tile.</param>
     /// <returns>the distance (in coordinates) between two Tiles.</returns>
-    private int GetDistance(Tile tileA, Tile tileB)
+    private int GetManhattanDistance(Tile tileA, Tile tileB)
     {
         int dstX = Mathf.Abs(tileA.GetX() - tileB.GetX());
         int dstY = Mathf.Abs(tileA.GetY() - tileB.GetY());
