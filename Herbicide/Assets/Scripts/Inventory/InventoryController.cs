@@ -15,16 +15,15 @@ public class InventoryController : MonoBehaviour
     private static InventoryController instance;
 
     /// <summary>
-    /// The InventorySlot currently being placed from; null if
-    /// no slot is being placed from.
-    /// </summary>
-    private InventorySlot placingSlot;
-
-    /// <summary>
     /// All InventorySlots in the Inventory.
     /// </summary>
     [SerializeField]
     private InventorySlot[] slots;
+
+    /// <summary>
+    /// Current state of the game.
+    /// </summary>
+    private GameState gameState;
 
 
     /// <summary>
@@ -40,6 +39,20 @@ public class InventoryController : MonoBehaviour
         Assert.IsNotNull(inventoryControllers, "Array of InventoryControllers is null.");
         Assert.AreEqual(1, inventoryControllers.Length);
         instance = inventoryControllers[0];
+    }
+
+    /// <summary>
+    /// Updates all InventorySlots controlled by this InventoryController.
+    /// </summary>
+    /// <param name="playerCurrency">How much currency the player has this frame.
+    /// </param>
+    public static void UpdateSlots(int playerCurrency)
+    {
+        if (instance.slots == null) return;
+        foreach (InventorySlot slot in instance.slots)
+        {
+            slot.UpdateSlot(playerCurrency);
+        }
     }
 
     /// <summary>
@@ -128,11 +141,15 @@ public class InventoryController : MonoBehaviour
 
 
     /// <summary>
+    /// [!!BUTTON EVENT!!]
+    /// 
     /// Triggers the mouse up event for an InventorySlot.
     /// </summary>
     /// <param name="slotIndex">the index of the slot that was clicked</param>
     public void SlotMouseUp(int slotIndex)
     {
+        //Buttons don't know about the game state. We add manual protection.
+        if (gameState != GameState.ONGOING) return;
         if (slotIndex < 0 || slotIndex >= slots.Length) return;
 
         InventorySlot slot = slots[slotIndex];
@@ -152,54 +169,22 @@ public class InventoryController : MonoBehaviour
         //Safety checks
         if (PlacementController.Placing()) return;
         if (slot == null) return;
-        if (placingSlot != null) return;
         if (!slot.Occupied()) return;
         if (!slot.CanUse()) return;
 
         //Start the placement event
         ISlottable occupant = slot.GetOccupant();
         if (occupant == null) return;
-        placingSlot = slot;
-        PlacementController.StartPlacingObject(occupant);
-
+        PlacementController.StartPlacingObject(slot);
     }
 
+
     /// <summary>
-    /// Checks for and executes any input events that affect InventoryController
-    /// logic.
+    /// Informs the InventoryController of the current GameState.
     /// </summary>
-    /// <param name="levelController">reference to the LevelController singleton</param>
-    /// <param name="didEscape">if the player pressed escape</param>
-    public static void CheckInventoryInputEvents(LevelController levelController, bool didEscape)
+    /// <param name="state">The current GameState</param>
+    public static void InformOfGameState(GameState state)
     {
-        //Safety check
-        if (levelController == null) return;
-
-        if (didEscape)
-        {
-            if (PlacementController.Placing())
-            {
-                StopPlacingFromSlot(false);
-            }
-        }
-    }
-
-    /// <summary>
-    /// Notifies the InventoryController that an ISlottable from one of its slots
-    /// was successfully placed. The InventoryController stops the placement
-    /// event and dereferences its placing InventorySlot. 
-    ///  </summary>
-    /// <param name="successfulPlace">true if the item was successfully placed onto
-    /// the grid; otherwise, false.</param>
-    public static void StopPlacingFromSlot(bool successfulPlace = true)
-    {
-        //Safety checks
-        if (!PlacementController.Placing()) return;
-        if (instance.placingSlot == null) return;
-        if (!instance.placingSlot.CanUse()) return;
-
-        if (successfulPlace) instance.placingSlot.Use();
-        instance.placingSlot = null;
-        PlacementController.StopPlacingObject();
+        instance.gameState = state;
     }
 }

@@ -23,6 +23,13 @@ public interface ISlottable
     /// placement event.</returns>
     Sprite GetPlacementSprite();
 
+    /// <summary>
+    /// Returns the amount of currency required to place this ISlottable.
+    /// </summary>
+    /// <returns>the amount of currency required to plae this ISlottable.
+    /// </returns>
+    int GetCost();
+
 
 
 

@@ -10,7 +10,7 @@ public abstract class MovingEnemy : Enemy
     /// <summary>
     /// Base speed of this MovingEnemy.
     /// </summary>
-    protected abstract float BASE_SPEED { get; }
+    public abstract float BASE_SPEED { get; }
 
     /// <summary>
     /// Current speed of this MovingEnemy.
@@ -19,14 +19,41 @@ public abstract class MovingEnemy : Enemy
 
 
     /// <summary>
-    /// Moves this MovingEnemy to a position.
+    /// Base method for MovingEnemy object's movement logic. This method
+    /// only sets its direction based on the movement target; subclasses
+    /// override this method to implement actual movement. 
     /// </summary>
-    /// <param name="targetPosition">The position to move to.</param>
-    public virtual void MoveTo(Vector3 targetPosition)
+    /// <param name="movePosition">The position to move to.</param>
+
+    public virtual void MoveTo(Vector3 movePosition)
     {
-        Vector3 movedPosition = Vector3.MoveTowards(transform.position, targetPosition,
-            GetMoveSpeed() * Time.deltaTime);
-        transform.position = movedPosition;
+        float preMoveX = GetPosition().x;
+        float preMoveY = GetPosition().y;
+        float horizontalDifference = movePosition.x - preMoveX;
+        float verticalDifference = movePosition.y - preMoveY;
+
+        // Debug.Log("HORZ: " + horizontalDifference);
+        // Debug.Log("VERT: " + verticalDifference);
+
+        //Handle diagonals
+        if (Mathf.Approximately(Mathf.Abs(horizontalDifference), Mathf.Abs(verticalDifference)))
+        {
+            if (verticalDifference > 0) SetDirection(Direction.NORTH);
+            else SetDirection(Direction.SOUTH);
+            return;
+        }
+
+        //Handle non-diagonals
+        if (horizontalDifference != 0)
+        {
+            if (horizontalDifference > 0) SetDirection(Direction.EAST);
+            else SetDirection(Direction.WEST);
+        }
+        else
+        {
+            if (verticalDifference > 0) SetDirection(Direction.NORTH);
+            else SetDirection(Direction.SOUTH);
+        }
     }
 
     /// <summary>
@@ -39,12 +66,11 @@ public abstract class MovingEnemy : Enemy
     }
 
     /// <summary>
-    /// Called when this MovingEnemy spawns. Sets its movement speed, health, and
-    /// attack range.
+    /// Resets the stats of this MovingEnemy to its starting/base values.
     /// </summary>
-    public override void Spawn()
+    public override void ResetStats()
     {
-        base.Spawn();
+        base.ResetStats();
         SetMoveSpeed(BASE_SPEED);
     }
 

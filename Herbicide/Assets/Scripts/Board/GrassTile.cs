@@ -26,7 +26,61 @@ public class GrassTile : Tile
     protected override TileType type => Tile.TileType.GRASS;
 
     /// <summary>
-    /// true if an Enemy can walk on this GrassTile.
+    /// true if this GrassTile is at the edge of the grid.
     /// </summary>
-    public override bool WALKABLE => true;
+    private bool isEdge;
+
+
+    /// <summary>
+    /// Defines this GrassTile and sets its sprite to represent a light
+    /// GrassTile.
+    /// </summary>
+    /// <param name="x">The X-Coordinate of this GrassTile.</param>
+    /// <param name="y">The Y-Coordinate of this GrassTile.</param>
+    public override void Define(int x, int y)
+    {
+        base.Define(x, y);
+        SetSprite(lightGrass);
+    }
+
+    /// <summary>
+    /// Defines this GrassTile. GrassTiles come in two forms: light and
+    /// dark. This affects its Sprite but not its functionality.
+    /// </summary>
+    /// <param name="x">The X-Coordinate of this GrassTile.</param>
+    /// <param name="y">The Y-Coordinate of this GrassTile.</param>
+    /// <param name="isLight">true if this is a light GrassTile; false
+    /// if this is a dark GrassTile.</param>
+    public void Define(int x, int y, bool isLight)
+    {
+        base.Define(x, y);
+        if (isLight) SetSprite(lightGrass);
+        else SetSprite(darkGrass);
+    }
+
+    /// <summary>
+    /// Marks this GrassTile as an edge Tile.
+    /// </summary>
+    public void MarkEdge()
+    {
+        isEdge = true;
+    }
+
+    /// <summary>
+    /// Unmarks this GrassTile as an edge Tile.
+    /// </summary>
+    public void UnmarkEdge()
+    {
+        isEdge = false;
+    }
+
+    /// <summary>
+    /// Returns true if this GrassTile lies on the edge of the TileGrid.
+    /// </summary>
+    /// <returns>true if this GrassTile is an edge Tile; otherwise, false.
+    /// </returns>
+    public bool IsEdgeTile()
+    {
+        return isEdge;
+    }
 }

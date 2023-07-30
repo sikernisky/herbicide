@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.UI;
 
 /// <summary>
 /// Controls the life of a level: <br></br>
@@ -13,11 +14,6 @@ using UnityEngine.Assertions;
 public class LevelController : MonoBehaviour
 {
     /// <summary>
-    /// Reference to the LevelController singleton.
-    /// </summary>
-    private LevelController instance;
-
-    /// <summary>
     /// Items to load the InventoryController with. This is a temporary
     /// field and should be replaced when SelectMode is implemented.
     /// </summary>
@@ -25,19 +21,53 @@ public class LevelController : MonoBehaviour
     private PlaceableObject[] items;
 
     /// <summary>
-    /// All Enemy controllers active in the level.
+    /// How long the level waits before spawning enemies.
     /// </summary>
-    private List<EnemyController> enemyControllers;
+    [SerializeField]
+    private float enemySpawnDelay;
+
+    /// <summary>
+    /// Reference to the LevelController singleton.
+    /// </summary>
+    private LevelController instance;
+
+    /// <summary>
+    /// Stores FPS timing.
+    /// </summary>
+    private float deltaTime;
+
+    /// <summary>
+    /// How much time has elapsed since the level began.
+    /// </summary>
+    private float levelTime;
+
+    /// <summary>
+    /// Maximum frame rate.
+    /// </summary>
+    private const int MAX_FRAME_RATE = 60;
+
+    /// <summary>
+    /// The most recent game state.
+    /// </summary>
+    private GameState currentGameState;
+
+
 
     /// <summary>
     /// Sets up the level: <br></br>
     /// 
+    /// (0) Sets Unity properties.<br></br>
     /// (1) Instantiates all factories and singletons.<br></br>
     /// (2) Spawns the TileGrid.<br></br>
     /// (3) Loads the Inventory.<br></br>
+    /// (4) Parse JSON data for Enemy objects <br></br>
+    /// (5) Initialize GAME_STATE state
     /// </summary>
     void Start()
     {
+        //(0) Set Unity properties
+        SetUnityProperties();
+
         //(1) Instantiate all factories and singletons
         SetSingleton();
         MakeFactories();
@@ -48,25 +78,63 @@ public class LevelController : MonoBehaviour
 
         //(3) Load the Inventory
         InventoryController.LoadEntireInventory(items);
+
+        //(4) Parse JSON data for Enemy objects
+        JSONController.GetEnemyData();
+
+        //(5) Initialize GAME_STATE state
     }
 
     /// <summary>
     /// Main update loop: <br></br>
     /// 
-    /// (1) Checks for input events.
-    /// (2) Spawn an Enemy if possible.
-    /// (3) Update EnemyControllers.
+    /// (1) Update and inform controllers of game state.<br></br>
+    /// (2) Update time elapsed.<br></br>
+    /// (3) Checks for input events.<br></br>
+    /// (4) Spawn an Enemy if possible.<br></br>
+    /// (5) Update Controllers.<br></br>
+    /// (6) Update Projectiles.<br></br>
+    /// (7) Update Currencies.<br></br>
+    /// (8) Update Balance.<br></br>
+    /// (9) Update TileGrid.<br></br>
+    /// (10) Update Canvas.<br></br>
+    /// 
+    /// These actions are called if the game state is ONGOING. Otherwise,
+    /// separate update methods are called.
     /// </summary>
     void Update()
     {
-        //(1) Check input events.
+        //DebugFPS();
+
+        //(1) Update and inform controllers of game state
+        if (DetermineGameState() == GameState.INVALID) return;
+
+        //(2) Increment time.
+        levelTime += Time.deltaTime;
+
+        //(3) Check input events.
         CheckInputEvents();
 
-        //(2) Spawn an enemy if possible.
+        //(4) Spawn an enemy if possible.
         TrySpawnEnemy();
 
-        //(3) Update EnemyControllers.
-        UpdateEnemyControllers();
+        //(5) Update Controllers.
+        ControllerController.UpdateAllControllers(TileGrid.GetAllTargetableObjects());
+
+        //(6) Update Projectiles.
+        ProjectileController.CheckProjectiles();
+
+        //(7) Update the Economy.
+        EconomyController.UpdateEconomy();
+
+        //(8) Update Inventory.
+        InventoryController.UpdateSlots(EconomyController.GetMoney());
+
+        //(9) Update TileGrid.
+        TileGrid.TrackEnemyTilePositions(ControllerController.GetAllActiveEnemies());
+
+        //(10) Update Canvas.
+        CanvasController.UpdateCanvas();
     }
 
     /// <summary>
@@ -76,12 +144,18 @@ public class LevelController : MonoBehaviour
     {
         Assert.IsNotNull(instance, "method SetSingleton() should set the " +
             "levelcontroller singleton (currently null.)");
+        JSONController.SetSingleton(instance);
         TileGrid.SetSingleton(instance);
         CameraController.SetSingleton(instance);
         InputController.SetSingleton(instance);
         PlacementController.SetSingleton(instance);
         InventoryController.SetSingleton(instance);
         EnemyManager.SetSingleton(instance);
+        ProjectileController.SetSingleton(instance);
+        ControllerController.SetSingleton(instance);
+        EconomyController.SetSingleton(instance);
+        CanvasController.SetSingleton(instance);
+        SoundController.SetSingleton(instance);
     }
 
     /// <summary>
@@ -90,6 +164,8 @@ public class LevelController : MonoBehaviour
     {
         FlooringFactory.SetSingleton(instance);
         TreeFactory.SetSingleton(instance);
+        DefenderFactory.SetSingleton(instance);
+        EnemyFactory.SetSingleton(instance);
     }
 
     /// <summary>
@@ -104,7 +180,6 @@ public class LevelController : MonoBehaviour
         Assert.IsTrue(levelControllers.Length == 1, "not enough / too many " +
             "levelcontrollers in the scene (" + levelControllers.Length + ").");
         instance = levelControllers[0];
-        enemyControllers = new List<EnemyController>();
     }
 
     /// <summary>
@@ -112,51 +187,70 @@ public class LevelController : MonoBehaviour
     /// </summary>
     private void TrySpawnEnemy()
     {
-        //Disqualifiers for spawning an enemy
-        if (EnemyManager.EnemiesRemaining() <= 0) return;
+        if (levelTime < enemySpawnDelay) return;
 
-        //Spawn the enemy, give it a controller.
-        (Enemy, Vector2Int) tuple = EnemyManager.GetNextEnemy();
-        Enemy nextEnemy = tuple.Item1;
+        EnemyManager.RefreshAvailableEnemies(levelTime);
+        if (!EnemyManager.IsEnemyReady()) return;
+
+        //Spawn the enemy.
+        (GameObject, Vector2Int) tuple = EnemyManager.GetNextEnemy();
+        Enemy nextEnemy = tuple.Item1.GetComponent<Enemy>();
+        Assert.IsNotNull(nextEnemy);
+
+        //Fix Enemies spawning at invalid positions.
         Vector2Int nextSpawnPos = tuple.Item2;
+        if (!TileGrid.TileExistsAtPosition(tuple.Item2.x, tuple.Item2.y))
+        {
+            Vector2Int brokenPos = tuple.Item2;
+            Vector2Int fixedPos = TileGrid.NearestEdgeCoordinate(brokenPos.x, brokenPos.y);
+            nextSpawnPos = fixedPos;
+        }
+
         float xWorldSpawnPos = TileGrid.CoordinateToPosition(nextSpawnPos.x);
         float yWorldSpawnPos = TileGrid.CoordinateToPosition(nextSpawnPos.y);
         Vector3 spawnWorldPos = new Vector3(xWorldSpawnPos, yWorldSpawnPos, 1);
         MovingEnemy movingEnemy = nextEnemy as MovingEnemy;
         int controllerId = EnemyManager.GetNumEnemiesSpawned() - 1; //start at 0
-
-        //Enemies need to spawn at edge of TileGrid.
-        //Assert.IsTrue(TileGrid.IsEdgeTile(nextSpawnPos.x, nextSpawnPos.y));
-
-        if (movingEnemy != null)
-        {
-            MovingEnemyController mec =
-                new MovingEnemyController(movingEnemy, spawnWorldPos, controllerId);
-            AddEnemyController(mec);
-        }
+        nextEnemy.transform.position = spawnWorldPos;
+        ControllerController.MakeEnemyController(nextEnemy);
     }
 
     /// <summary>
-    /// Updates all EnemyControllers in the level.
+    /// Returns the correct state of the level. For
+    /// example, if the player has no more Trees, the game is LOSE. If all
+    /// Enemies are dead, the game is WIN. Informs sub-controllers of this
+    /// new state.
     /// </summary>
-    private void UpdateEnemyControllers()
+    /// <return>The most updated GameState.</return>
+    private GameState DetermineGameState()
     {
-        if (enemyControllers == null) return;
-        foreach (EnemyController controller in enemyControllers)
-        {
-            controller.UpdateEnemy(TileGrid.GetAllPlacedObjects());
-        }
-    }
+        HashSet<Tree> activeTrees = ControllerController.GetAllActiveTrees();
+        HashSet<Enemy> activeEnemies = ControllerController.GetAllActiveEnemies();
+        int enemiesRemaining = EnemyManager.EnemiesRemaining();
+        bool enemiesPresent = (enemiesRemaining > 0 || activeEnemies.Count > 0);
 
-    /// <summary>
-    /// Adds an EnemyController to the LevelController's list of EnemyControllers.
-    /// </summary>
-    /// <param name="enemyController">the EnemyController to add.</param>
-    private void AddEnemyController(EnemyController enemyController)
-    {
-        if (enemyController == null) return;
+        //Win condition: All enemies dead, at least one Tree alive.
+        if (!enemiesPresent && activeTrees.Count > 0) currentGameState = GameState.WIN;
 
-        enemyControllers.Add(enemyController);
+        //Lose condition: All trees dead, at least one Enemy alive.
+        else if (enemiesPresent && activeTrees.Count == 0) currentGameState = GameState.LOSE;
+
+        //Tie condition: All trees and enemies dead. 
+        else if (!enemiesPresent && activeTrees.Count == 0) currentGameState = GameState.TIE;
+
+        //Ongoing condition: At least one tree and enemy alive.
+        else if (enemiesPresent && activeTrees.Count > 0) currentGameState = GameState.ONGOING;
+
+        //Something went wrong.
+        else currentGameState = GameState.INVALID;
+
+        //Inform Controllers.
+        InventoryController.InformOfGameState(currentGameState);
+        ControllerController.InformOfGameState(currentGameState);
+        CanvasController.InformOfGameState(currentGameState);
+        PlacementController.InformOfGameState(currentGameState);
+
+        return currentGameState;
     }
 
     /// <summary>
@@ -166,16 +260,37 @@ public class LevelController : MonoBehaviour
     private void CheckInputEvents()
     {
         //Always check for these input events
-        InventoryController.CheckInventoryInputEvents(instance, InputController.DidEscapeDown());
+        PlacementController.CheckPlacementEvents(InputController.DidEscapeDown());
 
         //UI Specific: does it matter if we're hovering over a UI element?
         if (InputController.HoveringOverUIElement())
         {
+            //Put events here to trigger if we're hovering over a Canvas / UI element.
         }
         else
         {
-            TileGrid.CheckTileInputEvents(instance);
+            //Put events here to trigger if we're NOT hovering over a Canvas / UI element.
+            TileGrid.CheckTileInputEvents();
+            EconomyController.CheckCurrencyPickup();
         }
-        TileGrid.CheckGridPlacementEvents(instance);
+    }
+
+    /// <summary>
+    /// Sets properties of the engine outside of gameplay.
+    /// </summary>
+    private void SetUnityProperties()
+    {
+        Application.targetFrameRate = MAX_FRAME_RATE;
+        Screen.SetResolution(1920, 1080, false);
+    }
+
+    /// <summary>
+    /// Prints out the current FPS.
+    /// </summary>
+    private void DebugFPS()
+    {
+        deltaTime += (Time.unscaledDeltaTime - deltaTime) * 0.1f;
+        float fps = 1.0f / deltaTime;
+        Debug.Log($"FPS: {Mathf.RoundToInt(fps)}");
     }
 }

@@ -20,6 +20,11 @@ public abstract class Tile : MonoBehaviour, ISurface
     private PlaceableObject occupant;
 
     /// <summary>
+    /// The ghost/preview of something that would place on this Tile.
+    /// </summary>
+    private GameObject ghostOccupant;
+
+    /// <summary>
     /// The flooring on this Tile; null if there is none.
     /// </summary>
     private Flooring flooring;
@@ -40,6 +45,11 @@ public abstract class Tile : MonoBehaviour, ISurface
     private Tile[] neighbors;
 
     /// <summary>
+    /// true if an Enemy is on this Tile; otherwise, false.
+    /// </summary>
+    private bool occupiedByEnemy;
+
+    /// <summary>
     /// This Tile's Type.
     /// </summary>
     protected abstract TileType type { get; }
@@ -49,7 +59,9 @@ public abstract class Tile : MonoBehaviour, ISurface
     /// </summary>
     public enum TileType
     {
-        GRASS
+        GRASS,
+        SHORE,
+        WATER
     }
 
     //-------------PATHFINDING-------------
@@ -77,7 +89,7 @@ public abstract class Tile : MonoBehaviour, ISurface
     /// <summary>
     /// true if an Enemy can walk on this Tile
     /// </summary>
-    public abstract bool WALKABLE { get; }
+    public virtual bool WALKABLE => IsWalkable();
 
 
     //-------------PATHFINDING-------------
@@ -88,16 +100,14 @@ public abstract class Tile : MonoBehaviour, ISurface
     /// </summary>
     /// <param name="x">the x-coordinate of this Tile</param>
     /// <param name="y">the y-coordinate of this Tile</param>
-    /// <param name="texture">the Sprite asset of this Tile</param>
-    public virtual void Define(int x, int y, Sprite texture)
+    public virtual void Define(int x, int y)
     {
         //Safety checks
-        if (defined || x < 0 || y < 0) return;
-        if (texture == null) return;
+
+        if (defined) return;
 
         coordinates = new Vector2Int(x, y);
         tileRenderer = GetComponent<SpriteRenderer>();
-        SetSprite(texture);
         name = type.ToString() + " (" + x + ", " + y + ")";
         defined = true;
     }
@@ -123,12 +133,24 @@ public abstract class Tile : MonoBehaviour, ISurface
     }
 
     /// <summary>
+    /// Returns true if this Tile has an Enemy on it; otherwise, returns
+    /// false.
+    /// </summary>
+    /// <returns>true if this Tile has an Enemy on it; otherwise, false.
+    /// </returns>
+    public bool OccupiedByEnemy()
+    {
+        return occupiedByEnemy;
+    }
+
+    /// <summary>
     /// Returns true if this Tile is occupied.
     /// </summary>
     /// <returns>true if this Tile is occupied.</returns>
     public bool Occupied()
     {
         AssertDefined();
+        if (Floored()) return GetFlooring().Occupied();
         return occupant != null;
     }
 
@@ -193,7 +215,7 @@ public abstract class Tile : MonoBehaviour, ISurface
         if (Floored()) return false;
 
         //Update this Tile
-        UpdateNeighbors(neighbors);
+        UpdateSurfaceNeighbors(neighbors);
 
         //Make the new flooring
         GameObject gob = Instantiate(flooring);
@@ -255,19 +277,23 @@ public abstract class Tile : MonoBehaviour, ISurface
             return GetFlooring().Place(candidate, flooringNeighbors);
         }
 
+
+
+        //3. Try placing on this Tile.
         if (!CanPlace(candidate, neighbors)) return false;
 
-        //2. Placement on Tile logic here
         GameObject prefabClone = candidate.MakePlaceableObject();
         Assert.IsNotNull(prefabClone);
         PlaceableObject placeableObject = prefabClone.GetComponent<PlaceableObject>();
         Assert.IsNotNull(placeableObject);
+        SpriteRenderer prefabRenderer = prefabClone.GetComponent<SpriteRenderer>();
 
+        prefabRenderer.sortingOrder = GetY();
         prefabClone.transform.position = transform.position;
         prefabClone.transform.localScale = Vector3.one;
         prefabClone.transform.SetParent(transform);
         occupant = placeableObject;
-        occupant.Setup(GetPlaceableObjectNeighbors());
+        occupant.Define(new Vector2Int(GetX(), GetY()), GetPlaceableObjectNeighbors());
 
         return true;
     }
@@ -283,7 +309,11 @@ public abstract class Tile : MonoBehaviour, ISurface
     {
         AssertDefined();
         if (candidate == null || neighbors == null) return false;
+        if (candidate as Defender != null) return false;
+        if (candidate as Tree != null) return false;
         if (Occupied()) return false;
+        if (Floored() && !GetFlooring().CanPlace(candidate, neighbors)) return false;
+
 
         return true;
     }
@@ -341,26 +371,11 @@ public abstract class Tile : MonoBehaviour, ISurface
     }
 
     /// <summary>
-    /// Returns true if there is an IPlaceable on this Tile that can
-    /// be removed.
-    /// </summary>
-    /// <param name="neighbors">This Tile's neighbors.</param>
-    /// <returns>true if an IPlaceable can be removed from this Tile;
-    /// otherwise, false.</returns>
-    public virtual bool CanRemove(IPlaceable candidate, ISurface[] neighbors)
-    {
-        AssertDefined();
-        if (!Occupied() || candidate == null || neighbors == null) return false;
-
-        throw new System.NotImplementedException();
-    }
-
-    /// <summary>
     /// Updates this Tile's array of neighbors. If it has a Flooring component,
     /// updates the neighbors of that component too. 
     /// </summary>
     /// <param name="newNeighbors">this Tile's new neighbors.</param>
-    public void UpdateNeighbors(ISurface[] newNeighbors)
+    public void UpdateSurfaceNeighbors(ISurface[] newNeighbors)
     {
         AssertDefined();
         Assert.IsNotNull(newNeighbors);
@@ -372,14 +387,14 @@ public abstract class Tile : MonoBehaviour, ISurface
         }
         neighbors = tileNeighbors;
 
-        if (Floored()) flooring.UpdateNeighbors(GetFlooringNeighbors());
+        if (Floored()) flooring.UpdateSurfaceNeighbors(GetFlooringNeighbors());
     }
 
     /// <summary>
     /// Returns this Tile's four neighbors.
     /// </summary>
     /// <returns>this Tile's four neighbors.</returns>
-    public ISurface[] GetNeighbors()
+    public ISurface[] GetSurfaceNeighbors()
     {
         AssertDefined();
         return neighbors;
@@ -411,16 +426,24 @@ public abstract class Tile : MonoBehaviour, ISurface
     /// it is unoccupied.</returns>
     public PlaceableObject GetPlaceableObject()
     {
-        return occupant;
+        if (occupant != null) return occupant;
+        if (Floored() && GetFlooring().Occupied()) return GetFlooring().GetPlaceableObject();
+        return null;
     }
 
     /// <summary>
-    /// Sets the color of this Tile's SpriteRenderer.
+    /// Sets the color of this Tile's SpriteRenderer. If it's floored, passes
+    /// this paint command to the flooring instead.
     /// </summary>
     /// <param name="paintColor">the color with which to paint this Tile.</param>
     public void PaintTile(Color32 paintColor)
     {
-        tileRenderer.color = paintColor;
+        if (Floored())
+        {
+            GetFlooring().PaintFlooring(paintColor);
+
+        }
+        else tileRenderer.color = paintColor;
     }
 
     /// <summary>
@@ -431,6 +454,7 @@ public abstract class Tile : MonoBehaviour, ISurface
     {
         Assert.IsTrue(defined, "Tile not defined.");
     }
+
 
     /// <summary>
     /// Returns the string representation of this Tile:<br></br>
@@ -505,4 +529,134 @@ public abstract class Tile : MonoBehaviour, ISurface
     {
         return GetMovementCost() + GetHeuristicCost();
     }
+
+    /// <summary>
+    /// Returns the Manhattan Tile distance from this Tile to another.
+    /// </summary>
+    /// <param name="other">the other Tile.</param>
+    /// <returns>the Manhattan Tile distance from this Tile to another.</returns>
+    public int GetManhattanDistance(Tile other)
+    {
+        return GetManhattanDistance(other.GetX(), other.GetY());
+    }
+
+    /// <summary>
+    /// Returns the Manhattan Tile distance from this Tile to an (X, Y) coordinate.
+    /// </summary>
+    /// <param name="x">the X-coordinate.</param>
+    /// <param name="y">the Y-coordinate.</param>
+    /// <returns>the Manhattan Tile distance from this Tile to an (X, Y) coordinate.</returns>
+    public int GetManhattanDistance(int x, int y)
+    {
+        int xDistance = Mathf.Abs(GetX() - x);
+        int yDistance = Mathf.Abs(GetY() - y);
+        return xDistance + yDistance;
+    }
+
+    /// <summary>
+    /// Returns true if a pathfinder can walk across this Tile.
+    /// </summary>
+    /// <returns>true if a pathfinder can walk across this Tile;
+    /// otherwise, false.</returns>
+    public virtual bool IsWalkable()
+    {
+        if (Floored()) return GetFlooring().IsWalkable();
+        return !Occupied();
+    }
+
+    /// <summary>
+    /// Determines whether an IPlaceable object can be potentially placed
+    /// on this Tile. This method is invoked alongside GhostPlace() during a
+    /// hover or placement action to validate the placement feasibility.
+    /// </summary>
+    /// <param name="ghost">The IPlaceable object that we are
+    /// trying to virtually place on this Tile.</param>
+    /// <returns>true if the IPlaceable object can be placed on this Tile;
+    /// otherwise, false.</returns>
+    public bool CanGhostPlace(IPlaceable ghost)
+    {
+        return !Occupied() && ghost != null && ghostOccupant == null
+            && CanPlace(ghost, GetSurfaceNeighbors());
+    }
+
+    /// <summary>
+    /// Provides a visual simulation of placing an IPlaceable on
+    /// this Tile and is called during a hover / placement action.
+    /// This method does not carry out actual placement of the IPlaceable on
+    /// this Tile. Instead, it displays a potential placement scenario.
+    /// </summary>
+    /// <param name="ghost">The IPlaceable object that we are
+    /// trying to virtually place on this Tile.</param>
+    /// <returns> true if the ghost place was successful; otherwise,
+    /// false. </returns> 
+    public bool GhostPlace(IPlaceable ghost)
+    {
+        //Are we floored? If so, pass the event.
+        if (Floored()) return GetFlooring().GhostPlace(ghost);
+
+        if (!CanGhostPlace(ghost)) return false;
+
+
+        //Ghost place on this Tile.
+        GameObject hollowCopy = (ghost as PlaceableObject).MakeHollowObject();
+        Assert.IsNotNull(hollowCopy);
+        SpriteRenderer hollowRenderer = hollowCopy.GetComponent<SpriteRenderer>();
+        Assert.IsNotNull(hollowRenderer);
+
+        hollowRenderer.sortingOrder = GetY();
+        hollowRenderer.color = new Color32(255, 255, 255, 200);
+        hollowCopy.transform.position = transform.position;
+        hollowCopy.transform.localScale = Vector3.one;
+        hollowCopy.transform.SetParent(transform);
+
+        ghostOccupant = hollowCopy;
+        return true;
+    }
+
+    /// <summary>
+    /// Removes all visual simulations of placing an IPlaceable on this
+    /// Tile. If there are none, does nothing.
+    /// </summary>
+    public void GhostRemove()
+    {
+        if (Floored()) GetFlooring().GhostRemove();
+
+        if (ghostOccupant == null) return;
+
+        Destroy(ghostOccupant);
+        ghostOccupant = null;
+    }
+
+    /// <summary>
+    /// Sets whether an Enemy is on this Tile.
+    /// </summary>
+    /// <param name="occupiedByEnemy">true if an Enemy is 
+    /// on this Tile; otherwise, false.</param>
+    public void SetOccupiedByEnemy(bool occupiedByEnemy)
+    {
+        this.occupiedByEnemy = occupiedByEnemy;
+        if (Floored()) GetFlooring().SetOccupiedByEnemy(occupiedByEnemy);
+    }
+
+    /// <summary>
+    /// Returns true if the ghost occupant on this Tile is not null.
+    /// </summary>
+    /// <returns>true if the ghost occupant on this Tile is not null;
+    /// otherwise, false.</returns>
+    public bool HasActiveGhostOccupant()
+    {
+        if (Floored()) return GetFlooring().HasActiveGhostOccupant();
+        return ghostOccupant != null;
+    }
+
+    /// <summary>
+    /// Returns this Tile's (X, Y) coordinates in Vector2Int format.
+    /// </summary>
+    /// <returns>this Tile's (X, Y) coordinates in Vector2Int format.</returns>
+    public Vector2Int GetPosition()
+    {
+        return new Vector2Int(GetX(), GetY());
+    }
 }
+
+

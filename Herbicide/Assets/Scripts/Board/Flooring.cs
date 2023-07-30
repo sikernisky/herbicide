@@ -45,6 +45,16 @@ public abstract class Flooring : MonoBehaviour, ISurface
     private PlaceableObject occupant;
 
     /// <summary>
+    /// The ghost/preview of something that would place on this Flooring.
+    /// </summary>
+    private GameObject ghostOccupant;
+
+    /// <summary>
+    /// true if an Enemy is on this Flooring; otherwise, false.
+    /// </summary>
+    private bool occupiedByEnemy;
+
+    /// <summary>
     /// true if this Flooring is defined
     /// </summary>
     private bool defined;
@@ -65,7 +75,7 @@ public abstract class Flooring : MonoBehaviour, ISurface
         defined = true;
         coordinates = new Vector2Int(x, y);
         name = type.ToString() + " (" + GetX() + ", " + GetY() + ")";
-        UpdateNeighbors(neighbors);
+        UpdateSurfaceNeighbors(neighbors);
         this.typeOn = typeOn;
     }
 
@@ -73,7 +83,7 @@ public abstract class Flooring : MonoBehaviour, ISurface
     /// Sets the neighbors of this Flooring.
     /// </summary>
     /// <param name="newNeighbors">this Floorings's new neighbors.</param>
-    public void UpdateNeighbors(ISurface[] newNeighbors)
+    public void UpdateSurfaceNeighbors(ISurface[] newNeighbors)
     {
         AssertDefined();
         Flooring[] flooringNeighbors = new Flooring[newNeighbors.Length];
@@ -89,7 +99,7 @@ public abstract class Flooring : MonoBehaviour, ISurface
     /// Returns this Flooring's four neighbors.
     /// </summary>
     /// <returns>this Flooring's four neighbors.</returns>
-    public ISurface[] GetNeighbors()
+    public ISurface[] GetSurfaceNeighbors()
     {
         AssertDefined();
         return neighbors;
@@ -152,23 +162,52 @@ public abstract class Flooring : MonoBehaviour, ISurface
     {
         AssertDefined();
         if (candidate == null || neighbors == null) return false;
+
+        //1. If occupied with a Tree, and the candidate is a defender, pass event to that Tree.
+        if (Occupied() && candidate as Defender != null)
+        {
+            Tree tree = occupant as Tree;
+            if (tree != null)
+            {
+                return tree.Place(candidate as Defender, neighbors);
+            }
+        }
+
+        //2. Try to place on Flooring
         if (!CanPlace(candidate, neighbors)) return false;
 
-        //Placement logic here
         GameObject prefabClone = candidate.MakePlaceableObject();
         Assert.IsNotNull(prefabClone);
         PlaceableObject placeableObject = prefabClone.GetComponent<PlaceableObject>();
         Assert.IsNotNull(placeableObject);
+        SpriteRenderer prefabRenderer = prefabClone.GetComponent<SpriteRenderer>();
 
+        prefabRenderer.sortingOrder = GetY();
         prefabClone.transform.position = transform.position;
         prefabClone.transform.localScale = Vector3.one;
         prefabClone.transform.SetParent(transform);
         occupant = placeableObject;
-        occupant.Setup(GetPlaceableObjectNeighbors());
+        occupant.Define(new Vector2Int(GetX(), GetY()), GetPlaceableObjectNeighbors());
         SetTilingIndex(GetTilingIndex(neighbors));
 
-        return true;
+        //Did we place a Tree? Give it a controller and neighbors.
+        Tree placedTree = placeableObject as Tree;
+        if (placedTree != null)
+        {
+            ControllerController.MakeTreeController(placedTree);
+            placedTree.UpdateSurfaceNeighbors(neighbors);
+        }
 
+        return true;
+    }
+
+    /// <summary>
+    /// Sets the color of this Flooring's SpriteRenderer.
+    /// </summary>
+    /// <param name="paintColor">the color with which to paint this Flooring.</param>
+    public void PaintFlooring(Color32 paintColor)
+    {
+        flooringRenderer.color = paintColor;
     }
 
     /// <summary>
@@ -181,7 +220,9 @@ public abstract class Flooring : MonoBehaviour, ISurface
     public bool CanPlace(IPlaceable candidate, ISurface[] neighbors)
     {
         AssertDefined();
+        if (Occupied()) return false;
         if (candidate == null || neighbors == null) return false;
+        if (candidate as Defender != null) return false;
 
         return true;
     }
@@ -197,21 +238,6 @@ public abstract class Flooring : MonoBehaviour, ISurface
     {
         AssertDefined();
         if (!Occupied() || neighbors == null) return false;
-
-        throw new System.NotImplementedException();
-    }
-
-    /// <summary>
-    /// Returns true if there is an IPlaceable on this Flooring that can
-    /// be removed.
-    /// </summary>
-    /// <param name="neighbors">This Flooring's neighbors.</param>
-    /// <returns>true if an IPlaceable can be removed from this Flooring;
-    /// otherwise, false.</returns>
-    public bool CanRemove(IPlaceable candidate, ISurface[] neighbors)
-    {
-        AssertDefined();
-        if (!Occupied() || candidate == null || neighbors == null) return false;
 
         throw new System.NotImplementedException();
     }
@@ -270,5 +296,117 @@ public abstract class Flooring : MonoBehaviour, ISurface
     public PlaceableObject GetPlaceableObject()
     {
         return occupant;
+    }
+
+    /// <summary>
+    /// Determines whether an IPlaceable object can be potentially placed
+    /// on this Flooring. This method is invoked alongside GhostPlace() during a
+    /// hover or placement action to validate the placement feasibility.
+    /// </summary>
+    /// <param name="ghost">The IPlaceable object that we are
+    /// trying to virtually place on this TiFlooringle.</param>
+    /// <returns>true if the IPlaceable object can be placed on this Flooring;
+    /// otherwise, false.</returns>
+    public bool CanGhostPlace(IPlaceable ghost)
+    {
+        return !Occupied() && ghostOccupant == null && ghost != null
+            && CanPlace(ghost, GetSurfaceNeighbors());
+    }
+
+    /// <summary>
+    /// Provides a visual simulation of placing an IPlaceable on
+    /// this Flooring and is called during a hover / placement action.
+    /// This method does not carry out actual placement of the IPlaceable on
+    /// this Flooring. Instead, it displays a potential placement scenario.
+    /// </summary>
+    /// <param name="ghost">The IPlaceable object that we are
+    /// trying to virtually place on this Flooring.</param>
+    /// <returns> true if the ghost place was successful; otherwise,
+    /// false. </returns> 
+    public bool GhostPlace(IPlaceable ghost)
+    {
+        //Occupied by a Tree? Pass the ghost place.
+        if (Occupied())
+        {
+            Tree treeOcc = GetPlaceableObject() as Tree;
+            if (treeOcc != null) return treeOcc.GhostPlace(ghost);
+        }
+
+        if (!CanGhostPlace(ghost)) return false;
+
+        GameObject hollowCopy = (ghost as PlaceableObject).MakeHollowObject();
+        Assert.IsNotNull(hollowCopy);
+        SpriteRenderer hollowRenderer = hollowCopy.GetComponent<SpriteRenderer>();
+        Assert.IsNotNull(hollowRenderer);
+
+        hollowRenderer.sortingOrder = GetY();
+        hollowRenderer.color = new Color32(255, 255, 255, 200);
+        hollowCopy.transform.position = transform.position;
+        hollowCopy.transform.localScale = Vector3.one;
+        hollowCopy.transform.SetParent(transform);
+
+        ghostOccupant = hollowCopy;
+        return true;
+    }
+
+
+    /// <summary>
+    /// Removes all visual simulations of placing an IPlaceable on this
+    /// Flooring. If there are none, does nothing.
+    /// </summary>
+    public void GhostRemove()
+    {
+        Tree treeOcc = GetPlaceableObject() as Tree;
+        if (treeOcc != null) treeOcc.GhostRemove();
+
+        if (ghostOccupant == null) return;
+
+        Destroy(ghostOccupant);
+        ghostOccupant = null;
+    }
+
+    /// <summary>
+    /// Sets whether an Enemy is on this Flooring.
+    /// </summary>
+    /// <param name="occupiedByEnemy">true if an Enemy is 
+    /// on this Flooring; otherwise, false.</param>
+    public void SetOccupiedByEnemy(bool occupiedByEnemy)
+    {
+        this.occupiedByEnemy = occupiedByEnemy;
+    }
+
+    /// <summary>
+    /// Returns true if an Enemy is on this Flooring.
+    /// </summary>
+    /// <returns>true if an Enemy is on this Flooring; otherwise,
+    /// returns false.</returns>
+    public bool OccupiedByEnemy()
+    {
+        return occupiedByEnemy;
+    }
+
+    /// <summary>
+    /// Returns true if the ghost occupant on this Flooring is not null.
+    /// </summary>
+    /// <returns>true if the ghost occupant on this Flooring is not null;
+    /// otherwise, false.</returns>
+    public bool HasActiveGhostOccupant()
+    {
+        if (Occupied())
+        {
+            Tree treeOc = occupant as Tree;
+            if (treeOc != null) return treeOc.HasActiveGhostOccupant();
+        }
+        return ghostOccupant != null;
+    }
+
+    /// <summary>
+    /// Returns true if a pathfinder can walk across this Flooring.
+    /// </summary>
+    /// <returns>true if a pathfinder can walk across this Flooring;
+    /// otherwise, false.</returns>
+    public bool IsWalkable()
+    {
+        return !Occupied();
     }
 }

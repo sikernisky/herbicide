@@ -14,8 +14,8 @@ TagManager:
   - BaseTile
   - Flooring
   - Placeable
-  - 
-  - 
+  - Projectile
+  - Enemy
   - 
   - 
   - 
@@ -48,8 +48,14 @@ TagManager:
     uniqueID: 3697966197
     locked: 0
   - name: Trees
-    uniqueID: 3306089467
-    locked: 0
-  - name: Enemies
     uniqueID: 1393009571
+    locked: 0
+  - name: Defenders
+    uniqueID: 677989163
+    locked: 0
+  - name: Projectiles
+    uniqueID: 2853114793
+    locked: 0
+  - name: DroppedItems
+    uniqueID: 294954647
     locked: 0
