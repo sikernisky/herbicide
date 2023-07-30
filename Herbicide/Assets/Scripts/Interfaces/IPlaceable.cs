@@ -15,4 +15,14 @@ public interface IPlaceable : ISlottable
     /// </summary>
     /// <returns>the prefab for this IPlaceable.</returns>
     GameObject MakePlaceableObject();
+
+    /// <summary>
+    /// Returns a GameObject that holds a SpriteRenderer component with
+    /// this IPlaceable's placed Sprite. No other components are
+    /// copied. 
+    /// </summary>
+    /// <returns>A GameObject with a SpriteRenderer component. </returns>
+    GameObject MakeHollowObject();
+
+
 }

@@ -18,7 +18,7 @@ public class TreeFactory : MonoBehaviour
     /// Holds all Tree inventory sprites. They are indexed by
     /// their Type enum: <br></br>
     /// 
-    /// 0 --> RED
+    /// 0 --> BASIC
     /// </summary>
     [SerializeField]
     private Sprite[] inventorySprites;
@@ -27,7 +27,7 @@ public class TreeFactory : MonoBehaviour
     /// Holds all placed Tree sprites. They are indexed by
     /// their Type enum: <br></br>
     /// 
-    /// 0 --> RED
+    /// 0 --> BASIC
     /// </summary>
     [SerializeField]
     private Sprite[] placedSprites;
@@ -36,7 +36,7 @@ public class TreeFactory : MonoBehaviour
     /// Holds all placed Tree prefabs. They are indexed by
     /// their Type enum: <br></br>
     /// 
-    /// 0 --> RED
+    /// 0 --> BASIC
     /// </summary>
     [SerializeField]
     private GameObject[] prefabs;

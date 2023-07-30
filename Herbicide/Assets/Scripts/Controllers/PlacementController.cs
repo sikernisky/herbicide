@@ -16,6 +16,11 @@ public class PlacementController : MonoBehaviour
     private static PlacementController instance;
 
     /// <summary>
+    /// Color an Image turns when placing.
+    /// </summary>
+    private static readonly Color32 PLACE_COLOR = new Color32(255, 255, 255, 200);
+
+    /// <summary>
     /// Dummy GameObject for placement events
     /// </summary>
     [SerializeField]
@@ -28,9 +33,20 @@ public class PlacementController : MonoBehaviour
     private Image dummyImage;
 
     /// <summary>
-    /// The ISlottable being placed; null if no placement event is active
+    /// The InventorySlot that an ISlottable is being placed from; null
+    /// if no placement event is active. 
     /// </summary>
-    private ISlottable subject;
+    private InventorySlot placingSlot;
+
+    /// <summary>
+    /// The Tile on which the player is ghost placing; null if they aren't.
+    /// </summary>
+    private Tile ghostSubject;
+
+    /// <summary>
+    /// The current GameState.
+    /// </summary>
+    private GameState gameState;
 
 
     /// <summary>
@@ -54,41 +70,61 @@ public class PlacementController : MonoBehaviour
     /// <summary>
     /// Checks for necessary placement events. Looks at mouse input to determine
     /// if something needs to be placed or returned. If something is being
-    /// placed, glues its subject to the mouse.
+    /// placed, glues its subject to the mouse.<br></br>
+    /// 
+    /// Also checks if the player pressed escape. If so, cancels any active placement
+    /// and/or ghost placement events.
     /// </summary>
-    /// <param name="levelController">the TileGrid singleton</param>
-    public static void CheckPlacementEvents(TileGrid tileGrid)
+    public static void CheckPlacementEvents(bool didEscape)
     {
-        if (tileGrid == null) return;
         if (instance == null) return;
 
-        if (Placing()) instance.GlueSubjectToMouse();
+        if (instance.gameState == GameState.ONGOING)
+        {
+            if (Placing()) instance.GlueSubjectToMouse();
+            if (didEscape)
+            {
+                if (Placing()) StopPlacingObject(false);
+                if (GhostPlacing()) StopGhostPlacing();
+            }
+            if (GhostPlacing() && !instance.ghostSubject.HasActiveGhostOccupant())
+            {
+                StopGhostPlacing();
+            }
+        }
+        else if (Placing()) StopPlacingObject(false);
     }
 
     /// <summary>
     /// Starts a placement event.
     /// </summary>
-    /// <param name="item">the ISlottable to start placing</param>
-    public static void StartPlacingObject(ISlottable item)
+    /// <param name="slot">the InventorySlot to place from. </param>
+    public static void StartPlacingObject(InventorySlot slot)
     {
-        if (item == null) return;
+        if (slot == null) return;
         if (Placing()) return;
 
         instance.dummy.SetActive(true);
-        instance.dummyImage.sprite = item.GetPlacementSprite();
-        instance.subject = item;
+        instance.dummyImage.sprite = slot.GetOccupant().GetPlacementSprite();
+        instance.dummyImage.color = PLACE_COLOR;
+        instance.placingSlot = slot;
     }
 
     /// <summary>
     /// Stops an active placement event if there is one.
     /// </summary>
-    public static void StopPlacingObject()
+    /// <param name="wasPlaced">true if the placing object was placed;
+    /// false if it was canceled or otherwise invalid. </param>
+    public static void StopPlacingObject(bool wasPlaced)
     {
         if (!Placing()) return;
+        if (!instance.placingSlot.CanUse()) return;
 
+        if (wasPlaced) instance.placingSlot.Use();
         instance.dummy.SetActive(false);
         instance.dummyImage.sprite = null;
-        instance.subject = null;
+        instance.dummyImage.color = Color.white;
+        instance.placingSlot = null;
     }
 
     /// <summary>
@@ -99,7 +135,7 @@ public class PlacementController : MonoBehaviour
     /// is being placed.</returns>
     public static ISlottable GetObjectPlacing()
     {
-        return instance.subject;
+        return instance.placingSlot.GetOccupant();
     }
 
     /// <summary>
@@ -108,7 +144,17 @@ public class PlacementController : MonoBehaviour
     /// <returns>true if there is an item being placed; otherwise, false.</returns>
     public static bool Placing()
     {
-        return instance.subject != null;
+        return instance.placingSlot != null;
+    }
+
+    /// <summary>
+    /// Returns true if the player is ghost placing.
+    /// </summary>
+    /// <returns>true if the player is ghost placing; otherwise, false.
+    /// </returns>
+    public static bool GhostPlacing()
+    {
+        return instance.ghostSubject != null;
     }
 
     /// <summary>
@@ -120,5 +166,55 @@ public class PlacementController : MonoBehaviour
         if (!Placing()) return;
 
         dummy.transform.position = InputController.GetMousePosition();
+    }
+
+    /// <summary>
+    /// Starts a ghost place.
+    /// </summary>
+    /// <param name="subject">The Tile that the player is ghost placing on.</param>
+    public static void StartGhostPlacing(Tile subject)
+    {
+        if (GhostPlacing()) return;
+        if (subject == null) return;
+
+        instance.dummyImage.color = new Color(
+                        instance.dummyImage.color.r,
+                        instance.dummyImage.color.g,
+                        instance.dummyImage.color.b,
+                        0
+                    );
+
+        instance.ghostSubject = subject;
+    }
+
+    /// <summary>
+    /// Stops an active ghost place (if there is one).
+    /// </summary>
+    /// <returns>The coordinates of the just-canceled ghost place.</returns>
+    public static void StopGhostPlacing()
+    {
+        if (!GhostPlacing()) return;
+
+        Assert.IsNotNull(instance.ghostSubject);
+        Assert.IsNotNull(instance.dummyImage);
+
+        instance.dummyImage.color = new Color(
+                        instance.dummyImage.color.r,
+                        instance.dummyImage.color.g,
+                        instance.dummyImage.color.b,
+                        255
+                        );
+
+        instance.ghostSubject.GhostRemove();
+        instance.ghostSubject = null;
+    }
+
+    /// <summary>
+    /// Informs the PlacementController of the most recent GameState.
+    /// </summary>
+    /// <param name="state">the most recent GameState.</param>
+    public static void InformOfGameState(GameState state)
+    {
+        instance.gameState = state;
     }
 }

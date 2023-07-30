@@ -16,20 +16,6 @@ public class InventorySlot : MonoBehaviour
     /// </summary>
     private ISlottable occupant;
 
-    /// <summary>
-    /// How many of occupant are in this InventorySlot
-    /// </summary>
-    private int count;
-
-    /// <summary>
-    /// The greatest number of items that can exist in this InventorySlot.
-    /// </summary>
-    private const int MAX_COUNT = 999;
-
-    /// <summary>
-    /// The number of items that an InventorySlot starts with. 
-    /// </summary>
-    private const int START_COUNT = 2;
 
     /// <summary>
     /// Color for the slot when unoccupied
@@ -55,11 +41,26 @@ public class InventorySlot : MonoBehaviour
     private Image slotBackgroundImage;
 
     /// <summary>
-    /// TMP_Text component to display the InventorySlot's count
+    /// This InventorySlot's Button component.
     /// </summary>
     [SerializeField]
-    private TMP_Text countText;
+    private Button slotButton;
 
+    /// <summary>
+    /// The player's current currency balance.
+    /// </summary>
+    private int currentBalance;
+
+
+    /// <summary>
+    /// Updates this InventorySlot with recent information.
+    /// </summary>
+    /// <param name="playerCurrency">How much currency the player has this frame.
+    /// </param>
+    public void UpdateSlot(int playerCurrency)
+    {
+        currentBalance = playerCurrency;
+    }
 
     /// <summary>
     /// Returns true if this InventorySlot is not empty.
@@ -84,7 +85,6 @@ public class InventorySlot : MonoBehaviour
 
         occupant = item;
         FillSprite(occupant.GetInventorySprite());
-        ResetCount();
         return true;
     }
 
@@ -98,8 +98,8 @@ public class InventorySlot : MonoBehaviour
         occupant = null;
         slotImage.sprite = null;
         slotImage.enabled = false;
-        countText.enabled = false;
         slotBackgroundImage.color = EMPTY_COLOR;
+        slotButton.interactable = false;
     }
 
     /// <summary>
@@ -108,8 +108,6 @@ public class InventorySlot : MonoBehaviour
     public void Use()
     {
         if (!CanUse()) return;
-
-        DecrementCount();
     }
 
     /// <summary>
@@ -119,8 +117,6 @@ public class InventorySlot : MonoBehaviour
     public bool CanUse()
     {
         if (!Occupied()) return false;
-        if (GetCount() == 0) return false;
-
         return true;
     }
 
@@ -134,45 +130,7 @@ public class InventorySlot : MonoBehaviour
         slotImage.enabled = true;
         slotImage.sprite = s;
         slotBackgroundImage.color = FILLED_COLOR;
-    }
-
-    /// <summary>
-    /// Adds one to this InventorySlot's count. If the count is MAX_COUNT,
-    /// does nothing.
-    /// </summary>
-    private void IncrementCount()
-    {
-        if (GetCount() + 1 <= MAX_COUNT) count++;
-        countText.text = GetCount().ToString();
-    }
-
-    /// <summary>
-    /// Removes one from this InventorySlot's count. If the count is zero,
-    /// does nothing.
-    /// </summary>
-    private void DecrementCount()
-    {
-        if (GetCount() - 1 >= 0) count--;
-        countText.text = GetCount().ToString();
-    }
-
-    /// <summary>
-    /// Sets this InventorySlot's count to START_COUNT.
-    /// </summary>
-    private void ResetCount()
-    {
-        count = START_COUNT;
-        countText.enabled = true;
-        countText.text = GetCount().ToString();
-    }
-
-    /// <summary>
-    /// Returns the count of this InventorySlot.
-    /// </summary>
-    /// <returns>the count of this InventorySlot.</returns>
-    public int GetCount()
-    {
-        return count;
+        slotButton.interactable = true;
     }
 
     /// <summary>

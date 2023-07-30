@@ -185,6 +185,46 @@ public class InputController : MonoBehaviour
     }
 
     /// <summary>
+    /// Returns the first Collectable the player clicked on at this specific frame;
+    /// returns null if no Collectable was clicked on this frame.
+    /// </summary>
+    /// <returns>the Collectable the player clicked on this frame, 
+    /// or null if they didn't.</returns>
+    public static Collectable CollectableClickedUp()
+    {
+        instance.AssertTempObjectsMade();
+
+        if (!DidPrimaryUp()) return null;
+        return instance.GetCollectableFromRaycast();
+    }
+
+    /// <summary>
+    /// Returns the first Collectable component found after iterating through a
+    /// RayCastHit2D array generated from the player's mouse position.
+    /// Returns null if no Collectable component was found.
+    /// </summary>
+    /// <returns>the first Collectable component found after iterating through a
+    /// RayCastHit2D array. Returns null if no Collectable component was found.
+    /// </returns>
+    private Collectable GetCollectableFromRaycast()
+    {
+        AssertTempObjectsMade();
+
+        instance.mousePosTemp = GetMousePosition();
+        instance.worldPosTemp = CameraController.ScreenToWorldPoint(instance.mousePosTemp);
+        instance.hitTemp = Physics2D.RaycastAll(instance.worldPosTemp, Vector2.zero);
+
+        foreach (RaycastHit2D hit in instance.hitTemp)
+        {
+            if (hit.collider == null) continue;
+            Collectable c = hit.collider.gameObject.GetComponent<Collectable>();
+            if (c != null) return c;
+        }
+
+        return null;
+    }
+
+    /// <summary>
     /// Returns the first Tile component found after iterating through a
     /// RayCastHit2D array generated from the player's mouse position.
     /// Returns null if no Tile component was found.
@@ -192,7 +232,6 @@ public class InputController : MonoBehaviour
     /// <returns>the first Tile component found after iterating through a
     /// RayCastHit2D array. Returns null if no Tile component was found.
     /// </returns>
-    /// <param name="hits">The array of RaycastHits.</param>
     private Tile GetTileFromRaycast()
     {
         AssertTempObjectsMade();

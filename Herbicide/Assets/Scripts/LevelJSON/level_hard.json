@@ -1,0 +1,148 @@
+{
+    "enemies": [
+        {
+            "type": "kudzu",
+            "xSpawn": -5,
+            "ySpawn": 4,
+            "time": 0
+        },
+        {
+            "type": "kudzu",
+            "xSpawn": 2,
+            "ySpawn": 6,
+            "time": 2
+        },
+        {
+            "type": "kudzu",
+            "xSpawn": 12,
+            "ySpawn": 4,
+            "time": 8
+        },
+        {
+            "type": "kudzu",
+            "xSpawn": -3,
+            "ySpawn": 2,
+            "time": 4
+        },
+        {
+            "type": "kudzu",
+            "xSpawn": 9,
+            "ySpawn": 6,
+            "time": 10
+        },
+        {
+            "type": "kudzu",
+            "xSpawn": 12,
+            "ySpawn": 4,
+            "time": 11
+        },
+        {
+            "type": "kudzu",
+            "xSpawn": -5,
+            "ySpawn": 4,
+            "time": 0
+        },
+        {
+            "type": "kudzu",
+            "xSpawn": 3,
+            "ySpawn": 7,
+            "time": 10
+        },
+        {
+            "type": "kudzu",
+            "xSpawn": 12,
+            "ySpawn": 4,
+            "time": 20
+        },
+        {
+            "type": "kudzu",
+            "xSpawn": -5,
+            "ySpawn": 4,
+            "time": 0
+        },
+        {
+            "type": "kudzu",
+            "xSpawn": 12,
+            "ySpawn": 4,
+            "time": 10
+        },
+        {
+            "type": "kudzu",
+            "xSpawn": 12,
+            "ySpawn": 4,
+            "time": 20
+        },
+        {
+            "type": "kudzu",
+            "xSpawn": -5,
+            "ySpawn": 4,
+            "time": 0
+        },
+        {
+            "type": "kudzu",
+            "xSpawn": 10,
+            "ySpawn": 4,
+            "time": 2
+        },
+        {
+            "type": "kudzu",
+            "xSpawn": 1,
+            "ySpawn": 6,
+            "time": 8
+        },
+        {
+            "type": "kudzu",
+            "xSpawn": -3,
+            "ySpawn": 2,
+            "time": 4
+        },
+        {
+            "type": "kudzu",
+            "xSpawn": 8,
+            "ySpawn": 6,
+            "time": 8
+        },
+        {
+            "type": "kudzu",
+            "xSpawn": 12,
+            "ySpawn": 4,
+            "time": 11
+        },
+        {
+            "type": "kudzu",
+            "xSpawn": -5,
+            "ySpawn": 4,
+            "time": 22
+        },
+        {
+            "type": "kudzu",
+            "xSpawn": 7,
+            "ySpawn": 4,
+            "time": 13
+        },
+        {
+            "type": "kudzu",
+            "xSpawn": 12,
+            "ySpawn": 4,
+            "time": 20
+        },
+        {
+            "type": "kudzu",
+            "xSpawn": -5,
+            "ySpawn": 4,
+            "time": 6
+        },
+        {
+            "type": "kudzu",
+            "xSpawn": 12,
+            "ySpawn": 4,
+            "time": 2
+        },
+        {
+            "type": "kudzu",
+            "xSpawn": 12,
+            "ySpawn": 4,
+            "time": 1
+        }
+    ]
+}

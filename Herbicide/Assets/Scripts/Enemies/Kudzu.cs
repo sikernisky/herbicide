@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 /// <summary>
 /// Represents a Kudzu enemy.
@@ -8,49 +9,222 @@ using UnityEngine;
 public class Kudzu : MovingEnemy
 {
     /// <summary>
-    /// Kudzu's base speed.
+    /// Type of a Kudzu.
     /// </summary>
-    protected override float BASE_SPEED => 1f;
+    public override EnemyType TYPE => EnemyType.KUDZU;
 
     /// <summary>
-    /// Kudzu's starting health.
+    /// Base speed of a Kudzu.
     /// </summary>
-    protected override int STARTING_HEALTH => 20;
+    public override float BASE_SPEED => 1f;
 
     /// <summary>
-    /// Maxmium health of a Kudzu.
+    /// Base health of a Kudzu.
     /// </summary>
-    protected override int MAX_HEALTH => 20;
+    public override int BASE_HEALTH => 100;
 
     /// <summary>
-    /// Minimum health of a Kudzu.
+    /// Upper bound of a Kudzu's health. 
     /// </summary>
-    protected override int MIN_HEALTH => 0;
+    public override int MAX_HEALTH => 100;
 
     /// <summary>
-    /// Kudzu's attack range.
+    /// Starting attack range of a Kudzu.
     /// </summary>
-    protected override float ATTACK_RANGE => 1f;
+    public override float BASE_ATTACK_RANGE => 1f;
 
     /// <summary>
-    /// Kudzu's name.
+    /// Damage a Kudzu does each attack.
     /// </summary>
-    protected override string NAME => "Kudzu";
+    public override int DAMAGE_PER_ATTACK => 50;
+
+    /// <summary>
+    /// Time for a Kudzu move/hop animation.
+    /// </summary>
+    public override float MOVE_ANIMATION_TIME => .4f;
+
+    /// <summary>
+    /// true if this Kudzu is currently hopping.
+    /// </summary>
+    private bool hopping;
+
+    /// <summary>
+    /// true if this Kudzu is currently bonking.
+    /// </summary>
+    private bool bonking;
+
+    /// <summary>
+    /// How many seconds remain before this Kudzu can hop.
+    /// </summary>
+    private float hopCooldownTimer;
+
+    /// <summary>
+    /// How many seconds this Kudzu waits in between hops.
+    /// </summary>
+    private const float HOP_COOLDOWN = 1f;
 
     /// <summary>
     /// Attacks a target.
     /// </summary>
-    /// <param name="target">The target to attack.</param>
-    public override void Attack(PlaceableObject target)
+    /// <param name="target">The ITargetable to attack.</param>
+    public override void Attack(ITargetable target)
     {
-        return;
+        //These checks take care of the attack cooldown timer, unlike moving.
+        if (!CanAttackNow(target)) return;
+        if (!CanAttackEver(target)) return;
+        if (!CanBonk()) return;
+
+        base.Attack(target);
+        StartCoroutine(CoBonk(target));
     }
 
     /// <summary>
-    /// Performs an action when this Kudzu dies.
+    /// Moves this Kudzu to a target position, causing it to "hop"
+    /// there.
     /// </summary>
-    public override void OnDie()
+    /// <param name="targetPosition">The position to move to.</param>
+
+    public override void MoveTo(Vector3 movePosition)
     {
-        base.OnDie();
+        base.MoveTo(movePosition);
+        if (CanHop())
+        {
+            //If we're able to hop somewhere, do it. Otherwise, hop in place.
+            if (hopCooldownTimer <= 0) StartCoroutine(CoHop(movePosition));
+            else StartCoroutine(CoHop());
+        }
     }
+
+    /// <summary>
+    /// Plays this Kudzu's bonking attack animation.
+    /// </summary>
+    /// <param name="target">The ITargetable to bonk.</param>
+    /// <returns>A reference to the coroutine.</returns>
+    private IEnumerator CoBonk(ITargetable target)
+    {
+        bonking = true;
+        bool bonked = false;
+        float time = 0f;
+
+        //PlayAnimation(AnimationType.ATTACK);
+        while (time < ATTACK_ANIMATION_TIME)
+        {
+            if (!bonked)
+            {
+                //Bonk logic here!
+                target.TakeDamage(DAMAGE_PER_ATTACK);
+                bonked = true;
+            }
+            time += Time.deltaTime;
+            yield return null;
+        }
+        ResetAttackTimer();
+        bonking = false;
+    }
+
+    /// <summary>
+    /// Hops to a target position and resets the hop cooldown once done.
+    /// </summary>
+    /// <param name="targetPosition">The position to hop towards.</param>
+    /// <returns>A reference to the coroutine.</returns>
+    private IEnumerator CoHop(Vector3 targetPosition)
+    {
+        hopping = true;
+        Vector3 startPos = transform.position;
+        PlayAnimation(AnimationType.MOVE);
+
+        float time = 0f;
+        while (time < MOVE_ANIMATION_TIME)
+        {
+            float t = time / MOVE_ANIMATION_TIME;
+            transform.position = Vector3.MoveTowards(
+                startPos, targetPosition,
+                t * Vector3.Distance(startPos, targetPosition));
+            time += Time.deltaTime;
+
+            yield return null;
+        }
+        hopCooldownTimer = HOP_COOLDOWN;
+        transform.position = targetPosition;
+        hopping = false;
+    }
+
+    /// <summary>
+    /// Hops in place. Does not reset the hop cooldown when finished. 
+    /// </summary>
+    /// <returns>A reference to the coroutine.</returns>
+    private IEnumerator CoHop()
+    {
+        hopping = true;
+        Vector3 startPos = transform.position;
+        PlayAnimation(AnimationType.MOVE);
+
+        float time = 0f;
+        while (time < MOVE_ANIMATION_TIME)
+        {
+            float t = time / MOVE_ANIMATION_TIME;
+            transform.position = Vector3.MoveTowards(
+                startPos, GetPosition(),
+                t * Vector3.Distance(startPos, GetPosition()));
+            time += Time.deltaTime;
+
+            yield return null;
+        }
+        transform.position = GetPosition();
+        hopping = false;
+    }
+
+    /// <summary>
+    /// Updates this Kudzu's hop cooldown.
+    /// </summary>
+    public override void UpdateCooldowns()
+    {
+        base.UpdateCooldowns();
+        if (hopCooldownTimer > 0) hopCooldownTimer -= Time.deltaTime;
+    }
+
+    /// <summary>
+    /// Returns true if this Kudzu can hop.
+    /// </summary>
+    /// <returns>true if this Kudzu can hop; otherwise, false.
+    /// </returns>
+    private bool CanHop()
+    {
+        return !hopping;
+    }
+
+    /// <summary>
+    /// Returns true if this Kudzu can bonk.
+    /// </summary>
+    /// <returns>true if this Kudzu can bonk; otherwise, false.</returns>
+    private bool CanBonk()
+    {
+        return !bonking;
+    }
+
+    /// <summary>
+    /// Sets this Kudzu's Collider2D properties.
+    /// </summary>
+    public override void SetColliderProperties()
+    {
+        BoxCollider2D collider = GetColllider() as BoxCollider2D;
+        collider.offset = new Vector2(0, .5f);
+    }
+
+
+    /// <summary>
+    /// Returns the position at which an IAttackable will aim at when
+    /// attacking this Kudzu.
+    /// </summary>
+    /// <returns>this Kuduu's attack position.</returns>
+    public override Vector3 GetAttackPosition()
+    {
+        float adjustedY = transform.position.y + .25f;
+        return new Vector3(
+            transform.position.x,
+            adjustedY,
+            transform.position.z
+        );
+    }
+
 }
