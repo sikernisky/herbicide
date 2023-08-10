@@ -105,6 +105,7 @@ public class LevelController : MonoBehaviour
     void Update()
     {
         //DebugFPS();
+        Debug.Log(CameraController.GetDimensions());
 
         //(1) Update and inform controllers of game state
         if (DetermineGameState() == GameState.INVALID) return;
