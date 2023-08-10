@@ -60,4 +60,18 @@ public class CameraController : MonoBehaviour
     {
         return cam;
     }
+
+    /// <summary>
+    /// Returns the (Width, Height) of this CameraController's Camera
+    /// component as a Vector2.
+    /// </summary>
+    /// <returns>A Vector2 containing the (Width, Height) of this CameraController's
+    /// Camera component.</returns>
+    public static Vector2 GetDimensions()
+    {
+        Camera cam = instance.GetCamera();
+        float height = cam.orthographicSize * 2f;
+        float width = height * cam.aspect;
+        return new Vector2(width, height);
+    }
 }
