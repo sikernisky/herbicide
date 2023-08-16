@@ -59,11 +59,11 @@ public class FlooringFactory : MonoBehaviour
     /// </summary>
     /// <param name="type">the type of Flooring Sprite</param>
     /// <param name="index">the Sprite index </param>
-    public static Sprite GetFlooringSprite(TileGrid.FlooringType type, int index)
+    public static Sprite GetFlooringSprite(Flooring.FlooringType type, int index)
     {
         Assert.IsTrue(ValidFlooringIndex(index));
 
-        if (type == TileGrid.FlooringType.SOIL) return instance.soilFlooringSprites[index];
+        if (type == Flooring.FlooringType.SOIL) return instance.soilFlooringSprites[index];
 
         return null;
     }

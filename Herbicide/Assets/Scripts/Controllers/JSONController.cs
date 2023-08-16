@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using Newtonsoft.Json;
 
 /// <summary>
 /// Parses JSON files into data.
@@ -14,15 +15,19 @@ public class JSONController : MonoBehaviour
     private static JSONController instance;
 
     /// <summary>
-    /// JSON File that stores this level's data. 
+    /// JSON File that stores this level's Tiled data. This includes:<br></br>
+    /// 
+    /// (1) TileGrid information<br></br>
+    /// (2) Enemy spawn points
     /// </summary>
     [SerializeField]
-    private TextAsset levelJSON;
+    private TextAsset tiledJSON;
 
     /// <summary>
-    /// The levelJSON file parsed into a LevelData object.
+    /// JSON file that stores this level's Tiled Data, parsed into a TiledData object.
     /// </summary>
-    private LevelData data;
+    private static TiledData translatedTiledJson;
+
 
     /// <summary>
     /// Finds and sets the JSONController singleton.
@@ -36,30 +41,44 @@ public class JSONController : MonoBehaviour
         Assert.IsNotNull(jsonControllers, "Array of InputControllers is null.");
         Assert.AreEqual(1, jsonControllers.Length);
         instance = jsonControllers[0];
-        Assert.IsNotNull(instance.levelJSON);
-        instance.ParseLevelData();
+        Assert.IsNotNull(instance.tiledJSON);
     }
 
     /// <summary>
-    /// Parses the level JSON file into a LevelData object. Stores that
-    /// object.
+    /// Parses JSON file that contains the current level's Tiled data into a string.
+    /// Stores that string.
     /// </summary>
-    private void ParseLevelData()
+    public static void ParseTiledData()
     {
-        string json = levelJSON.text;
-        instance.data = JsonUtility.FromJson<LevelData>(json);
+        string json = instance.tiledJSON.text;
+        TiledData tiledData = Newtonsoft.Json.JsonConvert.DeserializeObject<TiledData>(json);
+        Assert.IsNotNull(tiledData, "Parsed TileData object is null.");
+        instance.SetTranslatedJson(tiledData);
     }
 
     /// <summary>
-    /// Returns a list of EnemyData representing all Enemies that will exist
-    /// in the current level.
+    /// Sets the TiledData object that stores the current level's parsed JSON.
+    /// Can only do this once, 
     /// </summary>
-    /// <returns>A list of EnemyData for this level.</returns>
-    public static List<EnemyData> GetEnemyData()
+    /// <param name="translatedJson">The non-null parsed JSON.</param>
+    private void SetTranslatedJson(TiledData translatedJson)
     {
-        string json = instance.levelJSON.text;
-        LevelData data = JsonUtility.FromJson<LevelData>(json);
-        return data.GetEnemyData();
+        if (translatedJson == null) return;
+        if (JSONController.translatedTiledJson != null) return;
+
+        JSONController.translatedTiledJson = translatedJson;
     }
 
+    /// <summary>
+    /// Returns the TiledData object that represents the current level's parsed JSON
+    /// file. This object should not be null when calling this method.
+    /// </summary>
+    /// <returns>the TiledData object that represents the current level's parsed JSON
+    /// file. </returns>
+    public static TiledData GetTiledData()
+    {
+        Assert.IsNotNull(JSONController.translatedTiledJson);
+
+        return JSONController.translatedTiledJson;
+    }
 }

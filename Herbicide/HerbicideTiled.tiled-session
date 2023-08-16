@@ -1,0 +1,40 @@
+{
+    "activeFile": "",
+    "expandedProjectPaths": [
+    ],
+    "fileStates": {
+        "Tiled/Tilesets/Enemies.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiled/Tilesets/Grass.tsx": {
+            "scaleInEditor": 1
+        },
+        "Tiled/Tilesets/Water.tsx": {
+            "scaleInEditor": 1
+        }
+    },
+    "last.exportedFilePath": "/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Levels",
+    "last.externalTilesetPath": "/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Tiled/Tilesets",
+    "last.imagePath": "/Users/teddysiker/Desktop/Art/Herbicide/TileSets",
+    "last.objectTypesPath": "/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Tiled/Objects/propertytypes.xml",
+    "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "openFiles": [
+    ],
+    "project": "HerbicideTiled.tiled-project",
+    "property.type": "string",
+    "recentFiles": [
+        "Tiled/Tilesets/Grass.tsx",
+        "Tiled/Tilesets/Water.tsx",
+        "Tiled/Tilesets/Enemies.tsx"
+    ],
+    "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)",
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    }
+}
