@@ -171,7 +171,7 @@ public class ControllerController : MonoBehaviour
 
     /// <summary>
     /// Informs the ControllerController of the most recent GameState
-    /// so that it knows how to update its differnet controllers.
+    /// so that it knows how to update its sub controllers.
     /// </summary>
     /// <param name="state">The most recent game state. </param>
     public static void InformOfGameState(GameState state)

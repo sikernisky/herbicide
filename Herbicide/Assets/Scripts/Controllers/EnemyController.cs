@@ -97,8 +97,6 @@ public abstract class EnemyController
         if (!ValidEnemy()) return;
         if (targets == null) return;
 
-        TryClearEnemy();
-
         if (gameState == GameState.ONGOING)
         {
             UpdateEnemyCooldowns();

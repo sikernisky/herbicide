@@ -911,7 +911,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e39eb794ddd14e1c9cc16d535114f3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelJSON: {fileID: 4900000, guid: d60fe9272ba6c4c9a99d0e49ad702239, type: 3}
+  tiledJSON: {fileID: 4900000, guid: e67776e688f03450faefb845e2b0705a, type: 3}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -967,7 +967,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 6
+  orthographic size: 9
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -2461,6 +2461,8 @@ Transform:
   - {fileID: 1342629505}
   - {fileID: 314149140}
   - {fileID: 1279335718}
+  - {fileID: 1549079118}
+  - {fileID: 1874219992}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2493,15 +2495,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03c86599a93824008be15baa048b2573, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grassDiameter: 9
-  waterCushion: 4
-  bridgeLength: 7
-  bridgeWidth: 1
-  soilRadius: 1
   tilePrefabs:
   - {fileID: 2795909062356037013, guid: 2d2b2931664844fda9afba109f469f25, type: 3}
-  - {fileID: 6119631085906365948, guid: b72bf64d116c14982be2c7a71b718009, type: 3}
   - {fileID: 860912312791028976, guid: db33c346dbe7c418fa49e8433be73173, type: 3}
+  - {fileID: 860912312791028976, guid: dcec16ec2371646e5953fe1441f1d6ba, type: 3}
   flooringPrefabs:
   - {fileID: 2820041071631143976, guid: f60b5b24b7c724f339146675294bb7a7, type: 3}
   autoGenerateTrees: 1
@@ -2692,6 +2689,68 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameCanvas: {fileID: 850290206}
   fader: {fileID: 883189723}
+--- !u!1 &1549079117
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1549079118}
+  - component: {fileID: 1549079119}
+  m_Layer: 0
+  m_Name: EdgeFactory
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1549079118
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1549079117}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1398493868}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1549079119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1549079117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6ea638c19a7a46fb852e0bc8241e0d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shoreEdgeSprites:
+  - {fileID: 1678966619, guid: e5899c2029c5c43c5a7311573e0566b5, type: 3}
+  - {fileID: -949896964, guid: e5899c2029c5c43c5a7311573e0566b5, type: 3}
+  - {fileID: -709757997, guid: e5899c2029c5c43c5a7311573e0566b5, type: 3}
+  - {fileID: 86549091, guid: e5899c2029c5c43c5a7311573e0566b5, type: 3}
+  - {fileID: -870368123, guid: e5899c2029c5c43c5a7311573e0566b5, type: 3}
+  - {fileID: 1099035766, guid: e5899c2029c5c43c5a7311573e0566b5, type: 3}
+  - {fileID: 1593380507, guid: e5899c2029c5c43c5a7311573e0566b5, type: 3}
+  - {fileID: -54271895, guid: e5899c2029c5c43c5a7311573e0566b5, type: 3}
+  - {fileID: 1901673153, guid: e5899c2029c5c43c5a7311573e0566b5, type: 3}
+  - {fileID: 357876999, guid: e5899c2029c5c43c5a7311573e0566b5, type: 3}
+  - {fileID: -199918047, guid: e5899c2029c5c43c5a7311573e0566b5, type: 3}
+  - {fileID: 1693168788, guid: e5899c2029c5c43c5a7311573e0566b5, type: 3}
+  - {fileID: -1535214649, guid: e5899c2029c5c43c5a7311573e0566b5, type: 3}
+  - {fileID: 2097746528, guid: e5899c2029c5c43c5a7311573e0566b5, type: 3}
+  - {fileID: -1850106094, guid: e5899c2029c5c43c5a7311573e0566b5, type: 3}
+  - {fileID: 618230305, guid: e5899c2029c5c43c5a7311573e0566b5, type: 3}
+  - {fileID: 470388334, guid: e5899c2029c5c43c5a7311573e0566b5, type: 3}
 --- !u!1 &1569954267
 GameObject:
   m_ObjectHideFlags: 0
@@ -3059,6 +3118,53 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 150, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1874219991
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1874219992}
+  - component: {fileID: 1874219993}
+  m_Layer: 0
+  m_Name: TileFactory
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1874219992
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1874219991}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1398493868}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1874219993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1874219991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 158f6ee5302a34aea8e918219298f601, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grassTileSprites:
+  - {fileID: -193012655, guid: 54168f64e88c845d69d9c0cb9b3d4da7, type: 3}
+  - {fileID: 66583197, guid: 54168f64e88c845d69d9c0cb9b3d4da7, type: 3}
 --- !u!1 &1918635050
 GameObject:
   m_ObjectHideFlags: 0

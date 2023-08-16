@@ -62,22 +62,12 @@ public class MovingEnemyController : EnemyController
         if (!ValidEnemy()) return;
         if (!ValidTarget()) return;
 
-        float distanceToTarget = GetEnemy().DistanceToTarget(GetTarget());
-        if (distanceToTarget > GetEnemy().GetAttackRange())
-        {
-
-            Vector3 nextPosition = TileGrid.GetNextPositionInPath(GetEnemy().GetPosition(),
-                GetTarget().GetAttackPosition());
-            nextPosition.Set(nextPosition.x, nextPosition.y, 1);
-            movementTarget = nextPosition;
-        }
         //Default to be itself
         else movementTarget = new Vector3(
             GetEnemy().GetPosition().x,
             GetEnemy().GetPosition().y,
             1
             );
-
     }
 
     /// <summary>

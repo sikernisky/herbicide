@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tileset version="1.10" tiledversion="1.10.1" name="Enemies" tilewidth="16" tileheight="16" tilecount="4" columns="2">
+ <image source="../../../../../../Art/Herbicide/TileSets/tileSetEnemies.png" width="32" height="32"/>
+ <tile id="0" type="Enemy">
+  <properties>
+   <property name="enemyName" value="Kudzu"/>
+   <property name="spawnTime" value=""/>
+  </properties>
+ </tile>
+</tileset>
