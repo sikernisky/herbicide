@@ -12,4 +12,9 @@ public class ShoreTile : EdgeTile
     /// Tile type of a ShoreTile.
     /// </summary>
     protected override TileType type => TileType.SHORE;
+
+    /// <summary>
+    /// Shore Tiles are not walkable.
+    /// </summary>
+    public override bool WALKABLE => false;
 }

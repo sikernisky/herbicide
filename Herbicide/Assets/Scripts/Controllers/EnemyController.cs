@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using System.Linq;
 
 /// <summary>
 /// Controls an Enemy.
@@ -49,17 +50,20 @@ public abstract class EnemyController
     /// </summary>
     public enum EnemyState
     {
-        SPAWN,
-        CHASE,
-        ATTACK,
-        INVALID
+        INACTIVE, //This Enemy is ready but not spawned
+        SPAWN, //This Enemy has spawned
+        CHASE, //This Enemy is moving towards its target
+        ATTACK, //This Enemy is attacking its target
+        INVALID //Something wrong happened, debug needed
     }
 
     /// <summary>
     /// Initializes this EnemyController with the Enemy it controls.
     /// </summary>
     /// <param name="enemy">the enemy this EnemyController controls.</param>
-    public EnemyController(Enemy enemy)
+    /// <param name="spawnTime">when the Enemy should spawn in the level. </param>
+    /// <param name="spawnCoords">where this Enemy should spawn</param>
+    public EnemyController(Enemy enemy, float spawnTime, Vector2 spawnCoords)
     {
         //Safety checks
         Assert.IsNotNull(enemy);
@@ -70,11 +74,11 @@ public abstract class EnemyController
         Assert.IsNotNull(newEnemy);
 
         this.enemy = newEnemy;
-        this.enemy.OnSpawn();
+        this.enemy.SetSpawnTime(spawnTime);
+        this.enemy.SetSpawnWorldPosition(spawnCoords);
+        this.enemy.gameObject.SetActive(false);
+        SetState(EnemyState.INACTIVE);
 
-        SetState(EnemyState.SPAWN);
-
-        if (GetState() == EnemyState.ATTACK) enemy.Attack(target);
         NUM_ENEMIES++;
     }
 
@@ -90,14 +94,34 @@ public abstract class EnemyController
     }
 
     /// <summary>
+    /// Returns this EnemyController's ID.
+    /// </summary>
+    /// <returns>this EnemyController's ID.</returns>
+    public int GetId()
+    {
+        return id;
+    }
+
+    /// <summary>
     /// Updates the Enemy controlled by this EnemyController.
     /// </summary>
-    public virtual void UpdateEnemy(List<ITargetable> targets)
+    /// <param name="targets">All ITargetables on the grid.</param>
+    /// <param name="dt">Current game time.</param>
+    public virtual void UpdateEnemy(List<ITargetable> targets, float dt)
     {
         if (!ValidEnemy()) return;
         if (targets == null) return;
 
-        if (gameState == GameState.ONGOING)
+
+        bool readyToSpawn = !GetEnemy().Spawned() && dt >= GetEnemy().GetSpawnTime();
+        if (readyToSpawn)
+        {
+            GetEnemy().gameObject.SetActive(true);
+            GetEnemy().OnSpawn();
+            SetState(EnemyState.SPAWN);
+        }
+
+        if (gameState == GameState.ONGOING && GetEnemy().Spawned())
         {
             UpdateEnemyCooldowns();
             UpdateEnemyTilePosition();
@@ -108,6 +132,8 @@ public abstract class EnemyController
             UpdateEnemyCollider();
             TryAttackTarget();
         }
+
+        if (GetEnemy().Spawned()) TryClearEnemy();
     }
 
     /// <summary>
@@ -126,8 +152,18 @@ public abstract class EnemyController
     /// </summary>
     private void TryClearEnemy()
     {
-        if (!TileGrid.OnTile(GetEnemy().GetPosition())) KillEnemy();
-        if (GetEnemy().GetHealth() <= 0) KillEnemy();
+        //Only try to clear it if it has spawned. 
+        if (!GetEnemy().Spawned()) return;
+
+        if (!TileGrid.OnWalkableTile(GetEnemy().GetPosition(), GetEnemy()))
+        {
+            KillEnemy();
+        }
+
+        if (GetEnemy().GetHealth() <= 0)
+        {
+            KillEnemy();
+        }
     }
 
     /// <summary>
@@ -177,20 +213,75 @@ public abstract class EnemyController
         if (ValidTarget() && !GetTarget().Dead()) return;
         if (targets.Count == 0) return;
 
-        SetTarget(GetEnemy().SelectTarget(targets));
+        SetTarget(FindTarget(targets));
     }
 
     /// <summary>
-    /// Returns true if the Enemy controlled by this EnemyController
-    /// can target a PlaceableObject.
+    /// Sets this Enemy's target: an ITargetable that this EnemyController's Enemy
+    /// should target out of a list of all possible targets. This logic is determined
+    /// by the Enemy, but this controller method is responsible for ensuring there 
+    /// is a valid path towards its selection.
     /// </summary>
-    /// <param name="candidate">the target to check</param>
-    /// <returns>true if the Enemy controlled by this EnemyController
-    /// can target a PlaceableObject; otherwise, false.</returns>
-    protected virtual bool CanTarget(PlaceableObject candidate)
+    /// <param name="targets">All possible ITargetables to target.</param>
+    /// <returns>The ITargetable that this EnemyController's Enemy should target from a
+    /// list of possible targets.</returns>
+    public virtual ITargetable FindTarget(List<ITargetable> targets)
     {
-        if (!ValidEnemy()) return false;
-        if (candidate == null) return false;
+
+        targets.RemoveAll(t => t == null);
+        List<ITargetable> treeTargets = new List<ITargetable>();
+        treeTargets.AddRange(targets.Where(t => t as Tree != null));
+        treeTargets.ForEach(t => Assert.IsNotNull(t));
+        treeTargets = treeTargets.OrderBy(t => GetEnemy().DistanceToTarget(t)).ToList();
+
+        List<ITargetable> defenderTargets = new List<ITargetable>();
+        defenderTargets.AddRange(targets.Where(d => d as Defender != null));
+        defenderTargets.ForEach(d => Assert.IsNotNull(d));
+        defenderTargets = defenderTargets.OrderBy(d => GetEnemy().DistanceToTarget(d)).ToList();
+
+        //(1) Closest Tree with a Defender
+        foreach (Tree t in treeTargets)
+        {
+            Tree tree = t as Tree;
+            if (tree != null && tree.Occupied() && CanTarget(tree)) return tree;
+        }
+
+        //(2) Closest Tree without a Defender
+        foreach (Tree t in treeTargets)
+        {
+            Tree tree = t as Tree;
+            if (tree != null && CanTarget(tree)) return tree;
+        }
+
+        //(3) Closest Defender (SUBJECT TO CHANGE.)
+        foreach (Defender d in treeTargets)
+        {
+            Defender defender = d as Defender;
+            if (defender != null && CanTarget(defender)) return defender;
+        }
+
+        //(4) Closest.. random... default.
+        return targets[0];
+    }
+
+    /// <summary>
+    /// Returns true if the Enemy controlled by this EnemyController can
+    /// target some ITargetable. This method is called when selecting a
+    /// target to ensure that measures outside of an Enemy's control
+    /// are accounted for. <br></br>
+    /// 
+    /// For example, MovingEnemyControllers need to ensure their target
+    /// has a valid path. But we don't want Enemy models referencing
+    /// the TileGrid, so we check in the MovingEnemyController class.
+    /// </summary>
+    /// <param name="target">the ITargetable to check</param>
+    /// <returns>true if this EnemyController's Enemy can target
+    /// the ITargetable; otherwise, false. </returns>
+    protected virtual bool CanTarget(ITargetable target)
+    {
+        Assert.IsTrue(ValidEnemy());
+
+        if (target == null) return false;
 
         return true;
     }
@@ -205,6 +296,7 @@ public abstract class EnemyController
 
         this.target = target;
     }
+
     /// <summary>
     /// Returns the IAttackable that the Enemy controlled by this EnemyController
     /// is targeting.
@@ -257,7 +349,6 @@ public abstract class EnemyController
     protected virtual void KillEnemy()
     {
         if (!ValidEnemy()) return;
-        if (GetEnemy().GetHealth() > 0) return;
 
         GetEnemy().Die();
         GameObject.Destroy(GetEnemy().gameObject);

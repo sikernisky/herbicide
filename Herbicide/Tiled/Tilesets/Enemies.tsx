@@ -4,7 +4,7 @@
  <tile id="0" type="Enemy">
   <properties>
    <property name="enemyName" value="Kudzu"/>
-   <property name="spawnTime" value=""/>
+   <property name="spawnTime" value="1"/>
   </properties>
  </tile>
 </tileset>

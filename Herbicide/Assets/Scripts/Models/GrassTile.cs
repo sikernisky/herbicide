@@ -18,6 +18,11 @@ public class GrassTile : Tile
     /// </summary>
     private bool isEdge;
 
+    /// <summary>
+    /// Grass Tiles are walkable.
+    /// </summary>
+    public override bool WALKABLE => true;
+
 
     /// <summary>
     /// Defines this GrassTile and sets its sprite to represent a light

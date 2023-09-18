@@ -159,14 +159,14 @@ public abstract class Flooring : MonoBehaviour, ISurface
 
 
     /// <summary>
-    /// Returns true if an IPlaceable can be placed on this Flooring.
-    /// If it can, places the IPlaceable.
+    /// Returns true if a PlaceableObject can be placed on this Flooring.
+    /// If it can, places the PlaceableObject.
     /// </summary>
-    /// <param name="candidate">The IPlaceable to place.</param>
+    /// <param name="candidate">The PlaceableObject to place.</param>
     /// <param name="neighbors">This Flooring's neighbors.</param>
-    /// <returns>true if an IPlaceable can be placed on this Flooring;
+    /// <returns>true if a PlaceableObject can be placed on this Flooring;
     /// otherwise, false.</returns>
-    public bool Place(IPlaceable candidate, ISurface[] neighbors)
+    public bool Place(PlaceableObject candidate, ISurface[] neighbors)
     {
         AssertDefined();
         if (candidate == null || neighbors == null) return false;
@@ -219,13 +219,13 @@ public abstract class Flooring : MonoBehaviour, ISurface
     }
 
     /// <summary>
-    /// Returns true if an IPlaceable can be placed on this Flooring.
+    /// Returns true if a PlaceableObject can be placed on this Flooring.
     /// </summary>
-    /// <param name="candidate">The IPlaceable to place.</param>
+    /// <param name="candidate">The PlaceableObject to place.</param>
     /// <param name="neighbors">This Flooring's neighbors.</param>
-    /// <returns>true if an IPlaceable can be placed on this Flooring;
+    /// <returns>true if a PlaceableObject can be placed on this Flooring;
     /// otherwise, false.</returns>
-    public bool CanPlace(IPlaceable candidate, ISurface[] neighbors)
+    public bool CanPlace(PlaceableObject candidate, ISurface[] neighbors)
     {
         AssertDefined();
         if (Occupied()) return false;
@@ -307,31 +307,31 @@ public abstract class Flooring : MonoBehaviour, ISurface
     }
 
     /// <summary>
-    /// Determines whether an IPlaceable object can be potentially placed
+    /// Determines whether a PlaceableObject object can be potentially placed
     /// on this Flooring. This method is invoked alongside GhostPlace() during a
     /// hover or placement action to validate the placement feasibility.
     /// </summary>
-    /// <param name="ghost">The IPlaceable object that we are
+    /// <param name="ghost">The PlaceableObject object that we are
     /// trying to virtually place on this TiFlooringle.</param>
-    /// <returns>true if the IPlaceable object can be placed on this Flooring;
+    /// <returns>true if the PlaceableObject object can be placed on this Flooring;
     /// otherwise, false.</returns>
-    public bool CanGhostPlace(IPlaceable ghost)
+    public bool CanGhostPlace(PlaceableObject ghost)
     {
         return !Occupied() && ghostOccupant == null && ghost != null
             && CanPlace(ghost, GetSurfaceNeighbors());
     }
 
     /// <summary>
-    /// Provides a visual simulation of placing an IPlaceable on
+    /// Provides a visual simulation of placing a PlaceableObject on
     /// this Flooring and is called during a hover / placement action.
-    /// This method does not carry out actual placement of the IPlaceable on
+    /// This method does not carry out actual placement of the PlaceableObject on
     /// this Flooring. Instead, it displays a potential placement scenario.
     /// </summary>
-    /// <param name="ghost">The IPlaceable object that we are
+    /// <param name="ghost">The PlaceableObject object that we are
     /// trying to virtually place on this Flooring.</param>
     /// <returns> true if the ghost place was successful; otherwise,
     /// false. </returns> 
-    public bool GhostPlace(IPlaceable ghost)
+    public bool GhostPlace(PlaceableObject ghost)
     {
         //Occupied by a Tree? Pass the ghost place.
         if (Occupied())

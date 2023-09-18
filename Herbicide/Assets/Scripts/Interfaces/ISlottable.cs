@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Represents a GameObject that can be stored in the inventory.
+/// Represents something that can be stored in the inventory.
 /// </summary>
 public interface ISlottable
 {

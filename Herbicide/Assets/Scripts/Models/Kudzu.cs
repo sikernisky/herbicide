@@ -44,6 +44,16 @@ public class Kudzu : MovingEnemy
     public override float MOVE_ANIMATION_TIME => .4f;
 
     /// <summary>
+    /// Name of a Kudzu.
+    /// </summary>
+    protected override string NAME => "Kudzu";
+
+    /// <summary>
+    /// Cost of placing a Kudzu from the inventory. 
+    /// </summary>
+    protected override int COST => 0;
+
+    /// <summary>
     /// true if this Kudzu is currently hopping.
     /// </summary>
     private bool hopping;
@@ -93,6 +103,16 @@ public class Kudzu : MovingEnemy
             if (hopCooldownTimer <= 0) StartCoroutine(CoHop(movePosition));
             else StartCoroutine(CoHop());
         }
+    }
+
+    /// <summary>
+    /// Returns true if this Kudzu is bonking an ITargetable right now.
+    /// </summary>
+    /// <returns>true if this Kudzu is bonking an ITargetable; otherwise,
+    /// false.</returns>
+    public override bool Attacking()
+    {
+        return bonking;
     }
 
     /// <summary>
@@ -227,4 +247,61 @@ public class Kudzu : MovingEnemy
         );
     }
 
+    /// <summary>
+    /// Returns true if this Kudzu can target some ITargetable. Kudzus
+    /// can target any defender. 
+    /// </summary>
+    /// <param name="target">the ITargetable to check.</param>
+    /// <returns>true if this Kudzu can target the ITargetable;
+    /// otherwise, false. </returns>
+    public override bool CanTarget(ITargetable target)
+    {
+        return target as Defender != null;
+    }
+
+    /// <summary>
+    /// Returns the sprite that represents this Kudzu in the
+    /// Inventory.
+    /// </summary>
+    /// <returns>the sprite that represents this Kudzu in the
+    /// inventory.</returns>
+    public override Sprite GetInventorySprite()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    /// <summary>
+    /// Returns the sprite that represents this Kudzu when placing from the
+    /// the Inventory.
+    /// </summary>
+    /// <returns>the sprite that represents this Kudzu when placing from the
+    /// inventory.</returns>
+    public override Sprite GetPlacementSprite()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    /// <summary>
+    /// Returns a GameObject that represents a new Kudzu. It has the
+    /// Kudzu component attached and is instantiated from the
+    /// EnemyFactory.
+    /// </summary>
+    /// <returns></returns>
+    public override GameObject MakePlaceableObject()
+    {
+        //TODO: Implement from EnemyFactory
+
+        throw new System.NotImplementedException();
+    }
+
+    /// <summary>
+    /// Returns a GameObject with this Kudzu's appearance
+    /// but not its functionality.
+    /// </summary>
+    /// <returns>a GameObject with this Kudzu's appearance
+    /// but not its functionality.</returns>
+    public override GameObject MakeHollowObject()
+    {
+        throw new System.NotImplementedException();
+    }
 }

@@ -3,36 +3,36 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Represents a GameObject that can host an IPlaceable. In other
-/// words, an IPlaceable can be placed on an ISurface.
+/// Represents a GameObject that can host a PlaceableObject. In other
+/// words, a PlaceableObject can be placed on an ISurface.
 /// </summary>
 public interface ISurface
 {
     /// <summary>
-    /// Returns true if an IPlaceable can be placed on this ISurface.
-    /// If it can, places the IPlaceable.
+    /// Returns true if a PlaceableObject can be placed on this ISurface.
+    /// If it can, places the PlaceableObject.
     /// </summary>
-    /// <param name="candidate">The IPlaceable to place.</param>
+    /// <param name="candidate">The PlaceableObject to place.</param>
     /// <param name="neighbors">This ISurface's neighbors.</param>
-    /// <returns>true if an IPlaceable can be placed on this ISurface;
+    /// <returns>true if a PlaceableObject can be placed on this ISurface;
     /// otherwise, false.</returns>
-    bool Place(IPlaceable candidate, ISurface[] neighbors);
+    bool Place(PlaceableObject candidate, ISurface[] neighbors);
 
     /// <summary>
-    /// Returns true if an IPlaceable can be placed on this ISurface.
+    /// Returns true if a PlaceableObject can be placed on this ISurface.
     /// </summary>
-    /// <param name="candidate">The IPlaceable to place.</param>
+    /// <param name="candidate">The PlaceableObject to place.</param>
     /// <param name="neighbors">This ISurface's neighbors.</param>
-    /// <returns>true if an IPlaceable can be placed on this ISurface;
+    /// <returns>true if a PlaceableObject can be placed on this ISurface;
     /// otherwise, false.</returns>
-    bool CanPlace(IPlaceable candidate, ISurface[] neighbors);
+    bool CanPlace(PlaceableObject candidate, ISurface[] neighbors);
 
     /// <summary>
-    /// Returns true if there is an IPlaceable on this ISurface that can
-    /// be removed. If so, removes the IPlaceable.
+    /// Returns true if there is a PlaceableObject on this ISurface that can
+    /// be removed. If so, removes the PlaceableObject.
     /// </summary>
     /// <param name="neighbors">This ISurface's neighbors.</param>
-    /// <returns>true if an IPlaceable can be removed from this ISurface;
+    /// <returns>true if a PlaceableObject can be removed from this ISurface;
     /// otherwise, false.</returns>
     bool Remove(ISurface[] neighbors);
 
@@ -98,34 +98,34 @@ public interface ISurface
     int GetY();
 
     /// <summary>
-    /// Provides a visual simulation of placing an IPlaceable on
+    /// Provides a visual simulation of placing a PlaceableObject on
     /// this ISurface and is called during a hover / placement action.
-    /// This method does not carry out actual placement of the IPlaceable on
+    /// This method does not carry out actual placement of the PlaceableObject on
     /// the ISurface. Instead, it displays a potential placement scenario. If
-    /// the IPlaceable is allowed to be positioned  on this ISurface, the ISurface
+    /// the PlaceableObject is allowed to be positioned  on this ISurface, the ISurface
     /// appears highlighted in blue. Conversely, if the placement is disallowed, 
     /// the ISurface will be highlighted in red.
     /// </summary>
-    /// <param name="ghost">The IPlaceable object that we are
+    /// <param name="ghost">The PlaceableObject object that we are
     /// trying to virtually place on the ISurface.</param>
     /// <returns> true if the ghost place was successful; otherwise,
     /// false. </returns> 
-    bool GhostPlace(IPlaceable ghost);
+    bool GhostPlace(PlaceableObject ghost);
 
 
     /// <summary>
-    /// Determines whether an IPlaceable object can be potentially placed
+    /// Determines whether an PlaceableObject object can be potentially placed
     /// on the given ISurface. This method is invoked alongside GhostPlace()
     /// during a hover or placement action to validate the placement feasibility.
     /// </summary>
-    /// <param name="ghost">The IPlaceable object that we are
+    /// <param name="ghost">The PlaceableObject object that we are
     /// trying to virtually place on the ISurface.</param>
-    /// <returns>true if the IPlaceable object can be placed on the ISurface;
+    /// <returns>true if the PlaceableObject object can be placed on the ISurface;
     /// otherwise, false.</returns>
-    bool CanGhostPlace(IPlaceable ghost);
+    bool CanGhostPlace(PlaceableObject ghost);
 
     /// <summary>
-    /// Removes all visual simulations of placing an IPlaceable on this
+    /// Removes all visual simulations of placing a PlaceableObject on this
     /// ISurface. If there are none, does nothing.
     /// </summary>
     void GhostRemove();

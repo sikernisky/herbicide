@@ -15,7 +15,7 @@ public abstract class Tile : MonoBehaviour, ISurface
     private Vector2Int coordinates;
 
     /// <summary>
-    /// The IPlaceable on this Tile; null if Tile is unoccupied.
+    /// The PlaceableObject on this Tile; null if Tile is unoccupied.
     /// </summary>
     private PlaceableObject occupant;
 
@@ -67,17 +67,17 @@ public abstract class Tile : MonoBehaviour, ISurface
     //-------------PATHFINDING-------------
 
     /// <summary>
-    /// A* pathfinding cost of moving to this Tile
+    /// A* pathfinding G-cost of moving to this Tile
     /// </summary>
     private int movementCost;
 
     /// <summary>
-    /// A* pathfinding cost of moving to the target Tile
+    /// A* pathfinding H-cost of moving to this Tile
     /// </summary>
     private int heuristicCost;
 
     /// <summary>
-    /// A* pathfinding cost of the movement and heuristic costs combined
+    /// A* pathfinding F-cost (G + H) of moving to this Tile
     /// </summary>
     private int totalCost;
 
@@ -89,7 +89,7 @@ public abstract class Tile : MonoBehaviour, ISurface
     /// <summary>
     /// true if an Enemy can walk on this Tile
     /// </summary>
-    public virtual bool WALKABLE => IsWalkable();
+    public virtual bool WALKABLE => true;
 
 
     //-------------PATHFINDING-------------
@@ -247,14 +247,14 @@ public abstract class Tile : MonoBehaviour, ISurface
     }
 
     /// <summary>
-    /// Returns true if an IPlaceable can be placed on this Tile.
-    /// If it can, places the IPlaceable.
+    /// Returns true if a PlaceableObject can be placed on this Tile.
+    /// If it can, places the PlaceableObject.
     /// </summary>
-    /// <param name="candidate">The IPlaceable to place.</param>
+    /// <param name="candidate">The PlaceableObject to place.</param>
     /// <param name="neighbors">This Tile's neighbors.</param>
-    /// <returns>true if an IPlaceable can be placed on this Tile;
+    /// <returns>true if a PlaceableObject can be placed on this Tile;
     /// otherwise, false.</returns>
-    public virtual bool Place(IPlaceable candidate, ISurface[] neighbors)
+    public virtual bool Place(PlaceableObject candidate, ISurface[] neighbors)
     {
         //Safety check
         AssertDefined();
@@ -299,13 +299,13 @@ public abstract class Tile : MonoBehaviour, ISurface
     }
 
     /// <summary>
-    /// Returns true if an IPlaceable can be placed on this Tile.
+    /// Returns true if a PlaceableObject can be placed on this Tile.
     /// </summary>
-    /// <param name="candidate">The IPlaceable to place.</param>
+    /// <param name="candidate">The PlaceableObject to place.</param>
     /// <param name="neighbors">This Tile's neighbors.</param>
-    /// <returns>true if an IPlaceable can be placed on this Tile;
+    /// <returns>true if a PlaceableObject can be placed on this Tile;
     /// otherwise, false.</returns>
-    public virtual bool CanPlace(IPlaceable candidate, ISurface[] neighbors)
+    public virtual bool CanPlace(PlaceableObject candidate, ISurface[] neighbors)
     {
         AssertDefined();
         if (candidate == null || neighbors == null) return false;
@@ -353,11 +353,11 @@ public abstract class Tile : MonoBehaviour, ISurface
     }
 
     /// <summary>
-    /// Returns true if there is an IPlaceable on this Tile that can
-    /// be removed. If so, removes the IPlaceable.
+    /// Returns true if there is a PlaceableObject on this Tile that can
+    /// be removed. If so, removes the PlaceableObject.
     /// </summary>
     /// <param name="neighbors">This Tiles's neighbors.</param>
-    /// <returns>true if an IPlaceable can be removed from this Tile;
+    /// <returns>true if a PlaceableObject can be removed from this Tile;
     /// otherwise, false.</returns>
     public virtual bool Remove(ISurface[] neighbors)
     {
@@ -566,31 +566,31 @@ public abstract class Tile : MonoBehaviour, ISurface
     }
 
     /// <summary>
-    /// Determines whether an IPlaceable object can be potentially placed
+    /// Determines whether a PlaceableObject object can be potentially placed
     /// on this Tile. This method is invoked alongside GhostPlace() during a
     /// hover or placement action to validate the placement feasibility.
     /// </summary>
-    /// <param name="ghost">The IPlaceable object that we are
+    /// <param name="ghost">The PlaceableObject object that we are
     /// trying to virtually place on this Tile.</param>
-    /// <returns>true if the IPlaceable object can be placed on this Tile;
+    /// <returns>true if the PlaceableObject object can be placed on this Tile;
     /// otherwise, false.</returns>
-    public bool CanGhostPlace(IPlaceable ghost)
+    public bool CanGhostPlace(PlaceableObject ghost)
     {
         return !Occupied() && ghost != null && ghostOccupant == null
             && CanPlace(ghost, GetSurfaceNeighbors());
     }
 
     /// <summary>
-    /// Provides a visual simulation of placing an IPlaceable on
+    /// Provides a visual simulation of placing a PlaceableObject on
     /// this Tile and is called during a hover / placement action.
-    /// This method does not carry out actual placement of the IPlaceable on
+    /// This method does not carry out actual placement of the PlaceableObject on
     /// this Tile. Instead, it displays a potential placement scenario.
     /// </summary>
-    /// <param name="ghost">The IPlaceable object that we are
+    /// <param name="ghost">The PlaceableObject object that we are
     /// trying to virtually place on this Tile.</param>
     /// <returns> true if the ghost place was successful; otherwise,
     /// false. </returns> 
-    public bool GhostPlace(IPlaceable ghost)
+    public bool GhostPlace(PlaceableObject ghost)
     {
         //Are we floored? If so, pass the event.
         if (Floored()) return GetFlooring().GhostPlace(ghost);
@@ -615,7 +615,7 @@ public abstract class Tile : MonoBehaviour, ISurface
     }
 
     /// <summary>
-    /// Removes all visual simulations of placing an IPlaceable on this
+    /// Removes all visual simulations of placing a PlaceableObject on this
     /// Tile. If there are none, does nothing.
     /// </summary>
     public void GhostRemove()
