@@ -6,7 +6,7 @@ using UnityEngine;
 /// Represents something that is placed on the TileGrid
 /// and helps the player win.
 /// </summary>
-public abstract class Defender : PlaceableObject, IAttackable
+public abstract class Defender : Mob, IAttackable
 {
     /// <summary>
     /// Type of this Defender.
@@ -14,49 +14,54 @@ public abstract class Defender : PlaceableObject, IAttackable
     public abstract DefenderType TYPE { get; }
 
     /// <summary>
+    /// Class of this Defender.
+    /// </summary>
+    public abstract DefenderClass CLASS { get; }
+
+    /// <summary>
     /// Starting health of a Defender. 
     /// </summary>
-    public virtual int BASE_HEALTH => 200;
+    public override int BASE_HEALTH => 200;
 
     /// <summary>
-    /// Upper bound of a Defender's health.
+    /// This Defender's largest possible health value.
     /// </summary>
-    public virtual int MAX_HEALTH => 200;
+    public override int MAX_HEALTH => 200;
 
     /// <summary>
-    /// Lower bound of a Defender's health.
+    /// This Defender's smallest possible health value.
     /// </summary>
-    public virtual int MIN_HEALTH => 0;
+    public override int MIN_HEALTH => 0;
 
     /// <summary>
     /// Starting attack range of a Defender.
     /// </summary>
-    public virtual float BASE_ATTACK_RANGE => 5f;
+    public override float BASE_ATTACK_RANGE => 5f;
 
     /// <summary>
     /// Upper bound of a Defender's attack range.
     /// </summary>
-    public float MAX_ATTACK_RANGE => float.MaxValue;
+    public override float MAX_ATTACK_RANGE => float.MaxValue;
 
     /// <summary>
     /// Lower bound of a Defender's attack range.
     /// </summary>
-    public float MIN_ATTACK_RANGE => 0f;
+    public override float MIN_ATTACK_RANGE => 0f;
 
     /// <summary>
     /// Starting attack speed of a Defender (number of attacks / second).
     /// </summary>
-    public virtual float BASE_ATTACK_SPEED => 1.5f;
+    public override float BASE_ATTACK_SPEED => 1.5f;
 
     /// <summary>
     /// Upper bound of a Defender's attack speed (number of attacks / second).
     /// </summary>
-    public float MAX_ATTACK_SPEED => 10f;
+    public override float MAX_ATTACK_SPEED => 10f;
 
     /// <summary>
     /// Lower bound of a Defender's attack speed (number of attacks / second).
     /// </summary>
-    public float MIN_ATTACK_SPEED => 0f;
+    public override float MIN_ATTACK_SPEED => 0f;
 
     /// <summary>
     /// Damage inflicted on a target(s) every time this Defender attacks.
@@ -105,25 +110,10 @@ public abstract class Defender : PlaceableObject, IAttackable
     private float damageFlashingTime;
 
     /// <summary>
-    /// Sprites to represent this Defender's attacking
-    /// state in all four directions.
-    /// </summary>
-    [SerializeField]
-    private Sprite[] attackSprites;
-
-    /// <summary>
-    /// Sprites to represent this Defender's idle
-    /// state in all four directions.
-    /// </summary>
-    [SerializeField]
-    private Sprite[] idleSprites;
-
-    /// <summary>
     /// This Defender's Collider component. 
     /// </summary>
     [SerializeField]
     private Collider2D defenderCollider;
-
 
     /// <summary>
     /// Type of this Defender.
@@ -131,6 +121,17 @@ public abstract class Defender : PlaceableObject, IAttackable
     public enum DefenderType
     {
         SQUIRREL
+    }
+
+    /// <summary>
+    /// Class of this Defender.
+    /// </summary>
+    public enum DefenderClass
+    {
+        TREBUCHET,
+        MAULER,
+        PATHFINDER,
+        ANIMYST
     }
 
     /// <summary>
@@ -398,7 +399,16 @@ public abstract class Defender : PlaceableObject, IAttackable
     /// </summary>
     protected void SetAttackSprite()
     {
-        SetSprite(attackSprites[(int)GetDirection()]);
+        switch (TYPE)
+        {
+            case DefenderType.SQUIRREL:
+                SetSprite(DefenderFactory.GetDefenderAttackSprite(TYPE, GetDirection()));
+                break;
+            default:
+                throw new System.Exception("Defender not supported.");
+        }
+
+        //SetSprite(attackSprites[(int)GetDirection()]);
     }
 
     /// <summary>
@@ -407,7 +417,14 @@ public abstract class Defender : PlaceableObject, IAttackable
     /// </summary>
     protected void SetIdleSprite()
     {
-        SetSprite(idleSprites[(int)GetDirection()]);
+        switch (TYPE)
+        {
+            case DefenderType.SQUIRREL:
+                SetSprite(DefenderFactory.GetDefenderIdleSprite(TYPE, GetDirection()));
+                break;
+            default:
+                throw new System.Exception("Defender not supported.");
+        }
     }
 
     /// <summary>
@@ -468,5 +485,18 @@ public abstract class Defender : PlaceableObject, IAttackable
     public float GetDamageFlashingTime()
     {
         return damageFlashingTime;
+    }
+
+    /// <summary>
+    /// Coroutine to play an animation from a Sprite animation track,
+    /// mimicking a "flip-book."
+    /// </summary>
+    /// <param name="animationTrack">The Sprite animation track to play.</param>
+    /// <param name="time">How long the animation should last.</param>
+    /// <param name="startFrame">Which frame to start at.</param>
+    /// <returns>A reference to the coroutine.</returns>
+    protected override IEnumerator CoPlayAnimation()
+    {
+        throw new System.NotImplementedException();
     }
 }

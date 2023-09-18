@@ -27,13 +27,12 @@ public abstract class MovingEnemy : Enemy
 
     public virtual void MoveTo(Vector3 movePosition)
     {
+        if (Attacking()) return;
+
         float preMoveX = GetPosition().x;
         float preMoveY = GetPosition().y;
         float horizontalDifference = movePosition.x - preMoveX;
         float verticalDifference = movePosition.y - preMoveY;
-
-        // Debug.Log("HORZ: " + horizontalDifference);
-        // Debug.Log("VERT: " + verticalDifference);
 
         //Handle diagonals
         if (Mathf.Approximately(Mathf.Abs(horizontalDifference), Mathf.Abs(verticalDifference)))

@@ -62,22 +62,32 @@ public class ControllerController : MonoBehaviour
     {
         if (defender == null) return;
 
-        DefenderController dc = new DefenderController(defender);
-        instance.defenderControllers.Add(dc);
+        switch (defender.TYPE)
+        {
+            case Defender.DefenderType.SQUIRREL:
+                Assert.IsNotNull(defender as Squirrel);
+                SquirrelController sc = new SquirrelController(defender);
+                instance.defenderControllers.Add(sc);
+                break;
+            default:
+                throw new System.Exception("Defender " + defender + " not supported.");
+        }
     }
 
     /// <summary>
     /// Adds an Enemy to the queue of Enemies who need an EnemyController.
     /// </summary>
     /// <param name="enemy">The Enemy to add to the queue.</param>
-    public static void MakeEnemyController(Enemy enemy)
+    /// <param name="spawnTime">when the Enemy should spawn in the level. </param>
+    /// <param name="spawnCoords">where this Enemy should spawn</param>
+    public static void MakeEnemyController(Enemy enemy, float spawnTime, Vector2 spawnCoords)
     {
         if (enemy == null) return;
 
         MovingEnemy movingEnemy = enemy as MovingEnemy;
         if (movingEnemy != null)
         {
-            MovingEnemyController mec = new MovingEnemyController(movingEnemy);
+            MovingEnemyController mec = new MovingEnemyController(movingEnemy, spawnTime, spawnCoords);
             instance.enemyControllers.Add(mec);
         }
     }
@@ -151,15 +161,18 @@ public class ControllerController : MonoBehaviour
     /// Updates all Controllers managed by the ControllerController.
     /// </summary>
     /// <param name="targets">All potential targets</param>
-    /// <param name="enemies">All alive enemies</param>
-    public static void UpdateAllControllers(List<ITargetable> targets)
+    /// <param name="dt">Current game time</param>
+    public static void UpdateAllControllers(List<ITargetable> targets, float dt)
     {
+        //Copy targets
+        List<ITargetable> targetsCopy = new List<ITargetable>(targets);
+
         //General updates
         instance.TryRemoveControllers();
         instance.InformControllersOfGameState();
 
         //Update EnemyControllers
-        instance.enemyControllers.ForEach(ec => ec.UpdateEnemy(targets));
+        instance.enemyControllers.ForEach(ec => ec.UpdateEnemy(targetsCopy, dt));
 
         //Update DefenderControllers
         targets.AddRange(GetAllActiveEnemies());

@@ -13,6 +13,12 @@ public class Squirrel : Defender
     /// </summary>
     public override DefenderType TYPE => DefenderType.SQUIRREL;
 
+
+    /// <summary>
+    /// Class of a Squirrel
+    /// </summary>
+    public override DefenderClass CLASS => DefenderClass.TREBUCHET;
+
     /// <summary>
     /// Name of a Squirrel
     /// </summary>

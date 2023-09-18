@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
+using TMPro;
 
 /// <summary>
 /// Controls general UI events, such as positioning elements,
@@ -48,6 +49,12 @@ public class CanvasController : MonoBehaviour
     private Image fader;
 
     /// <summary>
+    /// Text to display FPS.
+    /// </summary>
+    [SerializeField]
+    private TMP_Text fps;
+
+    /// <summary>
     /// true if the Fader is fading in or fading out.
     /// </summary>
     private bool fading;
@@ -75,6 +82,11 @@ public class CanvasController : MonoBehaviour
     /// of seconds.
     /// </summary>
     private float fadeDelayTimer;
+
+    /// <summary>
+    /// true if debug mode is on.
+    /// </summary>
+    private bool isDebug;
 
 
     /// <summary>
@@ -106,7 +118,8 @@ public class CanvasController : MonoBehaviour
     /// <summary>
     /// Main update loop for the CanvasController.
     /// </summary>
-    public static void UpdateCanvas()
+    /// <param name="fps">current game FPS.</param>
+    public static void UpdateCanvas(int fps)
     {
         instance.UpdateFader();
 
@@ -124,6 +137,17 @@ public class CanvasController : MonoBehaviour
                 PlayFaderIn();
                 instance.fadedAfterLevelEnd = true;
             }
+        }
+
+        if (instance.IsDebugging())
+        {
+            instance.fps.enabled = true;
+            instance.fps.text = fps.ToString();
+        }
+        else
+        {
+            instance.fps.enabled = false;
+            instance.fps.text = "";
         }
     }
 
@@ -169,5 +193,26 @@ public class CanvasController : MonoBehaviour
     public static void InformOfGameState(GameState state)
     {
         instance.gameState = state;
+    }
+
+    /// <summary>
+    /// Sets the debug mode to be off or on.
+    /// </summary>
+    /// <param name="levelController">The LevelController instance.</param>
+    /// <param name="isOn">true if the debug mode should be on; false if not.</param>
+    public static void SetDebug(LevelController levelController, bool isOn)
+    {
+        Assert.IsNotNull(levelController);
+
+        instance.isDebug = isOn;
+    }
+
+    /// <summary>
+    /// Returns true if debug mode is on.
+    /// </summary>
+    /// <returns>true if debug mode is on; otherwise, false.</returns>
+    private bool IsDebugging()
+    {
+        return isDebug;
     }
 }

@@ -6,7 +6,7 @@ using UnityEngine.Assertions;
 /// <summary>
 /// Controls a Defender.
 /// </summary>
-public class DefenderController
+public abstract class DefenderController
 {
     /// <summary>
     /// Total number of DefenderControllers created during this level so far.
@@ -48,8 +48,6 @@ public class DefenderController
     /// The current state of the game.
     /// </summary>
     private GameState gameState;
-
-
 
 
     /// <summary>

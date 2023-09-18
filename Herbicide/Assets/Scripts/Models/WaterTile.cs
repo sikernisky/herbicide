@@ -8,7 +8,7 @@ using UnityEngine;
 public class WaterTile : Tile
 {
     /// <summary>
-    /// true if WaterTiles are walkable.
+    /// WaterTiles are not walkable.
     /// </summary>
     public override bool WALKABLE => false;
 

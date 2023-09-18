@@ -304,15 +304,29 @@ public class InputController : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns true if the player has clicked their escape button.
+    /// Returns true if the player pressed down their escape button.
     /// </summary>
-    /// <returns>true if the player clicked their escape; otherwise, false.
+    /// <returns>true if the player pressed down their escape button;
+    /// otherwise, false.
     /// </returns>
     public static bool DidEscapeDown()
     {
         instance.AssertTempObjectsMade();
 
         if (Input.GetKeyDown(KeyCode.Escape)) return true;
+        return false;
+    }
+
+    /// <summary>
+    /// Returns true if the player pressed down their debug button.
+    /// </summary>
+    /// <returns>true if the player pressed their debug button; otherwise,
+    /// false.</returns>
+    public static bool DidDebugDown()
+    {
+        instance.AssertTempObjectsMade();
+
+        if (Input.GetKeyDown(KeyCode.D)) return true;
         return false;
     }
 

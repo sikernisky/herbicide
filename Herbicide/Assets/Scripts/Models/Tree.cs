@@ -218,9 +218,9 @@ public abstract class Tree : PlaceableObject, ITargetable, ISurface
     }
 
     /// <summary>
-    /// Returns true if there is a Defender on this Tree.
+    /// Returns true if there is an occupant on this Tree.
     /// </summary>
-    /// <returns>true if there is a Defender on this Tree; otherwise,
+    /// <returns>true if there is an occupant on this Tree; otherwise,
     /// false.</returns>
     public bool Occupied()
     {
@@ -272,7 +272,7 @@ public abstract class Tree : PlaceableObject, ITargetable, ISurface
     /// <param name="neighbors">This Tree's neighboring ISurfaces.</param>
     /// <returns>true if a Defender was placed on this Tree; otherwise,
     /// false. </returns>
-    public bool Place(IPlaceable candidate, ISurface[] neighbors)
+    public bool Place(PlaceableObject candidate, ISurface[] neighbors)
     {
         if (!CanPlace(candidate, neighbors)) return false;
 
@@ -297,15 +297,15 @@ public abstract class Tree : PlaceableObject, ITargetable, ISurface
     }
 
     /// <summary>
-    /// Returns true if an IPlaceable can be placed on this Tree. An
-    /// IPlaceable can be placed if it is a Defender, not null, and
+    /// Returns true if a PlaceableObject can be placed on this Tree. A
+    /// PlaceableObject can be placed if it is a Defender, not null, and
     /// this Tree is not already occupied. 
     /// </summary>
-    /// <param name="candidate">The candidate IPlaceable.</param>
+    /// <param name="candidate">The candidate PlaceableObject.</param>
     /// <param name="neighbors">This Tree's neighboring ISurfaces.</param>
-    /// <returns>true if an IPlaceable can place on this Tree; otherwise,
+    /// <returns>true if a PlaceableObject can place on this Tree; otherwise,
     /// returns false. </returns>
-    public bool CanPlace(IPlaceable candidate, ISurface[] neighbors)
+    public bool CanPlace(PlaceableObject candidate, ISurface[] neighbors)
     {
         if (candidate == null) return false;
         if (Occupied()) return false;
@@ -390,11 +390,11 @@ public abstract class Tree : PlaceableObject, ITargetable, ISurface
     /// This method does not carry out actual placement of the Defender on
     /// this Tree. Instead, it displays a potential placement scenario.
     /// </summary>
-    /// <param name="ghost">The IPlaceable (Defender) object that we are
+    /// <param name="ghost">The PlaceableObject (Defender) object that we are
     /// trying to virtually place on this Tile.</param>
     /// <returns> true if the ghost place was successful; otherwise,
     /// false. </returns> 
-    public bool GhostPlace(IPlaceable ghost)
+    public bool GhostPlace(PlaceableObject ghost)
     {
         if (!CanGhostPlace(ghost)) return false;
 
@@ -417,22 +417,22 @@ public abstract class Tree : PlaceableObject, ITargetable, ISurface
     }
 
     /// <summary>
-    /// Determines whether an IPlaceable object can be potentially placed
+    /// Determines whether a PlaceableObject object can be potentially placed
     /// on this Tree. This method is invoked alongside GhostPlace() during a
     /// hover or placement action to validate the placement feasibility.
     /// </summary>
-    /// <param name="ghost">The IPlaceable (Defender) object that we are
+    /// <param name="ghost">The PlaceableObject (Defender) object that we are
     /// trying to virtually place on this Tree.</param>
-    /// <returns>true if the IPlaceable (Defender) object can be placed on this Tree;
+    /// <returns>true if the PlaceableObject (Defender) object can be placed on this Tree;
     /// otherwise, false.</returns>
-    public bool CanGhostPlace(IPlaceable ghost)
+    public bool CanGhostPlace(PlaceableObject ghost)
     {
         return !Occupied() && ghostDefender == null && ghost as Defender != null
             && CanPlace(ghost, GetSurfaceNeighbors());
     }
 
     /// <summary>
-    /// Removes all visual simulations of placing an IPlaceable on this
+    /// Removes all visual simulations of placing a PlaceableObject on this
     /// Tree. If there are none, does nothing.
     /// </summary>
     public void GhostRemove()

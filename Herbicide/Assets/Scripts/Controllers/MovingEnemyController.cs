@@ -8,28 +8,15 @@ using UnityEngine.Assertions;
 /// </summary>
 public class MovingEnemyController : EnemyController
 {
-    /// <summary>
-    /// The position that the MovingEnemyController's MovingEnemy is trying to
-    /// move to.
-    /// </summary>
-    private Vector3 movementTarget;
-
-    /// <summary>
-    /// Type of movement. 
-    /// </summary>
-    private enum MovementType
-    {
-        HOP,
-        WALK
-    }
 
     /// <summary>
     /// Initializes this MovingEnemyController with the MovingEnemy it controls.
     /// </summary>
     /// <param name="movingEnemy">The MovingEnemy this MovingEnemyController controls.</param>
-    /// <param name="spawnPosition">The position at which to spawn the MovingEnemy. </param>
-    ///<param name="id">the unique ID of this EnemyController</param>
-    public MovingEnemyController(MovingEnemy movingEnemy) : base(movingEnemy)
+    /// <param name="spawnTime">when the MovingEnemy should spawn in the level. </param>
+    /// <param name="spawnCoords">where this MovingEnemy should spawn</param>
+    public MovingEnemyController(MovingEnemy movingEnemy, float spawnTime, Vector2 spawnCoords)
+        : base(movingEnemy, spawnTime, spawnCoords)
     {
     }
 
@@ -37,87 +24,55 @@ public class MovingEnemyController : EnemyController
     /// Updates the MovingEnemy controlled by this Controller.
     /// </summary>
     /// <param name="targets">All potential targets for this MovingEnemy</param>
-    public override void UpdateEnemy(List<ITargetable> targets)
+    /// <param name="dt">Current game time.</param>
+    public override void UpdateEnemy(List<ITargetable> targets, float dt)
     {
-        base.UpdateEnemy(targets);
+        base.UpdateEnemy(targets, dt);
+
         if (targets == null) return;
         if (!ValidEnemy()) return;
+
         MovingEnemy enemy = GetEnemy() as MovingEnemy;
         Assert.IsNotNull(enemy);
 
-        SelectMovementTarget();
-
-        if (GetState() == EnemyState.CHASE) enemy.MoveTo(GetMovementTarget());
+        if (GetState() == EnemyState.CHASE) enemy.MoveTo(CalculateNextMovementPosition());
         else if (GetState() == EnemyState.ATTACK) enemy.Attack(GetTarget());
     }
 
-    //here, logic for target priority (for enemies)
-
     /// <summary>
-    /// Sets position to which the MovingEnemy should select as its
-    /// movement target.
+    /// Returns the Vector3 position that represents where this MovingEnemyController's
+    /// MovingEnemy should move towards. This method relies that on the precondition
+    /// that there is indeed a valid path towards its target.
     /// </summary>
-    private void SelectMovementTarget()
+    private Vector3 CalculateNextMovementPosition()
     {
-        if (!ValidEnemy()) return;
-        if (!ValidTarget()) return;
+        if (!ValidEnemy()) return GetEnemy().GetPosition();
+        if (!ValidTarget()) return GetEnemy().GetPosition();
 
-        //Default to be itself
-        else movementTarget = new Vector3(
-            GetEnemy().GetPosition().x,
-            GetEnemy().GetPosition().y,
-            1
-            );
-    }
-
-    /// <summary>
-    /// Returns a Vector3 world position that represents the furthest position
-    /// at which an Enemy can attack its target. Since the attack range is represented
-    /// as a circle around an Enemy, this world position is often in between Tiles.
-    /// That is fine, since pathfinding algorithms solve this issue. 
-    ///  </summary>
-    /// <param name="target">The target to attack.</param>
-    /// <returns>the furthest position at which an Enemy can attack its target.</returns>
-    private Vector3 GetEdgePositionInAttackRange(Vector3 target)
-    {
-        Vector3 enemyPos = GetEnemy().GetPosition();
-        float attackRange = GetEnemy().GetAttackRange();
-
-        Vector3 directionToTarget = (target - enemyPos).normalized;
-        Vector3 edgePosition = enemyPos + directionToTarget * attackRange;
-
-        return new Vector3(
-            edgePosition.x,
-            edgePosition.y,
-            1
+        return TileGrid.NextTilePosTowardsGoal(
+            GetEnemy().GetPosition(),
+            GetTarget().GetPosition()
         );
     }
 
     /// <summary>
-    /// Returns the position at which the MovingEnemy controlled by this MovingEnemyController
-    /// is targeting / moving to.
-    /// </summary>
-    /// <returns>the position at which the MovingEnemy controlled by this 
-    /// MovingEnemyController
-    /// is targeting / moving to.</returns>
-    private Vector3 GetMovementTarget()
+    /// Returns true if the Enemy controlled by this MovingEnemyController can
+    /// target some ITargetable.
+    /// <param name="target">the ITargetable to check.</param>
+    /// <returns>true if this MovingEnemyController's MovingEnemy can
+    /// target the ITargetable; otherwise, false. </returns>
+    protected override bool CanTarget(ITargetable target)
     {
-        if (!ValidTarget() || !ValidEnemy()) return default;
+        if (!base.CanTarget(target)) return false;
 
-        return movementTarget;
-    }
+        Vector3 nextTilePos = TileGrid.NextTilePosTowardsGoal(
+            GetEnemy().GetPosition(),
+            target.GetPosition()
+        );
 
-    /// <summary>
-    /// Returns true if the MovingEnemy controlled by this MovingEnemyController
-    /// can target a PlaceableObject.
-    /// </summary>
-    /// <param name="candidate">the target to check</param>
-    /// <returns>true if the MovingEnemy controlled by this MovingEnemyController
-    /// can target a PlaceableObject; otherwise, false.</returns>
-    protected override bool CanTarget(PlaceableObject candidate)
-    {
-        if (!ValidEnemy()) return false;
-        if (!base.CanTarget(candidate)) return false;
+        //No path and not in attack range
+        if (nextTilePos == GetEnemy().GetPosition() &&
+            !GetEnemy().InAttackRange(target)) return false;
 
         return true;
     }
@@ -130,10 +85,11 @@ public class MovingEnemyController : EnemyController
         if (!ValidEnemy()) return;
 
         float distanceToTarget = GetEnemy().DistanceToTarget(GetTarget());
-        //Debug.Log(distanceToTarget);
 
         switch (GetState())
         {
+            case EnemyState.INACTIVE:
+                break;
             case EnemyState.SPAWN:
                 SetState(EnemyState.CHASE);
                 break;

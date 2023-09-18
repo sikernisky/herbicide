@@ -52,6 +52,11 @@ public class LevelController : MonoBehaviour
     /// </summary>
     private GameState currentGameState;
 
+    /// <summary>
+    /// true if Debug mode is on.
+    /// </summary>
+    private bool debugOn;
+
 
 
     /// <summary>
@@ -117,11 +122,11 @@ public class LevelController : MonoBehaviour
         //(3) Check input events.
         CheckInputEvents();
 
-        //(4) Update the EnemyManager.
-        EnemyManager.UpdateEnemyManager(levelTime);
+        //(4) Update the EnemyManager. (TODO: Implement when needed.)
+
 
         //(5) Update Controllers.
-        ControllerController.UpdateAllControllers(TileGrid.GetAllTargetableObjects());
+        ControllerController.UpdateAllControllers(TileGrid.GetAllTargetableObjects(), levelTime);
 
         //(6) Update Projectiles.
         ProjectileController.CheckProjectiles();
@@ -136,7 +141,7 @@ public class LevelController : MonoBehaviour
         TileGrid.TrackEnemyTilePositions(ControllerController.GetAllActiveEnemies());
 
         //(10) Update Canvas.
-        CanvasController.UpdateCanvas();
+        CanvasController.UpdateCanvas(GetFPS());
     }
 
     /// <summary>
@@ -197,7 +202,7 @@ public class LevelController : MonoBehaviour
     {
         HashSet<Tree> activeTrees = ControllerController.GetAllActiveTrees();
         HashSet<Enemy> activeEnemies = ControllerController.GetAllActiveEnemies();
-        int enemiesRemaining = EnemyManager.EnemiesRemaining();
+        int enemiesRemaining = EnemyManager.EnemiesRemaining(levelTime);
         bool enemiesPresent = (enemiesRemaining > 0 || activeEnemies.Count > 0);
 
         //Win condition: All enemies dead, at least one Tree alive.
@@ -225,13 +230,17 @@ public class LevelController : MonoBehaviour
     }
 
     /// <summary>
-    /// Checks for input events. First, checks for UI events. If none, checks
-    /// for non-UI events.
+    /// Checks for input events.
     /// </summary>
     private void CheckInputEvents()
     {
         //Always check for these input events
         PlacementController.CheckPlacementEvents(InputController.DidEscapeDown());
+
+        //Debug Toggle
+        debugOn = InputController.DidDebugDown() ? !debugOn : debugOn;
+        TileGrid.SetDebug(instance, debugOn);
+        CanvasController.SetDebug(instance, debugOn);
 
         //UI Specific: does it matter if we're hovering over a UI element?
         if (InputController.HoveringOverUIElement())
@@ -256,12 +265,14 @@ public class LevelController : MonoBehaviour
     }
 
     /// <summary>
-    /// Prints out the current FPS.
+    /// Returns the current FPS.
     /// </summary>
-    private void DebugFPS()
+    /// <returns>current game FPS.</returns>
+    private int GetFPS()
     {
         deltaTime += (Time.unscaledDeltaTime - deltaTime) * 0.1f;
         float fps = 1.0f / deltaTime;
-        Debug.Log($"FPS: {Mathf.RoundToInt(fps)}");
+        int roundedFps = Mathf.RoundToInt(fps);
+        return roundedFps;
     }
 }

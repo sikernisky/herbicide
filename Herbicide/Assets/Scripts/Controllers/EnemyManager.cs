@@ -12,15 +12,6 @@ using UnityEngine.Assertions;
 /// </summary>
 public class EnemyManager : MonoBehaviour
 {
-
-    /// <summary>
-    /// All Enemy Prefabs, indexed by type:<br></br>
-    /// 
-    /// 0 --> Kudzu
-    /// </summary>
-    [SerializeField]
-    private List<GameObject> enemyPrefabs;
-
     /// <summary>
     /// Reference to the EnemyManager singleton
     /// </summary>
@@ -32,14 +23,19 @@ public class EnemyManager : MonoBehaviour
     private int numEnemiesSpawned;
 
     /// <summary>
-    /// All Enemies to spawn.
+    /// The ObjectData of all Enemies to spawn.
     /// </summary>
-    private List<ObjectData> enemies;
+    private List<ObjectData> enemyData;
 
     /// <summary>
     /// The height, in tiles, of all enemy layers in the map.
     /// </summary>
     private int mapHeight;
+
+    /// <summary>
+    /// true if the EnemyManager has been populated.
+    /// </summary>
+    private bool populated;
 
 
     /// <summary>
@@ -52,7 +48,7 @@ public class EnemyManager : MonoBehaviour
     public static void PopulateWithEnemies(List<LayerData> enemyLayers, int mapHeight)
     {
         if (enemyLayers == null) return;
-        Assert.IsNull(instance.enemies, "Already populated.");
+        Assert.IsFalse(Populated(), "Already populated.");
 
         instance.mapHeight = mapHeight;
         List<ObjectData> enemyObjects = new List<ObjectData>();
@@ -61,88 +57,73 @@ public class EnemyManager : MonoBehaviour
             Assert.IsTrue(layer.IsEnemyLayer(), "Not an enemy layer.");
             enemyObjects.AddRange(layer.GetEnemyObjectData());
         }
-        instance.enemies = (enemyObjects.OrderBy(e => e.GetSpawnTime())).ToList();
-    }
 
-    /// <summary>
-    /// Main update loop for the Enemy Manager. Checks the current game
-    /// time and spawns an Enemy if it it's ready.
-    /// </summary>
-    /// <param name="dt">Current game time.</param>
-    public static void UpdateEnemyManager(float dt)
-    {
-        //No more enemies to spawn
-        List<ObjectData> enemies = instance.enemies;
-        if (enemies == null || enemies.Count < 1) return;
+        enemyObjects.ForEach(e => Assert.IsTrue(e.IsEnemy()));
+        instance.enemyData = (enemyObjects.OrderBy(e => e.GetSpawnTime())).ToList();
 
-        //Instantiate the Enemy to spawn
-        ObjectData nextSpawn = enemies[0];
-        if (dt < nextSpawn.GetSpawnTime()) return;
-        Enemy spawnedEnemy = instance.GetEnemyPrefab(nextSpawn.GetEnemyName());
-        Assert.IsNotNull(spawnedEnemy);
+        //Instantiate Enemy objects NOW so they're ready to go at runtime.
+        foreach (ObjectData obToSpawn in instance.enemyData)
+        {
+            Enemy spawnedEnemy = EnemyFactory.MakeEnemy(obToSpawn.GetEnemyName());
+            Assert.IsNotNull(spawnedEnemy);
 
-        //Determine spawn position
-        Vector2Int spawnCoords = nextSpawn.GetSpawnCoordinates(instance.mapHeight);
-        Debug.Log("Spawning at " + spawnCoords);
-        float xWorldSpawn = TileGrid.CoordinateToPosition(spawnCoords.x);
-        float yWorldSpawn = TileGrid.CoordinateToPosition(spawnCoords.y);
-        Vector3 worldSpawnPos = new Vector3(xWorldSpawn, yWorldSpawn, 1);
-        spawnedEnemy.gameObject.transform.position = worldSpawnPos;
+            spawnedEnemy.gameObject.SetActive(false);
+            Vector2 spawnWorldPos = new Vector2(
+                TileGrid.CoordinateToPosition(obToSpawn.GetSpawnCoordinates(mapHeight).x),
+                TileGrid.CoordinateToPosition(obToSpawn.GetSpawnCoordinates(mapHeight).y)
+            );
+            float spawnTime = obToSpawn.GetSpawnTime();
+            ControllerController.MakeEnemyController(spawnedEnemy, spawnTime, spawnWorldPos);
+        }
 
-        //Give the Enemy a controller and remove it from enemies list
-        ControllerController.MakeEnemyController(spawnedEnemy);
-        enemies.RemoveAt(0);
-    }
-
-    /// <summary>
-    /// Returns an instantiated Enemy reference that represents an
-    /// Enemy prefab with the type passed into this method.
-    /// </summary>
-    /// <param name="enemyType">the type of Enemy to clone</param>
-    /// <returns>an instantiated enemy prefab</returns>
-    private Enemy GetEnemyPrefab(string enemyType)
-    {
-        GameObject prefabToGet = null;
-
-        if (enemyType.ToLower() == "kudzu") prefabToGet = enemyPrefabs[0];
-        Assert.IsNotNull(prefabToGet, "Enemy type " + enemyType + " invalid.");
-
-        Enemy enemyComponent = prefabToGet.GetComponent<Enemy>();
-        Assert.IsNotNull(enemyComponent);
-
-        return enemyComponent;
+        instance.populated = true;
     }
 
     /// <summary>
     /// Returns the number of Enemies spawned in the level so far.
     /// </summary>
     /// <returns>the number of Enemies spawned in the level so far.</returns>
-    public static int GetNumEnemiesSpawned()
+    /// <param name="dt">Current game time. </param>
+    public static int GetNumEnemiesSpawned(float dt)
     {
-        return instance.numEnemiesSpawned;
-    }
+        Assert.IsNotNull(instance.enemyData);
 
+        int enemiesSpawned = 0;
+        foreach (ObjectData enemyData in instance.enemyData)
+        {
+            Assert.IsTrue(enemyData.IsEnemy());
+            if (enemyData.GetSpawnTime() <= dt) enemiesSpawned++;
+        }
+        return enemiesSpawned;
+    }
 
     /// <summary>
     /// Returns the number of Enemies that have yet to be spawned in this level. 
     /// </summary>
     /// <returns>the number of Enemies that have yet to be spawned 
     /// in this level. </returns>
-    public static int EnemiesRemaining()
+    /// <param name="dt">Current game time. </param>
+    public static int EnemiesRemaining(float dt)
     {
-        Assert.IsNotNull(instance.enemies);
+        Assert.IsNotNull(instance.enemyData);
 
-        return instance.enemies.Count;
+        int enemiesToGo = 0;
+        foreach (ObjectData enemyData in instance.enemyData)
+        {
+            Assert.IsTrue(enemyData.IsEnemy());
+            if (enemyData.GetSpawnTime() > dt) enemiesToGo++;
+        }
+        return enemiesToGo;
     }
 
     /// <summary>
-    /// Returns true if there is at least one Enemy ready to be spawned.
+    /// Returns true if the EnemyManager has been populated.
     /// </summary>
-    /// <returns>true if there is at least one Enemy ready to be spawned;
-    /// otherwise, false.</returns>
-    public static bool IsEnemyReady()
+    /// <returns>true if the EnemyManager has been populated;
+    /// otherwise, false. </returns>
+    public static bool Populated()
     {
-        throw new System.NotImplementedException();
+        return instance.populated;
     }
 
     /// <summary>

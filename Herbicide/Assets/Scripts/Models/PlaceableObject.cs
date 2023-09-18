@@ -6,7 +6,7 @@ using UnityEngine;
 /// Abstract class for something that can be placed on the
 /// TileGrid.
 /// </summary>
-public abstract class PlaceableObject : MonoBehaviour, IPlaceable
+public abstract class PlaceableObject : MonoBehaviour, ISlottable
 {
     /// <summary>
     /// Name of this PlaceableObject.

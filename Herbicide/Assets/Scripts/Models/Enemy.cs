@@ -9,7 +9,7 @@ using System.Linq;
 /// Represents some entity whose goal is to make the player
 /// lose the current level.
 /// </summary>
-public abstract class Enemy : MonoBehaviour, IAttackable
+public abstract class Enemy : Mob, IAttackable
 {
     /// <summary>
     /// Type of this Enemy.
@@ -19,47 +19,47 @@ public abstract class Enemy : MonoBehaviour, IAttackable
     /// <summary>
     /// Starting health of an Enemy. 
     /// </summary>
-    public virtual int BASE_HEALTH => 100;
+    public override int BASE_HEALTH => 100;
 
     /// <summary>
-    /// Upper bound of an Enemy's health.
+    /// This Enemy's largest possible health value.
     /// </summary>
-    public virtual int MAX_HEALTH => 100;
+    public override int MAX_HEALTH => 100;
 
     /// <summary>
-    /// Lower bound of an Enemy's health.
+    /// This Enemy's smallest possible health value.
     /// </summary>
-    public virtual int MIN_HEALTH => 0;
+    public override int MIN_HEALTH => 0;
 
     /// <summary>
     /// Starting attack range of an Enemy.
     /// </summary>
-    public virtual float BASE_ATTACK_RANGE => 1f;
+    public override float BASE_ATTACK_RANGE => 1f;
 
     /// <summary>
     /// Upper bound of an Enemy's attack range.
     /// </summary>
-    public virtual float MAX_ATTACK_RANGE => float.MaxValue;
+    public override float MAX_ATTACK_RANGE => float.MaxValue;
 
     /// <summary>
     /// Lower bound of an Enemy's attack range.
     /// </summary>
-    public virtual float MIN_ATTACK_RANGE => 0f;
+    public override float MIN_ATTACK_RANGE => 0f;
 
     /// <summary>
     /// Starting attack speed of an Enemy (number of attacks / second).
     /// </summary>
-    public virtual float BASE_ATTACK_SPEED => 1f;
+    public override float BASE_ATTACK_SPEED => 1f;
 
     /// <summary>
     /// Upper bound of an Enemy's attack speed (number of attacks / second).
     /// </summary>
-    public virtual float MAX_ATTACK_SPEED => 10f;
+    public override float MAX_ATTACK_SPEED => 10f;
 
     /// <summary>
     /// Lower bound of an Enemy's attack speed (number of attacks / second).
     /// </summary>
-    public virtual float MIN_ATTACK_SPEED => 0f;
+    public override float MIN_ATTACK_SPEED => 0f;
 
     /// <summary>
     /// Damage inflicted on a target(s) every time this Enemy attacks.
@@ -140,6 +140,16 @@ public abstract class Enemy : MonoBehaviour, IAttackable
     private int tileY;
 
     /// <summary>
+    /// The X world position where this Enemy spawns.
+    /// </summary>
+    private float spawnX;
+
+    /// <summary>
+    /// The Y world position where this Enemy spawns.
+    /// </summary>
+    private float spawnY;
+
+    /// <summary>
     /// Current health state of this Enemy.
     /// </summary>
     private EnemyHealthState healthState;
@@ -161,11 +171,6 @@ public abstract class Enemy : MonoBehaviour, IAttackable
     private Sprite[] criticalTrack;
 
     /// <summary>
-    /// The Animation that is currently playing on this Enemy. 
-    /// </summary>
-    private AnimationType currentAnimation;
-
-    /// <summary>
     /// Enemy's SpriteRenderer component. 
     /// </summary>
     [SerializeField]
@@ -176,6 +181,11 @@ public abstract class Enemy : MonoBehaviour, IAttackable
     /// </summary>
     [SerializeField]
     private Collider2D enemyCollider;
+
+    /// <summary>
+    /// The time at which this Enemy spawns.
+    /// </summary>
+    private float spawnTime;
 
     /// <summary>
     /// Type of this Enemy.
@@ -196,16 +206,6 @@ public abstract class Enemy : MonoBehaviour, IAttackable
     }
 
     /// <summary>
-    /// Enum to represent the animation this Enemy should/is playing.
-    /// </summary>
-    public enum AnimationType
-    {
-        MOVE,
-        ATTACK,
-        STATIC
-    }
-
-    /// <summary>
     /// Resets this Enemy's stats to its starting/base values.
     /// </summary>
     public virtual void ResetStats()
@@ -213,17 +213,27 @@ public abstract class Enemy : MonoBehaviour, IAttackable
         ResetAttackRange();
         ResetHealth();
         ResetAttackSpeed();
+        ResetPosition();
+    }
+
+    /// <summary>
+    /// Resets this Enemy's position to be its spawn position.
+    /// </summary>
+    private void ResetPosition()
+    {
+        transform.position = new Vector3(spawnX, spawnY, 1);
     }
 
     /// <summary>
     /// Called when this Enemy appears on the TileGrid and is assigned
     /// an EnemyController (or a subclass of EnemyController).
     /// </summary>
-    public virtual void OnSpawn()
+    public override void OnSpawn()
     {
+        base.OnSpawn();
         ResetStats();
-        StartCoroutine(CoPlayAnimation());
     }
+
 
     /// <summary>
     /// Called when this Enemy dies.
@@ -247,42 +257,23 @@ public abstract class Enemy : MonoBehaviour, IAttackable
     }
 
     /// <summary>
-    /// Attacks an ITargetable. This base method does not include attack
-    /// logic; instead, it sets the Enemy's direction to face toward its
-    /// target.
+    /// Attacks an ITargetable. This base method just sets the enemy's
+    /// direction.
     /// </summary>
     /// <param name="target">The ITargetable to attack.</param>
     public virtual void Attack(ITargetable target)
     {
-        float preMoveX = GetPosition().x;
-        float preMoveY = GetPosition().y;
-        float targetX = target.GetPosition().x;
-        float targetY = target.GetPosition().y;
-        float horizontalDifference = targetX - preMoveX;
-        float verticalDifference = targetY - preMoveY;
+        Vector3 targetPos = target.GetPosition();
+        Vector3 enemyPos = GetPosition();
 
-        // Debug.Log("HORZ: " + horizontalDifference);
-        // Debug.Log("VERT: " + verticalDifference);
+        float diffX = targetPos.x - enemyPos.x;
+        float diffY = targetPos.y - enemyPos.y;
 
-        //Handle diagonals
-        if (Mathf.Approximately(Mathf.Abs(horizontalDifference), Mathf.Abs(verticalDifference)))
-        {
-            if (verticalDifference > 0) SetDirection(Direction.NORTH);
-            else SetDirection(Direction.SOUTH);
-            return;
-        }
+        Direction direction = Math.Abs(diffX) > Math.Abs(diffY) ?
+                              (diffX > 0 ? Direction.EAST : Direction.WEST) :
+                              (diffY > 0 ? Direction.NORTH : Direction.SOUTH);
 
-        //Handle non-diagonals
-        if (horizontalDifference != 0)
-        {
-            if (horizontalDifference > 0) SetDirection(Direction.EAST);
-            else SetDirection(Direction.WEST);
-        }
-        else
-        {
-            if (verticalDifference > 0) SetDirection(Direction.NORTH);
-            else SetDirection(Direction.SOUTH);
-        }
+        SetDirection(direction);
     }
 
     /// <summary>
@@ -325,6 +316,15 @@ public abstract class Enemy : MonoBehaviour, IAttackable
     }
 
     /// <summary>
+    /// Returns true if this Enemy can target some ITargetable. Overidden
+    /// by sub-classes who implement specific targeting rules.
+    /// </summary>
+    /// <param name="target">The target to check.</param>
+    /// <returns>true if this Enemy can target the ITargetable; otherwise,
+    /// false.</returns>
+    public abstract bool CanTarget(ITargetable target);
+
+    /// <summary>
     /// Returns true if this Enemy can attack another IAttackable at
     /// the current frame.
     /// </summary>
@@ -337,6 +337,22 @@ public abstract class Enemy : MonoBehaviour, IAttackable
         if (DistanceToTarget(target) > GetAttackRange()) return false;
         if (GetAttackSpeed() <= 0) return false;
         if (attackCooldownTimer > 0) return false;
+
+        return true;
+    }
+
+    /// <summary>
+    /// Returns true if this Enemy is within its attack range of
+    /// some ITargetable.
+    /// </summary>
+    /// <param name="target">the ITargetable to check.</param>
+    /// <returns>true if this Enemy is within the range of the ITargetable;
+    /// otherwise, false. </returns>
+    public bool InAttackRange(ITargetable target)
+    {
+        if (target == null) return false;
+        if (DistanceToTarget(target) > GetAttackRange()) return false;
+        if (GetAttackSpeed() <= 0) return false;
 
         return true;
     }
@@ -520,23 +536,6 @@ public abstract class Enemy : MonoBehaviour, IAttackable
         return direction;
     }
 
-    /// <summary>
-    /// Sets this Enemy's Sprite.
-    /// </summary>
-    /// <param name="s">The Sprite to set to.</param>
-    public void SetSprite(Sprite s)
-    {
-        if (s != null) enemyRenderer.sprite = s;
-    }
-
-    /// <summary>
-    /// Sets the Sorting Order of this Enemy.
-    /// </summary>
-    /// <param name="layer">The layer to set.</param>
-    public void SetSortingOrder(int layer)
-    {
-        if (layer >= 0) enemyRenderer.sortingOrder = layer;
-    }
 
     /// <summary>
     /// Coroutine to play an animation from a Sprite animation track,
@@ -546,14 +545,14 @@ public abstract class Enemy : MonoBehaviour, IAttackable
     /// <param name="time">How long the animation should last.</param>
     /// <param name="startFrame">Which frame to start at.</param>
     /// <returns>A reference to the coroutine.</returns>
-    private IEnumerator CoPlayAnimation()
+    protected override IEnumerator CoPlayAnimation()
     {
         int frame = 0;
         while (true)
         {
             //Get the right track.
             float animationTime;
-            switch (currentAnimation)
+            switch (GetCurrentAnimation())
             {
                 case AnimationType.ATTACK:
                     healthyTrack = EnemyFactory.GetAttackTrack(TYPE, EnemyHealthState.HEALTHY, GetDirection());
@@ -596,15 +595,6 @@ public abstract class Enemy : MonoBehaviour, IAttackable
     }
 
     /// <summary>
-    /// Sets the AnimationType that this Enemy should play right now.
-    /// </summary>
-    /// <param name="animation">The type of animation to play.</param>
-    protected void PlayAnimation(AnimationType animation)
-    {
-        currentAnimation = animation;
-    }
-
-    /// <summary>
     /// Updates any cooldowns managed by this Enemy.
     /// </summary>
     public virtual void UpdateCooldowns()
@@ -626,6 +616,13 @@ public abstract class Enemy : MonoBehaviour, IAttackable
     /// width, and height.
     /// </summary>
     public abstract void SetColliderProperties();
+
+    /// <summary>
+    /// Returns true if this Enemy is in the middle of an attack.
+    /// </summary>
+    /// <returns>true if this Enemy is attacking an ITargetable right now;
+    /// otherwise, false.</returns>
+    public abstract bool Attacking();
 
 
     /// <summary>
@@ -649,86 +646,40 @@ public abstract class Enemy : MonoBehaviour, IAttackable
     }
 
     /// <summary>
-    /// Returns an ITargetable that this Enemy should target out of a
-    /// list of all possible targets. The default logic of selecting
-    /// a target is:<br></br>
-    /// 
-    /// (1) The closest Tree with a Defender. If there are no Trees with a Defender,<br></br>
-    /// (2) The closest Tree without a Defender. If there are no Trees,<br></br>
-    /// (3) The closest Defender. If there are no Defenders,<br></br>
-    /// (4) An ITargetable at a random index in the list of targets.
-    /// 
+    /// Sets the SpawnTime of this Enemy.
     /// </summary>
-    /// <param name="targets">All possible ITargetables to target.</param>
-    /// <returns>The ITargetable that this Enemy should target from a
-    /// list of possible targets.</returns>
-    public virtual ITargetable SelectTarget(List<ITargetable> targets)
+    /// <param name="time">the time at which this Enemy spawns.</param>
+    public void SetSpawnTime(float time)
     {
-        //(1) The closest Tree with a Defender
-        List<Tree> treesWithDefenders = new List<Tree>();
-        foreach (ITargetable possibleTarget in targets)
-        {
-            Tree targetAsTree = possibleTarget as Tree;
-            if (targetAsTree != null)
-            {
-                if (targetAsTree.Occupied())
-                {
-                    treesWithDefenders.Add(targetAsTree);
-                }
-            }
-        }
-
-        if (treesWithDefenders.Count > 0)
-        {
-            Tree closestTree = null;
-            foreach (Tree t in treesWithDefenders)
-            {
-                if (closestTree == null || DistanceToTarget(closestTree) >
-                    DistanceToTarget(t)) closestTree = t;
-            }
-            if (closestTree != null) return closestTree;
-        }
-
-        //(2) The closest Tree without a Defender
-        List<Tree> treesWithoutDefenders = new List<Tree>();
-        foreach (ITargetable possibleTarget in targets)
-        {
-            Tree targetAsTree = possibleTarget as Tree;
-            if (targetAsTree != null) treesWithoutDefenders.Add(targetAsTree);
-        }
-        if (treesWithoutDefenders.Count > 0)
-        {
-            Tree closestTree = null;
-            foreach (Tree t in treesWithoutDefenders)
-            {
-                if (closestTree == null || DistanceToTarget(closestTree) >
-                    DistanceToTarget(t)) closestTree = t;
-            }
-            if (closestTree != null) return closestTree;
-        }
-
-        //(3) The closest Defender
-        List<Defender> defenders = new List<Defender>();
-        foreach (ITargetable possibleTarget in targets)
-        {
-            Defender targetAsDefender = possibleTarget as Defender;
-            if (targetAsDefender != null) defenders.Add(targetAsDefender);
-        }
-
-        if (defenders.Count > 0)
-        {
-            Defender closestDefender = null;
-            foreach (Defender d in defenders)
-            {
-                if (closestDefender == null || DistanceToTarget(closestDefender) >
-                    DistanceToTarget(d)) closestDefender = d;
-            }
-            if (closestDefender != null) return closestDefender;
-        }
-
-        //(4) Target at random index (random target)
-        return targets[UnityEngine.Random.Range(0, targets.Count - 1)];
-
+        Assert.IsTrue(time >= 0);
+        spawnTime = time;
     }
 
+    /// <summary>
+    /// Returns this Enemy's SpawnTime.
+    /// </summary>
+    /// <returns>this Enemy's SpawnTime.</returns>
+    public float GetSpawnTime()
+    {
+        return spawnTime;
+    }
+
+    /// <summary>
+    /// Sets the (X, Y) world coordinates where this Enemy spawns in the level.
+    /// </summary>
+    /// <param name="coords">the (X, Y) coordinates.</param>
+    public void SetSpawnWorldPosition(Vector2 coords)
+    {
+        spawnX = coords.x;
+        spawnY = coords.y;
+    }
+
+    /// <summary>
+    /// Returns the (X, Y) world position where this Enemy spawns in the level.
+    /// </summary>
+    /// <returns>the (X, Y) world position where this Enemy spawns.</returns>
+    public Vector2 GetSpawnWorldPosition()
+    {
+        return new Vector2(spawnX, spawnY);
+    }
 }

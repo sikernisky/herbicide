@@ -40,6 +40,19 @@ public class DefenderFactory : MonoBehaviour
     [SerializeField]
     private GameObject[] prefabs;
 
+    /// <summary>
+    /// Sprites to represent the Squirrel's idle state in all
+    /// four directions.
+    /// </summary>
+    [SerializeField]
+    private Sprite[] squirrelIdleSprites;
+
+    /// <summary>
+    /// Sprites to represent the Squirrel's attack state in all
+    /// four directions.
+    /// </summary>
+    [SerializeField]
+    private Sprite[] squirrelAttackSprites;
 
     /// <summary>
     /// Finds and sets the DefenderFactory singleton.
@@ -93,5 +106,39 @@ public class DefenderFactory : MonoBehaviour
         if (index < 0 || index >= instance.prefabs.Length) return null;
 
         return instance.prefabs[index];
+    }
+
+    /// <summary>
+    /// Returns the Sprite of a Defender's Attack track.
+    /// </summary>
+    /// <param name="direction"></param>
+    /// <returns>the Sprite of a Defender's Attack.</returns>
+    public static Sprite GetDefenderAttackSprite(Defender.DefenderType type, Direction direction)
+    {
+        int index = (int)direction;
+        switch (type)
+        {
+            case Defender.DefenderType.SQUIRREL:
+                return instance.squirrelAttackSprites[index];
+            default:
+                throw new System.Exception("Defender not supported.");
+        }
+    }
+
+    /// <summary>
+    /// Returns the Sprite of a Defender's Idle track
+    /// </summary>
+    /// <param name="direction"></param>
+    /// <returns>the Sprite of a Defender's idle state.</returns>
+    public static Sprite GetDefenderIdleSprite(Defender.DefenderType type, Direction direction)
+    {
+        int index = (int)direction;
+        switch (type)
+        {
+            case Defender.DefenderType.SQUIRREL:
+                return instance.squirrelIdleSprites[index];
+            default:
+                throw new System.Exception("Defender not supported.");
+        }
     }
 }

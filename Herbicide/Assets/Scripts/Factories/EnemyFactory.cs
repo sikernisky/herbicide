@@ -15,6 +15,14 @@ public class EnemyFactory : MonoBehaviour
     private static EnemyFactory instance;
 
     /// <summary>
+    /// All Enemy Prefabs, indexed by type:<br></br>
+    /// 
+    /// 0 --> Kudzu
+    /// </summary>
+    [SerializeField]
+    private List<GameObject> enemyPrefabs;
+
+    /// <summary>
     /// All ScriptableObjects containing animation data about
     /// different enemies.
     /// </summary>
@@ -89,5 +97,23 @@ public class EnemyFactory : MonoBehaviour
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// Returns the Enemy component of a given type. Does not instantiate anything --
+    /// it is important to do so with the returned component outside of this method.
+    /// </summary>
+    /// <param name="enemyType">The type of Enemy to get.</param>
+    /// <returns>an Enemy component of the given type. </returns>
+    public static Enemy MakeEnemy(string enemyType)
+    {
+        Assert.IsNotNull(enemyType, "enemyType is null.");
+
+        GameObject prefabToClone = null;
+
+        if (enemyType.ToLower() == "kudzu") prefabToClone = instance.enemyPrefabs[0];
+
+        Assert.IsNotNull(prefabToClone);
+        return prefabToClone.GetComponent<Enemy>();
     }
 }

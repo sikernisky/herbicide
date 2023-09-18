@@ -51,7 +51,7 @@ public class TileGrid : MonoBehaviour
     /// <summary>
     /// Red color for debugging and pathfinding.
     /// </summary>
-    public static readonly Color32 PATHFINDING_RED = new Color32(255, 0, 0, 255);
+    public static readonly Color32 PATHFINDING_RED = new Color32(255, 0, 0, 60);
 
     /// <summary>
     /// Blue color for debugging and pathfinding.
@@ -99,6 +99,11 @@ public class TileGrid : MonoBehaviour
     /// this TileGrid.
     /// </summary>
     private List<int> firstGIDs;
+
+    /// <summary>
+    /// true if debug mode is on.
+    /// </summary>
+    private bool debugOn;
 
 
     /// <summary>
@@ -430,6 +435,33 @@ public class TileGrid : MonoBehaviour
         }
     }
 
+
+    /// <summary>
+    /// Returns the closest edge Tile to a given coordinate.
+    /// </summary>
+    /// <param name="x">The X-coordinate from which to find the
+    /// closest edge Tile.</param>
+    /// <param name="y">The Y-coordinate from which to find the
+    /// closest edge Tile.</param>
+    /// <returns>The (X, Y) coordinates of the closest edge Tile to
+    /// a given coordinate.</returns>
+    public static Vector2Int NearestEdgeCoordinate(int x, int y)
+    {
+        float closestPosition = float.MaxValue;
+        Tile closestTile = null;
+        foreach (Tile t in instance.edgeTiles)
+        {
+            float distance = t.GetManhattanDistance(x, y);
+            if (distance < closestPosition)
+            {
+                closestTile = t;
+                closestPosition = distance;
+            }
+        }
+        if (closestTile == null) return Vector2Int.zero;
+        return new Vector2Int(closestTile.GetX(), closestTile.GetY());
+    }
+
     /// <summary>
     /// Returns a Tile that should be in the TileGrid. Instantiates that
     /// Tile.
@@ -532,13 +564,11 @@ public class TileGrid : MonoBehaviour
         Tile tile = InputController.TileClickedUp();
         if (tile == null) return;
 
-        Debug.Log(tile.GetPosition());
-
         //(1) and (2): Placing and Using
         if (PlacementController.Placing())
         {
             ISlottable placingItem = PlacementController.GetObjectPlacing();
-            IPlaceable itemPlaceable = placingItem as IPlaceable;
+            PlaceableObject itemPlaceable = placingItem as PlaceableObject;
             IUsable itemUsable = placingItem as IUsable;
             ISurface[] tileNeighbors = GetNeighbors(tile);
             if (PlaceOnTile(tile, itemPlaceable, tileNeighbors))
@@ -563,7 +593,7 @@ public class TileGrid : MonoBehaviour
         if (PlacementController.Placing())
         {
             ISlottable placingSlottable = PlacementController.GetObjectPlacing();
-            IPlaceable placingPlaceable = placingSlottable as IPlaceable;
+            PlaceableObject placingPlaceable = placingSlottable as PlaceableObject;
             if (tile.GhostPlace(placingPlaceable)) PlacementController.StartGhostPlacing(tile);
         }
     }
@@ -734,14 +764,14 @@ public class TileGrid : MonoBehaviour
 
 
     /// <summary>
-    /// Returns true if the placing of an IPlaceable on a Tile will be
+    /// Returns true if the placing of a PlaceableObject on a Tile will be
     /// successful. If so, places it. Otherwise, does nothing and returns false.
     /// </summary>
-    /// <param name="candidate">The IPlaceable to place.</param>
+    /// <param name="candidate">The PlaceableObject to place.</param>
     /// <param name="target">The Tile to place on.</param>
-    /// <param name="neighbors">The Tile's neighbors' IPlaceables.</param>
-    /// <returns>true if the IPlaceable was placed; otherwise, false.</returns>
-    public static bool PlaceOnTile(Tile target, IPlaceable candidate, ISurface[] neighbors)
+    /// <param name="neighbors">The Tile's neighbors' PlaceableObject.</param>
+    /// <returns>true if the PlaceableObject was placed; otherwise, false.</returns>
+    public static bool PlaceOnTile(Tile target, PlaceableObject candidate, ISurface[] neighbors)
     {
         //Safety checks
         if (target == null || candidate == null || neighbors == null) return false;
@@ -753,12 +783,12 @@ public class TileGrid : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns true if the clearing of an IPlaceable off a Tile will be
+    /// Returns true if the clearing of a PlaceableObject off a Tile will be
     /// successful. If so, clears it. Otherwise, does nothing and returns false.
     /// </summary>
     /// <param name="target">The Tile to place on.</param>
-    /// <param name="neighbors">The Tile's neighbors' IPlaceables.</param>
-    /// <returns>true if the IPlaceable was placed; otherwise, false.</returns>
+    /// <param name="neighbors">The Tile's neighbors' PlaceableObjects.</param>
+    /// <returns>true if the PlaceableObject was placed; otherwise, false.</returns>
     public static bool ClearTile(Tile target, ISurface[] neighbors)
     {
         //Safety checks
@@ -826,6 +856,29 @@ public class TileGrid : MonoBehaviour
         return t != null;
     }
 
+
+    /// <summary>
+    /// Returns true if some world coordinates lie within the range of a Tile
+    /// in the TileGrid that is walkable for some enemy.
+    /// </summary>
+    /// <param name="worldCoords">the coordinates to check.</param>
+    /// <param name="enemy">the Enemy to check.</param>
+    /// <returns>true if some world coordinates lie within the range of a Tile
+    /// that is walkable by some enemy; otherwise, false.</returns>
+    public static bool OnWalkableTile(Vector2 worldCoords, Enemy enemy)
+    {
+        Assert.IsNotNull(enemy);
+        if (!OnTile(worldCoords)) return false;
+
+        int coordX = PositionToCoordinate(worldCoords.x);
+        int coordY = PositionToCoordinate(worldCoords.y);
+        Tile t = instance.TileExistsAt(coordX, coordY);
+        Assert.IsNotNull(t);
+
+        //TODO: Eventually, incorporate Enemy checking.
+        return t.WALKABLE;
+    }
+
     /// <summary>
     /// Returns all ITargetables on this TileGrid.
     /// </summary>
@@ -844,7 +897,6 @@ public class TileGrid : MonoBehaviour
         return targetables;
     }
 
-
     /// <summary>
     /// Returns an array of a Tile's four neighboring Surfaces. For any Tile that 
     /// does not exist, returns null instead.
@@ -861,9 +913,162 @@ public class TileGrid : MonoBehaviour
         return targetNeighbors;
     }
 
+    /// <summary>
+    /// Sets the debug mode to be off or on.
+    /// </summary>
+    /// <param name="levelController">The LevelController instance.</param>
+    /// <param name="isOn">true if the debug mode should be on; false if not.</param>
+    public static void SetDebug(LevelController levelController, bool isOn)
+    {
+        Assert.IsNotNull(levelController);
+        instance.debugOn = isOn;
+        if (!isOn) instance.UnpaintAllTiles();
+    }
+
+    /// <summary>
+    /// Unpaints all Tiles in this TileGrid. This is done by painting them
+    /// white.
+    /// </summary>
+    private void UnpaintAllTiles()
+    {
+        Assert.IsNotNull(instance.tileMap);
+
+        foreach (KeyValuePair<Vector2Int, Tile> pair in instance.tileMap)
+        {
+            instance.tileMap[pair.Key].PaintTile(Color.white);
+        }
+    }
+
+    /// <summary>
+    /// Returns true if debug mode is on.
+    /// </summary>
+    /// <returns>true if debug mode is on; otherwise, false. </returns>
+    private bool IsDebugging()
+    {
+        return debugOn;
+    }
+
     //---------------------BEGIN PATHFINDING-----------------------//
 
 
+    /// <summary>
+    /// Returns the position of the next Tile in the path from a starting
+    /// Tile to a goal Tile. If no such path exists, returns the starting
+    /// Tile's position. <br></br>
+    /// 
+    /// Uses the A* pathfinding algorithm to calculate this position.
+    /// Manhattan distance is used as the heuristic function.
+    /// </summary>
+    /// <param name="startPos">The starting position of the path.</param>
+    /// <param name="goalPos">The ending position of the path. </param>
+    public static Vector3 NextTilePosTowardsGoal(Vector3 startPos, Vector3 goalPos)
+    {
+        //From given positions, find the corresponding Tiles.
+        int xStartCoord = PositionToCoordinate(startPos.x);
+        int yStartCoord = PositionToCoordinate(startPos.y);
+        int xGoalCoord = PositionToCoordinate(goalPos.x);
+        int yGoalCoord = PositionToCoordinate(goalPos.y);
+        Tile startTile = instance.TileExistsAt(xStartCoord, yStartCoord);
+        Tile goalTile = instance.TileExistsAt(xGoalCoord, yGoalCoord);
+
+        if (instance.IsDebugging()) goalTile.PaintTile(PATHFINDING_RED);
+        if (startTile == null || goalTile == null) return startPos;
+
+        //Initialize data structures.
+        List<Tile> openList = new List<Tile> { startTile };
+        HashSet<Tile> closedList = new HashSet<Tile>();
+        Dictionary<Tile, Tile> cameFrom = new Dictionary<Tile, Tile>();
+        Dictionary<Tile, float> gScore = new Dictionary<Tile, float> { { startTile, 0 } };
+        Dictionary<Tile, float> fScore = new Dictionary<Tile, float>();
+        fScore.Add(startTile, instance.ManhattanDistance(startTile, goalTile));
+
+        //Iterative A* Algorithm.
+        while (openList.Count > 0)
+        {
+            Tile current = openList.OrderBy(tile => fScore[tile]).First();
+
+            if (current == goalTile)
+            {
+                List<Tile> path = instance.ReconstructPath(cameFrom, current);
+                if (path.Count > 1)
+                {
+                    Tile nextTile = path[1];
+                    startTile.PaintTile(Color.white);
+                    return new Vector3(nextTile.GetX(), nextTile.GetY(), 1);
+                }
+            }
+
+            openList.Remove(current);
+            closedList.Add(current);
+
+            foreach (Tile neighbor in instance.GetNeighbors(current))
+            {
+                if (neighbor == null) continue;
+                if (closedList.Contains(neighbor)) continue;
+
+                if (neighbor != goalTile && !neighbor.IsWalkable())
+                {
+                    closedList.Add(neighbor);
+                    continue;
+                }
+
+                float tentativeGScore = gScore[current] + 1;
+                if (!openList.Contains(neighbor)) openList.Add(neighbor);
+                else if (tentativeGScore >= gScore[neighbor]) continue;
+
+                cameFrom[neighbor] = current;
+                gScore[neighbor] = tentativeGScore;
+                fScore[neighbor] = gScore[neighbor] + instance.ManhattanDistance(neighbor, goalTile);
+            }
+        }
+
+        Debug.Log("No path found.");
+
+        //No path found, so we return the starting position.
+        return startPos;
+    }
+
+    /// <summary>
+    /// Returns the Manhattan distance between two Tiles.
+    /// </summary>
+    /// <param name="a">The first Tile.</param>
+    /// <param name="b">The second Tile.</param>
+    /// <returns>the Manhattan distance between two Tiles.</returns>
+    private float ManhattanDistance(Tile a, Tile b)
+    {
+        Assert.IsNotNull(a, "Tile `a` is null.");
+        Assert.IsNotNull(b, "Tile `b` is null.");
+
+        return Math.Abs(a.GetX() - b.GetX()) + Math.Abs(a.GetY() - b.GetY());
+    }
+
+    /// <summary>
+    /// Reconstructs the path from the starting tile to a specified
+    /// tile using the "cameFrom" breadcrumbs.
+    /// </summary>
+    /// <param name="cameFrom">A dictionary that maps each tile to the
+    /// tile that led to it during the A* search.</param>
+    /// <param name="current">The end tile of the path,
+    ///  typically the goal tile.</param>
+    /// <returns>A list of tiles representing the path from the start
+    /// to the specified end tile. The first tile in the list is the starting tile,
+    /// and the last tile is the specified end tile.</returns>
+    private List<Tile> ReconstructPath(Dictionary<Tile, Tile> cameFrom, Tile current)
+    {
+        Assert.IsNotNull(cameFrom, "Dictionary `cameFrom` is null.");
+        Assert.IsNotNull(current, "Tile `current` is null.");
+
+        List<Tile> path = new List<Tile> { current };
+        while (cameFrom.ContainsKey(current))
+        {
+            if (IsDebugging()) current.PaintTile(PATHFINDING_BLUE);
+            current = cameFrom[current];
+            Assert.IsNotNull(current);
+            path.Add(current);
+        }
+        path.Reverse();
+        return path;
+    }
 
     //----------------------END PATHFINDING------------------------//
 }
