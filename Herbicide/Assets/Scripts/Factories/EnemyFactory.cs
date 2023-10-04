@@ -100,6 +100,36 @@ public class EnemyFactory : MonoBehaviour
     }
 
     /// <summary>
+    /// Returns an attack animation track for a given enemy type and health state.
+    /// </summary>
+    /// <param name="type">The enemy type.</param>
+    /// <param name="state">The enemy health state.</param>
+    /// <param name="direction">The direction of the enemy.</param>
+    /// <returns>The attack animation track as a Sprite array or null 
+    /// if the enemy type is not found.</returns>
+    public static Sprite[] GetIdleTrack(Enemy.EnemyType type, Enemy.EnemyHealthState state, Direction direction)
+    {
+        EnemyAnimation data = instance.enemyAnimationDataList.Find(x => x.GetEnemyType() == type);
+
+        if (data != null)
+        {
+            switch (state)
+            {
+                case Enemy.EnemyHealthState.HEALTHY:
+                    return data.GetHealthyIdleAnimation(direction);
+                case Enemy.EnemyHealthState.DAMAGED:
+                    return data.GetDamagedIdleAnimation(direction);
+                case Enemy.EnemyHealthState.CRITICAL:
+                    return data.GetCriticalIdleAnimation(direction);
+            }
+        }
+
+        return null;
+    }
+
+    //Todo: implemement static animation track.
+
+    /// <summary>
     /// Returns the Enemy component of a given type. Does not instantiate anything --
     /// it is important to do so with the returned component outside of this method.
     /// </summary>

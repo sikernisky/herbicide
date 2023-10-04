@@ -71,7 +71,7 @@ public abstract class DefenderController
 
         this.defender = defender;
         this.id = NUM_DEFENDERS;
-        GetDefender().ResetStats();
+        GetDefender().OnSpawn();
         targetsInRange = new List<ITargetable>();
         NUM_DEFENDERS++;
     }

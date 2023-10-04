@@ -106,7 +106,6 @@ public class EnemyAnimation : ScriptableObject
     [SerializeField]
     private Sprite[] criticalAttackAnimationNorth;
 
-
     /// <summary>
     /// Attack animation when this Enemy is healthy.
     /// </summary>
@@ -161,6 +160,77 @@ public class EnemyAnimation : ScriptableObject
     [SerializeField]
     private Sprite[] criticalAttackAnimationWest;
 
+    /// <summary>
+    /// Idle animation when this Enemy is healthy.
+    /// </summary>
+    [SerializeField]
+    private Sprite[] healthyIdleSpriteNorth;
+
+    /// <summary>
+    /// Idle animation when this Enemy is damaged.
+    /// </summary>
+    [SerializeField]
+    private Sprite[] damagedIdleSpriteNorth;
+
+    /// <summary>
+    /// Idle animation when this Enemy is damaged.
+    /// </summary>
+    [SerializeField]
+    private Sprite[] criticalIdleSpriteNorth;
+
+    /// <summary>
+    /// Idle animation when this Enemy is healthy.
+    /// </summary>
+    [SerializeField]
+    private Sprite[] healthyIdleSpriteEast;
+
+    /// <summary>
+    /// Idle animation when this Enemy is damaged.
+    /// </summary>
+    [SerializeField]
+    private Sprite[] damagedIdleSpriteEast;
+
+    /// <summary>
+    /// Idle animation when this Enemy is damaged.
+    /// </summary>
+    [SerializeField]
+    private Sprite[] criticalIdleSpriteEast;
+
+    /// <summary>
+    /// Idle animation when this Enemy is healthy.
+    /// </summary>
+    [SerializeField]
+    private Sprite[] healthyIdleSpriteSouth;
+
+    /// <summary>
+    /// Idle animation when this Enemy is damaged.
+    /// </summary>
+    [SerializeField]
+    private Sprite[] damagedIdleSpriteSouth;
+
+    /// <summary>
+    /// Idle animation when this Enemy is damaged.
+    /// </summary>
+    [SerializeField]
+    private Sprite[] criticalIdleSpriteSouth;
+
+    /// <summary>
+    /// Idle animation when this Enemy is healthy.
+    /// </summary>
+    [SerializeField]
+    private Sprite[] healthyIdleSpriteWest;
+
+    /// <summary>
+    /// Idle animation when this Enemy is damaged.
+    /// </summary>
+    [SerializeField]
+    private Sprite[] damagedIdleSpriteWest;
+
+    /// <summary>
+    /// Idle animation when this Enemy is damaged.
+    /// </summary>
+    [SerializeField]
+    private Sprite[] criticalIdleSpriteWest;
 
     /// <summary>
     /// Returns the EnemyType that this EnemyAnimation is animating.
@@ -301,6 +371,72 @@ public class EnemyAnimation : ScriptableObject
                 return (Sprite[])criticalAttackAnimationSouth.Clone();
             case Direction.WEST:
                 return (Sprite[])criticalAttackAnimationWest.Clone();
+            default:
+                return null;
+        }
+    }
+
+    /// <summary>
+    /// Returns the healthy idle animation for a given direction.
+    /// </summary>
+    /// <param name="direction">The direction of the idle animation</param>
+    /// <returns>A copy of the healthy idle animation array</returns>
+    public Sprite[] GetHealthyIdleAnimation(Direction direction)
+    {
+        switch (direction)
+        {
+            case Direction.NORTH:
+                return healthyIdleSpriteNorth;
+            case Direction.EAST:
+                return healthyIdleSpriteEast;
+            case Direction.SOUTH:
+                return healthyIdleSpriteSouth;
+            case Direction.WEST:
+                return healthyIdleSpriteWest;
+            default:
+                return null;
+        }
+    }
+
+    /// <summary>
+    /// Returns the damaged idle animation for a given direction.
+    /// </summary>
+    /// <param name="direction">The direction of the idle animation</param>
+    /// <returns>A copy of the damaged idle animation array</returns>
+    public Sprite[] GetDamagedIdleAnimation(Direction direction)
+    {
+        switch (direction)
+        {
+            case Direction.NORTH:
+                return damagedIdleSpriteNorth;
+            case Direction.EAST:
+                return damagedIdleSpriteEast;
+            case Direction.SOUTH:
+                return damagedIdleSpriteSouth;
+            case Direction.WEST:
+                return damagedIdleSpriteWest;
+            default:
+                return null;
+        }
+    }
+
+    /// <summary>
+    /// Returns the critical idle animation for a given direction.
+    /// </summary>
+    /// <param name="direction">The direction of the idle animation</param>
+    /// <returns>A copy of the critical idle animation array</returns>
+    public Sprite[] GetCriticalIdleAnimation(Direction direction)
+    {
+        switch (direction)
+        {
+            case Direction.NORTH:
+                return criticalIdleSpriteNorth;
+            case Direction.EAST:
+                return criticalIdleSpriteEast;
+            case Direction.SOUTH:
+                return criticalIdleSpriteSouth;
+            case Direction.WEST:
+                return criticalIdleSpriteWest;
             default:
                 return null;
         }

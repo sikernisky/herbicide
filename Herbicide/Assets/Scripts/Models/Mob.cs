@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 /// <summary>
 /// Represents a living entity in the game. All Mobs are placeable.
@@ -57,7 +59,12 @@ public abstract class Mob : PlaceableObject
     /// <summary>
     /// Current AnimationType this Mob is playing.
     /// </summary>
-    private AnimationType currentAnimation;
+    private Enum currentAnimation;
+
+    /// <summary>
+    /// Reference to this Mob's animation coroutine.
+    /// </summary>
+    private IEnumerator animationReference;
 
     /// <summary>
     /// true if this Mob is spawned in the scene.
@@ -66,16 +73,7 @@ public abstract class Mob : PlaceableObject
 
     //-------------------- ----- --------------------- // 
 
-    /// <summary>
-    /// Enum to represent the animation this Enemy should/is playing.
-    /// </summary>
-    public enum AnimationType
-    {
-        MOVE, // When moving from one location to another.
-        ATTACK, // When attacking an ITargetable
-        STATIC, // One frame backup animation
-        IDLE // When standing still and not doing anything
-    }
+   
 
     /// <summary>
     /// Sets this Mob to play some Animation. If the animation
@@ -83,11 +81,9 @@ public abstract class Mob : PlaceableObject
     /// playing, restarts it.
     /// </summary>
     /// <param name="animation"></param>
-    protected void PlayAnimation(AnimationType animation)
+    protected void PlayAnimation(Enum animation)
     {
         if (animation == currentAnimation) return; //RESTART!
-
-
         currentAnimation = animation;
     }
 
@@ -95,7 +91,7 @@ public abstract class Mob : PlaceableObject
     /// Returns the AnimationType this Mob is currently playing.
     /// </summary>
     /// <returns>the AnimationType this Mob is playing.</returns>
-    protected AnimationType GetCurrentAnimation()
+    protected Enum GetCurrentAnimation()
     {
         return currentAnimation;
     }
@@ -105,7 +101,8 @@ public abstract class Mob : PlaceableObject
     /// </summary>
     public virtual void OnSpawn()
     {
-        StartCoroutine(CoPlayAnimation());
+        animationReference = CoPlayAnimation();
+        StartCoroutine(animationReference);
         spawned = true;
     }
 
@@ -125,5 +122,6 @@ public abstract class Mob : PlaceableObject
     /// </summary>
     /// <returns>A reference to the coroutine.</returns>
     protected abstract IEnumerator CoPlayAnimation();
+
 
 }

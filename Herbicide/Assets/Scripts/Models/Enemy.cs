@@ -206,6 +206,17 @@ public abstract class Enemy : Mob, IAttackable
     }
 
     /// <summary>
+    /// Enum to represent the animation this Enemy should/is playing.
+    /// </summary>
+    public enum EnemyAnimationType
+    {
+        MOVE, // When moving from one location to another.
+        ATTACK, // When attacking an ITargetable
+        STATIC, // One frame backup animation
+        IDLE // When standing still and not doing anything
+    }
+
+    /// <summary>
     /// Resets this Enemy's stats to its starting/base values.
     /// </summary>
     public virtual void ResetStats()
@@ -254,6 +265,7 @@ public abstract class Enemy : Mob, IAttackable
         if (multipliedChance <= randomNumber) return; //Loot drop "missed".
 
         EconomyController.SpawnSeedToken(GetAttackPosition());
+
     }
 
     /// <summary>
@@ -539,7 +551,9 @@ public abstract class Enemy : Mob, IAttackable
 
     /// <summary>
     /// Coroutine to play an animation from a Sprite animation track,
-    /// mimicking a "flip-book."
+    /// mimicking a "flip-book." <br></br>
+    /// 
+    /// This should only be called once at start. 
     /// </summary>
     /// <param name="animationTrack">The Sprite animation track to play.</param>
     /// <param name="time">How long the animation should last.</param>
@@ -554,20 +568,23 @@ public abstract class Enemy : Mob, IAttackable
             float animationTime;
             switch (GetCurrentAnimation())
             {
-                case AnimationType.ATTACK:
+                case EnemyAnimationType.ATTACK:
                     healthyTrack = EnemyFactory.GetAttackTrack(TYPE, EnemyHealthState.HEALTHY, GetDirection());
                     damagedTrack = EnemyFactory.GetAttackTrack(TYPE, EnemyHealthState.DAMAGED, GetDirection());
                     criticalTrack = EnemyFactory.GetAttackTrack(TYPE, EnemyHealthState.CRITICAL, GetDirection());
                     animationTime = ATTACK_ANIMATION_TIME;
                     break;
-                case AnimationType.MOVE:
+                case EnemyAnimationType.MOVE:
                     healthyTrack = EnemyFactory.GetMovementTrack(TYPE, EnemyHealthState.HEALTHY, GetDirection());
                     damagedTrack = EnemyFactory.GetMovementTrack(TYPE, EnemyHealthState.DAMAGED, GetDirection());
                     criticalTrack = EnemyFactory.GetMovementTrack(TYPE, EnemyHealthState.CRITICAL, GetDirection());
                     animationTime = MOVE_ANIMATION_TIME;
                     break;
-                default:
-                    animationTime = 1f;
+                default: //Default to move animation
+                    healthyTrack = EnemyFactory.GetMovementTrack(TYPE, EnemyHealthState.HEALTHY, GetDirection());
+                    damagedTrack = EnemyFactory.GetMovementTrack(TYPE, EnemyHealthState.DAMAGED, GetDirection());
+                    criticalTrack = EnemyFactory.GetMovementTrack(TYPE, EnemyHealthState.CRITICAL, GetDirection());
+                    animationTime = MOVE_ANIMATION_TIME;
                     break;
             }
 

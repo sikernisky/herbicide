@@ -151,7 +151,7 @@ public class Kudzu : MovingEnemy
     {
         hopping = true;
         Vector3 startPos = transform.position;
-        PlayAnimation(AnimationType.MOVE);
+        PlayAnimation(EnemyAnimationType.MOVE);
 
         float time = 0f;
         while (time < MOVE_ANIMATION_TIME)
@@ -177,7 +177,7 @@ public class Kudzu : MovingEnemy
     {
         hopping = true;
         Vector3 startPos = transform.position;
-        PlayAnimation(AnimationType.MOVE);
+        PlayAnimation(EnemyAnimationType.MOVE);
 
         float time = 0f;
         while (time < MOVE_ANIMATION_TIME)

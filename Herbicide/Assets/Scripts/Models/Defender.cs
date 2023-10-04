@@ -168,6 +168,15 @@ public abstract class Defender : Mob, IAttackable
     }
 
     /// <summary>
+    /// Performs actions when this Defender first enters the scene.
+    /// </summary>
+    public override void OnSpawn()
+    {
+        base.OnSpawn();
+        ResetStats();
+    }
+
+    /// <summary>
     /// Returns a GameObject that holds a SpriteRenderer component with
     /// this Defender's placed Sprite. No other components are
     /// copied. 
