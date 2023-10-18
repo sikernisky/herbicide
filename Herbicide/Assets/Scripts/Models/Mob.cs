@@ -71,20 +71,83 @@ public abstract class Mob : PlaceableObject
     /// </summary>
     private bool spawned;
 
+    /// <summary>
+    /// The current frame number of the animation loop. Zero-indexed.
+    /// </summary>
+    private int frame;
+
+    /// <summary>
+    /// The maxmimum number of frames for the animation playing
+    /// in the current animation loop. Zero-indexed.
+    /// </summary>
+    private int frameCount;
+
     //-------------------- ----- --------------------- // 
 
-   
+
 
     /// <summary>
     /// Sets this Mob to play some Animation. If the animation
     /// passed into this method is the one it is currently
     /// playing, restarts it.
     /// </summary>
-    /// <param name="animation"></param>
+    /// <param name="animation">The animation to play.</param>
+    /// <param name="frameCount">The maximum number of frames in the animation
+    /// to play.</param>
     protected void PlayAnimation(Enum animation)
     {
-        if (animation == currentAnimation) return; //RESTART!
-        currentAnimation = animation;
+        if (animation == currentAnimation) frame = 0;
+        else currentAnimation = animation;
+    }
+
+    /// <summary>
+    /// Sets the maximum number of frames in the current animation loop.
+    /// </summary>
+    /// <param name="frameCount">the maximum number of frames in the current animation loop. </param>
+    protected void SetFrameCount(int frameCount)
+    {
+        Assert.IsTrue(frameCount >= 0, "Frame count must be greater than or equal to 0.");
+        this.frameCount = frameCount;
+    }
+
+    /// <summary>
+    /// Returns the current frame limit.
+    /// </summary>
+    /// <returns>the current frame limit.</returns>
+    public int GetFrameCount()
+    {
+        return frameCount;
+    }
+
+    /// <summary>
+    /// Increments the frame count by one; or, if it is already
+    /// the final frame in the current animation, sets it to 0.
+    /// </summary>
+    protected void NextFrame()
+    {
+        if(frame + 1 > GetFrameCount()) frame = 0;
+        else frame++;
+    }
+
+    /// <summary>
+    /// Returns the current frame number of the animation in this Mob's
+    /// animation loop.
+    /// </summary>
+    /// <returns>the current frame number of the animation in this Mob's
+    /// animation loop. </returns>
+    public int GetFrameNumber()
+    {
+        return frame;
+    }
+
+    /// <summary>
+    /// Returns true if this Mob is currently playing an Animation.
+    /// </summary>
+    /// <returns>true if this Mob is currently playing an Animation;
+    /// otherwise, false.</returns>
+    public bool PlayingAnimation()
+    {
+        return animationReference != null;
     }
 
     /// <summary>
@@ -101,6 +164,7 @@ public abstract class Mob : PlaceableObject
     /// </summary>
     public virtual void OnSpawn()
     {
+        Assert.IsFalse(PlayingAnimation(), GetName() + " is already playing an animation.");
         animationReference = CoPlayAnimation();
         StartCoroutine(animationReference);
         spawned = true;
@@ -122,6 +186,5 @@ public abstract class Mob : PlaceableObject
     /// </summary>
     /// <returns>A reference to the coroutine.</returns>
     protected abstract IEnumerator CoPlayAnimation();
-
 
 }

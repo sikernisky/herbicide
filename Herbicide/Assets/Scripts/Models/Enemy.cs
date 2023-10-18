@@ -81,7 +81,6 @@ public abstract class Enemy : Mob, IAttackable
     /// </summary>
     public virtual float MOVE_ANIMATION_TIME => .25f;
 
-
     /// <summary>
     /// How much currency this Enemy drops.
     /// </summary>
@@ -561,7 +560,6 @@ public abstract class Enemy : Mob, IAttackable
     /// <returns>A reference to the coroutine.</returns>
     protected override IEnumerator CoPlayAnimation()
     {
-        int frame = 0;
         while (true)
         {
             //Get the right track.
@@ -597,19 +595,24 @@ public abstract class Enemy : Mob, IAttackable
                 //Using healthy track for length, but any one works after assertions
                 float waitTime = animationTime / healthyTrack.Length;
 
+                //Set max frame count
+                SetFrameCount(healthyTrack.Length - 1);
+
                 Sprite s;
-                if (GetHealthState() == EnemyHealthState.HEALTHY) s = healthyTrack[frame];
-                else if (GetHealthState() == EnemyHealthState.DAMAGED) s = damagedTrack[frame];
-                else s = criticalTrack[frame];
+                int f = GetFrameNumber();
+                if (GetHealthState() == EnemyHealthState.HEALTHY) s = healthyTrack[f];
+                else if (GetHealthState() == EnemyHealthState.DAMAGED) s = damagedTrack[f];
+                else s = criticalTrack[f];
 
                 SetSprite(s);
                 yield return new WaitForSeconds(waitTime);
-                if (frame + 1 >= healthyTrack.Length) frame = 0;
-                else frame++;
+                NextFrame();
             }
             else yield return null;
         }
     }
+
+  
 
     /// <summary>
     /// Updates any cooldowns managed by this Enemy.

@@ -506,6 +506,6 @@ public abstract class Defender : Mob, IAttackable
     /// <returns>A reference to the coroutine.</returns>
     protected override IEnumerator CoPlayAnimation()
     {
-        throw new System.NotImplementedException();
+        yield return null;
     }
 }
