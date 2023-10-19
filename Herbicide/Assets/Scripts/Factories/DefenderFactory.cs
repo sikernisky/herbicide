@@ -55,6 +55,14 @@ public class DefenderFactory : MonoBehaviour
     private Sprite[] squirrelAttackSprites;
 
     /// <summary>
+    /// All ScriptableObjects containing animation data about
+    /// different Defenders.
+    /// </summary>
+    [SerializeField]
+    private List<DefenderAnimation> defenderAnimationDataList;
+
+
+    /// <summary>
     /// Finds and sets the DefenderFactory singleton.
     /// </summary>
     /// <param name="levelController">The LevelController singleton.</param>
@@ -123,6 +131,24 @@ public class DefenderFactory : MonoBehaviour
             default:
                 throw new System.Exception("Defender not supported.");
         }
+    }
+
+    /// <summary>
+    /// Returns an attack animation track for a given Defender type.
+    /// </summary>
+    /// <param name="type">The Defender type.</param>
+    /// <param name="direction">The direction of the Defender.</param>
+    /// <returns>The attack animation track as a Sprite array or null 
+    /// if the enemy type is not found.</returns>
+    public static Sprite[] GetAttackTrack(Defender.DefenderType type, Direction direction)
+    {
+
+        DefenderAnimation data = instance.defenderAnimationDataList.Find(x => x.GetDefenderType() == type);
+        // EnemyAnimation data = instance.enemyAnimationDataList.Find(x => x.GetEnemyType() == type);
+
+        if (data != null) return data.GetAttackAnimation(direction);
+
+        return null;
     }
 
     /// <summary>

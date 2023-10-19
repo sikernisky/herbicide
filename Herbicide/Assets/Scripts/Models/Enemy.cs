@@ -154,22 +154,6 @@ public abstract class Enemy : Mob, IAttackable
     private EnemyHealthState healthState;
 
     /// <summary>
-    /// The current animation track for this Enemy when it is healthy.
-    /// </summary>
-    private Sprite[] healthyTrack;
-
-    /// <summary>
-    /// The current animation track for this Enemy when it is damaged.
-    /// </summary>
-    private Sprite[] damagedTrack;
-
-    /// <summary>
-    /// The current animation track for this Enemy when it is 
-    /// critically damaged.
-    /// </summary>
-    private Sprite[] criticalTrack;
-
-    /// <summary>
     /// Enemy's SpriteRenderer component. 
     /// </summary>
     [SerializeField]
@@ -564,55 +548,46 @@ public abstract class Enemy : Mob, IAttackable
         {
             //Get the right track.
             float animationTime;
+            EnemyHealthState currentHealthState = GetHealthState();
             switch (GetCurrentAnimation())
             {
                 case EnemyAnimationType.ATTACK:
-                    healthyTrack = EnemyFactory.GetAttackTrack(TYPE, EnemyHealthState.HEALTHY, GetDirection());
-                    damagedTrack = EnemyFactory.GetAttackTrack(TYPE, EnemyHealthState.DAMAGED, GetDirection());
-                    criticalTrack = EnemyFactory.GetAttackTrack(TYPE, EnemyHealthState.CRITICAL, GetDirection());
+                    Sprite[] attackTrack = EnemyFactory.GetAttackTrack(
+                        TYPE, currentHealthState, GetDirection());
+                    SetFrameCount(attackTrack.Length);
+                    SetCurrentAnimationTrack(attackTrack);
                     animationTime = ATTACK_ANIMATION_TIME;
                     break;
                 case EnemyAnimationType.MOVE:
-                    healthyTrack = EnemyFactory.GetMovementTrack(TYPE, EnemyHealthState.HEALTHY, GetDirection());
-                    damagedTrack = EnemyFactory.GetMovementTrack(TYPE, EnemyHealthState.DAMAGED, GetDirection());
-                    criticalTrack = EnemyFactory.GetMovementTrack(TYPE, EnemyHealthState.CRITICAL, GetDirection());
+                    Sprite[] moveTrack = EnemyFactory.GetAttackTrack(
+                        TYPE, currentHealthState, GetDirection());
+                    SetFrameCount(moveTrack.Length);
+                    SetCurrentAnimationTrack(moveTrack);
                     animationTime = MOVE_ANIMATION_TIME;
                     break;
-                default: //Default to move animation
-                    healthyTrack = EnemyFactory.GetMovementTrack(TYPE, EnemyHealthState.HEALTHY, GetDirection());
-                    damagedTrack = EnemyFactory.GetMovementTrack(TYPE, EnemyHealthState.DAMAGED, GetDirection());
-                    criticalTrack = EnemyFactory.GetMovementTrack(TYPE, EnemyHealthState.CRITICAL, GetDirection());
-                    animationTime = MOVE_ANIMATION_TIME;
+                default: //Default to Idle animation
+                    Sprite[] defaultTrack = EnemyFactory.GetAttackTrack(
+                        TYPE, currentHealthState, GetDirection());
+                    SetFrameCount(defaultTrack.Length);
+                    SetCurrentAnimationTrack(defaultTrack);
+                    animationTime = ATTACK_ANIMATION_TIME;
                     break;
             }
 
-            if (healthyTrack != null && damagedTrack != null && criticalTrack != null)
+            if (HasAnimationTrack())
             {
-                //Transitive property
-                Assert.AreEqual(healthyTrack.Length, damagedTrack.Length);
-                Assert.AreEqual(damagedTrack.Length, criticalTrack.Length);
-
-                //Using healthy track for length, but any one works after assertions
-                float waitTime = animationTime / healthyTrack.Length;
-
-                //Set max frame count
-                SetFrameCount(healthyTrack.Length - 1);
-
-                Sprite s;
-                int f = GetFrameNumber();
-                if (GetHealthState() == EnemyHealthState.HEALTHY) s = healthyTrack[f];
-                else if (GetHealthState() == EnemyHealthState.DAMAGED) s = damagedTrack[f];
-                else s = criticalTrack[f];
-
-                SetSprite(s);
+                float waitTime = animationTime / GetFrameCount() - 1;
+                SetFrameCount(GetFrameCount());
+                SetSprite(GetSpriteAtCurrentFrame());
                 yield return new WaitForSeconds(waitTime);
                 NextFrame();
             }
+
             else yield return null;
         }
     }
 
-  
+
 
     /// <summary>
     /// Updates any cooldowns managed by this Enemy.
@@ -643,7 +618,6 @@ public abstract class Enemy : Mob, IAttackable
     /// <returns>true if this Enemy is attacking an ITargetable right now;
     /// otherwise, false.</returns>
     public abstract bool Attacking();
-
 
     /// <summary>
     /// Returns the position at which an IAttackable will aim at when

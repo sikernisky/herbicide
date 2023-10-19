@@ -82,9 +82,18 @@ public abstract class Mob : PlaceableObject
     /// </summary>
     private int frameCount;
 
+    /// <summary>
+    /// true if the frame count/limit was updated after the animation
+    /// changed; otherwise, false.
+    /// </summary>
+    private bool frameCountUpdated;
+
+    /// <summary>
+    /// The "flip-book" Sprite track of the current animation.
+    /// </summary>
+    private Sprite[] currentAnimationTrack;
+
     //-------------------- ----- --------------------- // 
-
-
 
     /// <summary>
     /// Sets this Mob to play some Animation. If the animation
@@ -96,8 +105,11 @@ public abstract class Mob : PlaceableObject
     /// to play.</param>
     protected void PlayAnimation(Enum animation)
     {
+        Assert.IsTrue(frameCountUpdated, "Need to call SetFrameCount.");
+
         if (animation == currentAnimation) frame = 0;
         else currentAnimation = animation;
+        frameCountUpdated = false;
     }
 
     /// <summary>
@@ -108,6 +120,7 @@ public abstract class Mob : PlaceableObject
     {
         Assert.IsTrue(frameCount >= 0, "Frame count must be greater than or equal to 0.");
         this.frameCount = frameCount;
+        frameCountUpdated = true;
     }
 
     /// <summary>
@@ -125,7 +138,7 @@ public abstract class Mob : PlaceableObject
     /// </summary>
     protected void NextFrame()
     {
-        if(frame + 1 > GetFrameCount()) frame = 0;
+        if (frame + 1 > GetFrameCount()) frame = 0;
         else frame++;
     }
 
@@ -180,11 +193,45 @@ public abstract class Mob : PlaceableObject
     }
 
     /// <summary>
+    /// Sets the animation track of the current animation. 
+    /// </summary>
+    /// <param name="track">the animation track to set.</param>
+    protected void SetCurrentAnimationTrack(Sprite[] track)
+    {
+        Assert.IsNotNull(track, "Animation track is null.");
+        Assert.IsTrue(frameCountUpdated, "Need to call SetFrameCount.");
+
+        currentAnimationTrack = track;
+    }
+
+    /// <summary>
+    /// Returns true if this Mob is set up with an animation track.
+    /// </summary>
+    /// <returns>true if this Mob is set up with an animation track;
+    /// otherwise, false. </returns>
+    protected bool HasAnimationTrack()
+    {
+        return currentAnimationTrack != null;
+    }
+
+    /// <summary>
+    /// Returns the Sprite at the current frame of the current
+    /// animation.
+    /// </summary>
+    /// <returns>the Sprite at the current frame of the current
+    /// animation</returns>
+    protected Sprite GetSpriteAtCurrentFrame()
+    {
+        Assert.IsTrue(HasAnimationTrack());
+
+        return currentAnimationTrack[GetFrameNumber()];
+    }
+
+    /// <summary>
     /// Plays the current animation of this Mob. Acts like a flipbook;
     /// keeps track of frames and increments this counter to apply
     /// the correct Sprites to the Mob's SpriteRenderer.
     /// </summary>
     /// <returns>A reference to the coroutine.</returns>
     protected abstract IEnumerator CoPlayAnimation();
-
 }

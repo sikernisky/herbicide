@@ -233,9 +233,9 @@ public class EnemyAnimation : ScriptableObject
     private Sprite[] criticalIdleSpriteWest;
 
     /// <summary>
-    /// Returns the EnemyType that this EnemyAnimation is animating.
+    /// Returns the EnemyType that this EnemyAnimation is storing.
     /// </summary>
-    /// <returns>the EnemyType that this EnemyAnimation is animating.
+    /// <returns>the EnemyType that this EnemyAnimation is storing.
     /// </returns>
     public Enemy.EnemyType GetEnemyType() => enemyType;
 

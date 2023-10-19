@@ -64,6 +64,11 @@ public abstract class Defender : Mob, IAttackable
     public override float MIN_ATTACK_SPEED => 0f;
 
     /// <summary>
+    /// Time of an attack animation. Depends on attack speed.
+    /// </summary>
+    public virtual float ATTACK_ANIMATION_TIME => 1f / GetAttackSpeed();
+
+    /// <summary>
     /// Damage inflicted on a target(s) every time this Defender attacks.
     /// </summary>
     public int DAMAGE_PER_ATTACK => 20;
@@ -132,6 +137,17 @@ public abstract class Defender : Mob, IAttackable
         MAULER,
         PATHFINDER,
         ANIMYST
+    }
+
+    /// <summary>
+    /// Enum to represent the animation this Defender should/is playing.
+    /// </summary>
+    public enum DefenderAnimationType
+    {
+        MOVE, // When moving from one location to another.
+        ATTACK, // When attacking an ITargetable
+        STATIC, // One frame backup animation
+        IDLE // When standing still and not doing anything
     }
 
     /// <summary>
@@ -506,6 +522,40 @@ public abstract class Defender : Mob, IAttackable
     /// <returns>A reference to the coroutine.</returns>
     protected override IEnumerator CoPlayAnimation()
     {
-        yield return null;
+        while (true)
+        {
+            //Get the right track.
+            float animationTime;
+            switch (GetCurrentAnimation())
+            {
+                case DefenderAnimationType.ATTACK:
+                    animationTime = ATTACK_ANIMATION_TIME;
+                    Sprite[] attackTrack = DefenderFactory.GetAttackTrack(TYPE, GetDirection());
+                    SetFrameCount(attackTrack.Length);
+                    SetCurrentAnimationTrack(attackTrack);
+                    break;
+                // case DefenderAnimationType.MOVE:
+                //     currentTrack = EnemyFactory.GetMovementTrack(
+                //         TYPE, currentHealthState, GetDirection());
+                //     animationTime = MOVE_ANIMATION_TIME;
+                //     break;
+                default: //Default to Idle animation
+                    animationTime = ATTACK_ANIMATION_TIME;
+                    Sprite[] defaultTrack = DefenderFactory.GetAttackTrack(TYPE, GetDirection());
+                    SetFrameCount(defaultTrack.Length);
+                    SetCurrentAnimationTrack(defaultTrack);
+                    break;
+            }
+
+            if (HasAnimationTrack())
+            {
+                float waitTime = animationTime / GetFrameCount() + 1;
+                SetSprite(GetSpriteAtCurrentFrame());
+                yield return new WaitForSeconds(waitTime);
+                NextFrame();
+            }
+
+            else yield return null;
+        }
     }
 }
