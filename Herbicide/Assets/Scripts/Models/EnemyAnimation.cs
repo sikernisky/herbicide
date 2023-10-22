@@ -164,73 +164,73 @@ public class EnemyAnimation : ScriptableObject
     /// Idle animation when this Enemy is healthy.
     /// </summary>
     [SerializeField]
-    private Sprite[] healthyIdleSpriteNorth;
+    private Sprite[] healthyIdleAnimationNorth;
 
     /// <summary>
     /// Idle animation when this Enemy is damaged.
     /// </summary>
     [SerializeField]
-    private Sprite[] damagedIdleSpriteNorth;
+    private Sprite[] damagedIdleAnimationNorth;
 
     /// <summary>
     /// Idle animation when this Enemy is damaged.
     /// </summary>
     [SerializeField]
-    private Sprite[] criticalIdleSpriteNorth;
+    private Sprite[] criticalIdleAnimationNorth;
 
     /// <summary>
     /// Idle animation when this Enemy is healthy.
     /// </summary>
     [SerializeField]
-    private Sprite[] healthyIdleSpriteEast;
+    private Sprite[] healthyIdleAnimationEast;
 
     /// <summary>
     /// Idle animation when this Enemy is damaged.
     /// </summary>
     [SerializeField]
-    private Sprite[] damagedIdleSpriteEast;
+    private Sprite[] damagedIdleAnimationEast;
 
     /// <summary>
     /// Idle animation when this Enemy is damaged.
     /// </summary>
     [SerializeField]
-    private Sprite[] criticalIdleSpriteEast;
+    private Sprite[] criticalIdleAnimationEast;
 
     /// <summary>
     /// Idle animation when this Enemy is healthy.
     /// </summary>
     [SerializeField]
-    private Sprite[] healthyIdleSpriteSouth;
+    private Sprite[] healthyIdleAnimationSouth;
 
     /// <summary>
     /// Idle animation when this Enemy is damaged.
     /// </summary>
     [SerializeField]
-    private Sprite[] damagedIdleSpriteSouth;
+    private Sprite[] damagedIdleAnimationSouth;
 
     /// <summary>
     /// Idle animation when this Enemy is damaged.
     /// </summary>
     [SerializeField]
-    private Sprite[] criticalIdleSpriteSouth;
+    private Sprite[] criticalIdleAnimationSouth;
 
     /// <summary>
     /// Idle animation when this Enemy is healthy.
     /// </summary>
     [SerializeField]
-    private Sprite[] healthyIdleSpriteWest;
+    private Sprite[] healthyIdleAnimationWest;
 
     /// <summary>
     /// Idle animation when this Enemy is damaged.
     /// </summary>
     [SerializeField]
-    private Sprite[] damagedIdleSpriteWest;
+    private Sprite[] damagedIdleAnimationWest;
 
     /// <summary>
     /// Idle animation when this Enemy is damaged.
     /// </summary>
     [SerializeField]
-    private Sprite[] criticalIdleSpriteWest;
+    private Sprite[] criticalIdleAnimationWest;
 
     /// <summary>
     /// Returns the EnemyType that this EnemyAnimation is storing.
@@ -386,13 +386,13 @@ public class EnemyAnimation : ScriptableObject
         switch (direction)
         {
             case Direction.NORTH:
-                return healthyIdleSpriteNorth;
+                return healthyIdleAnimationNorth;
             case Direction.EAST:
-                return healthyIdleSpriteEast;
+                return healthyIdleAnimationEast;
             case Direction.SOUTH:
-                return healthyIdleSpriteSouth;
+                return healthyIdleAnimationSouth;
             case Direction.WEST:
-                return healthyIdleSpriteWest;
+                return healthyIdleAnimationWest;
             default:
                 return null;
         }
@@ -408,13 +408,13 @@ public class EnemyAnimation : ScriptableObject
         switch (direction)
         {
             case Direction.NORTH:
-                return damagedIdleSpriteNorth;
+                return damagedIdleAnimationNorth;
             case Direction.EAST:
-                return damagedIdleSpriteEast;
+                return damagedIdleAnimationEast;
             case Direction.SOUTH:
-                return damagedIdleSpriteSouth;
+                return damagedIdleAnimationSouth;
             case Direction.WEST:
-                return damagedIdleSpriteWest;
+                return damagedIdleAnimationWest;
             default:
                 return null;
         }
@@ -430,13 +430,13 @@ public class EnemyAnimation : ScriptableObject
         switch (direction)
         {
             case Direction.NORTH:
-                return criticalIdleSpriteNorth;
+                return criticalIdleAnimationNorth;
             case Direction.EAST:
-                return criticalIdleSpriteEast;
+                return criticalIdleAnimationEast;
             case Direction.SOUTH:
-                return criticalIdleSpriteSouth;
+                return criticalIdleAnimationSouth;
             case Direction.WEST:
-                return criticalIdleSpriteWest;
+                return criticalIdleAnimationWest;
             default:
                 return null;
         }

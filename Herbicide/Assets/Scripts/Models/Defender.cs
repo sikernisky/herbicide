@@ -69,6 +69,11 @@ public abstract class Defender : Mob, IAttackable
     public virtual float ATTACK_ANIMATION_TIME => 1f / GetAttackSpeed();
 
     /// <summary>
+    /// Time of an attack animation. Depends on attack speed.
+    /// </summary>
+    public virtual float IDLE_ANIMATION_TIME => 0;
+
+    /// <summary>
     /// Damage inflicted on a target(s) every time this Defender attacks.
     /// </summary>
     public int DAMAGE_PER_ATTACK => 20;
@@ -418,39 +423,7 @@ public abstract class Defender : Mob, IAttackable
         return direction;
     }
 
-    /// <summary>
-    /// Sets this Defender's Sprite to represent its attacking
-    /// in its current direction.
-    /// </summary>
-    protected void SetAttackSprite()
-    {
-        switch (TYPE)
-        {
-            case DefenderType.SQUIRREL:
-                SetSprite(DefenderFactory.GetDefenderAttackSprite(TYPE, GetDirection()));
-                break;
-            default:
-                throw new System.Exception("Defender not supported.");
-        }
 
-        //SetSprite(attackSprites[(int)GetDirection()]);
-    }
-
-    /// <summary>
-    /// Sets this Defender's Sprite to represent its idling
-    /// in its current direction.
-    /// </summary>
-    protected void SetIdleSprite()
-    {
-        switch (TYPE)
-        {
-            case DefenderType.SQUIRREL:
-                SetSprite(DefenderFactory.GetDefenderIdleSprite(TYPE, GetDirection()));
-                break;
-            default:
-                throw new System.Exception("Defender not supported.");
-        }
-    }
 
     /// <summary>
     /// Returns this Defender's Collider component.
@@ -534,11 +507,12 @@ public abstract class Defender : Mob, IAttackable
                     SetFrameCount(attackTrack.Length);
                     SetCurrentAnimationTrack(attackTrack);
                     break;
-                // case DefenderAnimationType.MOVE:
-                //     currentTrack = EnemyFactory.GetMovementTrack(
-                //         TYPE, currentHealthState, GetDirection());
-                //     animationTime = MOVE_ANIMATION_TIME;
-                //     break;
+                case DefenderAnimationType.IDLE:
+                    animationTime = IDLE_ANIMATION_TIME;
+                    Sprite[] idleTrack = DefenderFactory.GetAttackTrack(TYPE, GetDirection());
+                    SetFrameCount(idleTrack.Length);
+                    SetCurrentAnimationTrack(idleTrack);
+                    break;
                 default: //Default to Idle animation
                     animationTime = ATTACK_ANIMATION_TIME;
                     Sprite[] defaultTrack = DefenderFactory.GetAttackTrack(TYPE, GetDirection());

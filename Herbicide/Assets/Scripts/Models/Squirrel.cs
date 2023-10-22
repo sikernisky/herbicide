@@ -68,7 +68,7 @@ public class Squirrel : Defender
         float acornDelay = ATTACK_DURATION * ATTACK_DURATION_PERCENTAGE;
 
         yield return new WaitForSeconds(acornDelay);
-        SetAttackSprite();
+        PlayAnimation(DefenderAnimationType.ATTACK);
 
         //Prep the projectile for the ProjectileController
         GameObject acornOb = Instantiate(acorn.gameObject);
@@ -78,6 +78,6 @@ public class Squirrel : Defender
         //SoundController.PlaySoundEffect("squirrelAttack");
 
         yield return new WaitForSeconds(acornDelay);
-        SetIdleSprite();
+        PlayAnimation(DefenderAnimationType.IDLE);
     }
 }

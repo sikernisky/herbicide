@@ -77,6 +77,11 @@ public abstract class Enemy : Mob, IAttackable
     public virtual float ATTACK_ANIMATION_TIME => 1f / GetAttackSpeed();
 
     /// <summary>
+    /// Time of an attack animation. Depends on attack speed.
+    /// </summary>
+    public virtual float IDLE_ANIMATION_TIME => 0;
+
+    /// <summary>
     ///  Delay, in seconds, in-between movement animation frames.
     /// </summary>
     public virtual float MOVE_ANIMATION_TIME => .25f;
@@ -559,7 +564,7 @@ public abstract class Enemy : Mob, IAttackable
                     animationTime = ATTACK_ANIMATION_TIME;
                     break;
                 case EnemyAnimationType.MOVE:
-                    Sprite[] moveTrack = EnemyFactory.GetAttackTrack(
+                    Sprite[] moveTrack = EnemyFactory.GetMovementTrack(
                         TYPE, currentHealthState, GetDirection());
                     SetFrameCount(moveTrack.Length);
                     SetCurrentAnimationTrack(moveTrack);
@@ -570,13 +575,15 @@ public abstract class Enemy : Mob, IAttackable
                         TYPE, currentHealthState, GetDirection());
                     SetFrameCount(defaultTrack.Length);
                     SetCurrentAnimationTrack(defaultTrack);
-                    animationTime = ATTACK_ANIMATION_TIME;
+                    animationTime = IDLE_ANIMATION_TIME;
                     break;
             }
 
+
+
             if (HasAnimationTrack())
             {
-                float waitTime = animationTime / GetFrameCount() - 1;
+                float waitTime = animationTime / (GetFrameCount() - 1);
                 SetFrameCount(GetFrameCount());
                 SetSprite(GetSpriteAtCurrentFrame());
                 yield return new WaitForSeconds(waitTime);

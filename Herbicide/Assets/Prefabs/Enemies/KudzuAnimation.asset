@@ -97,15 +97,99 @@ MonoBehaviour:
   - {fileID: 1479561492, guid: e8feaa630903a40179b4e8dcab2d9a25, type: 3}
   - {fileID: -1784899821, guid: e8feaa630903a40179b4e8dcab2d9a25, type: 3}
   - {fileID: 1552519841, guid: e8feaa630903a40179b4e8dcab2d9a25, type: 3}
-  healthyAttackAnimationNorth: []
-  damagedAttackAnimationNorth: []
-  criticalAttackAnimationNorth: []
-  healthyAttackAnimationEast: []
-  damagedAttackAnimationEast: []
-  criticalAttackAnimationEast: []
-  healthyAttackAnimationSouth: []
-  damagedAttackAnimationSouth: []
-  criticalAttackAnimationSouth: []
-  healthyAttackAnimationWest: []
-  damagedAttackAnimationWest: []
-  criticalAttackAnimationWest: []
+  healthyAttackAnimationNorth:
+  - {fileID: -529971986, guid: 2272bef9d0b835b4bb55f4c46e3c41fc, type: 3}
+  - {fileID: -2146066000, guid: 2272bef9d0b835b4bb55f4c46e3c41fc, type: 3}
+  - {fileID: -223767126, guid: 2272bef9d0b835b4bb55f4c46e3c41fc, type: 3}
+  - {fileID: -1684094855, guid: 2272bef9d0b835b4bb55f4c46e3c41fc, type: 3}
+  - {fileID: 1911775299, guid: 2272bef9d0b835b4bb55f4c46e3c41fc, type: 3}
+  - {fileID: -1359340693, guid: 2272bef9d0b835b4bb55f4c46e3c41fc, type: 3}
+  damagedAttackAnimationNorth:
+  - {fileID: 825532577, guid: 2272bef9d0b835b4bb55f4c46e3c41fc, type: 3}
+  - {fileID: -29377768, guid: 2272bef9d0b835b4bb55f4c46e3c41fc, type: 3}
+  - {fileID: -256543045, guid: 2272bef9d0b835b4bb55f4c46e3c41fc, type: 3}
+  - {fileID: -1703166989, guid: 2272bef9d0b835b4bb55f4c46e3c41fc, type: 3}
+  - {fileID: -1658815791, guid: 2272bef9d0b835b4bb55f4c46e3c41fc, type: 3}
+  - {fileID: -2123710092, guid: 2272bef9d0b835b4bb55f4c46e3c41fc, type: 3}
+  criticalAttackAnimationNorth:
+  - {fileID: -1831823490, guid: 2272bef9d0b835b4bb55f4c46e3c41fc, type: 3}
+  - {fileID: 80322785, guid: 2272bef9d0b835b4bb55f4c46e3c41fc, type: 3}
+  - {fileID: -1614994777, guid: 2272bef9d0b835b4bb55f4c46e3c41fc, type: 3}
+  - {fileID: 448185947, guid: 2272bef9d0b835b4bb55f4c46e3c41fc, type: 3}
+  - {fileID: -1056813212, guid: 2272bef9d0b835b4bb55f4c46e3c41fc, type: 3}
+  - {fileID: -739007635, guid: 2272bef9d0b835b4bb55f4c46e3c41fc, type: 3}
+  healthyAttackAnimationEast:
+  - {fileID: -600778843, guid: 0a025f8b75d32b34980703ace200c233, type: 3}
+  - {fileID: 632276046, guid: 0a025f8b75d32b34980703ace200c233, type: 3}
+  - {fileID: 1232380567, guid: 0a025f8b75d32b34980703ace200c233, type: 3}
+  - {fileID: -54227917, guid: 0a025f8b75d32b34980703ace200c233, type: 3}
+  - {fileID: 750799842, guid: 0a025f8b75d32b34980703ace200c233, type: 3}
+  - {fileID: -179592168, guid: 0a025f8b75d32b34980703ace200c233, type: 3}
+  damagedAttackAnimationEast:
+  - {fileID: -1276880940, guid: 0a025f8b75d32b34980703ace200c233, type: 3}
+  - {fileID: 1529183898, guid: 0a025f8b75d32b34980703ace200c233, type: 3}
+  - {fileID: -1629646921, guid: 0a025f8b75d32b34980703ace200c233, type: 3}
+  - {fileID: 1820000586, guid: 0a025f8b75d32b34980703ace200c233, type: 3}
+  - {fileID: -1803042018, guid: 0a025f8b75d32b34980703ace200c233, type: 3}
+  - {fileID: -1563903058, guid: 0a025f8b75d32b34980703ace200c233, type: 3}
+  criticalAttackAnimationEast:
+  - {fileID: -1054321754, guid: 0a025f8b75d32b34980703ace200c233, type: 3}
+  - {fileID: -1259864995, guid: 0a025f8b75d32b34980703ace200c233, type: 3}
+  - {fileID: -1731053347, guid: 0a025f8b75d32b34980703ace200c233, type: 3}
+  - {fileID: 700528402, guid: 0a025f8b75d32b34980703ace200c233, type: 3}
+  - {fileID: -435354461, guid: 0a025f8b75d32b34980703ace200c233, type: 3}
+  - {fileID: 958466564, guid: 0a025f8b75d32b34980703ace200c233, type: 3}
+  healthyAttackAnimationSouth:
+  - {fileID: 1435696427, guid: 4542d89e579856946b5f213552162315, type: 3}
+  - {fileID: 2047817205, guid: 4542d89e579856946b5f213552162315, type: 3}
+  - {fileID: -1094488730, guid: 4542d89e579856946b5f213552162315, type: 3}
+  - {fileID: -1131541494, guid: 4542d89e579856946b5f213552162315, type: 3}
+  - {fileID: 1116230246, guid: 4542d89e579856946b5f213552162315, type: 3}
+  - {fileID: -713395605, guid: 4542d89e579856946b5f213552162315, type: 3}
+  damagedAttackAnimationSouth:
+  - {fileID: -307782002, guid: 4542d89e579856946b5f213552162315, type: 3}
+  - {fileID: -753098221, guid: 4542d89e579856946b5f213552162315, type: 3}
+  - {fileID: -1371310484, guid: 4542d89e579856946b5f213552162315, type: 3}
+  - {fileID: 132723362, guid: 4542d89e579856946b5f213552162315, type: 3}
+  - {fileID: 1589350926, guid: 4542d89e579856946b5f213552162315, type: 3}
+  - {fileID: 719582087, guid: 4542d89e579856946b5f213552162315, type: 3}
+  criticalAttackAnimationSouth:
+  - {fileID: 1523057388, guid: 4542d89e579856946b5f213552162315, type: 3}
+  - {fileID: 1583711610, guid: 4542d89e579856946b5f213552162315, type: 3}
+  - {fileID: 1654321474, guid: 4542d89e579856946b5f213552162315, type: 3}
+  - {fileID: -445434754, guid: 4542d89e579856946b5f213552162315, type: 3}
+  - {fileID: 538633370, guid: 4542d89e579856946b5f213552162315, type: 3}
+  - {fileID: 1053448619, guid: 4542d89e579856946b5f213552162315, type: 3}
+  healthyAttackAnimationWest:
+  - {fileID: 1061403667, guid: fcace2c05fa2f4f4ab75526edfe86f07, type: 3}
+  - {fileID: -986134933, guid: fcace2c05fa2f4f4ab75526edfe86f07, type: 3}
+  - {fileID: 447527596, guid: fcace2c05fa2f4f4ab75526edfe86f07, type: 3}
+  - {fileID: 1840843475, guid: fcace2c05fa2f4f4ab75526edfe86f07, type: 3}
+  - {fileID: -313542661, guid: fcace2c05fa2f4f4ab75526edfe86f07, type: 3}
+  - {fileID: -1315265882, guid: fcace2c05fa2f4f4ab75526edfe86f07, type: 3}
+  damagedAttackAnimationWest:
+  - {fileID: -2086313431, guid: fcace2c05fa2f4f4ab75526edfe86f07, type: 3}
+  - {fileID: 61399341, guid: fcace2c05fa2f4f4ab75526edfe86f07, type: 3}
+  - {fileID: 67909505, guid: fcace2c05fa2f4f4ab75526edfe86f07, type: 3}
+  - {fileID: -881186033, guid: fcace2c05fa2f4f4ab75526edfe86f07, type: 3}
+  - {fileID: -647818236, guid: fcace2c05fa2f4f4ab75526edfe86f07, type: 3}
+  - {fileID: -1653240676, guid: fcace2c05fa2f4f4ab75526edfe86f07, type: 3}
+  criticalAttackAnimationWest:
+  - {fileID: 802911874, guid: fcace2c05fa2f4f4ab75526edfe86f07, type: 3}
+  - {fileID: 231318954, guid: fcace2c05fa2f4f4ab75526edfe86f07, type: 3}
+  - {fileID: -1044908820, guid: fcace2c05fa2f4f4ab75526edfe86f07, type: 3}
+  - {fileID: 1666531022, guid: fcace2c05fa2f4f4ab75526edfe86f07, type: 3}
+  - {fileID: -647818236, guid: fcace2c05fa2f4f4ab75526edfe86f07, type: 3}
+  - {fileID: -1653240676, guid: fcace2c05fa2f4f4ab75526edfe86f07, type: 3}
+  healthyIdleAnimationNorth: []
+  damagedIdleAnimationNorth: []
+  criticalIdleAnimationNorth: []
+  healthyIdleAnimationEast: []
+  damagedIdleAnimationEast: []
+  criticalIdleAnimationEast: []
+  healthyIdleAnimationSouth: []
+  damagedIdleAnimationSouth: []
+  criticalIdleAnimationSouth: []
+  healthyIdleAnimationWest: []
+  damagedIdleAnimationWest: []
+  criticalIdleAnimationWest: []

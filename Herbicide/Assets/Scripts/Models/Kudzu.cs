@@ -126,7 +126,7 @@ public class Kudzu : MovingEnemy
         bool bonked = false;
         float time = 0f;
 
-        //PlayAnimation(AnimationType.ATTACK);
+        PlayAnimation(EnemyAnimationType.ATTACK);
         while (time < ATTACK_ANIMATION_TIME)
         {
             if (!bonked)

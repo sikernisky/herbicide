@@ -40,19 +40,6 @@ public class DefenderFactory : MonoBehaviour
     [SerializeField]
     private GameObject[] prefabs;
 
-    /// <summary>
-    /// Sprites to represent the Squirrel's idle state in all
-    /// four directions.
-    /// </summary>
-    [SerializeField]
-    private Sprite[] squirrelIdleSprites;
-
-    /// <summary>
-    /// Sprites to represent the Squirrel's attack state in all
-    /// four directions.
-    /// </summary>
-    [SerializeField]
-    private Sprite[] squirrelAttackSprites;
 
     /// <summary>
     /// All ScriptableObjects containing animation data about
@@ -117,23 +104,6 @@ public class DefenderFactory : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns the Sprite of a Defender's Attack track.
-    /// </summary>
-    /// <param name="direction"></param>
-    /// <returns>the Sprite of a Defender's Attack.</returns>
-    public static Sprite GetDefenderAttackSprite(Defender.DefenderType type, Direction direction)
-    {
-        int index = (int)direction;
-        switch (type)
-        {
-            case Defender.DefenderType.SQUIRREL:
-                return instance.squirrelAttackSprites[index];
-            default:
-                throw new System.Exception("Defender not supported.");
-        }
-    }
-
-    /// <summary>
     /// Returns an attack animation track for a given Defender type.
     /// </summary>
     /// <param name="type">The Defender type.</param>
@@ -144,7 +114,6 @@ public class DefenderFactory : MonoBehaviour
     {
 
         DefenderAnimation data = instance.defenderAnimationDataList.Find(x => x.GetDefenderType() == type);
-        // EnemyAnimation data = instance.enemyAnimationDataList.Find(x => x.GetEnemyType() == type);
 
         if (data != null) return data.GetAttackAnimation(direction);
 
@@ -152,19 +121,19 @@ public class DefenderFactory : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns the Sprite of a Defender's Idle track
+    /// Returns an idle animation track for a given Defender type.
     /// </summary>
-    /// <param name="direction"></param>
-    /// <returns>the Sprite of a Defender's idle state.</returns>
-    public static Sprite GetDefenderIdleSprite(Defender.DefenderType type, Direction direction)
+    /// <param name="type">The Defender type.</param>
+    /// <param name="direction">The direction of the Defender.</param>
+    /// <returns>The idle animation track as a Sprite array or null 
+    /// if the enemy type is not found.</returns>
+    public static Sprite[] GetIdleTrack(Defender.DefenderType type, Direction direction)
     {
-        int index = (int)direction;
-        switch (type)
-        {
-            case Defender.DefenderType.SQUIRREL:
-                return instance.squirrelIdleSprites[index];
-            default:
-                throw new System.Exception("Defender not supported.");
-        }
+
+        DefenderAnimation data = instance.defenderAnimationDataList.Find(x => x.GetDefenderType() == type);
+
+        if (data != null) return data.GetIdleAnimation(direction);
+
+        return null;
     }
 }

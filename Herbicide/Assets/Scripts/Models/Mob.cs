@@ -83,12 +83,6 @@ public abstract class Mob : PlaceableObject
     private int frameCount;
 
     /// <summary>
-    /// true if the frame count/limit was updated after the animation
-    /// changed; otherwise, false.
-    /// </summary>
-    private bool frameCountUpdated;
-
-    /// <summary>
     /// The "flip-book" Sprite track of the current animation.
     /// </summary>
     private Sprite[] currentAnimationTrack;
@@ -105,11 +99,8 @@ public abstract class Mob : PlaceableObject
     /// to play.</param>
     protected void PlayAnimation(Enum animation)
     {
-        Assert.IsTrue(frameCountUpdated, "Need to call SetFrameCount.");
-
         if (animation == currentAnimation) frame = 0;
         else currentAnimation = animation;
-        frameCountUpdated = false;
     }
 
     /// <summary>
@@ -120,7 +111,6 @@ public abstract class Mob : PlaceableObject
     {
         Assert.IsTrue(frameCount >= 0, "Frame count must be greater than or equal to 0.");
         this.frameCount = frameCount;
-        frameCountUpdated = true;
     }
 
     /// <summary>
@@ -138,7 +128,7 @@ public abstract class Mob : PlaceableObject
     /// </summary>
     protected void NextFrame()
     {
-        if (frame + 1 > GetFrameCount()) frame = 0;
+        if (frame + 1 >= GetFrameCount()) frame = 0;
         else frame++;
     }
 
@@ -199,7 +189,6 @@ public abstract class Mob : PlaceableObject
     protected void SetCurrentAnimationTrack(Sprite[] track)
     {
         Assert.IsNotNull(track, "Animation track is null.");
-        Assert.IsTrue(frameCountUpdated, "Need to call SetFrameCount.");
 
         currentAnimationTrack = track;
     }

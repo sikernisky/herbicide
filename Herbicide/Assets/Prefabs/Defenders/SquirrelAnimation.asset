@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d4e5022693f04247a6e7fcf60f16366, type: 3}
+  m_Name: SquirrelAnimation
+  m_EditorClassIdentifier: 
+  defenderType: 0
+  movementAnimationNorth: []
+  movementAnimationEast: []
+  movementAnimationSouth: []
+  movementAnimationWest: []
+  attackAnimationNorth:
+  - {fileID: 241803896, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  attackAnimationEast:
+  - {fileID: 1842010287, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  attackAnimationSouth:
+  - {fileID: -1116763224, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  attackAnimationWest:
+  - {fileID: 362384017, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  idleAnimationNorth:
+  - {fileID: -1129439068, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  idleAnimationEast:
+  - {fileID: -1741764920, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  idleAnimationSouth:
+  - {fileID: -1985209435, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  idleAnimationWest:
+  - {fileID: 629033695, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
