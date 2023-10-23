@@ -238,6 +238,8 @@ public abstract class Defender : Mob, IAttackable
         if (xGreater && xDistance > 0) RotateDefender(Direction.WEST);
         if (!xGreater && yDistance <= 0) RotateDefender(Direction.NORTH);
         if (!xGreater && yDistance > 0) RotateDefender(Direction.SOUTH);
+
+        Debug.Log(direction);
     }
 
 
@@ -389,7 +391,7 @@ public abstract class Defender : Mob, IAttackable
     /// <summary>
     /// Resets this Defender's health, attack range, and attack speed.
     /// </summary>
-    public void ResetStats()
+    protected override void ResetStats()
     {
         ResetHealth();
         ResetAttackRange();
@@ -502,6 +504,7 @@ public abstract class Defender : Mob, IAttackable
             switch (GetCurrentAnimation())
             {
                 case DefenderAnimationType.ATTACK:
+                    Debug.Log("Here");
                     animationTime = ATTACK_ANIMATION_TIME;
                     Sprite[] attackTrack = DefenderFactory.GetAttackTrack(TYPE, GetDirection());
                     SetFrameCount(attackTrack.Length);
@@ -509,13 +512,13 @@ public abstract class Defender : Mob, IAttackable
                     break;
                 case DefenderAnimationType.IDLE:
                     animationTime = IDLE_ANIMATION_TIME;
-                    Sprite[] idleTrack = DefenderFactory.GetAttackTrack(TYPE, GetDirection());
+                    Sprite[] idleTrack = DefenderFactory.GetIdleTrack(TYPE, GetDirection());
                     SetFrameCount(idleTrack.Length);
                     SetCurrentAnimationTrack(idleTrack);
                     break;
                 default: //Default to Idle animation
-                    animationTime = ATTACK_ANIMATION_TIME;
-                    Sprite[] defaultTrack = DefenderFactory.GetAttackTrack(TYPE, GetDirection());
+                    animationTime = IDLE_ANIMATION_TIME;
+                    Sprite[] defaultTrack = DefenderFactory.GetIdleTrack(TYPE, GetDirection());
                     SetFrameCount(defaultTrack.Length);
                     SetCurrentAnimationTrack(defaultTrack);
                     break;
@@ -523,7 +526,10 @@ public abstract class Defender : Mob, IAttackable
 
             if (HasAnimationTrack())
             {
-                float waitTime = animationTime / GetFrameCount() + 1;
+                Debug.Log(GetAttackSpeed());
+                //Debug.Log(GetFrameCount() + " " + animationTime);
+                float waitTime = animationTime / (GetFrameCount() + 1);
+                //Debug.Log(waitTime);
                 SetSprite(GetSpriteAtCurrentFrame());
                 yield return new WaitForSeconds(waitTime);
                 NextFrame();

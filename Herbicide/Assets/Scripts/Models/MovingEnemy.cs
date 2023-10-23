@@ -67,7 +67,7 @@ public abstract class MovingEnemy : Enemy
     /// <summary>
     /// Resets the stats of this MovingEnemy to its starting/base values.
     /// </summary>
-    public override void ResetStats()
+    protected override void ResetStats()
     {
         base.ResetStats();
         SetMoveSpeed(BASE_SPEED);

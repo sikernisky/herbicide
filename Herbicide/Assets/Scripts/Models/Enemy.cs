@@ -207,7 +207,7 @@ public abstract class Enemy : Mob, IAttackable
     /// <summary>
     /// Resets this Enemy's stats to its starting/base values.
     /// </summary>
-    public virtual void ResetStats()
+    protected override void ResetStats()
     {
         ResetAttackRange();
         ResetHealth();

@@ -16,7 +16,7 @@ public class Kudzu : MovingEnemy
     /// <summary>
     /// Base speed of a Kudzu.
     /// </summary>
-    public override float BASE_SPEED => 1f;
+    public override float BASE_SPEED => 2f;
 
     /// <summary>
     /// Base health of a Kudzu.
@@ -34,6 +34,11 @@ public class Kudzu : MovingEnemy
     public override float BASE_ATTACK_RANGE => 1f;
 
     /// <summary>
+    /// Starting attack speed of a Kudzu.
+    /// </summary>
+    public override float BASE_ATTACK_SPEED => 3f;
+
+    /// <summary>
     /// Damage a Kudzu does each attack.
     /// </summary>
     public override int DAMAGE_PER_ATTACK => 50;
@@ -41,7 +46,7 @@ public class Kudzu : MovingEnemy
     /// <summary>
     /// Time for a Kudzu move/hop animation.
     /// </summary>
-    public override float MOVE_ANIMATION_TIME => .4f;
+    public override float MOVE_ANIMATION_TIME => .2f;
 
     /// <summary>
     /// Name of a Kudzu.
@@ -71,7 +76,7 @@ public class Kudzu : MovingEnemy
     /// <summary>
     /// How many seconds this Kudzu waits in between hops.
     /// </summary>
-    private const float HOP_COOLDOWN = 1f;
+    private const float HOP_COOLDOWN = .5f;
 
     /// <summary>
     /// Attacks a target.

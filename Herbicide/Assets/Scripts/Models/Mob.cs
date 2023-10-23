@@ -168,10 +168,16 @@ public abstract class Mob : PlaceableObject
     public virtual void OnSpawn()
     {
         Assert.IsFalse(PlayingAnimation(), GetName() + " is already playing an animation.");
+        ResetStats();
         animationReference = CoPlayAnimation();
         StartCoroutine(animationReference);
         spawned = true;
     }
+
+    /// <summary>
+    /// Resets this Mob's stats.
+    /// </summary>
+    protected abstract void ResetStats();
 
     /// <summary>
     /// Returns true if this Mob is spawned in the scene.
