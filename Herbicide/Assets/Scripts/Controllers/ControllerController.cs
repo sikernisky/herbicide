@@ -4,12 +4,12 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Controller for Enemy and Defender controllers.
+/// Controller that controls the scene's controllers.
 /// </summary>
 public class ControllerController : MonoBehaviour
 {
     /// <summary>
-    /// List of active DefenderControllers.
+    /// List of active DefenderControllers  (Yes, really).
     /// </summary>
     private List<DefenderController> defenderControllers;
 

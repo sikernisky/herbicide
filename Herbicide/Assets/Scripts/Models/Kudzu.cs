@@ -14,9 +14,10 @@ public class Kudzu : MovingEnemy
     public override EnemyType TYPE => EnemyType.KUDZU;
 
     /// <summary>
-    /// Base speed of a Kudzu.
+    /// Base speed of a Kudzu: represents the cooldown between
+    /// hops.
     /// </summary>
-    public override float BASE_SPEED => 2f;
+    public override float BASE_SPEED => .4f;
 
     /// <summary>
     /// Base health of a Kudzu.
@@ -72,11 +73,6 @@ public class Kudzu : MovingEnemy
     /// How many seconds remain before this Kudzu can hop.
     /// </summary>
     private float hopCooldownTimer;
-
-    /// <summary>
-    /// How many seconds this Kudzu waits in between hops.
-    /// </summary>
-    private const float HOP_COOLDOWN = .5f;
 
     /// <summary>
     /// Attacks a target.
@@ -169,7 +165,7 @@ public class Kudzu : MovingEnemy
 
             yield return null;
         }
-        hopCooldownTimer = HOP_COOLDOWN;
+        hopCooldownTimer = GetMoveSpeed();
         transform.position = targetPosition;
         hopping = false;
     }
@@ -308,5 +304,15 @@ public class Kudzu : MovingEnemy
     public override GameObject MakeHollowObject()
     {
         throw new System.NotImplementedException();
+    }
+
+    /// <summary>
+    /// Calculates the state of this Kudzu.
+    /// </summary>
+    public override EnemyController.EnemyState DetermineState(
+        EnemyController.EnemyState currentState,
+        int targetsInRange)
+    {
+        throw new System.Exception();
     }
 }

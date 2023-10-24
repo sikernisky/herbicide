@@ -30,12 +30,27 @@ public class JSONController : MonoBehaviour
 
 
     /// <summary>
-    /// Finds and sets the JSONController singleton.
+    /// Finds and sets the JSONController singleton for a level.
     /// </summary>
     /// <param name="levelController">The LevelController singleton.</param>
     public static void SetSingleton(LevelController levelController)
     {
         if (levelController == null) return;
+
+        JSONController[] jsonControllers = FindObjectsOfType<JSONController>();
+        Assert.IsNotNull(jsonControllers, "Array of InputControllers is null.");
+        Assert.AreEqual(1, jsonControllers.Length);
+        instance = jsonControllers[0];
+        Assert.IsNotNull(instance.tiledJSON);
+    }
+
+    /// <summary>
+    /// Finds and sets the JSONController singleton for the Main Menu.
+    /// </summary>
+    /// <param name="levelController">The LevelController singleton.</param>
+    public static void SetSingleton(MainMenuController mainMenuController)
+    {
+        if (mainMenuController == null) return;
 
         JSONController[] jsonControllers = FindObjectsOfType<JSONController>();
         Assert.IsNotNull(jsonControllers, "Array of InputControllers is null.");

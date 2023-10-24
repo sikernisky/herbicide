@@ -19,47 +19,47 @@ public abstract class Enemy : Mob, IAttackable
     /// <summary>
     /// Starting health of an Enemy. 
     /// </summary>
-    public override int BASE_HEALTH => 100;
+    public virtual int BASE_HEALTH => 100;
 
     /// <summary>
     /// This Enemy's largest possible health value.
     /// </summary>
-    public override int MAX_HEALTH => 100;
+    public virtual int MAX_HEALTH => 100;
 
     /// <summary>
     /// This Enemy's smallest possible health value.
     /// </summary>
-    public override int MIN_HEALTH => 0;
+    public virtual int MIN_HEALTH => 0;
 
     /// <summary>
     /// Starting attack range of an Enemy.
     /// </summary>
-    public override float BASE_ATTACK_RANGE => 1f;
+    public virtual float BASE_ATTACK_RANGE => 1f;
 
     /// <summary>
     /// Upper bound of an Enemy's attack range.
     /// </summary>
-    public override float MAX_ATTACK_RANGE => float.MaxValue;
+    public virtual float MAX_ATTACK_RANGE => float.MaxValue;
 
     /// <summary>
     /// Lower bound of an Enemy's attack range.
     /// </summary>
-    public override float MIN_ATTACK_RANGE => 0f;
+    public virtual float MIN_ATTACK_RANGE => 0f;
 
     /// <summary>
     /// Starting attack speed of an Enemy (number of attacks / second).
     /// </summary>
-    public override float BASE_ATTACK_SPEED => 1f;
+    public virtual float BASE_ATTACK_SPEED => 1f;
 
     /// <summary>
     /// Upper bound of an Enemy's attack speed (number of attacks / second).
     /// </summary>
-    public override float MAX_ATTACK_SPEED => 10f;
+    public virtual float MAX_ATTACK_SPEED => 10f;
 
     /// <summary>
     /// Lower bound of an Enemy's attack speed (number of attacks / second).
     /// </summary>
-    public override float MIN_ATTACK_SPEED => 0f;
+    public virtual float MIN_ATTACK_SPEED => 0f;
 
     /// <summary>
     /// Damage inflicted on a target(s) every time this Enemy attacks.
@@ -207,7 +207,7 @@ public abstract class Enemy : Mob, IAttackable
     /// <summary>
     /// Resets this Enemy's stats to its starting/base values.
     /// </summary>
-    protected override void ResetStats()
+    public override void ResetStats()
     {
         ResetAttackRange();
         ResetHealth();
@@ -232,7 +232,6 @@ public abstract class Enemy : Mob, IAttackable
         base.OnSpawn();
         ResetStats();
     }
-
 
     /// <summary>
     /// Called when this Enemy dies.
@@ -263,6 +262,8 @@ public abstract class Enemy : Mob, IAttackable
     /// <param name="target">The ITargetable to attack.</param>
     public virtual void Attack(ITargetable target)
     {
+        Assert.IsNotNull(target, "Cannot attack a null target.");
+
         Vector3 targetPos = target.GetPosition();
         Vector3 enemyPos = GetPosition();
 
@@ -274,6 +275,20 @@ public abstract class Enemy : Mob, IAttackable
                               (diffY > 0 ? Direction.NORTH : Direction.SOUTH);
 
         SetDirection(direction);
+    }
+
+    /// <summary>
+    /// Chases an ITargetable.
+    /// </summary>
+    /// <param name="target">The ITargetable to chase.</param>
+    public abstract void Chase(ITargetable target);
+
+    /// <summary>
+    /// Logic for when not chasing or attacking an ITargetable.
+    /// </summary>
+    public virtual void Idle()
+    {
+        return;
     }
 
     /// <summary>
@@ -683,4 +698,11 @@ public abstract class Enemy : Mob, IAttackable
     {
         return new Vector2(spawnX, spawnY);
     }
+
+    /// <summary>
+    /// Calculates the state of this Enemy.
+    /// </summary>
+    public abstract EnemyController.EnemyState DetermineState(
+        EnemyController.EnemyState currentState,
+        int targetsInRange);
 }

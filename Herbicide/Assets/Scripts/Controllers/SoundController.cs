@@ -39,12 +39,27 @@ public class SoundController : MonoBehaviour
 
 
     /// <summary>
-    /// Finds and sets the SoundController singleton.
+    /// Finds and sets the SoundController singleton for a level.
     /// </summary>
     /// <param name="levelController">The LevelController singleton.</param>
     public static void SetSingleton(LevelController levelController)
     {
         if (levelController == null) return;
+        if (instance != null) return;
+
+        SoundController[] soundControllers = FindObjectsOfType<SoundController>();
+        Assert.IsNotNull(soundControllers, "Array of EconomyControllers is null.");
+        Assert.AreEqual(1, soundControllers.Length);
+        instance = soundControllers[0];
+    }
+
+    /// <summary>
+    /// Finds and sets the SoundController singleton for the MainMenu.
+    /// </summary>
+    /// <param name="levelController">The LevelController singleton.</param>
+    public static void SetSingleton(MainMenuController mainMenuController)
+    {
+        if (mainMenuController == null) return;
         if (instance != null) return;
 
         SoundController[] soundControllers = FindObjectsOfType<SoundController>();

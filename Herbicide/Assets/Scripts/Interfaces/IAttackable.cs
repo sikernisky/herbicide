@@ -44,10 +44,22 @@ public interface IAttackable : ITargetable
     int DAMAGE_PER_ATTACK { get; }
 
     /// <summary>
-    /// Attacks another IAttackable.
+    /// Logic for attacking an ITargetable.
     /// </summary>
-    /// <param name="target">the IAttackable to attack.</param>
+    /// <param name="target">the ITargetable to attack.</param>
     void Attack(ITargetable target);
+
+    /// <summary>
+    /// Logic for chasing an ITargetable.
+    /// </summary>
+    /// <param name="target">the ITargetable to chase.</param>
+    void Chase(ITargetable target);
+
+    /// <summary>
+    /// Logic for when this IAttackable is not chasing or attacking
+    /// an ITargetable.
+    /// </summary>
+    void Idle();
 
     /// <summary>
     /// Resets this IAttackable's attack range.

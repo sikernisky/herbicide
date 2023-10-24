@@ -12,51 +12,6 @@ public abstract class Mob : PlaceableObject
     //-------------------- STATS --------------------- // 
 
     /// <summary>
-    /// Starting health of a Mob.
-    /// </summary>
-    public abstract int BASE_HEALTH { get; }
-
-    /// <summary>
-    /// This Mob's largest possible health value.
-    /// </summary>
-    public abstract int MAX_HEALTH { get; }
-
-    /// <summary>
-    /// This Mob's smallest possible health value.
-    /// </summary>
-    public abstract int MIN_HEALTH { get; }
-
-    /// <summary>
-    /// Starting attack range of this Mob.
-    /// </summary>
-    public abstract float BASE_ATTACK_RANGE { get; }
-
-    /// <summary>
-    /// Upper bound of attack range of this Mob.
-    /// </summary>
-    public abstract float MAX_ATTACK_RANGE { get; }
-
-    /// <summary>
-    /// Lower bound of attack range of this Mob.
-    /// </summary>
-    public abstract float MIN_ATTACK_RANGE { get; }
-
-    /// <summary>
-    /// Starting attack speed of this Mob.
-    /// </summary>
-    public abstract float BASE_ATTACK_SPEED { get; }
-
-    /// <summary>
-    /// Upper bound of attack speed of this Mob.
-    /// </summary>
-    public abstract float MAX_ATTACK_SPEED { get; }
-
-    /// <summary>
-    /// Lower bound of attack speed of this Mob.
-    /// </summary>
-    public abstract float MIN_ATTACK_SPEED { get; }
-
-    /// <summary>
     /// Current AnimationType this Mob is playing.
     /// </summary>
     private Enum currentAnimation;
@@ -177,7 +132,7 @@ public abstract class Mob : PlaceableObject
     /// <summary>
     /// Resets this Mob's stats.
     /// </summary>
-    protected abstract void ResetStats();
+    public abstract void ResetStats();
 
     /// <summary>
     /// Returns true if this Mob is spawned in the scene.

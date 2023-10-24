@@ -53,11 +53,12 @@ public abstract class DefenderController
     /// <summary>
     /// FSM to represent an Defender's current state.
     /// </summary>
-    protected enum DefenderState
+    public enum DefenderState
     {
         SPAWN,
         IDLE,
         ATTACK,
+        CHASE,
         INVALID
     }
 
@@ -95,6 +96,7 @@ public abstract class DefenderController
         int random = Random.Range(0, potentialTargets.Count);
         if (potentialTargets.Count <= 0) target = null;
         else target = potentialTargets[random];
+        if (target == null) GetDefender().RotateDefender(Direction.SOUTH);
     }
 
     /// <summary>
@@ -117,23 +119,24 @@ public abstract class DefenderController
             FindTargetsInRange(targets);
             UpdateState();
             SelectTarget();
-            TryAttackTarget();
+
+            //For each state, try to call its logic.
+            ChaseState();
+            AttackState();
+            IdleState();
         }
     }
 
     /// <summary>
-    /// Tries to attack the Defender's target. This depends on the
-    /// Defender's attack speed and target validity.
+    /// Runs all code relevant to the Defender's attacking state. Computes
+    /// logic for attack cooldown. Everything else is left up to the Defender's
+    /// Attack() method. 
     /// </summary>
-    public void TryAttackTarget()
+    private void AttackState()
     {
         //Safety checks
         if (!ValidDefender()) return;
-        if (target == null)
-        {
-            GetDefender().RotateDefender(Direction.SOUTH);
-            return;
-        }
+        if (target == null) return;
 
         attackTimer -= Time.deltaTime;
         if (GetState() != DefenderState.ATTACK) return;
@@ -145,28 +148,42 @@ public abstract class DefenderController
     }
 
     /// <summary>
+    /// Runs all code relevant to the Defender's chasing state. This
+    /// logic is up to the Defender.
+    /// </summary>
+    private void ChaseState()
+    {
+        //Safety checks
+        if (!ValidDefender()) return;
+        if (target == null) return;
+
+        if (GetState() != DefenderState.CHASE) return;
+        GetDefender().Chase(target);
+    }
+
+    /// <summary>
+    /// Runs all code relevant to the Defender's idle state. This
+    /// logic is up to the Defender.
+    /// </summary>
+    private void IdleState()
+    {
+        //Safety checks
+        if (!ValidDefender()) return;
+
+        if (GetState() != DefenderState.IDLE) return;
+        GetDefender().Idle();
+    }
+
+    /// <summary>
     /// Updates the state of this DefenderController.
     /// </summary>
     private void UpdateState()
     {
         if (!ValidDefender()) state = DefenderState.INVALID;
 
-        switch (GetState())
-        {
-            case DefenderState.SPAWN:
-                SetState(DefenderState.IDLE);
-                break;
-            case DefenderState.IDLE:
-                if (NumTargetsInRange() > 0) SetState(DefenderState.ATTACK);
-                break;
-            case DefenderState.ATTACK:
-                if (NumTargetsInRange() <= 0) SetState(DefenderState.IDLE);
-                break;
-            default:
-                //should not get here
-                Assert.IsTrue(false);
-                break;
-        }
+        DefenderState currState = GetState();
+        int numTars = NumTargetsInRange();
+        SetState(GetDefender().DetermineState(currState, numTars));
     }
 
     /// <summary>

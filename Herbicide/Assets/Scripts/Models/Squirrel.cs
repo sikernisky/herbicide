@@ -80,4 +80,32 @@ public class Squirrel : Defender
         yield return new WaitForSeconds(acornDelay);
         PlayAnimation(DefenderAnimationType.IDLE);
     }
+
+    /// <summary>
+    /// Returns the most updated DefenderState of this defender
+    /// after considering its environment. 
+    /// </summary>
+    /// <param name="currentState">The current state of this Defender.</param>
+    /// <param name="targetsInRange">The number of targets this Defender
+    /// can see. </param>
+    /// <returns>the correct, up to date DefenderState of this Defender. </returns>
+    public override DefenderController.DefenderState DetermineState(
+        DefenderController.DefenderState currentState,
+        int targetsInRange)
+    {
+        switch (currentState)
+        {
+            case DefenderController.DefenderState.SPAWN:
+                return DefenderController.DefenderState.IDLE;
+            case DefenderController.DefenderState.IDLE:
+                if (targetsInRange > 0) return DefenderController.DefenderState.ATTACK;
+                else return DefenderController.DefenderState.IDLE;
+            case DefenderController.DefenderState.ATTACK:
+                if (targetsInRange <= 0) return DefenderController.DefenderState.IDLE;
+                else return DefenderController.DefenderState.ATTACK;
+            default:
+                //should not get here
+                throw new System.Exception();
+        }
+    }
 }

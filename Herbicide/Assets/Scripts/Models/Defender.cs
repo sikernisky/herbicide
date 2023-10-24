@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 /// <summary>
 /// Represents something that is placed on the TileGrid
@@ -21,47 +22,47 @@ public abstract class Defender : Mob, IAttackable
     /// <summary>
     /// Starting health of a Defender. 
     /// </summary>
-    public override int BASE_HEALTH => 200;
+    public virtual int BASE_HEALTH => 200;
 
     /// <summary>
     /// This Defender's largest possible health value.
     /// </summary>
-    public override int MAX_HEALTH => 200;
+    public virtual int MAX_HEALTH => 200;
 
     /// <summary>
     /// This Defender's smallest possible health value.
     /// </summary>
-    public override int MIN_HEALTH => 0;
+    public virtual int MIN_HEALTH => 0;
 
     /// <summary>
     /// Starting attack range of a Defender.
     /// </summary>
-    public override float BASE_ATTACK_RANGE => 5f;
+    public virtual float BASE_ATTACK_RANGE => 5f;
 
     /// <summary>
     /// Upper bound of a Defender's attack range.
     /// </summary>
-    public override float MAX_ATTACK_RANGE => float.MaxValue;
+    public virtual float MAX_ATTACK_RANGE => float.MaxValue;
 
     /// <summary>
     /// Lower bound of a Defender's attack range.
     /// </summary>
-    public override float MIN_ATTACK_RANGE => 0f;
+    public virtual float MIN_ATTACK_RANGE => 0f;
 
     /// <summary>
     /// Starting attack speed of a Defender (number of attacks / second).
     /// </summary>
-    public override float BASE_ATTACK_SPEED => 1.5f;
+    public virtual float BASE_ATTACK_SPEED => 1.5f;
 
     /// <summary>
     /// Upper bound of a Defender's attack speed (number of attacks / second).
     /// </summary>
-    public override float MAX_ATTACK_SPEED => 10f;
+    public virtual float MAX_ATTACK_SPEED => 10f;
 
     /// <summary>
     /// Lower bound of a Defender's attack speed (number of attacks / second).
     /// </summary>
-    public override float MIN_ATTACK_SPEED => 0f;
+    public virtual float MIN_ATTACK_SPEED => 0f;
 
     /// <summary>
     /// Time of an attack animation. Depends on attack speed.
@@ -130,7 +131,8 @@ public abstract class Defender : Mob, IAttackable
     /// </summary>
     public enum DefenderType
     {
-        SQUIRREL
+        SQUIRREL,
+        BUTTERFLY
     }
 
     /// <summary>
@@ -221,7 +223,8 @@ public abstract class Defender : Mob, IAttackable
     /// <param name="target">The ITargetable to attack.</param>
     public virtual void Attack(ITargetable target)
     {
-        if (target == null) return;
+        Assert.IsNotNull(target, "Cannot attack a null target.");
+
         if (!CanAttackNow(target) || !CanAttackEver(target))
         {
             RotateDefender(Direction.SOUTH);
@@ -240,6 +243,23 @@ public abstract class Defender : Mob, IAttackable
         if (!xGreater && yDistance > 0) RotateDefender(Direction.SOUTH);
 
         Debug.Log(direction);
+    }
+
+    /// <summary>
+    /// Chases an ITargetable.
+    /// </summary>
+    /// <param name="target">The ITargetable to chase.</param>
+    public virtual void Chase(ITargetable target)
+    {
+        Assert.IsNotNull(target, "Cannot chase a null target.");
+    }
+
+    /// <summary>
+    /// Logic for when not chasing or attacking an ITargetable.
+    /// </summary>
+    public virtual void Idle()
+    {
+        return;
     }
 
 
@@ -391,7 +411,7 @@ public abstract class Defender : Mob, IAttackable
     /// <summary>
     /// Resets this Defender's health, attack range, and attack speed.
     /// </summary>
-    protected override void ResetStats()
+    public override void ResetStats()
     {
         ResetHealth();
         ResetAttackRange();
@@ -424,8 +444,6 @@ public abstract class Defender : Mob, IAttackable
     {
         return direction;
     }
-
-
 
     /// <summary>
     /// Returns this Defender's Collider component.
@@ -526,10 +544,7 @@ public abstract class Defender : Mob, IAttackable
 
             if (HasAnimationTrack())
             {
-                Debug.Log(GetAttackSpeed());
-                //Debug.Log(GetFrameCount() + " " + animationTime);
                 float waitTime = animationTime / (GetFrameCount() + 1);
-                //Debug.Log(waitTime);
                 SetSprite(GetSpriteAtCurrentFrame());
                 yield return new WaitForSeconds(waitTime);
                 NextFrame();
@@ -538,4 +553,11 @@ public abstract class Defender : Mob, IAttackable
             else yield return null;
         }
     }
+
+    /// <summary>
+    /// Calculates the state of this Defender.
+    /// </summary>
+    public abstract DefenderController.DefenderState DetermineState(
+        DefenderController.DefenderState currentState,
+        int targetsInRange);
 }

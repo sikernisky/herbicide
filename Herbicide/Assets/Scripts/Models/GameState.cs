@@ -7,5 +7,6 @@ public enum GameState
     LOSE,
     ONGOING,
     TIE,
+    MENU,
     INVALID
 }

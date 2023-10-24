@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 /// <summary>
 /// Represents an Enemy that moves in some format.
@@ -67,7 +68,7 @@ public abstract class MovingEnemy : Enemy
     /// <summary>
     /// Resets the stats of this MovingEnemy to its starting/base values.
     /// </summary>
-    protected override void ResetStats()
+    public override void ResetStats()
     {
         base.ResetStats();
         SetMoveSpeed(BASE_SPEED);
@@ -80,5 +81,15 @@ public abstract class MovingEnemy : Enemy
     protected float GetMoveSpeed()
     {
         return speed;
+    }
+
+    /// <summary>
+    /// Chases an ITargetable.
+    /// </summary>
+    /// <param name="target">The ITargetable to chase.</param>
+    public override void Chase(ITargetable target)
+    {
+        Assert.IsNotNull(target, "Cannot chase a null target.");
+
     }
 }

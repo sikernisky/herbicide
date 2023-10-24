@@ -33,21 +33,6 @@ public class LevelController : MonoBehaviour
     private LevelController instance;
 
     /// <summary>
-    /// Stores FPS timing.
-    /// </summary>
-    private float deltaTime;
-
-    /// <summary>
-    /// How much time has elapsed since the level began.
-    /// </summary>
-    private float levelTime;
-
-    /// <summary>
-    /// Maximum frame rate.
-    /// </summary>
-    private const int MAX_FRAME_RATE = 60;
-
-    /// <summary>
     /// The most recent game state.
     /// </summary>
     private GameState currentGameState;
@@ -72,7 +57,7 @@ public class LevelController : MonoBehaviour
     void Start()
     {
         //(0) Set Unity properties
-        SetUnityProperties();
+        SceneController.SetUnityProperties();
 
         //(1) Instantiate all factories and singletons
         SetSingleton();
@@ -99,10 +84,10 @@ public class LevelController : MonoBehaviour
     /// Main update loop: <br></br>
     /// 
     /// (1) Update and inform controllers of game state.<br></br>
-    /// (2) Update time elapsed.<br></br>
+    /// (2) Update Scene.<br></br>
     /// (3) Checks for input events.<br></br>
     /// (4) Update the Enemy Manager.<br></br>
-    /// (5) Update Controllers.<br></br>
+    /// (5) Update Mob Controllers.<br></br>
     /// (6) Update Projectiles.<br></br>
     /// (7) Update Currencies.<br></br>
     /// (8) Update Balance.<br></br>
@@ -111,13 +96,11 @@ public class LevelController : MonoBehaviour
     /// </summary>
     void Update()
     {
-        //DebugFPS();
-
         //(1) Update and inform controllers of game state
         if (DetermineGameState() == GameState.INVALID) return;
 
-        //(2) Increment time.
-        levelTime += Time.deltaTime;
+        //(2) Update Scene.
+        SceneController.UpdateScene();
 
         //(3) Check input events.
         CheckInputEvents();
@@ -126,7 +109,8 @@ public class LevelController : MonoBehaviour
 
 
         //(5) Update Controllers.
-        ControllerController.UpdateAllControllers(TileGrid.GetAllTargetableObjects(), levelTime);
+        ControllerController.UpdateAllControllers(TileGrid.GetAllTargetableObjects(),
+                                                  SceneController.GetTimeElapsed());
 
         //(6) Update Projectiles.
         ProjectileController.CheckProjectiles();
@@ -141,11 +125,13 @@ public class LevelController : MonoBehaviour
         TileGrid.TrackEnemyTilePositions(ControllerController.GetAllActiveEnemies());
 
         //(10) Update Canvas.
-        CanvasController.UpdateCanvas(GetFPS());
+        CanvasController.UpdateCanvas(SceneController.GetFPS());
+
+        //Debug.Log(SceneController.GetTimeElapsed());
     }
 
     /// <summary>
-    /// Instantiates all Singletons.
+    /// Instantiates the necessary Singletons for the LevelController.
     /// </summary>
     private void MakeSingletons()
     {
@@ -202,7 +188,7 @@ public class LevelController : MonoBehaviour
     {
         HashSet<Tree> activeTrees = ControllerController.GetAllActiveTrees();
         HashSet<Enemy> activeEnemies = ControllerController.GetAllActiveEnemies();
-        int enemiesRemaining = EnemyManager.EnemiesRemaining(levelTime);
+        int enemiesRemaining = EnemyManager.EnemiesRemaining(SceneController.GetTimeElapsed());
         bool enemiesPresent = (enemiesRemaining > 0 || activeEnemies.Count > 0);
 
         //Win condition: All enemies dead, at least one Tree alive.
@@ -253,26 +239,5 @@ public class LevelController : MonoBehaviour
             TileGrid.CheckTileInputEvents();
             EconomyController.CheckCurrencyPickup();
         }
-    }
-
-    /// <summary>
-    /// Sets properties of the engine outside of gameplay.
-    /// </summary>
-    private void SetUnityProperties()
-    {
-        Application.targetFrameRate = MAX_FRAME_RATE;
-        Screen.SetResolution(1920, 1080, false);
-    }
-
-    /// <summary>
-    /// Returns the current FPS.
-    /// </summary>
-    /// <returns>current game FPS.</returns>
-    private int GetFPS()
-    {
-        deltaTime += (Time.unscaledDeltaTime - deltaTime) * 0.1f;
-        float fps = 1.0f / deltaTime;
-        int roundedFps = Mathf.RoundToInt(fps);
-        return roundedFps;
     }
 }
