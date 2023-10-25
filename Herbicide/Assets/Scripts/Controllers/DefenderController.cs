@@ -84,8 +84,8 @@ public abstract class DefenderController
     protected void SelectTarget()
     {
         if (!ValidDefender()) return;
-        if (TargetsInRange() == null) target = null;
-        if (target != null && !target.Dead()) return;
+        if (TargetsInRange() == null) SetTarget(null);
+        if (GetTarget() != null && !GetTarget().Dead()) return;
 
         List<Enemy> potentialTargets = new List<Enemy>();
         foreach (ITargetable candidate in TargetsInRange())
@@ -94,9 +94,9 @@ public abstract class DefenderController
             if (enemy != null) potentialTargets.Add(enemy);
         }
         int random = Random.Range(0, potentialTargets.Count);
-        if (potentialTargets.Count <= 0) target = null;
-        else target = potentialTargets[random];
-        if (target == null) GetDefender().RotateDefender(Direction.SOUTH);
+        if (potentialTargets.Count <= 0) SetTarget(null);
+        else SetTarget(potentialTargets[random]);
+        if (GetTarget() == null) GetDefender().RotateDefender(Direction.SOUTH);
     }
 
     /// <summary>
@@ -136,9 +136,10 @@ public abstract class DefenderController
     {
         //Safety checks
         if (!ValidDefender()) return;
-        if (target == null) return;
+        if (GetTarget() == null) return;
 
         attackTimer -= Time.deltaTime;
+
         if (GetState() != DefenderState.ATTACK) return;
         if (attackTimer <= 0)
         {
@@ -155,10 +156,31 @@ public abstract class DefenderController
     {
         //Safety checks
         if (!ValidDefender()) return;
-        if (target == null) return;
+        if (GetTarget() == null) return;
 
         if (GetState() != DefenderState.CHASE) return;
-        GetDefender().Chase(target);
+        GetDefender().Chase(GetTarget());
+    }
+
+    /// <summary>
+    /// Returns this DefenderController's Defender's target.
+    /// </summary>
+    /// <returns>the target of the Defender controlled by this
+    /// DefenderController./// </returns>
+    private ITargetable GetTarget()
+    {
+        return target;
+    }
+
+    /// <summary>
+    /// Sets the target of the Defender. A null value means that
+    /// the Defender should not have a target.
+    /// </summary>
+    /// <param name="target">The target of the Defender; null if
+    /// no target</param>
+    private void SetTarget(ITargetable target)
+    {
+        this.target = target;
     }
 
     /// <summary>
@@ -200,15 +222,14 @@ public abstract class DefenderController
 
         //Filter out targets that are (1) not enemies and (2) not in range
         List<ITargetable> targetablesInRange = new List<ITargetable>();
-        foreach (ITargetable target in targets)
+        foreach (ITargetable tar in targets)
         {
-            Enemy enemy = target as Enemy;
+            Enemy enemy = tar as Enemy;
             if (enemy == null) continue;
             if (GetDefender().DistanceToTarget(enemy) <= GetDefender().GetAttackRange())
-                targetablesInRange.Add(target);
+                targetablesInRange.Add(tar);
         }
         targetsInRange = targetablesInRange;
-        //Debug.Log(string.Join(", ", targetsInRange));
     }
 
     /// <summary>

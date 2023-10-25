@@ -51,6 +51,7 @@ public abstract class EnemyController
     public enum EnemyState
     {
         INACTIVE, //This Enemy is ready but not spawned
+        IDLE, //This Enemy has spawned but is not doing anything
         SPAWN, //This Enemy has spawned
         CHASE, //This Enemy is moving towards its target
         ATTACK, //This Enemy is attacking its target
@@ -130,11 +131,13 @@ public abstract class EnemyController
             UpdateState();
             UpdateEnemyHealthState();
             UpdateEnemyCollider();
-            TryAttackTarget();
+            AttackState();
         }
 
         if (GetEnemy().Spawned()) TryClearEnemy();
     }
+
+
 
     /// <summary>
     /// Informs this EnemyController of the most recent GameState so
@@ -170,19 +173,31 @@ public abstract class EnemyController
     /// Tries to attack the Enemy's target. This depends on the
     /// Enemy's attack speed and target validity.
     /// </summary>
-    public void TryAttackTarget()
+    public void AttackState()
     {
         //Safety checks
         if (!ValidEnemy()) return;
         if (target == null) return;
 
         attackTimer -= Time.deltaTime;
+
         if (GetState() != EnemyState.ATTACK) return;
+
         if (attackTimer <= 0)
         {
             attackTimer = 1f / GetEnemy().GetAttackSpeed();
             GetEnemy().Attack(target);
         }
+    }
+
+    /// <summary>
+    /// Runs all code relevant to the Enemy's idle state.
+    /// </summary>
+    private void IdleState()
+    {
+        if (!ValidEnemy()) return;
+
+        if (GetState() != EnemyState.IDLE) return;
     }
 
     /// <summary>

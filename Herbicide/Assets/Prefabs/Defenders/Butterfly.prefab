@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8888139507009631735}
   - component: {fileID: 3292846137764253807}
+  - component: {fileID: 1050942467757299836}
   m_Layer: 0
   m_Name: Butterfly
   m_TagString: Untagged
@@ -84,3 +85,17 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1050942467757299836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2896626616884615408}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86256a868d6e84e28af43197abb9b2f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placeableRenderer: {fileID: 3292846137764253807}
+  defenderCollider: {fileID: 0}

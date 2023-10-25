@@ -61,20 +61,30 @@ public class MovingEnemyController : EnemyController
     /// <param name="target">the ITargetable to check.</param>
     /// <returns>true if this MovingEnemyController's MovingEnemy can
     /// target the ITargetable; otherwise, false. </returns>
-    protected override bool CanTarget(ITargetable target)
+    protected override bool CanTarget(ITargetable t)
     {
-        if (!base.CanTarget(target)) return false;
+        if (!base.CanTarget(t)) return false;
 
         Vector3 nextTilePos = TileGrid.NextTilePosTowardsGoal(
             GetEnemy().GetPosition(),
-            target.GetPosition()
+            t.GetPosition()
         );
 
         //No path and not in attack range
         if (nextTilePos == GetEnemy().GetPosition() &&
-            !GetEnemy().InAttackRange(target)) return false;
+            !GetEnemy().InAttackRange(t)) return false;
 
         return true;
+    }
+    /// <summary>
+    /// Runs all code relevant to the Enemy's chasing state.
+    /// </summary>
+    private void ChaseState()
+    {
+        if (!ValidEnemy()) return;
+        Assert.IsNotNull(GetTarget(), "Cannot chase a null target.");
+
+        if (GetState() != EnemyState.CHASE) return;
     }
 
     /// <summary>
