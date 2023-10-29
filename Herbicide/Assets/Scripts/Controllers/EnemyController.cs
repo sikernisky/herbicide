@@ -22,7 +22,7 @@ public abstract class EnemyController
     /// <summary>
     /// The current state of this EnemyController's enemy
     /// </summary>
-    private EnemyState state;
+    private Mob.MobState state;
 
     /// <summary>
     /// Timer for keeping track of attacks per second.
@@ -46,19 +46,6 @@ public abstract class EnemyController
 
 
     /// <summary>
-    /// FSM to represent an Enemy's current state.
-    /// </summary>
-    public enum EnemyState
-    {
-        INACTIVE, //This Enemy is ready but not spawned
-        IDLE, //This Enemy has spawned but is not doing anything
-        SPAWN, //This Enemy has spawned
-        CHASE, //This Enemy is moving towards its target
-        ATTACK, //This Enemy is attacking its target
-        INVALID //Something wrong happened, debug needed
-    }
-
-    /// <summary>
     /// Initializes this EnemyController with the Enemy it controls.
     /// </summary>
     /// <param name="enemy">the enemy this EnemyController controls.</param>
@@ -78,7 +65,7 @@ public abstract class EnemyController
         this.enemy.SetSpawnTime(spawnTime);
         this.enemy.SetSpawnWorldPosition(spawnCoords);
         this.enemy.gameObject.SetActive(false);
-        SetState(EnemyState.INACTIVE);
+        SetState(Mob.MobState.INACTIVE);
 
         NUM_ENEMIES++;
     }
@@ -89,8 +76,6 @@ public abstract class EnemyController
     /// <returns>the Enemy controlled by this EnemyController.</returns>
     public Enemy GetEnemy()
     {
-        if (!ValidEnemy()) return null;
-
         return enemy;
     }
 
@@ -119,7 +104,7 @@ public abstract class EnemyController
         {
             GetEnemy().gameObject.SetActive(true);
             GetEnemy().OnSpawn();
-            SetState(EnemyState.SPAWN);
+            SetState(Mob.MobState.SPAWN);
         }
 
         if (gameState == GameState.ONGOING && GetEnemy().Spawned())
@@ -131,13 +116,16 @@ public abstract class EnemyController
             UpdateState();
             UpdateEnemyHealthState();
             UpdateEnemyCollider();
+            DetermineEnemyMovePos();
+
+            //For each state, try to call its logic.
             AttackState();
+            ChaseState();
+            IdleState();
         }
 
         if (GetEnemy().Spawned()) TryClearEnemy();
     }
-
-
 
     /// <summary>
     /// Informs this EnemyController of the most recent GameState so
@@ -173,7 +161,7 @@ public abstract class EnemyController
     /// Tries to attack the Enemy's target. This depends on the
     /// Enemy's attack speed and target validity.
     /// </summary>
-    public void AttackState()
+    protected virtual void AttackState()
     {
         //Safety checks
         if (!ValidEnemy()) return;
@@ -181,7 +169,7 @@ public abstract class EnemyController
 
         attackTimer -= Time.deltaTime;
 
-        if (GetState() != EnemyState.ATTACK) return;
+        if (GetState() != Mob.MobState.ATTACK) return;
 
         if (attackTimer <= 0)
         {
@@ -191,13 +179,24 @@ public abstract class EnemyController
     }
 
     /// <summary>
-    /// Runs all code relevant to the Enemy's idle state.
+    /// Runs all code relevant to the Enemy's chase state.
     /// </summary>
-    private void IdleState()
+    protected virtual void ChaseState()
     {
         if (!ValidEnemy()) return;
 
-        if (GetState() != EnemyState.IDLE) return;
+        if (GetState() != Mob.MobState.CHASE) return;
+        GetEnemy().Chase(GetTarget());
+    }
+
+    /// <summary>
+    /// Runs all code relevant to the Enemy's idle state.
+    /// </summary>
+    protected virtual void IdleState()
+    {
+        if (!ValidEnemy()) return;
+
+        if (GetState() != Mob.MobState.IDLE) return;
     }
 
     /// <summary>
@@ -211,8 +210,16 @@ public abstract class EnemyController
     /// <summary>
     /// Updates the state of this EnemyController.
     /// </summary>
-    protected abstract void UpdateState();
-
+    protected virtual void UpdateState()
+    {
+        if (!ValidEnemy()) SetState(Mob.MobState.INVALID);
+        else
+        {
+            Mob.MobState currState = GetState();
+            float distToTarget = GetEnemy().DistanceToTarget(GetTarget());
+            SetState(GetEnemy().DetermineState(currState, distToTarget));
+        }
+    }
 
     /// <summary>
     /// Selects the Enemy's target.
@@ -229,6 +236,21 @@ public abstract class EnemyController
         if (targets.Count == 0) return;
 
         SetTarget(FindTarget(targets));
+    }
+
+    /// <summary>
+    /// Sets the position that represents where this EnemyController's
+    /// Enemy should move towards. If it cannot move, sets the position
+    /// to itself.
+    /// </summary>
+    private void DetermineEnemyMovePos()
+    {
+        if (!ValidEnemy()) GetEnemy().SetNextMovePos(GetEnemy().GetPosition());
+        if (!ValidTarget()) GetEnemy().SetNextMovePos(GetEnemy().GetPosition());
+
+        GetEnemy().SetNextMovePos(
+            TileGrid.NextTilePosTowardsGoal(
+                GetEnemy().GetPosition(), GetTarget().GetPosition()));
     }
 
     /// <summary>
@@ -340,7 +362,7 @@ public abstract class EnemyController
     /// Sets the State of this EnemyController.
     /// </summary>
     /// <param name="newState">The state to set to.</param>
-    protected void SetState(EnemyState newState)
+    protected void SetState(Mob.MobState newState)
     {
         if (!ValidEnemy()) return;
 
@@ -351,9 +373,9 @@ public abstract class EnemyController
     /// Returns the state of this EnemyController.
     /// </summary>
     /// <returns>the state of this EnemyController.</returns>
-    protected EnemyState GetState()
+    protected Mob.MobState GetState()
     {
-        if (!ValidEnemy()) return EnemyState.INVALID;
+        if (!ValidEnemy()) return Mob.MobState.INVALID;
 
         return state;
     }
@@ -392,7 +414,7 @@ public abstract class EnemyController
     /// </summary>
     /// <returns>true if this EnemyController has a defined, active Enemy;
     /// otherwise, false.</returns>
-    protected bool ValidEnemy()
+    protected virtual bool ValidEnemy()
     {
         return enemy != null;
     }

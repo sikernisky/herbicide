@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 /// <summary>
 /// Represents a Squirrel Defender. It shoots acorns towards
@@ -46,17 +47,7 @@ public class Squirrel : Defender
     private GameObject acorn;
 
 
-    /// <summary>
-    /// Attacks a target. Squirrels shoot one acorn Projectile towards their target.
-    /// </summary>
-    /// <param name="target"></param>
-    public override void Attack(ITargetable target)
-    {
-        if (target == null) return;
 
-        base.Attack(target);
-        StartCoroutine(CoAttack(target.GetAttackPosition()));
-    }
 
     /// <summary>
     /// Attacks an ITargetable. Handles the time and delay logic for attacking.
@@ -89,23 +80,59 @@ public class Squirrel : Defender
     /// <param name="targetsInRange">The number of targets this Defender
     /// can see. </param>
     /// <returns>the correct, up to date DefenderState of this Defender. </returns>
-    public override DefenderController.DefenderState DetermineState(
-        DefenderController.DefenderState currentState,
+    public override MobState DetermineState(
+        MobState currentState,
         int targetsInRange)
     {
         switch (currentState)
         {
-            case DefenderController.DefenderState.SPAWN:
-                return DefenderController.DefenderState.IDLE;
-            case DefenderController.DefenderState.IDLE:
-                if (targetsInRange > 0) return DefenderController.DefenderState.ATTACK;
-                else return DefenderController.DefenderState.IDLE;
-            case DefenderController.DefenderState.ATTACK:
-                if (targetsInRange <= 0) return DefenderController.DefenderState.IDLE;
-                else return DefenderController.DefenderState.ATTACK;
+            case MobState.SPAWN:
+                return MobState.IDLE;
+            case MobState.IDLE:
+                if (targetsInRange > 0) return MobState.ATTACK;
+                else return MobState.IDLE;
+            case MobState.ATTACK:
+                if (targetsInRange <= 0) return MobState.IDLE;
+                else return MobState.ATTACK;
+            case MobState.INACTIVE:
+                return MobState.SPAWN;
             default:
                 //should not get here
+                Debug.Log(currentState);
                 throw new System.Exception();
         }
+    }
+
+    //------------------STATE LOGIC----------------------//
+
+    /// <summary>
+    /// Executes chase logic: does nothing; squirrels are immobile 
+    /// and do not chase.
+    /// </summary>
+    /// <param name="target">The target to "chase."</param>
+    public override void Chase(ITargetable target)
+    {
+        Assert.IsNotNull(target, "Cannot chase a null target.");
+        return;
+    }
+
+    /// <summary>
+    /// Executes idle logic: waits around and does nothing.
+    /// </summary>
+    public override void Idle()
+    {
+        return;
+    }
+
+    /// <summary>
+    /// Executes attack logic: throws an acorn at its target. 
+    /// Squirrels shoot one acorn Projectile.
+    /// </summary>
+    /// <param name="target">The target to attack.</param>
+    public override void Attack(ITargetable target)
+    {
+        Assert.IsNotNull(target, "Cannot attack a null target.");
+        FaceTarget(target);
+        StartCoroutine(CoAttack(target.GetAttackPosition()));
     }
 }

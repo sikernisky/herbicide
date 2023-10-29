@@ -277,8 +277,6 @@ public abstract class Tile : MonoBehaviour, ISurface
             return GetFlooring().Place(candidate, flooringNeighbors);
         }
 
-
-
         //3. Try placing on this Tile.
         if (!CanPlace(candidate, neighbors)) return false;
 

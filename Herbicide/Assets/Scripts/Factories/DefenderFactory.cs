@@ -8,6 +8,11 @@ using UnityEngine.Assertions;
 /// </summary>
 public class DefenderFactory : MonoBehaviour
 {
+    /// Enum Indexes:
+    /// 
+    /// 0 --> SQUIRREL
+    /// 1 --> BUTTERFLY
+
     /// <summary>
     /// Reference to the DefenderFactory singleton.
     /// </summary>
@@ -15,27 +20,21 @@ public class DefenderFactory : MonoBehaviour
 
     /// <summary>
     /// Holds all Defender inventory sprites. They are indexed by
-    /// their Type enum: <br></br>
-    /// 
-    /// 0 --> SQUIRREL
+    /// their Type enum.
     /// </summary>
     [SerializeField]
     private Sprite[] inventorySprites;
 
     /// <summary>
     /// Holds all placed Defender sprites. They are indexed by
-    /// their Type enum: <br></br>
-    /// 
-    /// 0 --> SQUIRREL
+    /// their Type enum.
     /// </summary>
     [SerializeField]
     private Sprite[] placedSprites;
 
     /// <summary>
     /// Holds all placed Defender prefabs. They are indexed by
-    /// their Type enum: <br></br>
-    /// 
-    /// 0 --> SQUIRREL
+    /// their Type enum.
     /// </summary>
     [SerializeField]
     private GameObject[] prefabs;

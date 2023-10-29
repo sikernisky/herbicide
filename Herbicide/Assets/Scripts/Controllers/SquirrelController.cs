@@ -12,7 +12,7 @@ public class SquirrelController : DefenderController
     /// Makes a new SquirrelController.
     /// </summary>
     /// <param name="defender">The Squirrel Defender. </param>
-    /// <returns></returns>
+    /// <returns>The created SquirrelController.</returns>
     public SquirrelController(Defender defender) : base(defender)
     {
         Assert.IsNotNull(defender as Squirrel, "SquirrelControllers must be " +

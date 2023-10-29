@@ -31,7 +31,7 @@ public abstract class DefenderController
     /// <summary>
     /// State of this DefenderController.
     /// </summary>
-    private DefenderState state;
+    private Mob.MobState state;
 
     /// <summary>
     /// ITargetabless within the range of the Defender controlled
@@ -48,19 +48,6 @@ public abstract class DefenderController
     /// The current state of the game.
     /// </summary>
     private GameState gameState;
-
-
-    /// <summary>
-    /// FSM to represent an Defender's current state.
-    /// </summary>
-    public enum DefenderState
-    {
-        SPAWN,
-        IDLE,
-        ATTACK,
-        CHASE,
-        INVALID
-    }
 
     /// <summary>
     /// Makes a new DefenderController for a Defender.
@@ -140,7 +127,7 @@ public abstract class DefenderController
 
         attackTimer -= Time.deltaTime;
 
-        if (GetState() != DefenderState.ATTACK) return;
+        if (GetState() != Mob.MobState.ATTACK) return;
         if (attackTimer <= 0)
         {
             attackTimer = 1f / GetDefender().GetAttackSpeed();
@@ -158,7 +145,7 @@ public abstract class DefenderController
         if (!ValidDefender()) return;
         if (GetTarget() == null) return;
 
-        if (GetState() != DefenderState.CHASE) return;
+        if (GetState() != Mob.MobState.CHASE) return;
         GetDefender().Chase(GetTarget());
     }
 
@@ -192,7 +179,7 @@ public abstract class DefenderController
         //Safety checks
         if (!ValidDefender()) return;
 
-        if (GetState() != DefenderState.IDLE) return;
+        if (GetState() != Mob.MobState.IDLE) return;
         GetDefender().Idle();
     }
 
@@ -201,11 +188,13 @@ public abstract class DefenderController
     /// </summary>
     private void UpdateState()
     {
-        if (!ValidDefender()) state = DefenderState.INVALID;
-
-        DefenderState currState = GetState();
-        int numTars = NumTargetsInRange();
-        SetState(GetDefender().DetermineState(currState, numTars));
+        if (!ValidDefender()) state = Mob.MobState.INVALID;
+        else
+        {
+            Mob.MobState currState = GetState();
+            int numTars = NumTargetsInRange();
+            SetState(GetDefender().DetermineState(currState, numTars));
+        }
     }
 
     /// <summary>
@@ -272,9 +261,9 @@ public abstract class DefenderController
     /// Returns the state of this DefenderController.
     /// </summary>
     /// <returns>the state of this DefenderController.</returns>
-    protected DefenderState GetState()
+    protected Mob.MobState GetState()
     {
-        if (!ValidDefender()) return DefenderState.INVALID;
+        if (!ValidDefender()) return Mob.MobState.INVALID;
 
         return state;
     }
@@ -284,7 +273,7 @@ public abstract class DefenderController
     /// /// </summary>
     /// <param name="newState">the new state to set to.</param>
     /// <returns></returns>
-    protected void SetState(DefenderState newState)
+    protected void SetState(Mob.MobState newState)
     {
         if (!ValidDefender()) return;
 

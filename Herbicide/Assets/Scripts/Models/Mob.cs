@@ -9,6 +9,19 @@ using UnityEngine.Assertions;
 /// </summary>
 public abstract class Mob : PlaceableObject
 {
+    /// <summary>
+    /// FSM to represent a Mob's current state.
+    /// </summary>
+    public enum MobState
+    {
+        INACTIVE, //This Enemy is ready but not spawned
+        IDLE, //This Enemy has spawned but is not doing anything
+        SPAWN, //This Enemy has spawned
+        CHASE, //This Enemy is moving towards its target
+        ATTACK, //This Enemy is attacking its target
+        INVALID //Something wrong happened, debug needed
+    }
+
     //-------------------- STATS --------------------- // 
 
     /// <summary>

@@ -74,20 +74,6 @@ public class Kudzu : MovingEnemy
     /// </summary>
     private float hopCooldownTimer;
 
-    /// <summary>
-    /// Attacks a target.
-    /// </summary>
-    /// <param name="target">The ITargetable to attack.</param>
-    public override void Attack(ITargetable target)
-    {
-        //These checks take care of the attack cooldown timer, unlike moving.
-        if (!CanAttackNow(target)) return;
-        if (!CanAttackEver(target)) return;
-        if (!CanBonk()) return;
-
-        base.Attack(target);
-        StartCoroutine(CoBonk(target));
-    }
 
     /// <summary>
     /// Moves this Kudzu to a target position, causing it to "hop"
@@ -306,13 +292,71 @@ public class Kudzu : MovingEnemy
         throw new System.NotImplementedException();
     }
 
+
     /// <summary>
     /// Calculates the state of this Kudzu.
     /// </summary>
-    public override EnemyController.EnemyState DetermineState(
-        EnemyController.EnemyState currentState,
-        int targetsInRange)
+    /// <param name="currentState">Most recent state of this Kudzu.</param
+    /// <param name="currentState">Distance to this Kudzu's target.</param /// 
+    public override MobState DetermineState(MobState currentState,
+        float distanceToTarget)
     {
-        throw new System.Exception();
+        switch (currentState)
+        {
+            case MobState.INVALID:
+                return MobState.INVALID;
+            case MobState.INACTIVE:
+                return MobState.INACTIVE;
+            case MobState.SPAWN:
+                return MobState.CHASE;
+            case MobState.IDLE:
+                if (distanceToTarget <= GetAttackRange()) return MobState.ATTACK;
+                else return MobState.CHASE;
+            case MobState.ATTACK:
+                if (distanceToTarget > GetAttackRange()) return MobState.CHASE;
+                else return MobState.ATTACK;
+            case MobState.CHASE:
+                if (distanceToTarget <= GetAttackRange()) return MobState.ATTACK;
+                else return MobState.CHASE;
+            default:
+                //should not get here
+                throw new System.Exception();
+        }
+    }
+
+    //------------------STATE LOGIC----------------------//
+
+    /// <summary>
+    /// Attacks a target.
+    /// </summary>
+    /// <param name="target">The ITargetable to attack.</param>
+    public override void Attack(ITargetable target)
+    {
+        //These checks take care of the attack cooldown timer, unlike moving.
+        if (!CanAttackNow(target)) return;
+        if (!CanAttackEver(target)) return;
+        if (!CanBonk()) return;
+
+        FaceTarget(target);
+        StartCoroutine(CoBonk(target));
+    }
+
+    /// <summary>
+    /// Chases its target.
+    /// </summary>
+    /// <param name="target">The ITargetable to chase.</param>
+    public override void Chase(ITargetable target)
+    {
+        Assert.IsNotNull(target, "Cannot chase a null target.");
+
+        MoveTo(GetNextMovePos());
+    }
+
+    /// <summary>
+    /// Idles.
+    /// </summary>
+    public override void Idle()
+    {
+        throw new System.NotImplementedException();
     }
 }

@@ -48,10 +48,26 @@ public class Butterfly : Defender
     /// <param name="targetsInRange">The number of targets this Defender
     /// can see. </param>
     /// <returns>the correct, up to date DefenderState of this Defender. </returns>
-    public override DefenderController.DefenderState DetermineState(
-        DefenderController.DefenderState currentState,
+    public override MobState DetermineState(MobState currentState,
         int targetsInRange)
     {
-        return DefenderController.DefenderState.INVALID;
+        return MobState.INVALID;
+    }
+
+    //------------------STATE LOGIC----------------------//
+
+    public override void Attack(ITargetable target)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void Chase(ITargetable target)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void Idle()
+    {
+        throw new System.NotImplementedException();
     }
 }

@@ -69,8 +69,13 @@ public class ControllerController : MonoBehaviour
                 SquirrelController sc = new SquirrelController(defender);
                 instance.defenderControllers.Add(sc);
                 break;
+            case Defender.DefenderType.BUTTERFLY:
+                Assert.IsNotNull(defender as Butterfly);
+                ButterflyController bc = new ButterflyController(defender);
+                instance.defenderControllers.Add(bc);
+                break;
             default:
-                throw new System.Exception("Defender " + defender + " not supported.");
+                throw new System.Exception("Defender " + defender.GetName() + " not supported.");
         }
     }
 
@@ -84,11 +89,15 @@ public class ControllerController : MonoBehaviour
     {
         if (enemy == null) return;
 
-        MovingEnemy movingEnemy = enemy as MovingEnemy;
-        if (movingEnemy != null)
+        switch (enemy.TYPE)
         {
-            MovingEnemyController mec = new MovingEnemyController(movingEnemy, spawnTime, spawnCoords);
-            instance.enemyControllers.Add(mec);
+            case Enemy.EnemyType.KUDZU:
+                Assert.IsNotNull(enemy as Kudzu);
+                KudzuController kc = new KudzuController(enemy, spawnTime, spawnCoords);
+                instance.enemyControllers.Add(kc);
+                break;
+            default:
+                throw new System.Exception("Enemy " + enemy.GetName() + " not supported.");
         }
     }
 

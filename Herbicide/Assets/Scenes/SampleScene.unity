@@ -154,6 +154,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   items:
   - {fileID: 3053911630470084646, guid: 7ffe22d2f864c433cb6da24359a7d202, type: 3}
+  - {fileID: 1050942467757299836, guid: 7351ef4cb8dda412e9273c76b60ec0a5, type: 3}
   enemySpawnDelay: 5
 --- !u!4 &103606177
 Transform:
@@ -263,10 +264,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventorySprites:
   - {fileID: 21300000, guid: 38d12ef5d626e4b918d858f04a2d5db4, type: 3}
+  - {fileID: 21300000, guid: 6c0234148c5df4b5899ead06b9903187, type: 3}
   placedSprites:
   - {fileID: -1116763224, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  - {fileID: 21300000, guid: 6c0234148c5df4b5899ead06b9903187, type: 3}
   prefabs:
   - {fileID: 2896626616884615408, guid: 7ffe22d2f864c433cb6da24359a7d202, type: 3}
+  - {fileID: 2896626616884615408, guid: 7351ef4cb8dda412e9273c76b60ec0a5, type: 3}
   defenderAnimationDataList:
   - {fileID: 11400000, guid: 20486f8922463c441b7b86a4a6381247, type: 2}
 --- !u!1 &315477444

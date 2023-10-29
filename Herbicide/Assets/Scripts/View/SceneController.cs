@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Assertions;
+using System;
 
 /// <summary>
 /// Responsible for switching between scenes, maintaining
@@ -11,6 +12,7 @@ using UnityEngine.Assertions;
 /// </summary>
 public class SceneController : MonoBehaviour
 {
+
     /// <summary>
     /// Maximum frame rate.
     /// </summary>
@@ -25,6 +27,11 @@ public class SceneController : MonoBehaviour
     /// How much time has elapsed since this scene was loaded.
     /// </summary>
     private static float timeElapsed;
+
+    /// <summary>
+    /// true if we're currently loading a scene
+    /// </summary>
+    private bool loadingScene;
 
     /// <summary>
     /// Main update loop for the SceneController.
@@ -91,5 +98,40 @@ public class SceneController : MonoBehaviour
         float fps = 1.0f / localTime;
         int roundedFps = Mathf.RoundToInt(fps);
         return roundedFps;
+    }
+
+    /// <summary>
+    /// [!!BUTTON EVENT!!]
+    /// 
+    /// Loads a scene. If already loading, does nothing.
+    /// </summary>
+    /// <param name="sceneName">The name of the scene to load.</param>
+    public void LoadScene(string sceneName)
+    {
+        if (loadingScene) return;
+        loadingScene = true;
+        StartCoroutine(LoadSceneAsync(sceneName));
+    }
+
+    /// <summary>
+    /// Loads a scene asynchonously.
+    /// </summary>
+    /// <param name="sceneName">The name of the scene to load.</param>
+    /// <returns>A reference to the coroutine.</returns>
+    private IEnumerator LoadSceneAsync(string sceneName)
+    {
+        Assert.IsNotNull(sceneName, "Name of scene to load is null.");
+        Assert.IsTrue(sceneName.Length > 0, "Name is scene to load is empty.");
+
+
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+        asyncLoad.allowSceneActivation = true;
+        while (!asyncLoad.isDone)
+        {
+            float progress = Mathf.Clamp01(asyncLoad.progress / 0.9f);
+            Debug.Log("Loading progress: " + (progress * 100) + "%");
+            yield return null;
+        }
+        loadingScene = false;
     }
 }

@@ -62,6 +62,11 @@ public interface IAttackable : ITargetable
     void Idle();
 
     /// <summary>
+    /// Directs this IAttackable to face its target. 
+    /// </summary>
+    void FaceTarget(ITargetable t);
+
+    /// <summary>
     /// Resets this IAttackable's attack range.
     /// </summary>
     void ResetAttackRange();

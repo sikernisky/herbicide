@@ -176,6 +176,11 @@ public abstract class Enemy : Mob, IAttackable
     private float spawnTime;
 
     /// <summary>
+    /// The position to which this Enemy should move next.
+    /// </summary>
+    private Vector3 nextMovementPosition;
+
+    /// <summary>
     /// Type of this Enemy.
     /// </summary>
     public enum EnemyType
@@ -253,42 +258,6 @@ public abstract class Enemy : Mob, IAttackable
 
         EconomyController.SpawnSeedToken(GetAttackPosition());
 
-    }
-
-    /// <summary>
-    /// Attacks an ITargetable. This base method just sets the enemy's
-    /// direction.
-    /// </summary>
-    /// <param name="target">The ITargetable to attack.</param>
-    public virtual void Attack(ITargetable target)
-    {
-        Assert.IsNotNull(target, "Cannot attack a null target.");
-
-        Vector3 targetPos = target.GetPosition();
-        Vector3 enemyPos = GetPosition();
-
-        float diffX = targetPos.x - enemyPos.x;
-        float diffY = targetPos.y - enemyPos.y;
-
-        Direction direction = Math.Abs(diffX) > Math.Abs(diffY) ?
-                              (diffX > 0 ? Direction.EAST : Direction.WEST) :
-                              (diffY > 0 ? Direction.NORTH : Direction.SOUTH);
-
-        SetDirection(direction);
-    }
-
-    /// <summary>
-    /// Chases an ITargetable.
-    /// </summary>
-    /// <param name="target">The ITargetable to chase.</param>
-    public abstract void Chase(ITargetable target);
-
-    /// <summary>
-    /// Logic for when not chasing or attacking an ITargetable.
-    /// </summary>
-    public virtual void Idle()
-    {
-        return;
     }
 
     /// <summary>
@@ -700,9 +669,65 @@ public abstract class Enemy : Mob, IAttackable
     }
 
     /// <summary>
+    /// Sets the position to which this Enemy should move next.
+    /// </summary>
+    /// <param name="nextPos">The position to which this Enemy should
+    /// move next./// </param>
+    public void SetNextMovePos(Vector3 nextPos)
+    {
+        nextMovementPosition = nextPos;
+    }
+
+    /// <summary>
+    /// Returns the position to which this Enemy should move next.
+    /// </summary>
+    /// <returns>the position to which this Enemy should move next.</returns>
+    public Vector3 GetNextMovePos()
+    {
+        return nextMovementPosition;
+    }
+
+    /// <summary>
+    /// Directs this Enemy to face its target.
+    /// </summary>
+    /// <param name="t"></param>
+    public void FaceTarget(ITargetable t)
+    {
+        Assert.IsNotNull(t, "Cannot face a null target.");
+
+        Vector3 targetPos = t.GetPosition();
+        Vector3 enemyPos = GetPosition();
+
+        float diffX = targetPos.x - enemyPos.x;
+        float diffY = targetPos.y - enemyPos.y;
+
+        Direction direction = Math.Abs(diffX) > Math.Abs(diffY) ?
+                              (diffX > 0 ? Direction.EAST : Direction.WEST) :
+                              (diffY > 0 ? Direction.NORTH : Direction.SOUTH);
+
+        SetDirection(direction);
+    }
+
+    /// <summary>
+    /// Attacks an ITargetable.
+    /// </summary>
+    /// <param name="target">The ITargetable to attack.</param>
+    public abstract void Attack(ITargetable target);
+
+    /// <summary>
+    /// Chases an ITargetable.
+    /// </summary>
+    /// <param name="target">The ITargetable to chase.</param>
+    public abstract void Chase(ITargetable target);
+
+    /// <summary>
+    /// Idles.
+    /// </summary>
+    public abstract void Idle();
+
+    /// <summary>
     /// Calculates the state of this Enemy.
     /// </summary>
-    public abstract EnemyController.EnemyState DetermineState(
-        EnemyController.EnemyState currentState,
-        int targetsInRange);
+    public abstract MobState DetermineState(MobState currentState,
+        float distanceToTarget);
 }

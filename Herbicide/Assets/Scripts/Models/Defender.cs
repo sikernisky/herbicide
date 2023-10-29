@@ -221,46 +221,18 @@ public abstract class Defender : Mob, IAttackable
     /// Attacks an ITargetable.
     /// </summary>
     /// <param name="target">The ITargetable to attack.</param>
-    public virtual void Attack(ITargetable target)
-    {
-        Assert.IsNotNull(target, "Cannot attack a null target.");
-
-        if (!CanAttackNow(target) || !CanAttackEver(target))
-        {
-            RotateDefender(Direction.SOUTH);
-            return;
-        }
-
-        float xDistance = GetPosition().x - target.GetPosition().x;
-        float yDistance = GetPosition().y - target.GetPosition().y;
-
-        bool xGreater = Mathf.Abs(xDistance) > Mathf.Abs(yDistance)
-            ? true : false;
-
-        if (xGreater && xDistance <= 0) RotateDefender(Direction.EAST);
-        if (xGreater && xDistance > 0) RotateDefender(Direction.WEST);
-        if (!xGreater && yDistance <= 0) RotateDefender(Direction.NORTH);
-        if (!xGreater && yDistance > 0) RotateDefender(Direction.SOUTH);
-
-        Debug.Log(direction);
-    }
+    public abstract void Attack(ITargetable target);
 
     /// <summary>
     /// Chases an ITargetable.
     /// </summary>
     /// <param name="target">The ITargetable to chase.</param>
-    public virtual void Chase(ITargetable target)
-    {
-        Assert.IsNotNull(target, "Cannot chase a null target.");
-    }
+    public abstract void Chase(ITargetable target);
 
     /// <summary>
-    /// Logic for when not chasing or attacking an ITargetable.
+    /// Idles.
     /// </summary>
-    public virtual void Idle()
-    {
-        return;
-    }
+    public abstract void Idle();
 
 
     /// <summary>
@@ -522,7 +494,6 @@ public abstract class Defender : Mob, IAttackable
             switch (GetCurrentAnimation())
             {
                 case DefenderAnimationType.ATTACK:
-                    Debug.Log("Here");
                     animationTime = ATTACK_ANIMATION_TIME;
                     Sprite[] attackTrack = DefenderFactory.GetAttackTrack(TYPE, GetDirection());
                     SetFrameCount(attackTrack.Length);
@@ -555,9 +526,29 @@ public abstract class Defender : Mob, IAttackable
     }
 
     /// <summary>
+    /// Rotates this Defender such that it faces its target.
+    /// </summary>
+    /// <param name="t">the target to face.</param>
+    public void FaceTarget(ITargetable t)
+    {
+        Assert.IsNotNull(t, "Cannot face a null target.");
+        if (!CanAttackNow(t) || !CanAttackEver(t)) return;
+
+        float xDistance = GetPosition().x - t.GetPosition().x;
+        float yDistance = GetPosition().y - t.GetPosition().y;
+
+        bool xGreater = Mathf.Abs(xDistance) > Mathf.Abs(yDistance)
+            ? true : false;
+
+        if (xGreater && xDistance <= 0) RotateDefender(Direction.EAST);
+        if (xGreater && xDistance > 0) RotateDefender(Direction.WEST);
+        if (!xGreater && yDistance <= 0) RotateDefender(Direction.NORTH);
+        if (!xGreater && yDistance > 0) RotateDefender(Direction.SOUTH);
+    }
+
+    /// <summary>
     /// Calculates the state of this Defender.
     /// </summary>
-    public abstract DefenderController.DefenderState DetermineState(
-        DefenderController.DefenderState currentState,
+    public abstract MobState DetermineState(MobState currentState,
         int targetsInRange);
 }
