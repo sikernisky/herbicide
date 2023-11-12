@@ -13,10 +13,26 @@ MonoBehaviour:
   m_Name: ButterflyAnimation
   m_EditorClassIdentifier: 
   defenderType: 0
-  movementAnimationNorth: []
-  movementAnimationEast: []
-  movementAnimationSouth: []
-  movementAnimationWest: []
+  movementAnimationNorth:
+  - {fileID: 1308763238, guid: 29bbbf7556c674987a62758848c30f63, type: 3}
+  - {fileID: -1216105214, guid: 29bbbf7556c674987a62758848c30f63, type: 3}
+  - {fileID: 1470866976, guid: 29bbbf7556c674987a62758848c30f63, type: 3}
+  - {fileID: 1358966845, guid: 29bbbf7556c674987a62758848c30f63, type: 3}
+  movementAnimationEast:
+  - {fileID: 1970033793, guid: 1acd7024a781245fda3434c04a2326d9, type: 3}
+  - {fileID: -1851190652, guid: 1acd7024a781245fda3434c04a2326d9, type: 3}
+  - {fileID: -455415911, guid: 1acd7024a781245fda3434c04a2326d9, type: 3}
+  - {fileID: 1412004206, guid: 1acd7024a781245fda3434c04a2326d9, type: 3}
+  movementAnimationSouth:
+  - {fileID: -688986293, guid: c0d64340afbd045e58f84e567ea93143, type: 3}
+  - {fileID: 826779115, guid: c0d64340afbd045e58f84e567ea93143, type: 3}
+  - {fileID: -390756568, guid: c0d64340afbd045e58f84e567ea93143, type: 3}
+  - {fileID: -1264376655, guid: c0d64340afbd045e58f84e567ea93143, type: 3}
+  movementAnimationWest:
+  - {fileID: 264095519, guid: d74303517cc574b94b1bb03e5bb8cd56, type: 3}
+  - {fileID: -1350240526, guid: d74303517cc574b94b1bb03e5bb8cd56, type: 3}
+  - {fileID: -129183475, guid: d74303517cc574b94b1bb03e5bb8cd56, type: 3}
+  - {fileID: 2056826193, guid: d74303517cc574b94b1bb03e5bb8cd56, type: 3}
   attackAnimationNorth: []
   attackAnimationEast: []
   attackAnimationSouth: []

@@ -137,6 +137,7 @@ public class LevelController : MonoBehaviour
     {
         Assert.IsNotNull(instance, "method SetSingleton() should set the " +
             "levelcontroller singleton (currently null.)");
+        SceneController.SetSingleton(instance);
         JSONController.SetSingleton(instance);
         TileGrid.SetSingleton(instance);
         CameraController.SetSingleton(instance);

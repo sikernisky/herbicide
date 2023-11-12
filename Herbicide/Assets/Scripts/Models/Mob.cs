@@ -5,196 +5,146 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Represents a living entity in the game. All Mobs are placeable.
+/// Abstract class to represent a reactive entity in the game. Mobs
+/// implement attack functionality, but they don't need to represent
+/// things that can attack. 
 /// </summary>
-public abstract class Mob : PlaceableObject
+public abstract class Mob : PlaceableObject, IAttackable
 {
-    /// <summary>
-    /// FSM to represent a Mob's current state.
-    /// </summary>
-    public enum MobState
-    {
-        INACTIVE, //This Enemy is ready but not spawned
-        IDLE, //This Enemy has spawned but is not doing anything
-        SPAWN, //This Enemy has spawned
-        CHASE, //This Enemy is moving towards its target
-        ATTACK, //This Enemy is attacking its target
-        INVALID //Something wrong happened, debug needed
-    }
-
-    //-------------------- STATS --------------------- // 
+    //--------------------BEGIN STATS----------------------//
 
     /// <summary>
-    /// Current AnimationType this Mob is playing.
+    /// Amount of attack range this Mob starts with.
     /// </summary>
-    private Enum currentAnimation;
+    public abstract float BASE_ATTACK_RANGE { get; }
 
     /// <summary>
-    /// Reference to this Mob's animation coroutine.
+    /// Most amount of attack range this Mob can have.
     /// </summary>
-    private IEnumerator animationReference;
+    public abstract float MAX_ATTACK_RANGE { get; }
+
+    /// <summary>
+    /// Least amount of attack range this Mob can have.
+    /// </summary>
+    public abstract float MIN_ATTACK_RANGE { get; }
+
+    /// <summary>
+    /// This Mob's current attack range. 
+    /// </summary>
+    private float attackRange;
+
+    /// <summary>
+    /// Amount of attack speed this Mob starts with.
+    /// </summary>
+    public abstract float BASE_ATTACK_SPEED { get; }
+
+    /// <summary>
+    /// Most amount of attack speed this Mob can have.
+    /// </summary>
+    public abstract float MAX_ATTACK_SPEED { get; }
+
+    /// <summary>
+    /// Least amount of attack speed this Mob can have.
+    /// </summary>
+    public abstract float MIN_ATTACK_SPEED { get; }
+
+    /// <summary>
+    /// This Mob's current attack speed. 
+    /// </summary>
+    private float attackSpeed;
+
+    //---------------------END STATS-----------------------//
 
     /// <summary>
     /// true if this Mob is spawned in the scene.
     /// </summary>
     private bool spawned;
 
-    /// <summary>
-    /// The current frame number of the animation loop. Zero-indexed.
-    /// </summary>
-    private int frame;
 
     /// <summary>
-    /// The maxmimum number of frames for the animation playing
-    /// in the current animation loop. Zero-indexed.
-    /// </summary>
-    private int frameCount;
-
-    /// <summary>
-    /// The "flip-book" Sprite track of the current animation.
-    /// </summary>
-    private Sprite[] currentAnimationTrack;
-
-    //-------------------- ----- --------------------- // 
-
-    /// <summary>
-    /// Sets this Mob to play some Animation. If the animation
-    /// passed into this method is the one it is currently
-    /// playing, restarts it.
-    /// </summary>
-    /// <param name="animation">The animation to play.</param>
-    /// <param name="frameCount">The maximum number of frames in the animation
-    /// to play.</param>
-    protected void PlayAnimation(Enum animation)
-    {
-        if (animation == currentAnimation) frame = 0;
-        else currentAnimation = animation;
-    }
-
-    /// <summary>
-    /// Sets the maximum number of frames in the current animation loop.
-    /// </summary>
-    /// <param name="frameCount">the maximum number of frames in the current animation loop. </param>
-    protected void SetFrameCount(int frameCount)
-    {
-        Assert.IsTrue(frameCount >= 0, "Frame count must be greater than or equal to 0.");
-        this.frameCount = frameCount;
-    }
-
-    /// <summary>
-    /// Returns the current frame limit.
-    /// </summary>
-    /// <returns>the current frame limit.</returns>
-    public int GetFrameCount()
-    {
-        return frameCount;
-    }
-
-    /// <summary>
-    /// Increments the frame count by one; or, if it is already
-    /// the final frame in the current animation, sets it to 0.
-    /// </summary>
-    protected void NextFrame()
-    {
-        if (frame + 1 >= GetFrameCount()) frame = 0;
-        else frame++;
-    }
-
-    /// <summary>
-    /// Returns the current frame number of the animation in this Mob's
-    /// animation loop.
-    /// </summary>
-    /// <returns>the current frame number of the animation in this Mob's
-    /// animation loop. </returns>
-    public int GetFrameNumber()
-    {
-        return frame;
-    }
-
-    /// <summary>
-    /// Returns true if this Mob is currently playing an Animation.
-    /// </summary>
-    /// <returns>true if this Mob is currently playing an Animation;
-    /// otherwise, false.</returns>
-    public bool PlayingAnimation()
-    {
-        return animationReference != null;
-    }
-
-    /// <summary>
-    /// Returns the AnimationType this Mob is currently playing.
-    /// </summary>
-    /// <returns>the AnimationType this Mob is playing.</returns>
-    protected Enum GetCurrentAnimation()
-    {
-        return currentAnimation;
-    }
-
-    /// <summary>
-    /// Performs actions when this Mob first enters the scene.
+    /// Called when this Mob activates in the scene.
     /// </summary>
     public virtual void OnSpawn()
     {
-        Assert.IsFalse(PlayingAnimation(), GetName() + " is already playing an animation.");
-        ResetStats();
-        animationReference = CoPlayAnimation();
-        StartCoroutine(animationReference);
         spawned = true;
+        ResetStats();
     }
-
-    /// <summary>
-    /// Resets this Mob's stats.
-    /// </summary>
-    public abstract void ResetStats();
 
     /// <summary>
     /// Returns true if this Mob is spawned in the scene.
     /// </summary>
     /// <returns>true if this Mob is spawned in the scene.</returns>
-    public bool Spawned()
+    public bool Spawned() { return spawned; }
+
+    /// <summary>
+    /// Returns true if this Mob can attack a target.
+    /// </summary>
+    /// <param name="target">The ITargetable that this Mob is trying
+    /// to attack. </param>
+    /// <returns>true if this Mob can attack a target;
+    /// otherwise, false.</returns>
+    public virtual bool CanAttack(ITargetable target) { return target != null && GetAttackSpeed() > 0; }
+
+    /// <summary>
+    /// Returns this Mob's current attack range.
+    /// </summary>
+    /// <returns>this Mob's current attack range.</returns>
+    public float GetAttackRange() { return attackRange; }
+
+    /// <summary>
+    /// Sets this IAttackable's attack range.
+    /// </summary>
+    /// <param name="amount">The new attack range.</param>
+    public void SetAttackRange(float amount) { attackRange = Mathf.Clamp(amount, MIN_ATTACK_RANGE, MAX_ATTACK_RANGE); }
+
+    /// <summary>
+    /// Resets this Mob's attack range to its starting value.
+    /// </summary>
+    public void ResetAttackRange() { attackRange = BASE_ATTACK_RANGE; }
+
+    /// <summary>
+    /// Returns this Mob's current attack speed.
+    /// </summary>
+    /// <returns>this Mob's current attack speed.</returns>
+    public float GetAttackSpeed() { return attackSpeed; }
+
+    /// <summary>
+    /// Sets this IAttackable's attack speed.
+    /// </summary>
+    /// <param name="amount">The new attack speed.</param>
+    public void SetAttackSpeed(float amount) { attackSpeed = Mathf.Clamp(amount, MIN_ATTACK_SPEED, MAX_ATTACK_SPEED); }
+
+    /// <summary>
+    /// Resets this Mob's attack speed to its starting value.
+    /// </summary>
+    public void ResetAttackSpeed() { attackSpeed = BASE_ATTACK_SPEED; }
+
+    /// <summary>
+    /// Resets this Mob's stats to their default values.
+    /// </summary>
+    public override void ResetStats()
     {
-        return spawned;
+        base.ResetStats();
+        ResetAttackRange();
+        ResetAttackSpeed();
     }
 
     /// <summary>
-    /// Sets the animation track of the current animation. 
+    /// Changes this Mob's direction such that it faces some ITargetable.
     /// </summary>
-    /// <param name="track">the animation track to set.</param>
-    protected void SetCurrentAnimationTrack(Sprite[] track)
+    /// <param name="t">The ITargetable to face.</param>
+    public void FaceTarget(ITargetable t)
     {
-        Assert.IsNotNull(track, "Animation track is null.");
+        Assert.IsNotNull(t, "Cannot face a null target.");
 
-        currentAnimationTrack = track;
+        float xDistance = GetPosition().x - t.GetPosition().x;
+        float yDistance = GetPosition().y - t.GetPosition().y;
+        bool xGreater = Mathf.Abs(xDistance) > Mathf.Abs(yDistance)
+            ? true : false;
+
+        if (xGreater && xDistance <= 0) FaceDirection(Direction.EAST);
+        if (xGreater && xDistance > 0) FaceDirection(Direction.WEST);
+        if (!xGreater && yDistance <= 0) FaceDirection(Direction.NORTH);
+        if (!xGreater && yDistance > 0) FaceDirection(Direction.SOUTH);
     }
-
-    /// <summary>
-    /// Returns true if this Mob is set up with an animation track.
-    /// </summary>
-    /// <returns>true if this Mob is set up with an animation track;
-    /// otherwise, false. </returns>
-    protected bool HasAnimationTrack()
-    {
-        return currentAnimationTrack != null;
-    }
-
-    /// <summary>
-    /// Returns the Sprite at the current frame of the current
-    /// animation.
-    /// </summary>
-    /// <returns>the Sprite at the current frame of the current
-    /// animation</returns>
-    protected Sprite GetSpriteAtCurrentFrame()
-    {
-        Assert.IsTrue(HasAnimationTrack());
-
-        return currentAnimationTrack[GetFrameNumber()];
-    }
-
-    /// <summary>
-    /// Plays the current animation of this Mob. Acts like a flipbook;
-    /// keeps track of frames and increments this counter to apply
-    /// the correct Sprites to the Mob's SpriteRenderer.
-    /// </summary>
-    /// <returns>A reference to the coroutine.</returns>
-    protected abstract IEnumerator CoPlayAnimation();
 }

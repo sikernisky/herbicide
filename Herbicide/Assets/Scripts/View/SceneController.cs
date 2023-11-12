@@ -134,4 +134,26 @@ public class SceneController : MonoBehaviour
         }
         loadingScene = false;
     }
+
+    /// <summary>
+    /// Runs a Coroutine reference. This is implemented for classes that
+    /// need to run Coroutines but do not inherit from Monobehaviour. 
+    /// </summary>
+    /// <param name="reference">The Coroutine reference</param>
+    public static void BeginCoroutine(IEnumerator reference)
+    {
+        Assert.IsNotNull(reference, "Reference to Coroutine is null.");
+        instance.StartCoroutine(reference);
+    }
+
+    /// <summary>
+    /// Stops a Coroutine reference. This is implemented for classes that
+    /// need to run Coroutines but do not inherit from Monobehaviour. 
+    /// </summary>
+    /// <param name="reference">The Coroutine reference</param>
+    public static void EndCoroutine(IEnumerator reference)
+    {
+        Assert.IsNotNull(reference, "Reference to Coroutine is null.");
+        instance.StopCoroutine(reference);
+    }
 }

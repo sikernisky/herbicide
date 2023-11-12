@@ -3,46 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using System.Linq;
+using System;
 
 /// <summary>
 /// Controls an Enemy.
 /// </summary>
-public abstract class EnemyController
+public abstract class EnemyController<T> : MobController<T> where T : Enum
 {
     /// <summary>
     /// Total number of DefenderControllers created during this level so far.
     /// </summary>
     private static int NUM_ENEMIES;
-
-    /// <summary>
-    /// The Enemy controlled by this EnemyController
-    /// </summary>
-    private Enemy enemy;
-
-    /// <summary>
-    /// The current state of this EnemyController's enemy
-    /// </summary>
-    private Mob.MobState state;
-
-    /// <summary>
-    /// Timer for keeping track of attacks per second.
-    /// </summary>
-    private float attackTimer;
-
-    /// <summary>
-    /// Unique ID of this EnemyController.
-    /// </summary>
-    private int id;
-
-    /// <summary>
-    /// Target of the Enemy controlled by this EnemyController
-    /// </summary>
-    private ITargetable target;
-
-    /// <summary>
-    /// The most recent GameState.
-    /// </summary>
-    private GameState gameState;
 
 
     /// <summary>
@@ -51,388 +22,86 @@ public abstract class EnemyController
     /// <param name="enemy">the enemy this EnemyController controls.</param>
     /// <param name="spawnTime">when the Enemy should spawn in the level. </param>
     /// <param name="spawnCoords">where this Enemy should spawn</param>
-    public EnemyController(Enemy enemy, float spawnTime, Vector2 spawnCoords)
+    public EnemyController(Enemy enemy, float spawnTime, Vector2 spawnCoords) : base(enemy)
     {
         //Safety checks
         Assert.IsNotNull(enemy);
 
-        this.id = NUM_ENEMIES;
         GameObject enemyOb = enemy.CloneEnemy();
         Enemy newEnemy = enemyOb.GetComponent<Enemy>();
         Assert.IsNotNull(newEnemy);
+        SetModel(newEnemy);
 
-        this.enemy = newEnemy;
-        this.enemy.SetSpawnTime(spawnTime);
-        this.enemy.SetSpawnWorldPosition(spawnCoords);
-        this.enemy.gameObject.SetActive(false);
-        SetState(Mob.MobState.INACTIVE);
+        GetEnemy().SetSpawnTime(spawnTime);
+        GetEnemy().SetSpawnWorldPosition(spawnCoords);
+        GetEnemy().gameObject.SetActive(false);
 
+        //SetState(Mob.MobState.INACTIVE);
         NUM_ENEMIES++;
-    }
-
-    /// <summary>
-    /// Returns the Enemy controlled by this EnemyController.
-    /// </summary>
-    /// <returns>the Enemy controlled by this EnemyController.</returns>
-    public Enemy GetEnemy()
-    {
-        return enemy;
-    }
-
-    /// <summary>
-    /// Returns this EnemyController's ID.
-    /// </summary>
-    /// <returns>this EnemyController's ID.</returns>
-    public int GetId()
-    {
-        return id;
     }
 
     /// <summary>
     /// Updates the Enemy controlled by this EnemyController.
     /// </summary>
-    /// <param name="targets">All ITargetables on the grid.</param>
-    /// <param name="dt">Current game time.</param>
-    public virtual void UpdateEnemy(List<ITargetable> targets, float dt)
+    /// <param name="targets">A complete list of ITargetables in the scene.</param>
+    protected override void UpdateMob(List<ITargetable> targets)
     {
-        if (!ValidEnemy()) return;
-        if (targets == null) return;
+        if (!ValidModel()) return;
+        TryRemoveModel();
+        if (GetGameState() != GameState.ONGOING) return;
 
-
-        bool readyToSpawn = !GetEnemy().Spawned() && dt >= GetEnemy().GetSpawnTime();
-        if (readyToSpawn)
-        {
-            GetEnemy().gameObject.SetActive(true);
-            GetEnemy().OnSpawn();
-            SetState(Mob.MobState.SPAWN);
-        }
-
-        if (gameState == GameState.ONGOING && GetEnemy().Spawned())
-        {
-            UpdateEnemyCooldowns();
-            UpdateEnemyTilePosition();
-            RectifyEnemySortingOrder();
-            SelectTarget(targets);
-            UpdateState();
-            UpdateEnemyHealthState();
-            UpdateEnemyCollider();
-            DetermineEnemyMovePos();
-
-            //For each state, try to call its logic.
-            AttackState();
-            ChaseState();
-            IdleState();
-        }
-
-        if (GetEnemy().Spawned()) TryClearEnemy();
-    }
-
-    /// <summary>
-    /// Informs this EnemyController of the most recent GameState so
-    /// that it knows how to update its Enemy.
-    /// </summary>
-    /// <param name="state">The most recent GameState.</param>
-    public void InformOfGameState(GameState state)
-    {
-        gameState = state;
-    }
-
-    /// <summary>
-    /// Checks if this EnemyContoller's enemy should be removed from
-    /// the game. If so, clears it.
-    /// </summary>
-    private void TryClearEnemy()
-    {
-        //Only try to clear it if it has spawned. 
+        if (!GetEnemy().Spawned()) SpawnMob();
         if (!GetEnemy().Spawned()) return;
 
-        if (!TileGrid.OnWalkableTile(GetEnemy().GetPosition(), GetEnemy()))
-        {
-            KillEnemy();
-        }
+        ElectTarget(FilterTargets(targets));
+        DetermineEnemyMovePos();
+        UpdateEnemyTilePosition();
+        RectifyEnemySortingOrder();
+        UpdateEnemyHealthState();
+        UpdateEnemyCollider();
 
-        if (GetEnemy().GetHealth() <= 0)
-        {
-            KillEnemy();
-        }
+        //STATE LOGIC
+        UpdateStateFSM();
+        ExecuteIdleState();
     }
 
     /// <summary>
-    /// Tries to attack the Enemy's target. This depends on the
-    /// Enemy's attack speed and target validity.
+    /// Spawns this EnemyController's Enemy. Only does this if it
+    /// is ready to spawn.
     /// </summary>
-    protected virtual void AttackState()
+    protected override void SpawnMob()
     {
-        //Safety checks
-        if (!ValidEnemy()) return;
-        if (target == null) return;
-
-        attackTimer -= Time.deltaTime;
-
-        if (GetState() != Mob.MobState.ATTACK) return;
-
-        if (attackTimer <= 0)
-        {
-            attackTimer = 1f / GetEnemy().GetAttackSpeed();
-            GetEnemy().Attack(target);
-        }
-    }
-
-    /// <summary>
-    /// Runs all code relevant to the Enemy's chase state.
-    /// </summary>
-    protected virtual void ChaseState()
-    {
-        if (!ValidEnemy()) return;
-
-        if (GetState() != Mob.MobState.CHASE) return;
-        GetEnemy().Chase(GetTarget());
-    }
-
-    /// <summary>
-    /// Runs all code relevant to the Enemy's idle state.
-    /// </summary>
-    protected virtual void IdleState()
-    {
-        if (!ValidEnemy()) return;
-
-        if (GetState() != Mob.MobState.IDLE) return;
+        if (!GetEnemy().ReadyToSpawn()) return;
+        GetEnemy().gameObject.SetActive(true);
+        GetEnemy().SubscribeToCollision(HandleCollision);
+        GetEnemy().SetWorldPosition(GetEnemy().GetSpawnWorldPosition());
+        base.SpawnMob();
     }
 
     /// <summary>
     /// Updates the HealthState of the Enemy controlled by this EnemyController.
     /// </summary>
-    private void UpdateEnemyHealthState()
-    {
-        GetEnemy().UpdateHealthState();
-    }
+    private void UpdateEnemyHealthState() { GetEnemy().UpdateHealthState(); }
 
     /// <summary>
-    /// Updates the state of this EnemyController.
+    /// Returns true if the Enemy controlled by this EnemyController
+    /// is not null.
     /// </summary>
-    protected virtual void UpdateState()
-    {
-        if (!ValidEnemy()) SetState(Mob.MobState.INVALID);
-        else
-        {
-            Mob.MobState currState = GetState();
-            float distToTarget = GetEnemy().DistanceToTarget(GetTarget());
-            SetState(GetEnemy().DetermineState(currState, distToTarget));
-        }
-    }
+    /// <returns>true if the Enemy controlled by this EnemyController
+    /// is not null; otherwise, returns false.</returns>
+    public override bool ValidModel() { return GetEnemy() != null; }
 
     /// <summary>
-    /// Selects the Enemy's target.
+    /// Returns the Enemy controlled by this EnemyController.
     /// </summary>
-    /// <param name="targets"> all possible targets for this MovingEnemy to select.
-    /// </param>
-    protected virtual void SelectTarget(List<ITargetable> targets)
-    {
-        Assert.IsNotNull(targets);
-
-        //Reasons we shouldn't choose a new target.
-        if (!ValidEnemy()) return;
-        if (ValidTarget() && !GetTarget().Dead()) return;
-        if (targets.Count == 0) return;
-
-        SetTarget(FindTarget(targets));
-    }
+    /// <returns>the Enemy controlled by this EnemyController.</returns>
+    public Enemy GetEnemy() { return GetMob() as Enemy; }
 
     /// <summary>
-    /// Sets the position that represents where this EnemyController's
-    /// Enemy should move towards. If it cannot move, sets the position
-    /// to itself.
+    /// Updates the Enemy managed by this EnemyController's Collider2D
+    /// properties.
     /// </summary>
-    private void DetermineEnemyMovePos()
-    {
-        if (!ValidEnemy()) GetEnemy().SetNextMovePos(GetEnemy().GetPosition());
-        if (!ValidTarget()) GetEnemy().SetNextMovePos(GetEnemy().GetPosition());
-
-        GetEnemy().SetNextMovePos(
-            TileGrid.NextTilePosTowardsGoal(
-                GetEnemy().GetPosition(), GetTarget().GetPosition()));
-    }
-
-    /// <summary>
-    /// Sets this Enemy's target: an ITargetable that this EnemyController's Enemy
-    /// should target out of a list of all possible targets. This logic is determined
-    /// by the Enemy, but this controller method is responsible for ensuring there 
-    /// is a valid path towards its selection.
-    /// </summary>
-    /// <param name="targets">All possible ITargetables to target.</param>
-    /// <returns>The ITargetable that this EnemyController's Enemy should target from a
-    /// list of possible targets.</returns>
-    public virtual ITargetable FindTarget(List<ITargetable> targets)
-    {
-
-        targets.RemoveAll(t => t == null);
-        List<ITargetable> treeTargets = new List<ITargetable>();
-        treeTargets.AddRange(targets.Where(t => t as Tree != null));
-        treeTargets.ForEach(t => Assert.IsNotNull(t));
-        treeTargets = treeTargets.OrderBy(t => GetEnemy().DistanceToTarget(t)).ToList();
-
-        List<ITargetable> defenderTargets = new List<ITargetable>();
-        defenderTargets.AddRange(targets.Where(d => d as Defender != null));
-        defenderTargets.ForEach(d => Assert.IsNotNull(d));
-        defenderTargets = defenderTargets.OrderBy(d => GetEnemy().DistanceToTarget(d)).ToList();
-
-        //(1) Closest Tree with a Defender
-        foreach (Tree t in treeTargets)
-        {
-            Tree tree = t as Tree;
-            if (tree != null && tree.Occupied() && CanTarget(tree)) return tree;
-        }
-
-        //(2) Closest Tree without a Defender
-        foreach (Tree t in treeTargets)
-        {
-            Tree tree = t as Tree;
-            if (tree != null && CanTarget(tree)) return tree;
-        }
-
-        //(3) Closest Defender (SUBJECT TO CHANGE.)
-        foreach (Defender d in treeTargets)
-        {
-            Defender defender = d as Defender;
-            if (defender != null && CanTarget(defender)) return defender;
-        }
-
-        //(4) Closest.. random... default.
-        return targets[0];
-    }
-
-    /// <summary>
-    /// Returns true if the Enemy controlled by this EnemyController can
-    /// target some ITargetable. This method is called when selecting a
-    /// target to ensure that measures outside of an Enemy's control
-    /// are accounted for. <br></br>
-    /// 
-    /// For example, MovingEnemyControllers need to ensure their target
-    /// has a valid path. But we don't want Enemy models referencing
-    /// the TileGrid, so we check in the MovingEnemyController class.
-    /// </summary>
-    /// <param name="target">the ITargetable to check</param>
-    /// <returns>true if this EnemyController's Enemy can target
-    /// the ITargetable; otherwise, false. </returns>
-    protected virtual bool CanTarget(ITargetable target)
-    {
-        Assert.IsTrue(ValidEnemy());
-
-        if (target == null) return false;
-
-        return true;
-    }
-
-    /// <summary>
-    /// Sets the Enemy controlled by this EnemyController's target.
-    /// </summary>
-    /// <param name="target">the new target</param>
-    protected void SetTarget(ITargetable target)
-    {
-        if (!ValidEnemy()) return;
-
-        this.target = target;
-    }
-
-    /// <summary>
-    /// Returns the IAttackable that the Enemy controlled by this EnemyController
-    /// is targeting.
-    /// </summary>
-    /// <returns>the IAttackable that the Enemy controlled by this EnemyController
-    /// is targeting.</returns>
-    protected ITargetable GetTarget()
-    {
-        if (!ValidEnemy()) return null;
-
-        return target;
-    }
-
-    /// <summary>
-    /// Returns true if the target of the Enemy controlled by this EnemyController
-    /// is alive and not null.
-    /// </summary>
-    /// <returns>true if the Enemy controlled by this EnemyController's target
-    /// is valid; otherwise, false.</returns>
-    protected bool ValidTarget()
-    {
-        return GetTarget() as UnityEngine.Object != null;
-    }
-
-    /// <summary>
-    /// Sets the State of this EnemyController.
-    /// </summary>
-    /// <param name="newState">The state to set to.</param>
-    protected void SetState(Mob.MobState newState)
-    {
-        if (!ValidEnemy()) return;
-
-        state = newState;
-    }
-
-    /// <summary>
-    /// Returns the state of this EnemyController.
-    /// </summary>
-    /// <returns>the state of this EnemyController.</returns>
-    protected Mob.MobState GetState()
-    {
-        if (!ValidEnemy()) return Mob.MobState.INVALID;
-
-        return state;
-    }
-
-    /// <summary>
-    /// Kills the Enemy controlled by this EnemyController.
-    /// </summary>
-    protected virtual void KillEnemy()
-    {
-        if (!ValidEnemy()) return;
-
-        GetEnemy().Die();
-        GameObject.Destroy(GetEnemy().gameObject);
-        GameObject.Destroy(GetEnemy());
-    }
-
-    /// <summary>
-    /// Returns true if this EnemyController is no longer needed and
-    /// should be removed by the ControllerController.<br></br>
-    /// 
-    /// By default, this returns true if the Enemy controlled by this
-    /// EnemyController is dead.
-    /// </summary>
-    /// <returns>true if this EnemyController is no longer needed and
-    /// should be removed by the ControllerController; otherwise,
-    /// returns false.</returns>
-    public virtual bool ShouldRemoveController()
-    {
-        if (!ValidEnemy()) return true;
-        return false;
-    }
-
-
-    /// <summary>
-    /// Returns true if this EnemyController has a defined, active Enemy.
-    /// </summary>
-    /// <returns>true if this EnemyController has a defined, active Enemy;
-    /// otherwise, false.</returns>
-    protected virtual bool ValidEnemy()
-    {
-        return enemy != null;
-    }
-
-    /// <summary>
-    /// Returns true if the Enemy controlled by this EnemyController is alive
-    /// and active.
-    /// </summary>
-    /// <returns>true if the Enemy controlled by this EnemyController is alive
-    /// and active; otherwise, false.</returns>
-    public bool EnemyAlive()
-    {
-        if (!ValidEnemy()) return false;
-        if (enemy.GetHealth() <= 0) return false;
-        if (!enemy.isActiveAndEnabled) return false;
-
-        return true;
-    }
+    private void UpdateEnemyCollider() { GetEnemy().SetColliderProperties(); }
 
     /// <summary>
     /// Updates the Enemy controlled by this EnemyController's sorting order so that
@@ -441,8 +110,19 @@ public abstract class EnemyController
     /// </summary>
     private void RectifyEnemySortingOrder()
     {
-        Enemy e = GetEnemy();
-        e.SetSortingOrder(10000 - (int)(GetEnemy().GetPosition().y * 100));
+        GetEnemy().SetSortingOrder(10000 - (int)(GetEnemy().GetPosition().y * 100));
+    }
+
+    /// <summary>
+    /// Destroys this EnemyController's Enemy model, removing it
+    /// from the scene and triggering its death logic.
+    /// </summary>
+    protected void DestroyEnemy()
+    {
+        if (!ValidModel()) return;
+        GetEnemy().OnDie();
+        GameObject.Destroy(GetEnemy().gameObject);
+        GameObject.Destroy(GetEnemy());
     }
 
     /// <summary>
@@ -454,24 +134,67 @@ public abstract class EnemyController
         Vector2 enemyWorldPos = GetEnemy().GetPosition();
         int enemyTileX = TileGrid.PositionToCoordinate(enemyWorldPos.x);
         int enemyTileY = TileGrid.PositionToCoordinate(enemyWorldPos.y);
-        GetEnemy().UpdateTilePosition(enemyTileX, enemyTileY);
+        GetEnemy().SetTileCoordinates(enemyTileX, enemyTileY);
     }
 
     /// <summary>
-    /// Updates the cooldowns managed by the Enemy controlled by this
-    /// EnemyController.
+    /// Sets the position that represents where this EnemyController's
+    /// Enemy should move towards. If it cannot move, sets the position
+    /// to itself.
     /// </summary>
-    private void UpdateEnemyCooldowns()
+    protected virtual void DetermineEnemyMovePos()
     {
-        GetEnemy().UpdateCooldowns();
+        if (!ValidModel()) GetEnemy().SetNextMovePos(GetEnemy().GetPosition());
+        GetEnemy().SetNextMovePos(
+            TileGrid.NextTilePosTowardsGoal(
+                GetEnemy().GetPosition(), GetTarget().GetPosition()));
     }
 
     /// <summary>
-    /// Updates the Enemy managed by this EnemyController's Collider2D
-    /// properties.
+    /// Checks if this EnemyController's model should be removed from
+    /// the scene. If so, removes it.
     /// </summary>
-    private void UpdateEnemyCollider()
+    protected override void TryRemoveModel()
     {
-        GetEnemy().SetColliderProperties();
+        if (!GetEnemy().Spawned()) return;
+        if (!TileGrid.OnWalkableTile(GetEnemy().GetPosition(), GetEnemy())) DestroyEnemy();
+        if (GetEnemy().GetHealth() <= 0) DestroyEnemy();
+    }
+
+    /// <summary>
+    /// Sets this EnemyController's target from a filtered list of ITargetables.
+    /// </summary>
+    /// <param name="filteredTargetables">a list of ITargables that this EnemyController
+    /// is allowed to set as its target. /// </param>
+    protected override void ElectTarget(List<ITargetable> filteredTargetables)
+    {
+        if (!ValidModel()) return;
+        if (GetTarget() != null) return;
+        Assert.IsNotNull(filteredTargetables, "List of targets is null.");
+
+        int random = UnityEngine.Random.Range(0, filteredTargetables.Count);
+        if (filteredTargetables.Count == 0) SetTarget(null);
+        else SetTarget(filteredTargetables[random]);
+    }
+
+    /// <summary>
+    /// Parses the list of all ITargetables in the scene such that it
+    /// only contains ITargetables that this EnemyController's Enemy is allowed
+    /// to target. <br></br><br></br>
+    /// 
+    /// The Enemy is allowed to target Defenders and player-sided PlaceableObjects.
+    /// </summary>
+    /// <param name="targetables">the list of all ITargetables in the scene</param>
+    /// <returns>a list containing Enemy ITargetables that this EnemyController's Enemy can
+    /// reach./// </returns>
+    protected override List<ITargetable> FilterTargets(List<ITargetable> targetables)
+    {
+        Assert.IsNotNull(targetables, "List of targets is null.");
+        List<ITargetable> filteredTargets = new List<ITargetable>();
+        filteredTargets.AddRange(targetables.Where(tar => tar as Tree != null &&
+            TileGrid.CanReach(GetEnemy().GetPosition(), tar.GetPosition())));
+        filteredTargets.AddRange(targetables.Where(tar => tar as Defender != null &&
+            TileGrid.CanReach(GetEnemy().GetPosition(), tar.GetPosition())));
+        return filteredTargets;
     }
 }

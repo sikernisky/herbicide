@@ -1,12 +1,12 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Controls a Defender.
+/// Abstract class to represent controllers of Defenders.
 /// </summary>
-public abstract class DefenderController
+public abstract class DefenderController<T> : MobController<T> where T : Enum
 {
     /// <summary>
     /// Total number of DefenderControllers created during this level so far.
@@ -14,352 +14,93 @@ public abstract class DefenderController
     private static int NUM_DEFENDERS;
 
     /// <summary>
-    /// The Defender controlled by this DefenderController
-    /// </summary>
-    private Defender defender;
-
-    /// <summary>
-    /// The target this Defender should focus on
-    /// </summary>
-    private ITargetable target;
-
-    /// <summary>
-    /// Timer for keeping track of attacks per second.
-    /// </summary>
-    private float attackTimer;
-
-    /// <summary>
-    /// State of this DefenderController.
-    /// </summary>
-    private Mob.MobState state;
-
-    /// <summary>
-    /// ITargetabless within the range of the Defender controlled
-    /// by this DefenderController
-    /// </summary>
-    private List<ITargetable> targetsInRange;
-
-    /// <summary>
-    /// Unique ID of this DefenderController.
-    /// </summary>
-    private int id;
-
-    /// <summary>
-    /// The current state of the game.
-    /// </summary>
-    private GameState gameState;
-
-    /// <summary>
     /// Makes a new DefenderController for a Defender.
     /// </summary>
-    /// <param name="defender">The Defender controlled by this DefenderController.</param>
-    public DefenderController(Defender defender)
-    {
-        Assert.IsNotNull(defender);
-
-        this.defender = defender;
-        this.id = NUM_DEFENDERS;
-        GetDefender().OnSpawn();
-        targetsInRange = new List<ITargetable>();
-        NUM_DEFENDERS++;
-    }
+    /// <param name="defender">The Defender controlled by this
+    ///  DefenderController.</param>
+    public DefenderController(Defender defender) : base(defender) { NUM_DEFENDERS++; }
 
     /// <summary>
-    /// Sets the Defender controlled by this DefenderController's target.
+    /// Updates the Defender controlled by this DefenderController.
     /// </summary>
-    /// <param name="targets">All Enemies to potentially target.</param>
-    protected void SelectTarget()
+    /// <param name="targets">A complete list of ITargetables in the scene.</param>
+    protected override void UpdateMob(List<ITargetable> targets)
     {
-        if (!ValidDefender()) return;
-        if (TargetsInRange() == null) SetTarget(null);
-        if (GetTarget() != null && !GetTarget().Dead()) return;
-
-        List<Enemy> potentialTargets = new List<Enemy>();
-        foreach (ITargetable candidate in TargetsInRange())
-        {
-            Enemy enemy = candidate as Enemy;
-            if (enemy != null) potentialTargets.Add(enemy);
-        }
-        int random = Random.Range(0, potentialTargets.Count);
-        if (potentialTargets.Count <= 0) SetTarget(null);
-        else SetTarget(potentialTargets[random]);
-        if (GetTarget() == null) GetDefender().RotateDefender(Direction.SOUTH);
-    }
-
-    /// <summary>
-    /// Updates the Defender controlled by this DefenderController: <br></br>
-    /// 
-    /// (1) Finds all targets in range. <br></br>
-    /// (2) Updates state.<br></br>
-    /// (3) Chooses a target.<br></br>
-    /// (4) Tries to attack.<br></br>
-    /// </summary>
-    public void UpdateDefender(List<ITargetable> targets)
-    {
-        if (!ValidDefender()) return;
-
-        TryClearDefender();
-        UpdateDamageFlash();
-
-        if (gameState == GameState.ONGOING)
-        {
-            FindTargetsInRange(targets);
-            UpdateState();
-            SelectTarget();
-
-            //For each state, try to call its logic.
-            ChaseState();
-            AttackState();
-            IdleState();
-        }
-    }
-
-    /// <summary>
-    /// Runs all code relevant to the Defender's attacking state. Computes
-    /// logic for attack cooldown. Everything else is left up to the Defender's
-    /// Attack() method. 
-    /// </summary>
-    private void AttackState()
-    {
-        //Safety checks
-        if (!ValidDefender()) return;
-        if (GetTarget() == null) return;
-
-        attackTimer -= Time.deltaTime;
-
-        if (GetState() != Mob.MobState.ATTACK) return;
-        if (attackTimer <= 0)
-        {
-            attackTimer = 1f / GetDefender().GetAttackSpeed();
-            GetDefender().Attack(target);
-        }
-    }
-
-    /// <summary>
-    /// Runs all code relevant to the Defender's chasing state. This
-    /// logic is up to the Defender.
-    /// </summary>
-    private void ChaseState()
-    {
-        //Safety checks
-        if (!ValidDefender()) return;
-        if (GetTarget() == null) return;
-
-        if (GetState() != Mob.MobState.CHASE) return;
-        GetDefender().Chase(GetTarget());
-    }
-
-    /// <summary>
-    /// Returns this DefenderController's Defender's target.
-    /// </summary>
-    /// <returns>the target of the Defender controlled by this
-    /// DefenderController./// </returns>
-    private ITargetable GetTarget()
-    {
-        return target;
-    }
-
-    /// <summary>
-    /// Sets the target of the Defender. A null value means that
-    /// the Defender should not have a target.
-    /// </summary>
-    /// <param name="target">The target of the Defender; null if
-    /// no target</param>
-    private void SetTarget(ITargetable target)
-    {
-        this.target = target;
-    }
-
-    /// <summary>
-    /// Runs all code relevant to the Defender's idle state. This
-    /// logic is up to the Defender.
-    /// </summary>
-    private void IdleState()
-    {
-        //Safety checks
-        if (!ValidDefender()) return;
-
-        if (GetState() != Mob.MobState.IDLE) return;
-        GetDefender().Idle();
-    }
-
-    /// <summary>
-    /// Updates the state of this DefenderController.
-    /// </summary>
-    private void UpdateState()
-    {
-        if (!ValidDefender()) state = Mob.MobState.INVALID;
-        else
-        {
-            Mob.MobState currState = GetState();
-            int numTars = NumTargetsInRange();
-            SetState(GetDefender().DetermineState(currState, numTars));
-        }
-    }
-
-    /// <summary>
-    /// Updates the list of ITargetables within the attack range of the Defender
-    /// controlled by this DefenderController. Also updates the number of
-    /// targets in range.
-    /// </summary>
-    /// <param name="targets">All potential ITargetables.</param>
-    private void FindTargetsInRange(List<ITargetable> targets)
-    {
-        //Safety checks
-        if (!ValidDefender()) return;
-        if (targets == null) return;
-
-        //Filter out targets that are (1) not enemies and (2) not in range
-        List<ITargetable> targetablesInRange = new List<ITargetable>();
-        foreach (ITargetable tar in targets)
-        {
-            Enemy enemy = tar as Enemy;
-            if (enemy == null) continue;
-            if (GetDefender().DistanceToTarget(enemy) <= GetDefender().GetAttackRange())
-                targetablesInRange.Add(tar);
-        }
-        targetsInRange = targetablesInRange;
-    }
-
-    /// <summary>
-    /// Returns the number of targets within the range of the Defender controlled by this
-    /// DefenderController.
-    /// </summary>
-    /// <returns>the number of targets within the range of the Defender controlled by this
-    /// DefenderController.</returns>
-    protected int NumTargetsInRange()
-    {
-        if (!ValidDefender()) return -1;
-
-        return targetsInRange.Count;
-    }
-
-    /// <summary>
-    /// Informs this DefenderController of the most recent GameState so
-    /// that it knows how to update its Defender.
-    /// </summary>
-    /// <param name="state">The most recent GameState.</param>
-    public void InformOfGameState(GameState state)
-    {
-        gameState = state;
-    }
-
-    /// <summary>
-    /// Returns a list of ITargetables within the range of the Defender controlled by this
-    /// DefenderController.
-    /// </summary>
-    /// <returns>a list of ITargetables within the range of the Defender controlled by this
-    /// DefenderController.</returns>
-    protected List<ITargetable> TargetsInRange()
-    {
-        if (!ValidDefender()) return null;
-
-        return targetsInRange;
-    }
-
-    /// <summary>
-    /// Returns the state of this DefenderController.
-    /// </summary>
-    /// <returns>the state of this DefenderController.</returns>
-    protected Mob.MobState GetState()
-    {
-        if (!ValidDefender()) return Mob.MobState.INVALID;
-
-        return state;
-    }
-
-    /// <summary>
-    /// Sets the state of this DefenderController.
-    /// /// </summary>
-    /// <param name="newState">the new state to set to.</param>
-    /// <returns></returns>
-    protected void SetState(Mob.MobState newState)
-    {
-        if (!ValidDefender()) return;
-
-        state = newState;
-    }
-
-    /// <summary>
-    /// Returns true if the Defender controlled by this DefenderController
-    /// is not null.
-    /// </summary>
-    /// <returns>true if the Defender controlled by this DefenderController
-    /// is not null; otherwise, returns false.</returns>
-    private bool ValidDefender()
-    {
-        return GetDefender() != null;
+        if (!ValidModel()) return;
+        if (GetGameState() != GameState.ONGOING) return;
+        UpdateStateFSM();
+        ElectTarget(FilterTargets(targets));
+        ExecuteAttackState();
+        ExecuteIdleState();
     }
 
     /// <summary>
     /// Returns this DefenderController's Defender reference. 
     /// </summary>
     /// <returns>the reference to this DefenderController's defender.</returns>
-    private Defender GetDefender()
+    private Defender GetDefender() { return GetMob() as Defender; }
+
+    /// <summary>
+    /// Sets this DefenderController's target from a filtered list of ITargetables.
+    /// </summary>
+    /// <param name="filteredTargetables">a list of ITargables that this DefenderController
+    /// is allowed to set as its target. /// </param>
+    protected override void ElectTarget(List<ITargetable> filteredTargetables)
     {
-        return defender;
+        if (!ValidModel()) return;
+        if (GetTarget() != null) return;
+        Assert.IsNotNull(filteredTargetables, "List of targets is null.");
+
+        int random = UnityEngine.Random.Range(0, filteredTargetables.Count);
+        if (filteredTargetables.Count == 0) SetTarget(null);
+        else SetTarget(filteredTargetables[random]);
     }
 
     /// <summary>
-    /// Kills the Defender controlled by this DefenderController.
+    /// Parses the list of all ITargetables in the scene such that it
+    /// only contains ITargetables that this DefenderController's Defender is allowed
+    /// to target. <br></br><br></br>
+    /// 
+    /// The Defender is allowed to target Enemy Mobs within its attack range.
     /// </summary>
-    protected virtual void KillDefender()
+    /// <param name="targetables">the list of all ITargetables in the scene</param>
+    /// <returns>a list containing Enemy ITargetables that this DefenderController's Defender can
+    /// reach./// </returns>
+    protected override List<ITargetable> FilterTargets(List<ITargetable> targetables)
     {
-        if (!ValidDefender()) return;
-        if (GetDefender().GetHealth() > 0) return;
-
-        GetDefender().Die();
-        GameObject.Destroy(GetDefender().gameObject);
-        GameObject.Destroy(GetDefender());
+        Assert.IsNotNull(targetables, "List of targets is null.");
+        List<ITargetable> filteredTargets = new List<ITargetable>();
+        targetables.RemoveAll(t => t == null);
+        foreach (ITargetable target in targetables)
+        {
+            if (target as Enemy == null) continue;
+            float distanceToTarget = GetDefender().DistanceToTarget(target);
+            if (distanceToTarget > GetDefender().GetAttackRange()) continue;
+            filteredTargets.Add(target);
+        }
+        return filteredTargets;
     }
 
     /// <summary>
     /// Checks if this DefenderController's Defender should be removed from
     /// the game. If so, clears it.
     /// </summary>
-    private void TryClearDefender()
+    protected override void TryRemoveModel()
     {
-        if (GetDefender().GetHealth() <= 0) KillDefender();
+        if (!ValidModel()) return;
+        if (GetDefender().GetHealth() > 0) return;
+
+        GetDefender().OnDie();
+        GameObject.Destroy(GetDefender().gameObject);
+        GameObject.Destroy(GetDefender());
     }
 
-    /// <summary>
-    /// Returns true if this DefenderController is no longer needed and
-    /// should be removed by the ControllerController.<br></br>
-    /// 
-    /// By default, this returns true if the Defender controlled by this
-    /// EnemyController is dead.
-    /// </summary>
-    /// <returns>true if this DefenderController is no longer needed and
-    /// should be removed by the ControllerController; otherwise,
-    /// returns false.</returns>
-    public virtual bool ShouldRemoveController()
-    {
-        if (!ValidDefender()) return true;
-        return false;
-    }
+    //----------------------STATE LOGIC-----------------------//
 
     /// <summary>
-    /// Plays this DefenderController's Damage flash effect
-    /// if necessary.
+    /// Runs all code relevant to the Defender's attacking state.
     /// </summary>
-    private void UpdateDamageFlash()
-    {
-        if (GetDefender().GetDamageFlashingTime() > 0)
-        {
-            const float intensity = .4f;
-            float defenderFlashTime = GetDefender().DAMAGE_FLASH_TIME;
-            float newDamageFlashingTime = GetDefender().GetDamageFlashingTime() - Time.deltaTime;
-            GetDefender().SetDamageFlashingTime(Mathf.Clamp(newDamageFlashingTime, 0, defenderFlashTime));
-            float score = Mathf.Lerp(
-                intensity,
-                1f,
-                Mathf.Abs(GetDefender().GetDamageFlashingTime() - defenderFlashTime / 2f) * (intensity * 10f)
-            );
-            byte greenBlueComponent = (byte)(score * 255);
-            Color32 color = new Color32(255, greenBlueComponent, greenBlueComponent, 255);
-            GetDefender().SetColor(color);
-        }
-    }
+    protected abstract void ExecuteAttackState();
 }
 
 

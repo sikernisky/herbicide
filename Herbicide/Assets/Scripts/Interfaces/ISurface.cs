@@ -81,11 +81,6 @@ public interface ISurface
     PlaceableObject GetPlaceableObject();
 
     /// <summary>
-    /// Asserts that this ISurface is defined.
-    /// </summary>
-    void AssertDefined();
-
-    /// <summary>
     /// Returns the X-coordinate of this ISurface.
     /// </summary>
     /// <returns>the X-coordinate of this ISurface.</returns>

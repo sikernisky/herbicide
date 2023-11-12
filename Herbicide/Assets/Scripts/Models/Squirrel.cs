@@ -9,26 +9,37 @@ using UnityEngine.Assertions;
 /// </summary>
 public class Squirrel : Defender
 {
-    /// <summary>
-    /// Type of a Squirrel
-    /// </summary>
-    public override DefenderType TYPE => DefenderType.SQUIRREL;
-
+    //--------------------BEGIN STATS----------------------//
 
     /// <summary>
-    /// Class of a Squirrel
+    /// Starting health of a Squirrel
     /// </summary>
-    public override DefenderClass CLASS => DefenderClass.TREBUCHET;
+    public override int BASE_HEALTH => 200;
 
     /// <summary>
-    /// Name of a Squirrel
+    /// Maximum health of a Squirrel
     /// </summary>
-    protected override string NAME => "Squirrel";
+    public override int MAX_HEALTH => 200;
 
     /// <summary>
-    /// How much currency it takes to place a Squirrel
+    /// Minimum health of a Squirrel
     /// </summary>
-    protected override int COST => 1;
+    public override int MIN_HEALTH => 0;
+
+    /// <summary>
+    /// Starting attack range of a Squirrel
+    /// </summary>
+    public override float BASE_ATTACK_RANGE => 6f;
+
+    /// <summary>
+    /// Maximum attack range of a Squirrel
+    /// </summary>
+    public override float MAX_ATTACK_RANGE => float.MaxValue;
+
+    /// <summary>
+    /// Minimum attack range of a Squirrel
+    /// </summary>
+    public override float MIN_ATTACK_RANGE => 0f;
 
     /// <summary>
     /// Starting attack speed of a Squirrel
@@ -36,103 +47,61 @@ public class Squirrel : Defender
     public override float BASE_ATTACK_SPEED => 1f;
 
     /// <summary>
-    /// Starting attack range of a Squirrel.
+    /// Maximum attack speed of a Squirrel
     /// </summary>
-    public override float BASE_ATTACK_RANGE => 15f;
+    public override float MAX_ATTACK_SPEED => float.MaxValue;
 
     /// <summary>
-    /// Prefab for an acorn Projectile.
+    /// Minimum attack speed of a Squirrel
     /// </summary>
-    [SerializeField]
-    private GameObject acorn;
+    public override float MIN_ATTACK_SPEED => 0f;
 
+    //---------------------END STATS-----------------------//
 
+    //------------------BEGIN ANIMATION--------------------//
+
+    /// <summary>
+    /// How many seconds a Squirrel's attack animation lasts,
+    /// from start to finish. 
+    /// </summary>
+    public float ATTACK_ANIMATION_DURATION => 1f;
+
+    /// <summary>
+    /// How many seconds a Squirrel's idle animation lasts,
+    /// from start to finish. 
+    /// </summary>
+    public float IDLE_ANIMATION_DURATION => 1f;
+
+    //--------------------END ANIMATION--------------------//
+
+    /// <summary>
+    /// Name of a Squirrel
+    /// </summary>
+    public override string NAME => "Squirrel";
+
+    /// <summary>
+    /// How much currency it takes to place a Squirrel
+    /// </summary>
+    public override int COST => 1;
+
+    /// <summary>
+    /// Type of a Squirrel
+    /// </summary>
+    public override DefenderType TYPE => DefenderType.SQUIRREL;
+
+    /// <summary>
+    /// Class of a Squirrel
+    /// </summary>
+    public override DefenderClass CLASS => DefenderClass.TREBUCHET;
 
 
     /// <summary>
-    /// Attacks an ITargetable. Handles the time and delay logic for attacking.
+    /// Called when this Squirrel dies.
     /// </summary>
-    /// <param name="targetPosition">The world position of the target.</param>
-    /// <returns>A reference to the coroutine.</returns>
-    private IEnumerator CoAttack(Vector2 targetPosition)
-    {
-        float acornDelay = ATTACK_DURATION * ATTACK_DURATION_PERCENTAGE;
-
-        yield return new WaitForSeconds(acornDelay);
-        PlayAnimation(DefenderAnimationType.ATTACK);
-
-        //Prep the projectile for the ProjectileController
-        GameObject acornOb = Instantiate(acorn.gameObject);
-        acornOb.transform.SetParent(transform);
-        acornOb.transform.localPosition = new Vector3(0, 0, 1);
-        ProjectileController.Shoot(acornOb, targetPosition);
-        //SoundController.PlaySoundEffect("squirrelAttack");
-
-        yield return new WaitForSeconds(acornDelay);
-        PlayAnimation(DefenderAnimationType.IDLE);
-    }
+    public override void OnDie() { return; }
 
     /// <summary>
-    /// Returns the most updated DefenderState of this defender
-    /// after considering its environment. 
+    /// Sets this Squirrel's 2D Collider's properties.
     /// </summary>
-    /// <param name="currentState">The current state of this Defender.</param>
-    /// <param name="targetsInRange">The number of targets this Defender
-    /// can see. </param>
-    /// <returns>the correct, up to date DefenderState of this Defender. </returns>
-    public override MobState DetermineState(
-        MobState currentState,
-        int targetsInRange)
-    {
-        switch (currentState)
-        {
-            case MobState.SPAWN:
-                return MobState.IDLE;
-            case MobState.IDLE:
-                if (targetsInRange > 0) return MobState.ATTACK;
-                else return MobState.IDLE;
-            case MobState.ATTACK:
-                if (targetsInRange <= 0) return MobState.IDLE;
-                else return MobState.ATTACK;
-            case MobState.INACTIVE:
-                return MobState.SPAWN;
-            default:
-                //should not get here
-                Debug.Log(currentState);
-                throw new System.Exception();
-        }
-    }
-
-    //------------------STATE LOGIC----------------------//
-
-    /// <summary>
-    /// Executes chase logic: does nothing; squirrels are immobile 
-    /// and do not chase.
-    /// </summary>
-    /// <param name="target">The target to "chase."</param>
-    public override void Chase(ITargetable target)
-    {
-        Assert.IsNotNull(target, "Cannot chase a null target.");
-        return;
-    }
-
-    /// <summary>
-    /// Executes idle logic: waits around and does nothing.
-    /// </summary>
-    public override void Idle()
-    {
-        return;
-    }
-
-    /// <summary>
-    /// Executes attack logic: throws an acorn at its target. 
-    /// Squirrels shoot one acorn Projectile.
-    /// </summary>
-    /// <param name="target">The target to attack.</param>
-    public override void Attack(ITargetable target)
-    {
-        Assert.IsNotNull(target, "Cannot attack a null target.");
-        FaceTarget(target);
-        StartCoroutine(CoAttack(target.GetAttackPosition()));
-    }
+    public override void SetColliderProperties() { return; }
 }

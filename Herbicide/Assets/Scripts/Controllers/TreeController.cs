@@ -1,142 +1,98 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Controller for Trees.
+/// Abstract class to represent controllers of Trees.
 /// </summary>
-public class TreeController
+public abstract class TreeController<T> : MobController<T> where T : Enum
 {
-    /// <summary>
-    /// The Tree controlled by this TreeController.
-    /// </summary>
-    private Tree tree;
 
     /// <summary>
     /// Number of Trees created in the level so far.
     /// </summary>
     private static int NUM_TREES;
 
-    /// <summary>
-    /// Unique ID of this TreeController.
-    /// </summary>
-    private int id;
-
-    /// <summary>
-    /// The current state of the game.
-    /// </summary>
-    private GameState gameState;
-
 
     /// <summary>
     /// Makes a new TreeController for a Tree.
     /// </summary>
     /// <param name="tree">The Tree controlled by this TreeController.</param>
-    public TreeController(Tree tree)
-    {
-        Assert.IsNotNull(tree);
-
-        tree.ResetStats();
-        this.tree = tree;
-        this.id = NUM_TREES;
-        NUM_TREES++;
-    }
+    public TreeController(Tree tree) : base(tree) { NUM_TREES++; }
 
     /// <summary>
     /// Updates the Tree controlled by this TreeController.
     /// </summary>
-    public void UpdateTree()
+    /// <param name="targets">A complete list of ITargetables in the scene.</param>
+    protected override void UpdateMob(List<ITargetable> targets)
     {
-        if (!ValidTree()) return;
-
-        if (GetTree().GetHealth() <= 0) KillTree();
-        UpdateDamageFlash();
+        if (!ValidModel()) return;
+        if (GetGameState() != GameState.ONGOING) return;
+        UpdateStateFSM();
+        ElectTarget(FilterTargets(targets));
+        ExecuteIdleState();
     }
 
     /// <summary>
-    /// Plays this TreeController's Tree's damage flash effect
-    /// if necessary.
+    /// Returns this TreeController's Tree model.
     /// </summary>
-    private void UpdateDamageFlash()
-    {
-        if (GetTree().GetDamageFlashingTime() > 0)
-        {
-            const float intensity = .4f;
-            float treeFlashTime = GetTree().DAMAGE_FLASH_TIME;
+    /// <returns>this TreeController's Tree model.</returns>
+    private Tree GetTree() { return GetModel() as Tree; }
 
-            float newDamageFlashingTime = GetTree().GetDamageFlashingTime() - Time.deltaTime;
-            GetTree().SetDamageFlashingTime(Mathf.Clamp(newDamageFlashingTime, 0, treeFlashTime));
-            float score = Mathf.Lerp(
-                intensity,
-                1f,
-                Mathf.Abs(GetTree().GetDamageFlashingTime() - treeFlashTime / 2f) * (intensity * 10f)
-            );
-            byte greenBlueComponent = (byte)(score * 255);
-            Color32 color = new Color32(255, greenBlueComponent, greenBlueComponent, 255);
-            GetTree().SetColor(color);
-        }
+    /// <summary>
+    /// Returns true if this TreeController's model is a Tree and is 
+    /// not NULL.
+    /// </summary>
+    /// <returns>true if this TreeController's model is a Tree and is 
+    /// not NULL.</returns>
+    public override bool ValidModel() { return GetTree() != null; }
+
+    /// <summary>
+    /// Sets this TreeController's target from a filtered list of ITargetables.
+    /// </summary>
+    /// <param name="filteredTargetables">a list of ITargables that this TreeController
+    /// is allowed to set as its target. /// </param>
+    protected override void ElectTarget(List<ITargetable> filteredTargetables)
+    {
+        if (!ValidModel()) return;
+        if (GetTarget() != null) return;
+        Assert.IsNotNull(filteredTargetables, "List of targets is null.");
+
+        int random = UnityEngine.Random.Range(0, filteredTargetables.Count);
+        if (filteredTargetables.Count == 0) SetTarget(null);
+        else SetTarget(filteredTargetables[random]);
     }
 
     /// <summary>
-    /// Destroys the Tree controlled by this TreeController.
+    /// Parses the list of all ITargetables in the scene such that it
+    /// only contains ITargetables that this TreeController's Tree is allowed
+    /// to target. <br></br><br></br>
+    /// 
+    /// The Tree is allowed to NOTHING. Subcontrollers can override this if
+    /// there is some weird Tree that can./// 
     /// </summary>
-    private void KillTree()
+    /// <param name="targetables">the list of all ITargetables in the scene</param>
+    /// <returns>a list containing Enemy ITargetables that this TreeController's Tree can
+    /// reach./// </returns>
+    protected override List<ITargetable> FilterTargets(List<ITargetable> targetables)
     {
-        if (!ValidTree()) return;
+        Assert.IsNotNull(targetables, "List of targets is null.");
+        return new List<ITargetable>(); //Empty -- no targets.
+    }
 
-        GetTree().Die();
+    /// <summary>
+    /// Checks if this TreeController's Tree should be removed from
+    /// the game. If so, clears it.
+    /// </summary>
+    protected override void TryRemoveModel()
+    {
+        if (!ValidModel()) return;
+        if (GetTree().GetHealth() > 0) return;
+
+        GetTree().OnDie();
         GameObject.Destroy(GetTree().gameObject);
-    }
-
-    /// <summary>
-    /// Returns the Tree controlled by this TreeController.
-    /// </summary>
-    /// <returns>the Tree controlled by this TreeController.</returns>
-    public Tree GetTree()
-    {
-        return tree;
-    }
-
-    /// <summary>
-    /// Returns true if this TreeController should be removed.
-    /// </summary>
-    /// <returns>true if this TreeController should be removed; otherwise,
-    /// false.</returns>
-    public bool ShouldRemoveController()
-    {
-        return !ValidTree();
-    }
-
-    /// <summary>
-    /// Returns true if this TreeController controls a valid Tree. If not,
-    /// it should be removed.
-    /// </summary>
-    /// <returns>true if this TreeController controls a valid Tree;
-    /// otherwise, false.</returns>
-    private bool ValidTree()
-    {
-        return GetTree() != null;
-    }
-
-    /// <summary>
-    /// Returns true if this TreeController controls a Tree with a positive
-    /// health value.
-    /// </summary>
-    /// <returns>true if this TreeController controls a Tree with a positive
-    /// health value; otherwise, false. </returns>
-    public bool TreeAlive()
-    {
-        return ValidTree() && !GetTree().Dead();
-    }
-
-    /// <summary>
-    /// Informs this TreeController of the most recent GameState so that
-    /// it knows how to update its Tree.
-    /// </summary>
-    /// <param name="state">The most recent GameState.</param>
-    public void InformOfGameState(GameState state)
-    {
-        gameState = state;
+        GameObject.Destroy(GetTree());
     }
 }

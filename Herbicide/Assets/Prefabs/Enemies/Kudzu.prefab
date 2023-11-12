@@ -48,10 +48,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   placeableRenderer: {fileID: 6638087620076510427}
+  placeableCollider: {fileID: -2548071115174396759}
   prefab: {fileID: 7290264091372080636}
-  enemyAnimator: {fileID: 4656454260585862305}
-  enemyRenderer: {fileID: 6638087620076510427}
-  enemyCollider: {fileID: -2548071115174396759}
 --- !u!212 &6638087620076510427
 SpriteRenderer:
   m_ObjectHideFlags: 0

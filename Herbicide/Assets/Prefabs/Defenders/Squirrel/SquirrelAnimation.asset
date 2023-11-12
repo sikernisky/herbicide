@@ -18,12 +18,16 @@ MonoBehaviour:
   movementAnimationSouth: []
   movementAnimationWest: []
   attackAnimationNorth:
+  - {fileID: -1129439068, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
   - {fileID: 241803896, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
   attackAnimationEast:
+  - {fileID: -1741764920, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
   - {fileID: 1842010287, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
   attackAnimationSouth:
+  - {fileID: -1985209435, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
   - {fileID: -1116763224, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
   attackAnimationWest:
+  - {fileID: 629033695, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
   - {fileID: 362384017, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
   idleAnimationNorth:
   - {fileID: -1129439068, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}

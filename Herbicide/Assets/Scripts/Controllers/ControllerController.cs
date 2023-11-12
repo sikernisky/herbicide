@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -9,19 +10,19 @@ using UnityEngine.Assertions;
 public class ControllerController : MonoBehaviour
 {
     /// <summary>
-    /// List of active DefenderControllers  (Yes, really).
+    /// List of active DefenderControllers.
     /// </summary>
-    private List<DefenderController> defenderControllers;
+    private List<PlaceableObjectController> defenderControllers;
 
     /// <summary>
     /// List of active EnemyControllers.
     /// </summary>
-    private List<EnemyController> enemyControllers;
+    private List<PlaceableObjectController> enemyControllers;
 
     /// <summary>
     /// List of active TreeControllers.
     /// </summary>
-    private List<TreeController> treeControllers;
+    private List<PlaceableObjectController> treeControllers;
 
     /// <summary>
     /// Reference to the ControllerController singleton.
@@ -49,9 +50,9 @@ public class ControllerController : MonoBehaviour
         Assert.AreEqual(1, controllerQueues.Length);
         instance = controllerQueues[0];
 
-        instance.defenderControllers = new List<DefenderController>();
-        instance.enemyControllers = new List<EnemyController>();
-        instance.treeControllers = new List<TreeController>();
+        instance.defenderControllers = new List<PlaceableObjectController>();
+        instance.enemyControllers = new List<PlaceableObjectController>();
+        instance.treeControllers = new List<PlaceableObjectController>();
     }
 
     /// <summary>
@@ -66,16 +67,16 @@ public class ControllerController : MonoBehaviour
         {
             case Defender.DefenderType.SQUIRREL:
                 Assert.IsNotNull(defender as Squirrel);
-                SquirrelController sc = new SquirrelController(defender);
+                SquirrelController sc = new SquirrelController(defender as Squirrel);
                 instance.defenderControllers.Add(sc);
                 break;
             case Defender.DefenderType.BUTTERFLY:
                 Assert.IsNotNull(defender as Butterfly);
-                ButterflyController bc = new ButterflyController(defender);
+                ButterflyController bc = new ButterflyController(defender as Butterfly);
                 instance.defenderControllers.Add(bc);
                 break;
             default:
-                throw new System.Exception("Defender " + defender.GetName() + " not supported.");
+                throw new System.Exception("Defender " + defender.NAME + " not supported.");
         }
     }
 
@@ -92,12 +93,13 @@ public class ControllerController : MonoBehaviour
         switch (enemy.TYPE)
         {
             case Enemy.EnemyType.KUDZU:
-                Assert.IsNotNull(enemy as Kudzu);
-                KudzuController kc = new KudzuController(enemy, spawnTime, spawnCoords);
+                Kudzu kudzu = enemy as Kudzu;
+                Assert.IsNotNull(kudzu, "Kudzu is null.");
+                KudzuController kc = new KudzuController(kudzu, spawnTime, spawnCoords);
                 instance.enemyControllers.Add(kc);
                 break;
             default:
-                throw new System.Exception("Enemy " + enemy.GetName() + " not supported.");
+                throw new System.Exception("Enemy " + enemy.NAME + " not supported.");
         }
     }
 
@@ -111,8 +113,17 @@ public class ControllerController : MonoBehaviour
     {
         if (tree == null) return;
 
-        TreeController sc = new TreeController(tree);
-        instance.treeControllers.Add(sc);
+        switch (tree.TYPE)
+        {
+            case Tree.TreeType.BASIC:
+                BasicTree basicTree = tree as BasicTree;
+                Assert.IsNotNull(basicTree, "BasicTree is null");
+                BasicTreeController btc = new BasicTreeController(basicTree);
+                instance.treeControllers.Add(btc);
+                break;
+            default:
+                throw new System.Exception("Tree " + tree.NAME + " not supported.");
+        }
     }
 
     /// <summary>
@@ -122,9 +133,12 @@ public class ControllerController : MonoBehaviour
     public static HashSet<Enemy> GetAllActiveEnemies()
     {
         HashSet<Enemy> enemies = new HashSet<Enemy>();
-        foreach (EnemyController ec in instance.enemyControllers)
+        foreach (PlaceableObjectController pc in instance.enemyControllers)
         {
-            if (ec != null && ec.EnemyAlive()) enemies.Add(ec.GetEnemy());
+            if (pc == null || !pc.ValidModel()) continue;
+            Enemy model = pc.GetModel() as Enemy;
+            if (model == null) continue;
+            if (!model.Dead()) enemies.Add(model);
         }
         return enemies;
     }
@@ -136,14 +150,15 @@ public class ControllerController : MonoBehaviour
     public static HashSet<Tree> GetAllActiveTrees()
     {
         HashSet<Tree> trees = new HashSet<Tree>();
-        foreach (TreeController tc in instance.treeControllers)
+        foreach (PlaceableObjectController pc in instance.treeControllers)
         {
-            if (tc != null && tc.TreeAlive()) trees.Add(tc.GetTree());
-
+            if (pc == null || !pc.ValidModel()) continue;
+            Tree model = pc.GetModel() as Tree;
+            if (model == null) continue;
+            if (!model.Dead()) trees.Add(model);
         }
         return trees;
     }
-
 
     /// <summary>
     /// Attempts to remove any unused or defunct Controllers.
@@ -181,14 +196,14 @@ public class ControllerController : MonoBehaviour
         instance.InformControllersOfGameState();
 
         //Update EnemyControllers
-        instance.enemyControllers.ForEach(ec => ec.UpdateEnemy(targetsCopy, dt));
+        instance.enemyControllers.ForEach(ec => ec.UpdateModel(targets));
 
         //Update DefenderControllers
         targets.AddRange(GetAllActiveEnemies());
-        instance.defenderControllers.ForEach(dc => dc.UpdateDefender(targets));
+        instance.defenderControllers.ForEach(dc => dc.UpdateModel(targets));
 
         //Update TreeControllers
-        instance.treeControllers.ForEach(tc => tc.UpdateTree());
+        instance.treeControllers.ForEach(tc => tc.UpdateModel(targets));
     }
 
     /// <summary>
@@ -196,8 +211,5 @@ public class ControllerController : MonoBehaviour
     /// so that it knows how to update its sub controllers.
     /// </summary>
     /// <param name="state">The most recent game state. </param>
-    public static void InformOfGameState(GameState state)
-    {
-        instance.gameState = state;
-    }
+    public static void InformOfGameState(GameState state) { instance.gameState = state; }
 }

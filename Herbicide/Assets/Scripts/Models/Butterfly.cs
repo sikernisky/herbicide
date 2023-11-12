@@ -8,25 +8,37 @@ using UnityEngine;
 /// </summary>
 public class Butterfly : Defender
 {
-    /// <summary>
-    /// Type of a Butterfly
-    /// </summary>
-    public override DefenderType TYPE => DefenderType.BUTTERFLY;
+    //--------------------BEGIN STATS----------------------//
 
     /// <summary>
-    /// Class of a Buttefly
+    /// Starting health of a Butterfly
     /// </summary>
-    public override DefenderClass CLASS => DefenderClass.ANIMYST;
+    public override int BASE_HEALTH => 200;
 
     /// <summary>
-    /// Name of a Butterfly
+    /// Maximum health of a Butterfly
     /// </summary>
-    protected override string NAME => "Butterfly";
+    public override int MAX_HEALTH => 200;
 
     /// <summary>
-    /// How much currency it takes to place a Butterfly
+    /// Minimum health of a Butterfly
     /// </summary>
-    protected override int COST => 1;
+    public override int MIN_HEALTH => 0;
+
+    /// <summary>
+    /// Starting attack range of a Butterfly
+    /// </summary>
+    public override float BASE_ATTACK_RANGE => 6f;
+
+    /// <summary>
+    /// Maximum attack range of a Butterfly
+    /// </summary>
+    public override float MAX_ATTACK_RANGE => float.MaxValue;
+
+    /// <summary>
+    /// Minimum attack range of a Butterfly
+    /// </summary>
+    public override float MIN_ATTACK_RANGE => 0f;
 
     /// <summary>
     /// Starting attack speed of a Butterfly
@@ -34,40 +46,61 @@ public class Butterfly : Defender
     public override float BASE_ATTACK_SPEED => 1f;
 
     /// <summary>
-    /// Starting attack range of a Butterfly.
+    /// Maximum attack speed of a Butterfly
     /// </summary>
-    public override float BASE_ATTACK_RANGE => 10f;
+    public override float MAX_ATTACK_SPEED => float.MaxValue;
 
+    /// <summary>
+    /// Minimum attack speed of a Butterfly
+    /// </summary>
+    public override float MIN_ATTACK_SPEED => 0f;
+
+    //---------------------END STATS-----------------------//
+
+    //------------------BEGIN ANIMATION--------------------//
+
+    /// <summary>
+    /// How many seconds a Butterfly's attack animation lasts,
+    /// from start to finish. 
+    /// </summary>
+    public float ATTACK_ANIMATION_DURATION => 1f;
+
+    /// <summary>
+    /// How many seconds a Butterfly's idle animation lasts,
+    /// from start to finish. 
+    /// </summary>
+    public float IDLE_ANIMATION_DURATION => 1f;
+
+    //--------------------END ANIMATION--------------------//
+
+    /// <summary>
+    /// Name of a Butterfly
+    /// </summary>
+    public override string NAME => "Butterfly";
+
+    /// <summary>
+    /// How much currency it takes to place a Butterfly
+    /// </summary>
+    public override int COST => 1;
+
+    /// <summary>
+    /// Type of a Butterfly
+    /// </summary>
+    public override DefenderType TYPE => DefenderType.BUTTERFLY;
+
+    /// <summary>
+    /// Class of a Butterfly
+    /// </summary>
+    public override DefenderClass CLASS => DefenderClass.ANIMYST;
 
 
     /// <summary>
-    /// Returns the most updated DefenderState of this defender
-    /// after considering its environment. 
+    /// Called when this Butterfly dies.
     /// </summary>
-    /// <param name="currentState">The current state of this Defender.</param>
-    /// <param name="targetsInRange">The number of targets this Defender
-    /// can see. </param>
-    /// <returns>the correct, up to date DefenderState of this Defender. </returns>
-    public override MobState DetermineState(MobState currentState,
-        int targetsInRange)
-    {
-        return MobState.INVALID;
-    }
+    public override void OnDie() { return; }
 
-    //------------------STATE LOGIC----------------------//
-
-    public override void Attack(ITargetable target)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override void Chase(ITargetable target)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override void Idle()
-    {
-        throw new System.NotImplementedException();
-    }
+    /// <summary>
+    /// Sets this Butterfly's 2D Collider's properties.
+    /// </summary>
+    public override void SetColliderProperties() { return; }
 }

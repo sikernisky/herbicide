@@ -28,22 +28,16 @@ public interface ITargetable
     float DAMAGE_FLASH_TIME { get; }
 
     /// <summary>
-    /// Takes some positive damage amount.
+    /// Adds some amount (can be negative) of health to this ITargetable.
     /// </summary>
-    /// <param name="amount">The amount of damage to take.</param>
-    void TakeDamage(int amount);
+    /// <param name="amount">The amount of health to adjust.</param>
+    void AdjustHealth(int amount);
 
     /// <summary>
     /// Returns the health of this ITargetable.
     /// </summary>
     /// <returns>the health of this ITargetable.</returns>
     int GetHealth();
-
-    /// <summary>
-    /// Heals some positive health amount.
-    /// </summary>
-    /// <param name="amount">The amount of health to heal.</param>
-    void Heal(int amount);
 
     /// <summary>
     /// Resets this IAttackable's health to its starting health amount.
@@ -64,19 +58,32 @@ public interface ITargetable
     Vector3 GetAttackPosition();
 
     /// <summary>
-    /// Spawns this ITargetable, resetting its values.
-    /// </summary>
-    void ResetStats();
-
-    /// <summary>
-    /// Flashes this ITargetable to signal it has taken some damage.
+    /// Starts the Damage Flash animation by resetting the amount of time
+    /// left in the animation to the total amount of time it takes to
+    /// complete one animation cycle/// 
     /// </summary>
     void FlashDamage();
 
     /// <summary>
+    /// Returns the amount of time that remains in this ITargetable's
+    /// flash animation. 
+    /// </summary>
+    /// <returns>the amount of time that remains in this ITargetable's
+    /// flash animation</returns>
+    float TimeRemaningInFlashAnimation();
+
+    /// <summary>
+    /// Sets the amount of time  this ITargetable's has left 
+    /// in its flash animation.
+    /// </summary>
+    /// <param name="value">The new amount of time that this ITargetable
+    /// has left in its flash animation. .</param>
+    void SetRemainingFlashAnimationTime(float value);
+
+    /// <summary>
     /// Called when this ITargetable dies.
     /// </summary>
-    void Die();
+    void OnDie();
 
     /// <summary>
     /// Returns true if this ITargetable is no longer alive.
@@ -89,4 +96,15 @@ public interface ITargetable
     /// </summary>
     /// <returns>the Collider2D component used by this ITargetable.</returns>
     Collider2D GetColllider();
+
+    /// <summary>
+    /// Returns the Euclidian distance from this ITargetable to another ITargetable.
+    /// </summary>
+    /// <param name="target">The ITargetable from which to calculate distance.</param>
+    float DistanceToTarget(ITargetable target);
+
+    /// <summary>
+    /// Resets this ITargetable's stats to their default values.
+    /// </summary>
+    void ResetStats();
 }

@@ -39,29 +39,6 @@ public interface IAttackable : ITargetable
     float MIN_ATTACK_SPEED { get; }
 
     /// <summary>
-    /// Amount of damage done by this IAttackable each attack.
-    /// </summary>
-    int DAMAGE_PER_ATTACK { get; }
-
-    /// <summary>
-    /// Logic for attacking an ITargetable.
-    /// </summary>
-    /// <param name="target">the ITargetable to attack.</param>
-    void Attack(ITargetable target);
-
-    /// <summary>
-    /// Logic for chasing an ITargetable.
-    /// </summary>
-    /// <param name="target">the ITargetable to chase.</param>
-    void Chase(ITargetable target);
-
-    /// <summary>
-    /// Logic for when this IAttackable is not chasing or attacking
-    /// an ITargetable.
-    /// </summary>
-    void Idle();
-
-    /// <summary>
     /// Directs this IAttackable to face its target. 
     /// </summary>
     void FaceTarget(ITargetable t);
@@ -77,26 +54,13 @@ public interface IAttackable : ITargetable
     void ResetAttackSpeed();
 
     /// <summary>
-    /// Returns true if this IAttackable can attack another IAttackable at
-    /// the current frame.
+    /// Returns true if this IAttackable is allowed to attack some
+    /// ITargetable.
     /// </summary>
     /// <param name="target">the target to try to attack.</param>
-    /// <returns>true if this IAttackable can attack another IAttackable at
-    /// the current frame.</returns>
-    bool CanAttackNow(ITargetable target);
-
-    /// <summary>
-    /// Returns true if this IAttackable can ever attack another IAttackable.
-    /// </summary>
-    /// <param name="target">the target to try to attack.</param>
-    /// <returns>true if this IAttackable can ever attack another IAttackable.
-    bool CanAttackEver(ITargetable target);
-
-    /// <summary>
-    /// Returns the Euclidian distance from this IAttackable to another IAttackable.
-    /// </summary>
-    /// <param name="target">The other IAttackable.</param>
-    float DistanceToTarget(ITargetable target);
+    /// <returns>true if this IAttackable is allowed to attack the
+    /// given ITargetable.
+    bool CanAttack(ITargetable target);
 
     /// <summary>
     /// Returns this IAttackable's current attack range.

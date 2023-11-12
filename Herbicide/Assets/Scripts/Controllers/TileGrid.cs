@@ -963,6 +963,8 @@ public class TileGrid : MonoBehaviour
     /// <param name="goalPos">The ending position of the path. </param>
     public static Vector3 NextTilePosTowardsGoal(Vector3 startPos, Vector3 goalPos)
     {
+        //Debug.Log("From " + startPos + " to " + goalPos);
+
         //From given positions, find the corresponding Tiles.
         int xStartCoord = PositionToCoordinate(startPos.x);
         int yStartCoord = PositionToCoordinate(startPos.y);
@@ -1022,7 +1024,7 @@ public class TileGrid : MonoBehaviour
             }
         }
 
-        Debug.Log("No path found.");
+        //Debug.Log("No path found.");
 
         //No path found, so we return the starting position.
         return startPos;
@@ -1068,6 +1070,18 @@ public class TileGrid : MonoBehaviour
         }
         path.Reverse();
         return path;
+    }
+
+    /// <summary>
+    /// Returns true if a path exists from one position to another.
+    /// </summary>
+    /// <param name="startPos">The starting position.</param>
+    /// <param name="goalPos">The ending position.</param>
+    /// <returns>true if a path exists from start to goal; otherwise,
+    /// false. </returns>
+    public static bool CanReach(Vector3 startPos, Vector3 goalPos)
+    {
+        return NextTilePosTowardsGoal(startPos, goalPos) != startPos;
     }
 
     //----------------------END PATHFINDING------------------------//

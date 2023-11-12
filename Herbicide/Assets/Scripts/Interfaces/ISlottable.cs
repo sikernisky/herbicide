@@ -8,6 +8,11 @@ using UnityEngine;
 public interface ISlottable
 {
     /// <summary>
+    /// How much currency it takes to place this ISlottable.
+    /// </summary>
+    int COST { get; }
+
+    /// <summary>
     /// Returns a Sprite component that represents this ISlottable in an 
     /// Inventoryslot.
     /// </summary>
@@ -22,15 +27,4 @@ public interface ISlottable
     /// <returns>a Sprite component that represents this ISlottable in a
     /// placement event.</returns>
     Sprite GetPlacementSprite();
-
-    /// <summary>
-    /// Returns the amount of currency required to place this ISlottable.
-    /// </summary>
-    /// <returns>the amount of currency required to plae this ISlottable.
-    /// </returns>
-    int GetCost();
-
-
-
-
 }
