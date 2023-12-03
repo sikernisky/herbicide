@@ -108,13 +108,33 @@ public class DefenderFactory : MonoBehaviour
     /// <param name="type">The Defender type.</param>
     /// <param name="direction">The direction of the Defender.</param>
     /// <returns>The attack animation track as a Sprite array or null 
-    /// if the enemy type is not found.</returns>
+    /// if the defender type does not support an attack animation.</returns>
     public static Sprite[] GetAttackTrack(Defender.DefenderType type, Direction direction)
     {
 
-        DefenderAnimation data = instance.defenderAnimationDataList.Find(x => x.GetDefenderType() == type);
+        DefenderAnimation data = instance.defenderAnimationDataList.Find(
+            x => x.GetDefenderType() == type);
 
         if (data != null) return data.GetAttackAnimation(direction);
+
+        return null;
+    }
+
+    /// <summary>
+    /// Returns a movement animation track for a given Defender type.
+    /// </summary>
+    /// <param name="type">The Defender type.</param>
+    /// <param name="direction">The direction of the Defender.</param>
+    /// <returns>The movement animation track as a Sprite array or null 
+    /// if the defender type does not support a movement animation.</returns>
+    public static Sprite[] GetMovementTrack(Defender.DefenderType type, Direction direction)
+    {
+
+        DefenderAnimation data = instance.defenderAnimationDataList.Find(
+            x => x.GetDefenderType() == type);
+
+        if (data != null) return data.GetMovementAnimation(direction);
+        Debug.Log(data == null);
 
         return null;
     }

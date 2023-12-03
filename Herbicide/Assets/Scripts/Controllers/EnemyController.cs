@@ -20,21 +20,10 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     /// Initializes this EnemyController with the Enemy it controls.
     /// </summary>
     /// <param name="enemy">the enemy this EnemyController controls.</param>
-    /// <param name="spawnTime">when the Enemy should spawn in the level. </param>
-    /// <param name="spawnCoords">where this Enemy should spawn</param>
-    public EnemyController(Enemy enemy, float spawnTime, Vector2 spawnCoords) : base(enemy)
+    public EnemyController(Enemy enemy) : base(enemy)
     {
         //Safety checks
         Assert.IsNotNull(enemy);
-
-        GameObject enemyOb = enemy.CloneEnemy();
-        Enemy newEnemy = enemyOb.GetComponent<Enemy>();
-        Assert.IsNotNull(newEnemy);
-        SetModel(newEnemy);
-
-        GetEnemy().SetSpawnTime(spawnTime);
-        GetEnemy().SetSpawnWorldPosition(spawnCoords);
-        GetEnemy().gameObject.SetActive(false);
 
         //SetState(Mob.MobState.INACTIVE);
         NUM_ENEMIES++;
@@ -43,25 +32,24 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     /// <summary>
     /// Updates the Enemy controlled by this EnemyController.
     /// </summary>
-    /// <param name="targets">A complete list of ITargetables in the scene.</param>
-    protected override void UpdateMob(List<ITargetable> targets)
+    protected override void UpdateMob()
     {
         if (!ValidModel()) return;
+        base.UpdateMob();
         TryRemoveModel();
+        UpdateStateFSM();
         if (GetGameState() != GameState.ONGOING) return;
 
         if (!GetEnemy().Spawned()) SpawnMob();
         if (!GetEnemy().Spawned()) return;
 
-        ElectTarget(FilterTargets(targets));
-        DetermineEnemyMovePos();
+        ElectTarget(FilterTargets(GetAllTargetableObjects()));
         UpdateEnemyTilePosition();
         RectifyEnemySortingOrder();
         UpdateEnemyHealthState();
         UpdateEnemyCollider();
 
         //STATE LOGIC
-        UpdateStateFSM();
         ExecuteIdleState();
     }
 
@@ -117,12 +105,16 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     /// Destroys this EnemyController's Enemy model, removing it
     /// from the scene and triggering its death logic.
     /// </summary>
-    protected void DestroyEnemy()
+    protected virtual void DestroyEnemy()
     {
         if (!ValidModel()) return;
         GetEnemy().OnDie();
+        SceneController.EndCoroutine(GetAnimationReference());
         GameObject.Destroy(GetEnemy().gameObject);
         GameObject.Destroy(GetEnemy());
+
+        //We are done with our Enemy.
+        RemoveModel();
     }
 
     /// <summary>
@@ -138,43 +130,14 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     }
 
     /// <summary>
-    /// Sets the position that represents where this EnemyController's
-    /// Enemy should move towards. If it cannot move, sets the position
-    /// to itself.
-    /// </summary>
-    protected virtual void DetermineEnemyMovePos()
-    {
-        if (!ValidModel()) GetEnemy().SetNextMovePos(GetEnemy().GetPosition());
-        GetEnemy().SetNextMovePos(
-            TileGrid.NextTilePosTowardsGoal(
-                GetEnemy().GetPosition(), GetTarget().GetPosition()));
-    }
-
-    /// <summary>
     /// Checks if this EnemyController's model should be removed from
     /// the scene. If so, removes it.
     /// </summary>
     protected override void TryRemoveModel()
     {
         if (!GetEnemy().Spawned()) return;
-        if (!TileGrid.OnWalkableTile(GetEnemy().GetPosition(), GetEnemy())) DestroyEnemy();
-        if (GetEnemy().GetHealth() <= 0) DestroyEnemy();
-    }
-
-    /// <summary>
-    /// Sets this EnemyController's target from a filtered list of ITargetables.
-    /// </summary>
-    /// <param name="filteredTargetables">a list of ITargables that this EnemyController
-    /// is allowed to set as its target. /// </param>
-    protected override void ElectTarget(List<ITargetable> filteredTargetables)
-    {
-        if (!ValidModel()) return;
-        if (GetTarget() != null) return;
-        Assert.IsNotNull(filteredTargetables, "List of targets is null.");
-
-        int random = UnityEngine.Random.Range(0, filteredTargetables.Count);
-        if (filteredTargetables.Count == 0) SetTarget(null);
-        else SetTarget(filteredTargetables[random]);
+        if (!TileGrid.OnWalkableTile(GetEnemy().GetPosition())) DestroyEnemy();
+        else if (GetEnemy().GetHealth() <= 0) DestroyEnemy();
     }
 
     /// <summary>
@@ -191,10 +154,11 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     {
         Assert.IsNotNull(targetables, "List of targets is null.");
         List<ITargetable> filteredTargets = new List<ITargetable>();
-        filteredTargets.AddRange(targetables.Where(tar => tar as Tree != null &&
-            TileGrid.CanReach(GetEnemy().GetPosition(), tar.GetPosition())));
-        filteredTargets.AddRange(targetables.Where(tar => tar as Defender != null &&
-            TileGrid.CanReach(GetEnemy().GetPosition(), tar.GetPosition())));
+        filteredTargets.AddRange(targetables.Where(tar =>
+            (tar as Tree != null || tar as Butterfly != null) &&
+            TileGrid.CanReach(GetEnemy().GetPosition(), tar.GetPosition()) &&
+            tar.Targetable())
+        );
         return filteredTargets;
     }
 }

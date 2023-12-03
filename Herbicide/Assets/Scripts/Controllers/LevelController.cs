@@ -107,10 +107,8 @@ public class LevelController : MonoBehaviour
 
         //(4) Update the EnemyManager. (TODO: Implement when needed.)
 
-
         //(5) Update Controllers.
-        ControllerController.UpdateAllControllers(TileGrid.GetAllTargetableObjects(),
-                                                  SceneController.GetTimeElapsed());
+        ControllerController.UpdateAllControllers(SceneController.GetTimeElapsed());
 
         //(6) Update Projectiles.
         ProjectileController.CheckProjectiles();

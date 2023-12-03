@@ -29,7 +29,7 @@ public class Squirrel : Defender
     /// <summary>
     /// Starting attack range of a Squirrel
     /// </summary>
-    public override float BASE_ATTACK_RANGE => 6f;
+    public override float BASE_ATTACK_RANGE => 20f;
 
     /// <summary>
     /// Maximum attack range of a Squirrel
@@ -42,19 +42,44 @@ public class Squirrel : Defender
     public override float MIN_ATTACK_RANGE => 0f;
 
     /// <summary>
-    /// Starting attack speed of a Squirrel
+    /// Amount of attack cooldown this Squirrel starts with.
     /// </summary>
-    public override float BASE_ATTACK_SPEED => 1f;
+    public override float BASE_ATTACK_COOLDOWN => 1.2f;
 
     /// <summary>
-    /// Maximum attack speed of a Squirrel
+    /// Most amount of attack cooldown this Squirrel can have.
     /// </summary>
-    public override float MAX_ATTACK_SPEED => float.MaxValue;
+    public override float MAX_ATTACK_COOLDOWN => float.MaxValue;
 
     /// <summary>
-    /// Minimum attack speed of a Squirrel
+    /// Starting chase range of a Squirrel.
     /// </summary>
-    public override float MIN_ATTACK_SPEED => 0f;
+    public override float BASE_CHASE_RANGE => BASE_ATTACK_RANGE;
+
+    /// <summary>
+    /// Maximum chase range of a Squirrel.
+    /// </summary>
+    public override float MAX_CHASE_RANGE => MAX_ATTACK_RANGE;
+
+    /// <summary>
+    /// Minimum chase range of a Squirrel.
+    /// </summary>
+    public override float MIN_CHASE_RANGE => MAX_CHASE_RANGE;
+
+    /// <summary>
+    /// Starting movement speed of a Squirrel.
+    /// </summary>
+    public override float BASE_MOVEMENT_SPEED => 0f;
+
+    /// <summary>
+    /// Maximum movement speed of a Squirrel.
+    /// </summary>
+    public override float MAX_MOVEMENT_SPEED => 0f;
+
+    /// <summary>
+    /// Minumum movement speed of a Squirrel.
+    /// </summary>
+    public override float MIN_MOVEMENT_SPEED => 0f;
 
     //---------------------END STATS-----------------------//
 
@@ -104,4 +129,11 @@ public class Squirrel : Defender
     /// Sets this Squirrel's 2D Collider's properties.
     /// </summary>
     public override void SetColliderProperties() { return; }
+
+    /// <summary>
+    /// Returns this Squirrel's current chase range, which is always its
+    /// current attack range (since Squirrels do not chase & are stationary.)
+    /// </summary>
+    /// <returns>this Squirrel's current chase & attack range.</returns>
+    public override float GetChaseRange() { return GetAttackRange(); }
 }

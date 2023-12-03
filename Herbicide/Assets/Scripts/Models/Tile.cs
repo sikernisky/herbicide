@@ -288,10 +288,13 @@ public abstract class Tile : MonoBehaviour, ISurface
 
         prefabRenderer.sortingOrder = GetY();
         prefabClone.transform.position = transform.position;
-        prefabClone.transform.localScale = Vector3.one;
+        prefabClone.transform.localScale = placeableObject.GetPlacementScale();
         prefabClone.transform.SetParent(transform);
         occupant = placeableObject;
         occupant.Define(new Vector2Int(GetX(), GetY()), GetPlaceableObjectNeighbors());
+
+        Defender placedDefender = prefabClone.GetComponent<Defender>();
+        if (placedDefender != null) ControllerController.MakeDefenderController(placedDefender);
 
         return true;
     }
@@ -307,11 +310,10 @@ public abstract class Tile : MonoBehaviour, ISurface
     {
         AssertDefined();
         if (candidate == null || neighbors == null) return false;
-        if (candidate as Defender != null) return false;
+        if (candidate as Squirrel != null) return false;
         if (candidate as Tree != null) return false;
         if (Occupied()) return false;
         if (Floored() && !GetFlooring().CanPlace(candidate, neighbors)) return false;
-
 
         return true;
     }
@@ -602,6 +604,8 @@ public abstract class Tile : MonoBehaviour, ISurface
         SpriteRenderer hollowRenderer = hollowCopy.GetComponent<SpriteRenderer>();
         Assert.IsNotNull(hollowRenderer);
 
+
+        hollowRenderer.sortingLayerName = "Trees";
         hollowRenderer.sortingOrder = GetY();
         hollowRenderer.color = new Color32(255, 255, 255, 200);
         hollowCopy.transform.position = transform.position;

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 4542d89e579856946b5f213552162315
+guid: 700628e93b95b4ba194b31d1dc84999b
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -101,383 +101,269 @@ TextureImporter:
     overridden: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: kudzuAttackSouth_0
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 160
-        width: 16
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2660c52e18044f34296a29ba2e75933f
-      internalID: 1435696427
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: kudzuAttackSouth_1
-      rect:
-        serializedVersion: 2
-        x: 16
-        y: 160
-        width: 16
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: dcc224f3da2d4ff4eb2401f6cc5dcb5b
-      internalID: -307782002
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: kudzuAttackSouth_2
-      rect:
-        serializedVersion: 2
-        x: 32
-        y: 160
-        width: 16
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 1289984f9af64d34bb6ee7dcfa749a8c
-      internalID: 1523057388
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: kudzuAttackSouth_3
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 128
-        width: 16
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 05f5d23bdc79b094cafca7d146898b94
-      internalID: 2047817205
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: kudzuAttackSouth_4
-      rect:
-        serializedVersion: 2
-        x: 16
-        y: 128
-        width: 16
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 468e9077746d2694d946b71a130b3572
-      internalID: -753098221
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: kudzuAttackSouth_5
-      rect:
-        serializedVersion: 2
-        x: 32
-        y: 128
-        width: 16
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 9cb80b0fa93bd934497e39151fbf64a7
-      internalID: 1583711610
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: kudzuAttackSouth_6
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 96
-        width: 16
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a3f03041f2e2f764eb12b046dbabaff8
-      internalID: -1094488730
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: kudzuAttackSouth_7
-      rect:
-        serializedVersion: 2
-        x: 16
-        y: 96
-        width: 16
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 26f78cb6d14e75d4c913ebf879d96420
-      internalID: -1371310484
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: kudzuAttackSouth_8
-      rect:
-        serializedVersion: 2
-        x: 32
-        y: 96
-        width: 16
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a6f2c1b29aaf42842b5a2e6fb9e0ee2e
-      internalID: 1654321474
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: kudzuAttackSouth_9
+      name: kudzuAttack_0
       rect:
         serializedVersion: 2
         x: 0
         y: 64
         width: 16
         height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9a3508ad635948c41a31ea9d4a12aee2
-      internalID: -1131541494
+      spriteID: 20564339e00874c7fba7ca1e1e2862cc
+      internalID: -782429154
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: kudzuAttackSouth_10
+      name: kudzuAttack_1
       rect:
         serializedVersion: 2
         x: 16
         y: 64
         width: 16
         height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 54e2ba58e0786044192edae680255039
-      internalID: 132723362
+      spriteID: e80ad12ec21e34c7c94ccc288d334fe5
+      internalID: -581479506
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: kudzuAttackSouth_11
+      name: kudzuAttack_2
       rect:
         serializedVersion: 2
         x: 32
         y: 64
         width: 16
         height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c7c0d98ca6096614ab9e6a5da314e682
-      internalID: -445434754
+      spriteID: 39587c142ec114075ba31495da119466
+      internalID: -924319623
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: kudzuAttackSouth_12
+      name: kudzuAttack_3
       rect:
         serializedVersion: 2
-        x: 0
-        y: 32
+        x: 48
+        y: 64
         width: 16
         height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a49a2c6b79eeb5d4fb9b648f0f5c9786
-      internalID: 1116230246
+      spriteID: 8a570ed50312a4fdf93ac92139244325
+      internalID: -1343140856
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: kudzuAttackSouth_13
+      name: kudzuAttack_4
       rect:
         serializedVersion: 2
-        x: 16
-        y: 32
+        x: 64
+        y: 64
         width: 16
         height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1b3b53ba713c149478395234f26ed75f
-      internalID: 1589350926
+      spriteID: 966178b4b8a7949be8916698a226ad5f
+      internalID: -97148030
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: kudzuAttackSouth_14
+      name: kudzuAttack_5
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 64
+        width: 16
+        height: 32
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fe6e22cfa52754519aecf369a874ffcc
+      internalID: -1176398698
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: kudzuAttack_6
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 9
+      pivot: {x: 0.75, y: 0.25}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 45dd01e9253aa4582973a96f67acd219
+      internalID: 1764468842
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: kudzuAttack_7
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 32
+        width: 32
+        height: 32
+      alignment: 9
+      pivot: {x: 0.25, y: 0.25}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 995bde765c9a14e93a3a2839adbc0df3
+      internalID: -885552227
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: kudzuAttack_8
       rect:
         serializedVersion: 2
         x: 32
         y: 32
-        width: 16
+        width: 32
         height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.25, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cb6016f65d7d04942bca0b7115bb5544
-      internalID: 538633370
+      spriteID: 6b2493e03415d45a1917fbf1f5928f9c
+      internalID: -2132733961
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: kudzuAttackSouth_15
+      name: kudzuAttack_9
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 16
+        y: 32
+        width: 32
         height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.25, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8a3f7589b856a294a83d538f2a89a2eb
-      internalID: -713395605
+      spriteID: 89386f3e137df4a99b13e985d866db0e
+      internalID: 1880635089
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: kudzuAttackSouth_16
-      rect:
-        serializedVersion: 2
-        x: 16
-        y: 0
-        width: 16
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 38bc5b825d728944b95c7406a96ed0f1
-      internalID: 719582087
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: kudzuAttackSouth_17
+      name: kudzuAttack_10
       rect:
         serializedVersion: 2
         x: 32
         y: 0
-        width: 16
+        width: 32
         height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.75, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 87450ae7a33482f459feb08c84bddff2
-      internalID: 1053448619
+      spriteID: beff3f918bee44395bdaa1c981878bba
+      internalID: -257299618
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: kudzuAttack_11
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 32
+        height: 32
+      alignment: 9
+      pivot: {x: 0.75, y: 0.25}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7b9b9ef9425d94419b8dea76f819175a
+      internalID: -482437411
       vertices: []
       indices: 
       edges: []
@@ -493,24 +379,18 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      kudzuAttackSouth_16: 719582087
-      kudzuAttackSouth_0: 1435696427
-      kudzuAttackSouth_14: 538633370
-      kudzuAttackSouth_6: -1094488730
-      kudzuAttackSouth_4: -753098221
-      kudzuAttackSouth_17: 1053448619
-      kudzuAttackSouth_13: 1589350926
-      kudzuAttackSouth_5: 1583711610
-      kudzuAttackSouth_11: -445434754
-      kudzuAttackSouth_9: -1131541494
-      kudzuAttackSouth_15: -713395605
-      kudzuAttackSouth_10: 132723362
-      kudzuAttackSouth_1: -307782002
-      kudzuAttackSouth_8: 1654321474
-      kudzuAttackSouth_12: 1116230246
-      kudzuAttackSouth_2: 1523057388
-      kudzuAttackSouth_3: 2047817205
-      kudzuAttackSouth_7: -1371310484
+      kudzuAttack_3: -1343140856
+      kudzuAttack_11: -482437411
+      kudzuAttack_0: -782429154
+      kudzuAttack_4: -97148030
+      kudzuAttack_10: -257299618
+      kudzuAttack_2: -924319623
+      kudzuAttack_5: -1176398698
+      kudzuAttack_9: 1880635089
+      kudzuAttack_7: -885552227
+      kudzuAttack_8: -2132733961
+      kudzuAttack_6: 1764468842
+      kudzuAttack_1: -581479506
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

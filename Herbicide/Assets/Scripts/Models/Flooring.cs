@@ -192,7 +192,7 @@ public abstract class Flooring : MonoBehaviour, ISurface
 
         prefabRenderer.sortingOrder = GetY();
         prefabClone.transform.position = transform.position;
-        prefabClone.transform.localScale = Vector3.one;
+        prefabClone.transform.localScale = placeableObject.GetPlacementScale();
         prefabClone.transform.SetParent(transform);
         occupant = placeableObject;
         occupant.Define(new Vector2Int(GetX(), GetY()), GetPlaceableObjectNeighbors());
@@ -230,7 +230,7 @@ public abstract class Flooring : MonoBehaviour, ISurface
         AssertDefined();
         if (Occupied()) return false;
         if (candidate == null || neighbors == null) return false;
-        if (candidate as Defender != null) return false;
+        if (candidate as Squirrel != null) return false;
 
         return true;
     }

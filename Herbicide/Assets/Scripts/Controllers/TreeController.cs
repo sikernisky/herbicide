@@ -26,12 +26,12 @@ public abstract class TreeController<T> : MobController<T> where T : Enum
     /// Updates the Tree controlled by this TreeController.
     /// </summary>
     /// <param name="targets">A complete list of ITargetables in the scene.</param>
-    protected override void UpdateMob(List<ITargetable> targets)
+    protected override void UpdateMob()
     {
         if (!ValidModel()) return;
         if (GetGameState() != GameState.ONGOING) return;
         UpdateStateFSM();
-        ElectTarget(FilterTargets(targets));
+        ElectTarget(FilterTargets(GetAllTargetableObjects()));
         ExecuteIdleState();
     }
 
@@ -94,5 +94,8 @@ public abstract class TreeController<T> : MobController<T> where T : Enum
         GetTree().OnDie();
         GameObject.Destroy(GetTree().gameObject);
         GameObject.Destroy(GetTree());
+
+        //We are done with our Tree.
+        RemoveModel();
     }
 }

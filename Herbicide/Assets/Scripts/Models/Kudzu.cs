@@ -31,12 +31,12 @@ public class Kudzu : Enemy
     /// <summary>
     /// Base health of a Kudzu.
     /// </summary>
-    public override int BASE_HEALTH => 100;
+    public override int BASE_HEALTH => 50;
 
     /// <summary>
     /// Upper bound of a Kudzu's health. 
     /// </summary>
-    public override int MAX_HEALTH => 100;
+    public override int MAX_HEALTH => 50;
 
     /// <summary>
     /// Minimum health of a Kudzu
@@ -44,9 +44,14 @@ public class Kudzu : Enemy
     public override int MIN_HEALTH => 0;
 
     /// <summary>
-    /// Starting attack speed of a Kudzu.
+    /// Amount of attack cooldown this Kudzu starts with.
     /// </summary>
-    public override float BASE_ATTACK_SPEED => 3f;
+    public override float BASE_ATTACK_COOLDOWN => 3f;
+
+    /// <summary>
+    /// Most amount of attack cooldown this Kudzu can have.
+    /// </summary>
+    public override float MAX_ATTACK_COOLDOWN => float.MaxValue;
 
     /// <summary>
     /// Damage a Kudzu does each attack.
@@ -75,26 +80,31 @@ public class Kudzu : Enemy
     public override float MIN_ATTACK_RANGE => 0;
 
     /// <summary>
-    /// Maximum attack speed of a Kudzu.
+    /// Starting chase range of a Kudzu.
     /// </summary>
-    public override float MAX_ATTACK_SPEED => float.MaxValue;
+    public override float BASE_CHASE_RANGE => float.MaxValue;
 
     /// <summary>
-    /// Minimum attack speed of a Kudzu.
+    /// Maximum chase range of a Kudzu.
     /// </summary>
-    public override float MIN_ATTACK_SPEED => 0;
+    public override float MAX_CHASE_RANGE => float.MaxValue;
+
+    /// <summary>
+    /// Minimum chase range of a Kudzu.
+    /// </summary>
+    public override float MIN_CHASE_RANGE => float.MaxValue;
 
     /// <summary>
     /// How many seconds a Kudzu's move animation lasts,
     /// from start to finish. 
     /// </summary>
-    public float MOVE_ANIMATION_DURATION => .2f;
+    public float MOVE_ANIMATION_DURATION => .3f;
 
     /// <summary>
     /// How many seconds a Kudzu's attack animation lasts,
     /// from start to finish. 
     /// </summary>
-    public float ATTACK_ANIMATION_DURATION => .3f;
+    public float ATTACK_ANIMATION_DURATION => .25f;
 
     /// <summary>
     /// How many seconds a Kudzu's idle animation lasts,
@@ -103,14 +113,24 @@ public class Kudzu : Enemy
     public float IDLE_ANIMATION_DURATION => .3f;
 
     /// <summary>
+    /// Starting movement speed of a Kudzu.
+    /// </summary>
+    public override float BASE_MOVEMENT_SPEED => 6f;
+
+    /// <summary>
+    /// Maximum movement speed of a Kudzu.
+    /// </summary>
+    public override float MAX_MOVEMENT_SPEED => float.MaxValue;
+
+    /// <summary>
+    /// Minumum movement speed of a Kudzu.
+    /// </summary>
+    public override float MIN_MOVEMENT_SPEED => float.MinValue;
+
+    /// <summary>
     /// true if this Kudzu is currently hopping.
     /// </summary>
     private bool hopping;
-
-    /// <summary>
-    /// true if this Kudzu is currently bonking.
-    /// </summary>
-    private bool bonking;
 
     /// <summary>
     /// How many seconds remain before this Kudzu can hop.

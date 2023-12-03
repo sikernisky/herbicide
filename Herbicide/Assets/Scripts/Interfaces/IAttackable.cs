@@ -24,19 +24,19 @@ public interface IAttackable : ITargetable
     float MIN_ATTACK_RANGE { get; }
 
     /// <summary>
-    /// Amount of attack speed this IAttackable starts with.
+    /// Amount of attack cooldown this IAttackable starts with.
     /// </summary>
-    float BASE_ATTACK_SPEED { get; }
+    float BASE_ATTACK_COOLDOWN { get; }
 
     /// <summary>
-    /// Most amount of attack speed this IAttackable can have.
+    /// Most amount of attack cooldown this IAttackable can have.
     /// </summary>
-    float MAX_ATTACK_SPEED { get; }
+    float MAX_ATTACK_COOLDOWN { get; }
 
     /// <summary>
-    /// Least amount of attack speed this IAttackable can have.
+    /// Least amount of attack cooldown this IAttackable can have.
     /// </summary>
-    float MIN_ATTACK_SPEED { get; }
+    float MIN_ATTACK_COOLDOWN { get; }
 
     /// <summary>
     /// Directs this IAttackable to face its target. 
@@ -49,9 +49,9 @@ public interface IAttackable : ITargetable
     void ResetAttackRange();
 
     /// <summary>
-    /// Resets this IAttackable's attack speed.
+    /// Resets this IAttackable's attack cooldown.
     /// </summary>
-    void ResetAttackSpeed();
+    void ResetAttackCooldown();
 
     /// <summary>
     /// Returns true if this IAttackable is allowed to attack some
@@ -75,14 +75,14 @@ public interface IAttackable : ITargetable
     void SetAttackRange(float amount);
 
     /// <summary>
-    /// Returns this IAttackable's current attack range.
+    /// Returns this IAttackable's current attack cooldown.
     /// </summary>
-    /// <returns>this IAttackable's current attack range.</returns>
-    float GetAttackSpeed();
+    /// <returns>this IAttackable's current attack cooldown.</returns>
+    float GetAttackCooldown();
 
     /// <summary>
-    /// Sets this IAttackable's positive attack range.
+    /// Sets this IAttackable's positive attack cooldown.
     /// </summary>
-    /// <param name="amount">The new attack range.</param>
-    void SetAttackSpeed(float amount);
+    /// <param name="amount">The new attack cooldown.</param>
+    void SetAttackCooldown(float amount);
 }

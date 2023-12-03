@@ -24,12 +24,12 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     /// Updates the Defender controlled by this DefenderController.
     /// </summary>
     /// <param name="targets">A complete list of ITargetables in the scene.</param>
-    protected override void UpdateMob(List<ITargetable> targets)
+    protected override void UpdateMob()
     {
         if (!ValidModel()) return;
+        base.UpdateMob();
         if (GetGameState() != GameState.ONGOING) return;
-        UpdateStateFSM();
-        ElectTarget(FilterTargets(targets));
+        ElectTarget(FilterTargets(GetAllTargetableObjects()));
         ExecuteAttackState();
         ExecuteIdleState();
     }
@@ -39,22 +39,6 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     /// </summary>
     /// <returns>the reference to this DefenderController's defender.</returns>
     private Defender GetDefender() { return GetMob() as Defender; }
-
-    /// <summary>
-    /// Sets this DefenderController's target from a filtered list of ITargetables.
-    /// </summary>
-    /// <param name="filteredTargetables">a list of ITargables that this DefenderController
-    /// is allowed to set as its target. /// </param>
-    protected override void ElectTarget(List<ITargetable> filteredTargetables)
-    {
-        if (!ValidModel()) return;
-        if (GetTarget() != null) return;
-        Assert.IsNotNull(filteredTargetables, "List of targets is null.");
-
-        int random = UnityEngine.Random.Range(0, filteredTargetables.Count);
-        if (filteredTargetables.Count == 0) SetTarget(null);
-        else SetTarget(filteredTargetables[random]);
-    }
 
     /// <summary>
     /// Parses the list of all ITargetables in the scene such that it
@@ -75,7 +59,8 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
         {
             if (target as Enemy == null) continue;
             float distanceToTarget = GetDefender().DistanceToTarget(target);
-            if (distanceToTarget > GetDefender().GetAttackRange()) continue;
+            if (distanceToTarget > GetDefender().GetChaseRange()) continue;
+            if (!target.Targetable()) continue;
             filteredTargets.Add(target);
         }
         return filteredTargets;
@@ -91,16 +76,13 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
         if (GetDefender().GetHealth() > 0) return;
 
         GetDefender().OnDie();
+        SceneController.EndCoroutine(GetAnimationReference());
         GameObject.Destroy(GetDefender().gameObject);
         GameObject.Destroy(GetDefender());
+
+        //We are done with our Defender.
+        RemoveModel();
     }
-
-    //----------------------STATE LOGIC-----------------------//
-
-    /// <summary>
-    /// Runs all code relevant to the Defender's attacking state.
-    /// </summary>
-    protected abstract void ExecuteAttackState();
 }
 
 

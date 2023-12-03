@@ -184,26 +184,21 @@ public class ControllerController : MonoBehaviour
     /// <summary>
     /// Updates all Controllers managed by the ControllerController.
     /// </summary>
-    /// <param name="targets">All potential targets</param>
     /// <param name="dt">Current game time</param>
-    public static void UpdateAllControllers(List<ITargetable> targets, float dt)
+    public static void UpdateAllControllers(float dt)
     {
-        //Copy targets
-        List<ITargetable> targetsCopy = new List<ITargetable>(targets);
-
         //General updates
         instance.TryRemoveControllers();
         instance.InformControllersOfGameState();
 
         //Update EnemyControllers
-        instance.enemyControllers.ForEach(ec => ec.UpdateModel(targets));
+        instance.enemyControllers.ForEach(ec => ec.UpdateModel());
 
         //Update DefenderControllers
-        targets.AddRange(GetAllActiveEnemies());
-        instance.defenderControllers.ForEach(dc => dc.UpdateModel(targets));
+        instance.defenderControllers.ForEach(dc => dc.UpdateModel());
 
         //Update TreeControllers
-        instance.treeControllers.ForEach(tc => tc.UpdateModel(targets));
+        instance.treeControllers.ForEach(tc => tc.UpdateModel());
     }
 
     /// <summary>

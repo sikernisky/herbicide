@@ -44,11 +44,6 @@ public abstract class Enemy : Mob
     private EnemyHealthState healthState;
 
     /// <summary>
-    /// The position to which this Enemy should move next.
-    /// </summary>
-    private Vector3 nextMovementPosition;
-
-    /// <summary>
     /// Type of this Enemy.
     /// </summary>
     public enum EnemyType
@@ -151,20 +146,4 @@ public abstract class Enemy : Mob
     /// </summary>
     /// <returns>the (X, Y) world position where this Enemy spawns.</returns>
     public Vector3 GetSpawnWorldPosition() { return spawnPosition; }
-
-    /// <summary>
-    /// Sets the position to which this Enemy should move next.
-    /// </summary>
-    /// <param name="nextPos">The position to which this Enemy should
-    /// move next./// </param>
-    public void SetNextMovePos(Vector3 nextPos)
-    {
-        nextMovementPosition = nextPos;
-    }
-
-    /// <summary>
-    /// Returns the position to which this Enemy should move next.
-    /// </summary>
-    /// <returns>the position to which this Enemy should move next.</returns>
-    public Vector3 GetNextMovePos() { return nextMovementPosition; }
 }

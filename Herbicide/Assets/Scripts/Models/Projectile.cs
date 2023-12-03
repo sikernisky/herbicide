@@ -10,24 +10,10 @@ using UnityEngine.Assertions;
 public class Projectile : MonoBehaviour
 {
     /// <summary>
-    /// Type of a Projectile.
-    /// </summary>
-    public enum ProjectileType
-    {
-        ACORN
-    }
-
-    /// <summary>
     /// Speed of this Projectile.
     /// </summary>
     [SerializeField]
     private float speed;
-
-    /// <summary>
-    /// Type of this Projectile.
-    /// </summary>
-    [SerializeField]
-    private ProjectileType type;
 
     /// <summary>
     /// How long this Projectile lasts, in seconds.
@@ -56,6 +42,12 @@ public class Projectile : MonoBehaviour
     /// </summary>
     [SerializeField]
     private Rigidbody2D projectileBody;
+
+    /// <summary>
+    /// The animation curve of this Projectile's lob.
+    /// </summary>
+    [SerializeField]
+    private AnimationCurve lobCurve;
 
 
     /// <summary>
@@ -121,5 +113,18 @@ public class Projectile : MonoBehaviour
     public bool Expired()
     {
         return age >= lifespan;
+    }
+
+    /// <summary>
+    /// Returns this Projectile's animation curve component for
+    /// a lob shot. Throws an exception if this projectile does
+    /// not support lobbing.
+    /// </summary>
+    /// <returns>this Projectile's animation curve component for
+    /// a lob shot.</returns>
+    public AnimationCurve GetLobCurve()
+    {
+        if (lobCurve == null) throw new System.Exception("This projectile cannot lob.");
+        return lobCurve;
     }
 }

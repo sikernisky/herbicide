@@ -58,6 +58,11 @@ public abstract class PlaceableObject : MonoBehaviour, ISlottable, ITargetable
     //---------------------END STATS-----------------------//
 
     /// <summary>
+    /// The scale of this PlaceableObject when placed.
+    /// </summary>
+    protected virtual Vector3 PLACEMENT_SCALE => Vector3.one;
+
+    /// <summary>
     /// true if this PlaceableObject has been defined; otherwise, false.
     /// </summary>
     private bool defined;
@@ -131,6 +136,12 @@ public abstract class PlaceableObject : MonoBehaviour, ISlottable, ITargetable
     public bool Defined() { return defined; }
 
     /// <summary>
+    /// Returns this PlaceableObject's placement scale.
+    /// </summary>
+    /// <returns>this PlaceableObject's placement scale.</returns>
+    public Vector3 GetPlacementScale() { return PLACEMENT_SCALE; }
+
+    /// <summary>
     /// Sets this PlaceableObject's (X, Y) Tile coordinates.
     /// </summary>
     /// <param name="x">The X-Coordinate.</param>
@@ -186,6 +197,12 @@ public abstract class PlaceableObject : MonoBehaviour, ISlottable, ITargetable
     public int GetY() { return coordinates.y; }
 
     /// <summary>
+    /// Returns this PlaceableObject's Transform component.
+    /// </summary>
+    /// <returns>this PlaceableObject's Transform component.</returns>
+    public Transform GetTransform() { return transform; }
+
+    /// <summary>
     /// Returns a Sprite that represents this PlaceableObject when it is
     /// being placed.
     /// </summary>
@@ -225,7 +242,7 @@ public abstract class PlaceableObject : MonoBehaviour, ISlottable, ITargetable
     /// Adds some amount (can be negative) of health to this PlaceableObject.
     /// </summary>
     /// <param name="amount">The amount of health to adjust.</param>
-    public void AdjustHealth(int amount)
+    public virtual void AdjustHealth(int amount)
     {
         int healthBefore = GetHealth();
         health = Mathf.Clamp(GetHealth() + amount, MIN_HEALTH, MAX_HEALTH);
@@ -258,6 +275,14 @@ public abstract class PlaceableObject : MonoBehaviour, ISlottable, ITargetable
     public virtual bool Dead() { return GetHealth() <= 0; }
 
     /// <summary>
+    /// Returns true if something can target this PlaceableObject. As 
+    /// a base/default, this is when this PlaceableObject is not dead. 
+    /// </summary>
+    /// <returns>true if something can target this PlaceableObject;
+    /// otherwise, false</returns>
+    public virtual bool Targetable() { return !Dead(); }
+
+    /// <summary>
     /// Returns the position of this PlaceableObject.
     /// </summary>
     /// <returns>the position of this PlaceableObject.</returns>
@@ -282,6 +307,12 @@ public abstract class PlaceableObject : MonoBehaviour, ISlottable, ITargetable
     /// width, and height.
     /// </summary>
     public abstract void SetColliderProperties();
+
+    /// <summary>
+    /// Sets this PlaceableObject's SpriteRenderer to its most up-to date
+    /// (attached) component.
+    /// </summary>
+    public void RefreshRenderer() { placeableRenderer = GetComponent<SpriteRenderer>(); }
 
     /// <summary>
     /// Returns the Sprite occupying this PlaceableObject's SpriteRenderer
@@ -353,6 +384,7 @@ public abstract class PlaceableObject : MonoBehaviour, ISlottable, ITargetable
     public float DistanceToTarget(ITargetable target)
     {
         if (target == null) return float.MaxValue;
+        GetPosition();
         return Vector3.Distance(GetPosition(), target.GetPosition());
     }
 

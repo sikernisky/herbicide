@@ -61,6 +61,17 @@ public class BasicTreeController : TreeController<BasicTreeController.BasicTreeS
     //--------------------BEGIN STATE LOGIC----------------------//
 
     /// <summary>
+    /// Returns true if two BasicTreeStates are equal.
+    /// </summary>
+    /// <param name="stateA">The first state.</param>
+    /// <param name="stateB">The second state.</param>
+    /// <returns>true if two BasicTreeStates are equal; otherwise, false.</returns>
+    protected override bool StateEquals(BasicTreeState stateA, BasicTreeState stateB)
+    {
+        return stateA == stateB;
+    }
+
+    /// <summary>
     /// Updates the state of this BasicTreeController's Tree model.
     /// The transitions are: <br></br>
     /// 
@@ -83,9 +94,31 @@ public class BasicTreeController : TreeController<BasicTreeController.BasicTreeS
     /// <summary>
     /// Runs logic relevant to the BasicTrees's idle state.
     /// </summary>
-    protected override void ExecuteIdleState()
+    protected override void ExecuteIdleState() { return; }
+
+    /// <summary>
+    /// Runs logic relevant to the BasicTrees's attacking state.
+    /// </summary>
+    protected override void ExecuteAttackState() { return; }
+
+    /// <summary>
+    /// Runs logic relevant to the BasicTrees's chasing state.
+    /// </summary>
+    protected override void ExecuteChaseState() { return; }
+
+    protected override void AgeAnimationCounter()
     {
-        if (GetState() != BasicTreeState.IDLE) return;
+        throw new System.NotImplementedException();
+    }
+
+    protected override float GetAnimationCounter()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    protected override void ResetAnimationCounter()
+    {
+        throw new System.NotImplementedException();
     }
 
     //---------------------END STATE LOGIC-----------------------//

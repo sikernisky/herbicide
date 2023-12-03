@@ -115,6 +115,27 @@ public class DefenderAnimation : ScriptableObject
         }
     }
 
+    /// Returns a copy of a movement animation array for a given direction.
+    /// </summary>
+    /// <param name="direction">The direction of the movement animation</param>
+    /// <returns>A copy of the movement animation array.</returns>
+    public Sprite[] GetMovementAnimation(Direction direction)
+    {
+        switch (direction)
+        {
+            case Direction.NORTH:
+                return (Sprite[])movementAnimationNorth.Clone();
+            case Direction.EAST:
+                return (Sprite[])movementAnimationEast.Clone();
+            case Direction.SOUTH:
+                return (Sprite[])movementAnimationSouth.Clone();
+            case Direction.WEST:
+                return (Sprite[])attackAnimationWest.Clone();
+            default:
+                return null;
+        }
+    }
+
     /// Returns a copy of an idle animation array for a given direction.
     /// </summary>
     /// <param name="direction">The direction of the idle animation</param>

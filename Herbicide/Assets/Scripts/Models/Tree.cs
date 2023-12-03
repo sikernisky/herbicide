@@ -98,6 +98,16 @@ public abstract class Tree : Mob, ISurface
         SetSprite(TreeFactory.GetTreePlacedSprite(TYPE));
     }
 
+    /// <summary>
+    /// If this Tree is not occupied, adjusts its health by amount.
+    /// If it is occupied, adjusts its occupant's health instead.  
+    /// </summary>
+    /// <param name="amount">The amount to adjust by.</param>
+    public override void AdjustHealth(int amount)
+    {
+        if (Occupied()) defender.AdjustHealth(amount);
+        else base.AdjustHealth(amount);
+    }
 
     /// <summary>
     /// Returns true if there is an occupant on this Tree.
@@ -105,7 +115,6 @@ public abstract class Tree : Mob, ISurface
     /// <returns>true if there is an occupant on this Tree; otherwise,
     /// false.</returns>
     public bool Occupied() { return defender != null; }
-
 
     /// <summary>
     /// Returns true if a Defender can place on this Tree. If
@@ -133,7 +142,7 @@ public abstract class Tree : Mob, ISurface
         prefabClone.transform.SetParent(transform);
         prefabClone.transform.localPosition =
             new Vector3(DEFENDER_OFFSET_X, DEFENDER_OFFSET_Y, 1);
-        prefabClone.transform.localScale = Vector3.one;
+        prefabClone.transform.localScale = defenderComponent.GetPlacementScale();
         ControllerController.MakeDefenderController(defenderComponent);
 
         return true;
@@ -152,7 +161,8 @@ public abstract class Tree : Mob, ISurface
     {
         if (candidate == null) return false;
         if (Occupied()) return false;
-        if (candidate as Defender == null) return false;
+        if (candidate as Butterfly != null) return false;
+        if (candidate as Squirrel == null) return false;
         return true;
     }
 

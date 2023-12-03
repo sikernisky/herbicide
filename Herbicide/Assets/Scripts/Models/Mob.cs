@@ -34,24 +34,70 @@ public abstract class Mob : PlaceableObject, IAttackable
     private float attackRange;
 
     /// <summary>
-    /// Amount of attack speed this Mob starts with.
+    /// Amount of attack cooldown this Mob starts with.
     /// </summary>
-    public abstract float BASE_ATTACK_SPEED { get; }
+    public abstract float BASE_ATTACK_COOLDOWN { get; }
 
     /// <summary>
-    /// Most amount of attack speed this Mob can have.
+    /// Most amount of attack cooldown this Mob can have.
     /// </summary>
-    public abstract float MAX_ATTACK_SPEED { get; }
+    public abstract float MAX_ATTACK_COOLDOWN { get; }
 
     /// <summary>
-    /// Least amount of attack speed this Mob can have.
+    /// Least amount of attack cooldown this Mob can have.
     /// </summary>
-    public abstract float MIN_ATTACK_SPEED { get; }
+    public float MIN_ATTACK_COOLDOWN => 0f;
+
+    /// <summary>
+    /// This Mob's current attack cooldown.
+    /// </summary>
+    private float attackCooldown;
+
+    /// <summary>
+    /// Amount of chase range this Mob starts with.
+    /// </summary>
+    public abstract float BASE_CHASE_RANGE { get; }
+
+    /// <summary>
+    /// Most amount of chase range this Mob can have.
+    /// </summary>
+    public abstract float MAX_CHASE_RANGE { get; }
+
+    /// <summary>
+    /// Least amount of chase range this Mob can have.
+    /// </summary>
+    public abstract float MIN_CHASE_RANGE { get; }
+
+    /// <summary>
+    /// This Mob's current chase range. 
+    /// </summary>
+    private float chaseRange;
 
     /// <summary>
     /// This Mob's current attack speed. 
     /// </summary>
     private float attackSpeed;
+
+    /// <summary>
+    /// Amount of movement speed this Mob starts with.
+    /// </summary>
+    public abstract float BASE_MOVEMENT_SPEED { get; }
+
+    /// <summary>
+    /// Max amount of movement speed this Mob starts with.
+    /// </summary>
+    public abstract float MAX_MOVEMENT_SPEED { get; }
+
+    /// <summary>
+    /// Min amount of movement speed this Mob starts with.
+    /// </summary>
+    public abstract float MIN_MOVEMENT_SPEED { get; }
+
+    /// <summary>
+    /// This Mob's current movement speed.
+    /// </summary>
+    private float movementSpeed;
+
 
     //---------------------END STATS-----------------------//
 
@@ -69,6 +115,14 @@ public abstract class Mob : PlaceableObject, IAttackable
         spawned = true;
         ResetStats();
     }
+
+    /// <summary>
+    /// Returns true if this Mob is dead. This is when the Mob
+    /// has a non-positive health value and has already been
+    /// spawned.
+    /// </summary>
+    /// <returns>true if this Mob is dead; otherwise, false.</returns>
+    public override bool Dead() { return base.Dead() && spawned; }
 
     /// <summary>
     /// Returns true if this Mob is spawned in the scene.
@@ -92,15 +146,58 @@ public abstract class Mob : PlaceableObject, IAttackable
     public float GetAttackRange() { return attackRange; }
 
     /// <summary>
-    /// Sets this IAttackable's attack range.
+    /// Sets this Mob's attack range.
     /// </summary>
     /// <param name="amount">The new attack range.</param>
-    public void SetAttackRange(float amount) { attackRange = Mathf.Clamp(amount, MIN_ATTACK_RANGE, MAX_ATTACK_RANGE); }
+    public void SetAttackRange(float amount)
+    {
+        attackRange = Mathf.Clamp(amount, MIN_ATTACK_RANGE, MAX_ATTACK_RANGE);
+    }
 
     /// <summary>
     /// Resets this Mob's attack range to its starting value.
     /// </summary>
     public void ResetAttackRange() { attackRange = BASE_ATTACK_RANGE; }
+
+    /// <summary>
+    /// Returns this Mob's current attack cooldown.
+    /// </summary>
+    /// <returns>this Mob's current attack cooldown.</returns>
+    public float GetAttackCooldown() { return attackCooldown; }
+
+    /// <summary>
+    /// Sets this Mob's attack cooldown.
+    /// </summary>
+    /// <param name="amount">The new attack cooldown.</param>
+    public void SetAttackCooldown(float amount)
+    {
+        attackCooldown = Mathf.Clamp(amount, MIN_ATTACK_COOLDOWN, MAX_ATTACK_COOLDOWN);
+    }
+
+    /// <summary>
+    /// Resets this Mob's attack cooldown to its starting value.
+    /// </summary>
+    public void ResetAttackCooldown() { attackCooldown = BASE_ATTACK_COOLDOWN; }
+
+    /// <summary>
+    /// Returns this Mob's current chase range.
+    /// </summary>
+    /// <returns>this Mob's current chase range.</returns>
+    public virtual float GetChaseRange() { return chaseRange; }
+
+    /// <summary>
+    /// Sets this Mob's chase range.
+    /// </summary>
+    /// <param name="amount">The new chase range.</param>
+    public void SetChaseRange(float amount)
+    {
+        chaseRange = Mathf.Clamp(amount, MIN_CHASE_RANGE, MAX_CHASE_RANGE);
+    }
+
+    /// <summary>
+    /// Resets this Mob's chase range to its starting value.
+    /// </summary>
+    public void ResetChaseRange() { chaseRange = BASE_CHASE_RANGE; }
 
     /// <summary>
     /// Returns this Mob's current attack speed.
@@ -109,15 +206,24 @@ public abstract class Mob : PlaceableObject, IAttackable
     public float GetAttackSpeed() { return attackSpeed; }
 
     /// <summary>
-    /// Sets this IAttackable's attack speed.
+    /// Returns this Mob's current movement speed.
     /// </summary>
-    /// <param name="amount">The new attack speed.</param>
-    public void SetAttackSpeed(float amount) { attackSpeed = Mathf.Clamp(amount, MIN_ATTACK_SPEED, MAX_ATTACK_SPEED); }
+    /// <returns>this Mob's current movement speed.</returns>
+    public float GetMovementSpeed() { return movementSpeed; }
 
     /// <summary>
-    /// Resets this Mob's attack speed to its starting value.
+    /// Sets this IAttackable's movement speed.
     /// </summary>
-    public void ResetAttackSpeed() { attackSpeed = BASE_ATTACK_SPEED; }
+    /// <param name="amount">The new movement speed.</param>
+    public void SetMovementSpeed(float amount)
+    {
+        movementSpeed = Mathf.Clamp(amount, MIN_MOVEMENT_SPEED, MAX_MOVEMENT_SPEED);
+    }
+
+    /// <summary>
+    /// Resets this Mob's movement speed to its starting value.
+    /// </summary>
+    public void ResetMovementSpeed() { movementSpeed = BASE_MOVEMENT_SPEED; }
 
     /// <summary>
     /// Resets this Mob's stats to their default values.
@@ -126,7 +232,9 @@ public abstract class Mob : PlaceableObject, IAttackable
     {
         base.ResetStats();
         ResetAttackRange();
-        ResetAttackSpeed();
+        ResetChaseRange();
+        ResetMovementSpeed();
+        SetAttackCooldown(0);
     }
 
     /// <summary>
@@ -139,6 +247,23 @@ public abstract class Mob : PlaceableObject, IAttackable
 
         float xDistance = GetPosition().x - t.GetPosition().x;
         float yDistance = GetPosition().y - t.GetPosition().y;
+        bool xGreater = Mathf.Abs(xDistance) > Mathf.Abs(yDistance)
+            ? true : false;
+
+        if (xGreater && xDistance <= 0) FaceDirection(Direction.EAST);
+        if (xGreater && xDistance > 0) FaceDirection(Direction.WEST);
+        if (!xGreater && yDistance <= 0) FaceDirection(Direction.NORTH);
+        if (!xGreater && yDistance > 0) FaceDirection(Direction.SOUTH);
+    }
+
+    /// <summary>
+    /// Changes this Mob's direction such that it faces some position.
+    /// </summary>
+    /// <param name="t">The position to face.</param>
+    public void FaceTarget(Vector3 t)
+    {
+        float xDistance = GetPosition().x - t.x;
+        float yDistance = GetPosition().y - t.y;
         bool xGreater = Mathf.Abs(xDistance) > Mathf.Abs(yDistance)
             ? true : false;
 

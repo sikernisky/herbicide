@@ -53,19 +53,44 @@ public class BasicTree : Tree
     public override float MIN_ATTACK_RANGE => 0;
 
     /// <summary>
-    /// Starting attack speed of a BasicTree.
+    /// Amount of attack cooldown this BasicTree starts with.
     /// </summary>
-    public override float BASE_ATTACK_SPEED => 0;
+    public override float BASE_ATTACK_COOLDOWN => 0;
 
     /// <summary>
-    /// Maximum attack speed of a BasicTree.
+    /// Most amount of attack cooldown this BasicTree can have.
     /// </summary>
-    public override float MAX_ATTACK_SPEED => throw new System.NotImplementedException();
+    public override float MAX_ATTACK_COOLDOWN => 0;
 
     /// <summary>
-    /// Minimum attack speed of a BasicTree.
+    /// Starting chase range of a BasicTree.
     /// </summary>
-    public override float MIN_ATTACK_SPEED => throw new System.NotImplementedException();
+    public override float BASE_CHASE_RANGE => 0f;
+
+    /// <summary>
+    /// Maximum chase range of a BasicTree.
+    /// </summary>
+    public override float MAX_CHASE_RANGE => 0f;
+
+    /// <summary>
+    /// Minimum chase range of a BasicTree.
+    /// </summary>
+    public override float MIN_CHASE_RANGE => 0f;
+
+    /// <summary>
+    /// Starting movement speed of a BasicTree.
+    /// </summary>
+    public override float BASE_MOVEMENT_SPEED => 0f;
+
+    /// <summary>
+    /// Maximum movement speed of a BasicTree.
+    /// </summary>
+    public override float MAX_MOVEMENT_SPEED => 0f;
+
+    /// <summary>
+    /// Minumum movement speed of a BasicTree.
+    /// </summary>
+    public override float MIN_MOVEMENT_SPEED => 0f;
 
 
     /// <summary>

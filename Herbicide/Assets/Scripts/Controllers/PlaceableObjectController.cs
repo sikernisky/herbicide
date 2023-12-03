@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -27,10 +28,9 @@ public abstract class PlaceableObjectController
     private GameState gameState;
 
     /// <summary>
-    /// The number of PlaceableObjects assigned to Controllers since
-    /// this scene began. 
+    /// All instantiated PlaceableObjects.
     /// </summary>
-    private static int NUM_PLACEABLES;
+    private static List<PlaceableObject> ALL_PLACEABLES = new List<PlaceableObject>();
 
     /// <summary>
     /// The color strength, from 0-1, of the damage flash animation.
@@ -56,15 +56,15 @@ public abstract class PlaceableObjectController
         SetModel(placeableObject);
         GetModel().ResetStats();
         GetModel().SubscribeToCollision(HandleCollision);
-        id = NUM_PLACEABLES;
-        NUM_PLACEABLES++;
+        id = ALL_PLACEABLES.Count;
+        ALL_PLACEABLES.Add(placeableObject);
     }
 
     /// <summary>
     /// Main update loop for this Controller's model. 
     /// </summary>
     /// <param name="targets">A complete list of ITargetables in the scene.</param>
-    public virtual void UpdateModel(List<ITargetable> targets) { UpdateDamageFlash(); }
+    public virtual void UpdateModel() { UpdateDamageFlash(); }
 
     /// <summary>
     /// Informs this MobController of the most recent GameState so
@@ -114,6 +114,11 @@ public abstract class PlaceableObjectController
     public PlaceableObject GetModel() { return model; }
 
     /// <summary>
+    /// Detatches the PlaceableObject model from this Controller.
+    /// </summary>
+    protected void RemoveModel() { model = null; }
+
+    /// <summary>
     /// Sets this Controller's placeable object model.
     /// </summary>
     /// <param name="model">The new PlaceableObject model. </param>
@@ -130,6 +135,7 @@ public abstract class PlaceableObjectController
     private void UpdateDamageFlash()
     {
         float remainingFlashTime = GetModel().TimeRemaningInFlashAnimation();
+        // if (GetModel().NAME == "Squirrel") Debug.Log(remainingFlashTime);
         if (remainingFlashTime <= 0) return;
         float newDamageFlashingTime = Mathf.Clamp(remainingFlashTime - Time.deltaTime, 0, FLASH_DURATION);
         GetModel().SetRemainingFlashAnimationTime(newDamageFlashingTime);
@@ -138,6 +144,18 @@ public abstract class PlaceableObjectController
         byte greenBlueComponent = (byte)(score * 255);
         Color32 color = new Color32(255, greenBlueComponent, greenBlueComponent, 255);
         GetModel().SetColor(color);
+    }
+
+    /// <summary>
+    /// Returns a list of all PlaceableObjects that are also ITargetables
+    /// (all of them). 
+    /// </summary>
+    /// <returns>a list of all ITargetables in the scene.</returns>
+    protected static List<ITargetable> GetAllTargetableObjects()
+    {
+        List<ITargetable> allTargetables = new List<ITargetable>();
+        allTargetables.AddRange(ALL_PLACEABLES.Where(tar => tar as ITargetable != null));
+        return allTargetables;
     }
 
     /// <summary>

@@ -28,6 +28,11 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
     private T state;
 
     /// <summary>
+    /// The State that triggered the Mob's most recent animation.
+    /// </summary>
+    private T animationState;
+
+    /// <summary>
     /// The number of Mobs assigned to MobControllers since
     /// this scene began.
     /// </summary>
@@ -44,6 +49,22 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
     private Sprite[] currentAnimationTrack;
 
     /// <summary>
+    /// The time it takes to complete a cycle of the current animation.
+    /// </summary>
+    private float currentAnimationDuration;
+
+    /// <summary>
+    /// Reference to the Mob's animation coroutine.
+    /// </summary>
+    private IEnumerator animationReference;
+
+    /// <summary>
+    /// Where this Mob moves next.
+    /// </summary>
+    private Vector3? nextMovePos;
+
+
+    /// <summary>
     /// Makes a new MobController for a Mob.
     /// </summary>
     /// <param name="mob">The Mob controlled by this MobController.</param>
@@ -51,25 +72,30 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
     {
         Assert.IsNotNull(mob, "Mob cannot be null.");
         SpawnMob();
-        SceneController.BeginCoroutine(CoPlayAnimation());
+        RestartAnimationCoroutine();
         NUM_MOBS++;
     }
 
     /// <summary>
     /// Main update loop for the MobController. Updates its model.
     /// </summary>
-    /// <param name="targets">A complete list of ITargetables in the scene.</param>
-    public override void UpdateModel(List<ITargetable> targets)
+    public override void UpdateModel()
     {
+        base.UpdateModel();
         TryRemoveModel();
-        UpdateMob(targets);
+        UpdateStateFSM();
+        UpdateMob();
     }
 
     /// <summary>
     /// Main update loop for the MobController's Mob logic. 
     /// </summary>
-    /// <param name="targets">A complete list of ITargetables in the scene.</param>
-    protected abstract void UpdateMob(List<ITargetable> targets);
+    protected virtual void UpdateMob()
+    {
+        float oldCooldown = GetMob().GetAttackCooldown();
+        oldCooldown -= Time.deltaTime;
+        GetMob().SetAttackCooldown(oldCooldown);
+    }
 
     /// <summary>
     /// Sets the State of this MobController. This helps keep track of
@@ -118,11 +144,24 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
     protected void WipeTarget() { target = null; }
 
     /// <summary>
-    /// Picks this MobController's target from a filtered list of ITargetables.
+    /// Sets this MobController's target from a filtered list of ITargetables. By
+    /// default, this is a random target out of all filtered options. 
     /// </summary>
-    /// <param name="filteredTargetables">a list of ITargables that this MobController
+    /// <param name="filteredTargetables">a list of ITargables that this EnemyController
     /// is allowed to set as its target. /// </param>
-    protected abstract void ElectTarget(List<ITargetable> filteredTargetables);
+    protected virtual void ElectTarget(List<ITargetable> filteredTargetables)
+    {
+        Assert.IsNotNull(filteredTargetables, "List of targets is null.");
+        if (!ValidModel()) return;
+
+        //If the current target is feasible, return
+        if (GetTarget() != null && GetTarget().Targetable()) return;
+
+        //ResetAnimationCounter();
+        int random = UnityEngine.Random.Range(0, filteredTargetables.Count);
+        if (filteredTargetables.Count == 0) SetTarget(null);
+        else SetTarget(filteredTargetables[random]);
+    }
 
     /// <summary>
     /// Parses the list of all ITargetables in the scene such that it
@@ -134,6 +173,8 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
     /// to target</returns>
     protected abstract List<ITargetable> FilterTargets(List<ITargetable> targetables);
 
+    //--------------------BEGIN STATE LOGIC----------------------//
+
     /// <summary>
     /// Processes this MobController's state FSM to determine the
     /// correct state. Takes the current state and chooses whether
@@ -144,10 +185,45 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
     /// <summary>
     /// Logic to execute when this MobController's Mob is idle.
     /// The MobController manipulates the Mob model by calling
-    /// its methods -- it does NOT simply call an "Idle()" method
-    /// implemented by the Mob.
+    /// its methods.
     /// </summary>
     protected abstract void ExecuteIdleState();
+
+    /// <summary>
+    /// Logic to execute when this MobController's Mob is attacking.
+    /// The MobController manipulates the Mob model by calling
+    /// its methods.
+    /// </summary>
+    protected abstract void ExecuteAttackState();
+
+    /// <summary>
+    /// Returns true if the Mob can attack this frame.
+    /// </summary>
+    /// <returns>true if the Mob can attack this frame; 
+    /// otherwise, false. </returns>
+    protected virtual bool CanAttack() { return GetMob().GetAttackCooldown() <= 0; }
+
+    /// <summary>
+    /// Logic to execute when this MobController's Mob is chasing.
+    /// The MobController manipulates the Mob model by calling
+    /// its methods.
+    /// </summary>
+    protected abstract void ExecuteChaseState();
+
+
+    //----------------------END STATE LOGIC----------------------//
+
+    /// <summary>
+    /// Returns where the Mob should move next.
+    /// </summary>
+    /// <returns>where the Mob should move next.</returns>
+    protected Vector3? GetNextMovePos() { return nextMovePos; }
+
+    /// <summary>
+    /// Sets where the Mob should move next.
+    /// </summary>
+    /// <param name="nextPos">where the Mob should move next.</param>
+    protected void SetNextMovePos(Vector3? nextPos) { nextMovePos = nextPos; }
 
     /// <summary>
     /// Returns true if this MobController's model is not null.
@@ -160,9 +236,19 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
     /// Brings this Controller's Mob into life by calling its OnSpawn()
     /// method. 
     /// </summary>
-    protected virtual void SpawnMob() { GetMob().OnSpawn(); }
+    protected virtual void SpawnMob()
+    {
+        GetMob().RefreshRenderer();
+        GetMob().OnSpawn();
+    }
 
     //--------------------BEGIN ANIMATION LOGIC----------------------//
+
+    /// <summary>
+    /// Returns the reference to this MobController's Mob's animation coroutine.
+    /// </summary>
+    /// <returns>the reference to this MobController's Mob's animation coroutine</returns>
+    protected IEnumerator GetAnimationReference() { return animationReference; }
 
     /// <summary>
     /// Returns the current frame limit.
@@ -185,13 +271,50 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
     public int GetFrameNumber() { return frame; }
 
     /// <summary>
+    /// Returns the State that triggered the Mob's most recent
+    /// animation.
+    /// </summary>
+    /// <returns>the State that triggered the Mob's most recent
+    /// animation.</returns>
+    protected T GetAnimationState() { return animationState; }
+
+    /// <summary>
+    /// Sets the State that triggered the Mob's most recent
+    /// animation.
+    /// </summary>
+    /// <param name="animationState">the animation state to set.</param>
+    protected void SetAnimationState(T animationState) { this.animationState = animationState; }
+
+    /// <summary>
+    /// Sets the duration of the current animation.
+    /// </summary>
+    /// <param name="dur">The time to complete a full cycle of the current
+    /// animation.</param>
+    protected void SetAnimationDuration(float dur)
+    {
+        Assert.IsTrue(dur > 0, "Must have positive animation duration.");
+        currentAnimationDuration = dur;
+    }
+
+    /// <summary>
+    /// Returns the duration of the current animation.
+    /// </summary>
+    /// <returns>The time to complete a full cycle of the current
+    /// animation. </returns>
+    protected float GetAnimationDuration() { return currentAnimationDuration; }
+
+    /// <summary>
     /// Sets the animation track of the current animation. 
     /// </summary>
     /// <param name="track">the animation track to set.</param>
-    protected void SetAnimationTrack(Sprite[] track)
+    /// <param name="newAnimationState">the state that triggered this animation.</param>
+    /// <param name="startFrame">optionally, choose which frame to start with.</param>
+    protected void SetAnimationTrack(Sprite[] track, T newAnimationState, int startFrame = 0)
     {
         Assert.IsNotNull(track, "Animation track is null.");
         currentAnimationTrack = track;
+        if (!StateEquals(GetAnimationState(), newAnimationState)) frame = startFrame;
+        SetAnimationState(newAnimationState);
     }
 
     /// <summary>
@@ -214,6 +337,17 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
     }
 
     /// <summary>
+    /// Stops the current animation coroutine (if there is one) and
+    /// starts a new one.
+    /// </summary>
+    protected void RestartAnimationCoroutine()
+    {
+        if (animationReference != null) SceneController.EndCoroutine(animationReference);
+        animationReference = CoPlayAnimation();
+        SceneController.BeginCoroutine(animationReference);
+    }
+
+    /// <summary>
     /// Plays the current animation of the Mob. Acts like a flipbook;
     /// keeps track of frames and increments this counter to apply
     /// the correct Sprites to the Mob's SpriteRenderer. <br></br>
@@ -224,6 +358,45 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
     /// <returns>A reference to the coroutine.</returns>
     protected abstract IEnumerator CoPlayAnimation();
 
+    /// <summary>
+    /// Adds one chunk of Time.deltaTime to the animation
+    /// counter that tracks the current state.
+    /// </summary>
+    protected abstract void AgeAnimationCounter();
+
+    /// <summary>
+    /// Returns the animation counter for the current state.
+    /// </summary>
+    /// <returns>the animation counter for the current state.</returns>
+    protected abstract float GetAnimationCounter();
+
+    /// <summary>
+    /// Sets the animation counter for the current state to 0.
+    /// </summary>
+    protected abstract void ResetAnimationCounter();
+
+    /// <summary>
+    /// Checks to see if the next frame in the animation needs to be
+    /// displayed. If so, displays it.
+    /// </summary>
+    protected virtual void StepAnimation()
+    {
+        AgeAnimationCounter();
+        float stepTime = GetAnimationDuration() / GetFrameCount();
+        if (GetAnimationCounter() - stepTime > 0)
+        {
+            NextFrame();
+            ResetAnimationCounter();
+        }
+    }
+
     //---------------------END ANIMATION LOGIC-----------------------//
 
+    /// <summary>
+    /// Returns true if two states are equal.
+    /// </summary>
+    /// <param name="stateA">The first state.</param>
+    /// <param name="stateB">The second state</param>
+    /// <returns>true if two states are equal; otherwise, false. </returns>
+    protected abstract bool StateEquals(T stateA, T stateB);
 }

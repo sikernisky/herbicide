@@ -273,7 +273,7 @@ MonoBehaviour:
   - {fileID: 2896626616884615408, guid: 7351ef4cb8dda412e9273c76b60ec0a5, type: 3}
   defenderAnimationDataList:
   - {fileID: 11400000, guid: 20486f8922463c441b7b86a4a6381247, type: 2}
-  - {fileID: 11400000, guid: 20486f8922463c441b7b86a4a6381247, type: 2}
+  - {fileID: 11400000, guid: f3a2459be44464138b0f6975cd0d2095, type: 2}
 --- !u!1 &315477444
 GameObject:
   m_ObjectHideFlags: 0
@@ -2668,6 +2668,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   acorn: {fileID: 8079875932440872871, guid: ec999ae8a85bc44aa8bf5fd8f9a7acc9, type: 3}
+  butterflyBomb: {fileID: 6623299409782784755, guid: 1d6b2960d46564ce98ffc35d3cb79221, type: 3}
 --- !u!1 &1485651382
 GameObject:
   m_ObjectHideFlags: 0

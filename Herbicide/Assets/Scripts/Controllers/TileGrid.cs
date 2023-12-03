@@ -574,6 +574,7 @@ public class TileGrid : MonoBehaviour
             if (PlaceOnTile(tile, itemPlaceable, tileNeighbors))
             {
                 //Stop the placement event.
+                PlacementController.StopGhostPlacing();
                 PlacementController.StopPlacingObject(true);
             }
             //TODO: implement (2) in a future sprint.
@@ -656,7 +657,8 @@ public class TileGrid : MonoBehaviour
     /// </returns>
     public static int PositionToCoordinate(float pos)
     {
-        return (int)pos / (int)TILE_SIZE;
+        // return (int)pos / (int)TILE_SIZE;
+        return (int)(MathF.Round(pos) / MathF.Round(TILE_SIZE));
     }
 
     /// <summary>
@@ -673,21 +675,6 @@ public class TileGrid : MonoBehaviour
     private bool ValidCoordinates(int x, int y)
     {
         return true;
-    }
-
-    /// <summary>
-    /// Returns true if a Tile exists at some (X, Y) position. This is
-    /// different than the private method TileExistsAt(), which returns
-    /// a Tile at the given position.
-    /// </summary>
-    /// <param name="x">the X-coordinate</param>
-    /// <param name="y">the Y-coordinate</param>
-    /// <returns>true if a Tile exists at some (X, Y) position; otherwise,
-    /// false.</returns>
-    public static bool TileExistsAtPosition(int x, int y)
-    {
-        if (!instance.ValidCoordinates(x, y)) return false;
-        return instance.TileExistsAt(x, y) != null;
     }
 
     /// <summary>
@@ -862,39 +849,20 @@ public class TileGrid : MonoBehaviour
     /// in the TileGrid that is walkable for some enemy.
     /// </summary>
     /// <param name="worldCoords">the coordinates to check.</param>
-    /// <param name="enemy">the Enemy to check.</param>
     /// <returns>true if some world coordinates lie within the range of a Tile
     /// that is walkable by some enemy; otherwise, false.</returns>
-    public static bool OnWalkableTile(Vector2 worldCoords, Enemy enemy)
+    public static bool OnWalkableTile(Vector2 worldCoords)
     {
-        Assert.IsNotNull(enemy);
         if (!OnTile(worldCoords)) return false;
 
         int coordX = PositionToCoordinate(worldCoords.x);
         int coordY = PositionToCoordinate(worldCoords.y);
+        //Debug.Log("world coords: " + worldCoords + ", converted:" + coordX + " " + coordY);
         Tile t = instance.TileExistsAt(coordX, coordY);
         Assert.IsNotNull(t);
 
         //TODO: Eventually, incorporate Enemy checking.
         return t.WALKABLE;
-    }
-
-    /// <summary>
-    /// Returns all ITargetables on this TileGrid.
-    /// </summary>
-    /// <returns>A list of all ITargetables on this TileGrid.</returns>
-    public static List<ITargetable> GetAllTargetableObjects()
-    {
-        List<ITargetable> targetables = new List<ITargetable>();
-
-        foreach (KeyValuePair<Vector2Int, Tile> pair in instance.tileMap)
-        {
-            Tile t = pair.Value;
-            PlaceableObject placeableObject = t.GetPlaceableObject();
-            ITargetable targetable = placeableObject as ITargetable;
-            if (targetable != null && !targetable.Dead()) targetables.Add(targetable);
-        }
-        return targetables;
     }
 
     /// <summary>
@@ -989,14 +957,25 @@ public class TileGrid : MonoBehaviour
         {
             Tile current = openList.OrderBy(tile => fScore[tile]).First();
 
-            if (current == goalTile)
+            foreach (Tile neighbor in instance.GetNeighbors(current))
             {
-                List<Tile> path = instance.ReconstructPath(cameFrom, current);
-                if (path.Count > 1)
+                if (neighbor == goalTile)
                 {
-                    Tile nextTile = path[1];
-                    startTile.PaintTile(Color.white);
-                    return new Vector3(nextTile.GetX(), nextTile.GetY(), 1);
+                    List<Tile> path = instance.ReconstructPath(cameFrom, current);
+                    if (path.Count > 1)
+                    {
+                        foreach (Tile tileToPaint in path)
+                        {
+                            if (instance.IsDebugging())
+                            {
+                                if (!tileToPaint.IsWalkable()) tileToPaint.PaintTile(Color.blue);
+                                else tileToPaint.PaintTile(Color.red);
+                            }
+                        }
+                        Tile nextTile = path[1];
+                        startTile.PaintTile(Color.white);
+                        return new Vector3(nextTile.GetX(), nextTile.GetY(), 1);
+                    }
                 }
             }
 

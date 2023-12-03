@@ -28,7 +28,7 @@ public class Butterfly : Defender
     /// <summary>
     /// Starting attack range of a Butterfly
     /// </summary>
-    public override float BASE_ATTACK_RANGE => 6f;
+    public override float BASE_ATTACK_RANGE => 3f;
 
     /// <summary>
     /// Maximum attack range of a Butterfly
@@ -41,19 +41,45 @@ public class Butterfly : Defender
     public override float MIN_ATTACK_RANGE => 0f;
 
     /// <summary>
-    /// Starting attack speed of a Butterfly
+    /// Amount of attack cooldown this Squirrel starts with.
     /// </summary>
-    public override float BASE_ATTACK_SPEED => 1f;
+    public override float BASE_ATTACK_COOLDOWN => 1f;
 
     /// <summary>
-    /// Maximum attack speed of a Butterfly
+    /// Most amount of attack cooldown this Squirrel can have.
     /// </summary>
-    public override float MAX_ATTACK_SPEED => float.MaxValue;
+    public override float MAX_ATTACK_COOLDOWN => float.MaxValue;
 
     /// <summary>
-    /// Minimum attack speed of a Butterfly
+    /// Starting chase range of a Butterfly.
     /// </summary>
-    public override float MIN_ATTACK_SPEED => 0f;
+    public override float BASE_CHASE_RANGE => float.MaxValue;
+
+    /// <summary>
+    /// Maximum chase range of a Butterfly.
+    /// </summary>
+    public override float MAX_CHASE_RANGE => float.MaxValue;
+
+    /// <summary>
+    /// Minimum chase range of a Butterfly.
+    /// </summary>
+    public override float MIN_CHASE_RANGE => 0f;
+
+    /// <summary>
+    /// Starting movement speed of a Butterfly.
+    /// </summary>
+    public override float BASE_MOVEMENT_SPEED => 2f;
+
+    /// <summary>
+    /// Maximum movement speed of a Butterfly.
+    /// </summary>
+    public override float MAX_MOVEMENT_SPEED => float.MaxValue;
+
+    /// <summary>
+    /// Minumum movement speed of a Butterfly.
+    /// </summary>
+    public override float MIN_MOVEMENT_SPEED => 0f;
+
 
     //---------------------END STATS-----------------------//
 
@@ -69,9 +95,14 @@ public class Butterfly : Defender
     /// How many seconds a Butterfly's idle animation lasts,
     /// from start to finish. 
     /// </summary>
-    public float IDLE_ANIMATION_DURATION => 1f;
+    public float IDLE_ANIMATION_DURATION => .5f;
 
     //--------------------END ANIMATION--------------------//
+
+    /// <summary>
+    /// Placement scale of this Butterfly.
+    /// </summary>
+    protected override Vector3 PLACEMENT_SCALE => new Vector3(.8f, .8f, 1f);
 
     /// <summary>
     /// Name of a Butterfly
@@ -98,6 +129,13 @@ public class Butterfly : Defender
     /// Called when this Butterfly dies.
     /// </summary>
     public override void OnDie() { return; }
+
+    /// <summary>
+    /// Returns true if this Butterfly is targetable; it never is.
+    /// </summary>
+    /// <returns>true if this Butterfly is targetable; otherwise, false.
+    /// </returns>
+    public override bool Targetable() { return false; }
 
     /// <summary>
     /// Sets this Butterfly's 2D Collider's properties.

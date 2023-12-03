@@ -66,14 +66,17 @@ public class EnemyManager : MonoBehaviour
         {
             Enemy spawnedEnemy = EnemyFactory.MakeEnemy(obToSpawn.GetEnemyName());
             Assert.IsNotNull(spawnedEnemy);
-
-            spawnedEnemy.gameObject.SetActive(false);
+            Enemy clonedEnemy = spawnedEnemy.CloneEnemy().GetComponent<Enemy>();
+            clonedEnemy.gameObject.SetActive(false);
             Vector2 spawnWorldPos = new Vector2(
                 TileGrid.CoordinateToPosition(obToSpawn.GetSpawnCoordinates(mapHeight).x),
                 TileGrid.CoordinateToPosition(obToSpawn.GetSpawnCoordinates(mapHeight).y)
             );
             float spawnTime = obToSpawn.GetSpawnTime();
-            ControllerController.MakeEnemyController(spawnedEnemy, spawnTime, spawnWorldPos);
+
+            clonedEnemy.SetSpawnTime(spawnTime);
+            clonedEnemy.SetSpawnWorldPosition(spawnWorldPos);
+            ControllerController.MakeEnemyController(clonedEnemy, spawnTime, spawnWorldPos);
         }
 
         instance.populated = true;

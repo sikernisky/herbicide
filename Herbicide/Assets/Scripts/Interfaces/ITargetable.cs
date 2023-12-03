@@ -51,6 +51,12 @@ public interface ITargetable
     Vector3 GetPosition();
 
     /// <summary>
+    /// Returns this ITargetable's Transform component.
+    /// </summary>
+    /// <returns>this ITargetable's Transform component.</returns>
+    Transform GetTransform();
+
+    /// <summary>
     /// Returns the position where entities attacking this ITargetable
     /// should aim.
     /// </summary>
@@ -107,4 +113,11 @@ public interface ITargetable
     /// Resets this ITargetable's stats to their default values.
     /// </summary>
     void ResetStats();
+
+    /// <summary>
+    /// Returns true if something can target this ITargetable
+    /// </summary>
+    /// <returns>true if something can target this ITargetable; otherwise, false.
+    /// /// </returns>
+    bool Targetable();
 }

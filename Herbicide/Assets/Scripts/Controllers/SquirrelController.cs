@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst.Intrinsics;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -24,6 +25,19 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         ATTACK,
         INVALID
     }
+
+    /// <summary>
+    /// Counts the number of seconds in the idle animation; resets
+    /// on step.
+    /// </summary>
+    private float idleAnimationCounter;
+
+    /// <summary>
+    /// Counts the number of seconds in the attack animation; resets
+    /// on step.
+    /// </summary>
+    private float attackAnimationCounter;
+
 
     /// <summary>
     /// Makes a new SquirrelController.
@@ -60,50 +74,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     /// <returns>A reference to the coroutine.</returns>
     protected override IEnumerator CoPlayAnimation()
     {
-        while (true)
-        {
-            //(1): Choose the right animation based off the current state.
-            float animationTime = 0;
-            switch (GetState())
-            {
-                case SquirrelState.SPAWN:
-                    GetSquirrel().FaceDirection(Direction.SOUTH);
-                    break;
-                case SquirrelState.ATTACK:
-                    animationTime = GetSquirrel().ATTACK_ANIMATION_DURATION;
-                    Sprite[] attackTrack = DefenderFactory.GetAttackTrack(
-                        GetSquirrel().TYPE,
-                        GetSquirrel().GetDirection());
-                    SetAnimationTrack(attackTrack);
-                    break;
-                case SquirrelState.IDLE:
-                    animationTime = GetSquirrel().IDLE_ANIMATION_DURATION;
-                    Sprite[] idleTrack = DefenderFactory.GetIdleTrack(
-                        GetSquirrel().TYPE,
-                        GetSquirrel().GetDirection());
-                    SetAnimationTrack(idleTrack);
-                    break;
-                default: //Default to Idle animation
-                    throw new Exception("Animation not supported for " + GetState() + ".");
-            }
-
-            //(2): Flip the flipbook.
-            if (HasAnimationTrack() && animationTime > 0)
-            {
-                //On attack animation, shoot the acorn.
-                if (GetState() == SquirrelState.ATTACK && GetFrameNumber() == 1)
-                {
-                    Vector3 targetPosition = GetTarget().GetAttackPosition();
-                    ProjectileController.ProjectileType acorn = ProjectileController.ProjectileType.ACORN;
-                    ProjectileController.Shoot(acorn, GetSquirrel().transform, targetPosition);
-                }
-                float waitTime = animationTime / (GetFrameCount() + 1);
-                GetSquirrel().SetSprite(GetSpriteAtCurrentFrame());
-                yield return new WaitForSeconds(waitTime);
-                NextFrame();
-            }
-            else yield return null;
-        }
+        yield return null;
     }
 
     /// <summary>
@@ -111,12 +82,21 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     /// model and some other collider.
     /// </summary>
     /// <param name="other">the other collider.</param>
-    protected override void HandleCollision(Collider2D other)
-    {
-        throw new NotImplementedException();
-    }
+    protected override void HandleCollision(Collider2D other) { throw new NotImplementedException(); }
+
 
     //--------------------BEGIN STATE LOGIC----------------------//
+
+    /// <summary>
+    /// Returns true if two SquirrelStates are equal.
+    /// </summary>
+    /// <param name="stateA">The first state.</param>
+    /// <param name="stateB">The second state.</param>
+    /// <returns>true if two SquirrelStates are equal; otherwise, false.</returns>
+    protected override bool StateEquals(SquirrelState stateA, SquirrelState stateB)
+    {
+        return stateA == stateB;
+    }
 
     /// <summary>
     /// Updates the state of this SquirrelController's Squirrel model.
@@ -128,6 +108,13 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     /// </summary>
     protected override void UpdateStateFSM()
     {
+        if (!ValidModel()) return;
+        if (GetGameState() != GameState.ONGOING)
+        {
+            SetState(SquirrelState.IDLE);
+            return;
+        }
+
         switch (GetState())
         {
             case SquirrelState.SPAWN:
@@ -135,10 +122,14 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
                 break;
             case SquirrelState.IDLE:
                 if (GetSquirrel().DistanceToTarget(GetTarget())
-                    <= GetSquirrel().GetAttackRange()) SetState(SquirrelState.ATTACK);
+                    <= GetSquirrel().GetAttackRange() &&
+                    GetSquirrel().GetAttackCooldown() <= 0) SetState(SquirrelState.ATTACK);
                 break;
             case SquirrelState.ATTACK:
-                if (GetSquirrel().DistanceToTarget(GetTarget())
+                if (GetTarget() == null || !GetTarget().Targetable()) SetState(SquirrelState.IDLE);
+                if (GetAnimationCounter() > 0) break;
+                if (GetSquirrel().GetAttackCooldown() > 0) SetState(SquirrelState.IDLE);
+                else if (GetSquirrel().DistanceToTarget(GetTarget())
                     > GetSquirrel().GetAttackRange()) SetState(SquirrelState.IDLE);
                 break;
             case SquirrelState.INVALID:
@@ -153,6 +144,16 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     {
         if (!ValidModel()) return;
         if (GetState() != SquirrelState.IDLE) return;
+
+        SetAnimationDuration(GetSquirrel().IDLE_ANIMATION_DURATION);
+        Sprite[] idleTrack = DefenderFactory.GetIdleTrack(
+            GetSquirrel().TYPE,
+            GetSquirrel().GetDirection());
+        SetAnimationTrack(idleTrack, GetState());
+        GetSquirrel().SetSprite(GetSpriteAtCurrentFrame());
+
+        //Step the animation.
+        StepAnimation();
     }
 
     /// <summary>
@@ -161,10 +162,78 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     protected override void ExecuteAttackState()
     {
         if (!ValidModel()) return;
-        if (GetTarget() == null) return;
+        if (GetTarget() == null || !GetTarget().Targetable()) return;
         if (GetState() != SquirrelState.ATTACK) return;
 
+        //Animation Logic.
+        SetAnimationDuration(GetSquirrel().ATTACK_ANIMATION_DURATION);
+        Sprite[] attackTrack = DefenderFactory.GetAttackTrack(
+            GetSquirrel().TYPE,
+            GetSquirrel().GetDirection());
+        GetSquirrel().SetSprite(GetSpriteAtCurrentFrame());
+        SetAnimationTrack(attackTrack, GetState(), 1);
+
+        //Step the animation.
+        StepAnimation();
+
         GetSquirrel().FaceTarget(GetTarget());
+        if (!CanAttack()) return;
+        Vector3 targetPosition = GetTarget().GetAttackPosition();
+        ProjectileController.ProjectileType acorn = ProjectileController.ProjectileType.ACORN;
+        ProjectileController.LinearShot(acorn, GetSquirrel().transform, targetPosition);
+        GetSquirrel().ResetAttackCooldown();
+    }
+
+    /// <summary>
+    /// Runs logic relevant to the Squirrel's chasing state.
+    /// </summary>
+    protected override void ExecuteChaseState() { return; }
+
+
+    /// <summary>
+    /// Returns true if the Squirrel can shoot an acorn.
+    /// </summary>
+    /// <returns>true if the Squirrel can shoot an acorn; otherwise,
+    /// false.</returns>
+    protected override bool CanAttack()
+    {
+        if (!base.CanAttack()) return false; //Cooldown
+        if (GetState() != SquirrelState.ATTACK) return false; //Not in the attack state.
+        if (GetTarget() == null || !GetTarget().Targetable()) return false; //Invalid target.
+        return true;
+    }
+
+    /// <summary>
+    /// Adds one chunk of Time.deltaTime to the animation
+    /// counter that tracks the current state.
+    /// </summary>
+    protected override void AgeAnimationCounter()
+    {
+        SquirrelState state = GetState();
+        if (state == SquirrelState.IDLE) idleAnimationCounter += Time.deltaTime;
+        else if (state == SquirrelState.ATTACK) attackAnimationCounter += Time.deltaTime;
+    }
+
+    /// <summary>
+    /// Returns the animation counter for the current state.
+    /// </summary>
+    /// <returns>the animation counter for the current state.</returns>
+    protected override float GetAnimationCounter()
+    {
+        SquirrelState state = GetState();
+        if (state == SquirrelState.IDLE) return idleAnimationCounter;
+        else if (state == SquirrelState.ATTACK) return attackAnimationCounter;
+        else throw new System.Exception("State " + state + " has no counter.");
+    }
+
+    /// <summary>
+    /// Sets the animation counter for the current state to 0.
+    /// </summary>
+    protected override void ResetAnimationCounter()
+    {
+        SquirrelState state = GetState();
+        if (state == SquirrelState.IDLE) idleAnimationCounter = 0;
+        else if (state == SquirrelState.ATTACK) attackAnimationCounter = 0;
     }
 
     //---------------------END STATE LOGIC-----------------------//
