@@ -26,17 +26,17 @@ public class Kudzu : Enemy
     /// <summary>
     /// The cooldown between each hop. 
     /// </summary>
-    public float HOP_COOLDOWN => .1f;
+    public float HOP_COOLDOWN => 1.25f;
 
     /// <summary>
     /// Base health of a Kudzu.
     /// </summary>
-    public override int BASE_HEALTH => 50;
+    public override int BASE_HEALTH => 200;
 
     /// <summary>
     /// Upper bound of a Kudzu's health. 
     /// </summary>
-    public override int MAX_HEALTH => 50;
+    public override int MAX_HEALTH => 200;
 
     /// <summary>
     /// Minimum health of a Kudzu
@@ -115,7 +115,7 @@ public class Kudzu : Enemy
     /// <summary>
     /// Starting movement speed of a Kudzu.
     /// </summary>
-    public override float BASE_MOVEMENT_SPEED => 6f;
+    public override float BASE_MOVEMENT_SPEED => 4f;
 
     /// <summary>
     /// Maximum movement speed of a Kudzu.
@@ -137,30 +137,6 @@ public class Kudzu : Enemy
     /// </summary>
     private float hopCooldownTimer;
 
-
-    /// <summary>
-    /// Sets this Kudzu to be hopping or not hopping.
-    /// </summary>
-    /// <param name="hopping">true if this Kudzu is hopping, false if not.</param>
-    public void SetHopping(bool hopping) { this.hopping = hopping; }
-
-    /// <summary>
-    /// Returns true if this Kudzu is hopping.
-    /// </summary>
-    /// <returns>true if this Kudzu is hopping, false if not.</returns>
-    public bool IsHopping() { return hopping; }
-
-    /// <summary>
-    /// Resets the cooldown for hopping. Call this when the Kudzu just
-    /// hopped and needs to wait again.
-    /// </summary>
-    public void ResetHopCooldown() { hopCooldownTimer = HOP_COOLDOWN; }
-
-    /// <summary>
-    /// Takes a small bit of time off the cooldown. Call this every frame
-    /// when the Kudzu should be trying to hop again.
-    /// </summary>
-    public void DecrementHopCooldown() { hopCooldownTimer -= Mathf.Clamp(Time.deltaTime, 0f, float.MaxValue); }
 
     /// <summary>
     /// Returns the number of seconds before this Kudzu can hop again.

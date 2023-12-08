@@ -1,19 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 /// <summary>
-/// Stores animation data for Defenders.
+/// Stores data for Defenders.
 /// </summary>
-[CreateAssetMenu(fileName = "DefenderAnimationData", menuName = "Defender Animation", order = 0)]
-public class DefenderAnimation : ScriptableObject
+[CreateAssetMenu(fileName = "DefenderScriptable", menuName = "Defender Scriptable", order = 0)]
+public class DefenderScriptable : ScriptableObject
 {
     /// <summary>
-    /// Type of the Defender to animate.
+    /// This Defender's prefab.
+    /// </summary>
+    public GameObject defenderPrefab;
+
+    /// <summary>
+    /// Type of the Defender.
     /// </summary>
     [SerializeField]
     private Defender.DefenderType defenderType;
-
 
     /// <summary>
     /// Movement animation when this Defender is facing north.
@@ -155,5 +160,15 @@ public class DefenderAnimation : ScriptableObject
             default:
                 return null;
         }
+    }
+
+    /// <summary>
+    /// Returns the prefab that represents this Defender.
+    /// </summary>
+    /// <returns>the prefab that represents this Defender.</returns>
+    public GameObject GetPrefab()
+    {
+        Assert.IsNotNull(defenderPrefab.GetComponent<Defender>(), "Prefab has no defender component.");
+        return defenderPrefab;
     }
 }

@@ -28,10 +28,12 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     {
         if (!ValidModel()) return;
         base.UpdateMob();
+
+        ExecuteIdleState();
         if (GetGameState() != GameState.ONGOING) return;
+
         ElectTarget(FilterTargets(GetAllTargetableObjects()));
         ExecuteAttackState();
-        ExecuteIdleState();
     }
 
     /// <summary>
@@ -76,7 +78,6 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
         if (GetDefender().GetHealth() > 0) return;
 
         GetDefender().OnDie();
-        SceneController.EndCoroutine(GetAnimationReference());
         GameObject.Destroy(GetDefender().gameObject);
         GameObject.Destroy(GetDefender());
 

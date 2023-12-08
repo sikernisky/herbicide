@@ -1,13 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 /// <summary>
-/// Stores animation data for Enemies.
+/// Stores data for Enemies.
 /// </summary>
-[CreateAssetMenu(fileName = "EnemyAnimationData", menuName = "Enemy Animation", order = 0)]
-public class EnemyAnimation : ScriptableObject
+[CreateAssetMenu(fileName = "EnemyScriptable", menuName = "Enemy Scriptable", order = 0)]
+public class EnemyScriptable : ScriptableObject
 {
+    /// <summary>
+    /// Prefab of this Enemy.
+    /// </summary>
+    [SerializeField]
+    private GameObject enemyPrefab;
 
     /// <summary>
     /// Type of the Enemy to animate.
@@ -440,5 +446,15 @@ public class EnemyAnimation : ScriptableObject
             default:
                 return null;
         }
+    }
+
+    /// <summary>
+    /// Returns the prefab that represents this Enemy.
+    /// </summary>
+    /// <returns>the prefab that represents this Enemy.</returns>
+    public GameObject GetPrefab()
+    {
+        Assert.IsNotNull(enemyPrefab.GetComponent<Enemy>(), "Prefab has no enemy component.");
+        return enemyPrefab;
     }
 }

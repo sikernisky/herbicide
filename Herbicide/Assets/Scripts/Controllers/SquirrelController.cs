@@ -64,20 +64,6 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     public override bool ValidModel() { return GetSquirrel() != null; }
 
     /// <summary>
-    /// Plays the current animation of the Squirrel. Acts like a flipbook;
-    /// keeps track of frames and increments this counter to apply
-    /// the correct Sprites to the Squirrel's SpriteRenderer. <br></br>
-    /// 
-    /// This method is also responsible for choosing the correct animation
-    /// based off the SquirrelState. 
-    /// /// </summary>
-    /// <returns>A reference to the coroutine.</returns>
-    protected override IEnumerator CoPlayAnimation()
-    {
-        yield return null;
-    }
-
-    /// <summary>
     /// Handles all collisions between this controller's Squirrel
     /// model and some other collider.
     /// </summary>
@@ -145,15 +131,18 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         if (!ValidModel()) return;
         if (GetState() != SquirrelState.IDLE) return;
 
-        SetAnimationDuration(GetSquirrel().IDLE_ANIMATION_DURATION);
+        GetSquirrel().SetAnimationDuration(GetSquirrel().IDLE_ANIMATION_DURATION);
         Sprite[] idleTrack = DefenderFactory.GetIdleTrack(
             GetSquirrel().TYPE,
             GetSquirrel().GetDirection());
-        SetAnimationTrack(idleTrack, GetState());
-        GetSquirrel().SetSprite(GetSpriteAtCurrentFrame());
+        GetSquirrel().SetAnimationTrack(idleTrack);
+        if (GetAnimationState() != SquirrelState.IDLE) GetSquirrel().SetAnimationTrack(idleTrack);
+        else GetSquirrel().SetAnimationTrack(idleTrack, GetSquirrel().CurrentFrame);
+        SetAnimationState(SquirrelState.IDLE);
 
         //Step the animation.
         StepAnimation();
+        GetSquirrel().SetSprite(GetSquirrel().GetSpriteAtCurrentFrame());
     }
 
     /// <summary>
@@ -165,22 +154,34 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         if (GetTarget() == null || !GetTarget().Targetable()) return;
         if (GetState() != SquirrelState.ATTACK) return;
 
-        //Animation Logic.
-        SetAnimationDuration(GetSquirrel().ATTACK_ANIMATION_DURATION);
+        // Animation Logic.
+        GetSquirrel().SetAnimationDuration(GetSquirrel().ATTACK_ANIMATION_DURATION);
         Sprite[] attackTrack = DefenderFactory.GetAttackTrack(
             GetSquirrel().TYPE,
             GetSquirrel().GetDirection());
-        GetSquirrel().SetSprite(GetSpriteAtCurrentFrame());
-        SetAnimationTrack(attackTrack, GetState(), 1);
+        GetSquirrel().SetAnimationTrack(attackTrack);
+        if (GetAnimationState() != SquirrelState.ATTACK) GetSquirrel().SetAnimationTrack(attackTrack);
+        else GetSquirrel().SetAnimationTrack(attackTrack, GetSquirrel().CurrentFrame);
+        SetAnimationState(SquirrelState.ATTACK);
 
-        //Step the animation.
+        // Step the animation.
         StepAnimation();
+        GetSquirrel().SetSprite(GetSquirrel().GetSpriteAtCurrentFrame());
 
         GetSquirrel().FaceTarget(GetTarget());
         if (!CanAttack()) return;
+
+        // Make an Acorn and an AcornController.
+        GameObject acornPrefab = ProjectileFactory.GetProjectilePrefab(Projectile.ProjectileType.ACORN);
+        Assert.IsNotNull(acornPrefab);
+        GameObject clonedAcorn = GameObject.Instantiate(acornPrefab);
+        Assert.IsNotNull(clonedAcorn);
+        Acorn clonedAcornComp = clonedAcorn.GetComponent<Acorn>();
         Vector3 targetPosition = GetTarget().GetAttackPosition();
-        ProjectileController.ProjectileType acorn = ProjectileController.ProjectileType.ACORN;
-        ProjectileController.LinearShot(acorn, GetSquirrel().transform, targetPosition);
+        AcornController acornController = new AcornController(clonedAcornComp, GetSquirrel().GetPosition(), targetPosition);
+        AddProjectileController(acornController);
+
+        // Reset attack animation.
         GetSquirrel().ResetAttackCooldown();
     }
 
@@ -188,7 +189,6 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     /// Runs logic relevant to the Squirrel's chasing state.
     /// </summary>
     protected override void ExecuteChaseState() { return; }
-
 
     /// <summary>
     /// Returns true if the Squirrel can shoot an acorn.

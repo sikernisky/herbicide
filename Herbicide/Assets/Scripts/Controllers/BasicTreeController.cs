@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 /// <summary>
 /// Controller for a BasicTree.
@@ -29,23 +30,8 @@ public class BasicTreeController : TreeController<BasicTreeController.BasicTreeS
     /// <param name="basicTree">The BasicTree model.</param>
     public BasicTreeController(BasicTree basicTree) : base(basicTree)
     {
+        Assert.IsNotNull(basicTree, "Basic Tree cannot be null.");
         NUM_BASIC_TREES++;
-    }
-
-
-    /// <summary>
-    /// Plays the current animation of the BasicTree. Acts like a flipbook;
-    /// keeps track of frames and increments this counter to apply
-    /// the correct Sprites to the BasicTree's SpriteRenderer. <br></br>
-    /// 
-    /// This method is also responsible for choosing the correct animation
-    /// based off the BasicTreeState. 
-    /// /// </summary>
-    /// <returns>A reference to the coroutine.</returns>
-    protected override IEnumerator CoPlayAnimation()
-    {
-        while (true) { yield return null; }
-        //TODO: Implement factory functionality for Trees
     }
 
     /// <summary>

@@ -39,26 +39,6 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
     private static int NUM_MOBS;
 
     /// <summary>
-    /// The current frame number of the Mob's animation loop. Zero-indexed.
-    /// </summary>
-    private int frame;
-
-    /// <summary>
-    /// The "flip-book" Sprite track of the Mob's current animation.
-    /// </summary>
-    private Sprite[] currentAnimationTrack;
-
-    /// <summary>
-    /// The time it takes to complete a cycle of the current animation.
-    /// </summary>
-    private float currentAnimationDuration;
-
-    /// <summary>
-    /// Reference to the Mob's animation coroutine.
-    /// </summary>
-    private IEnumerator animationReference;
-
-    /// <summary>
     /// Where this Mob moves next.
     /// </summary>
     private Vector3? nextMovePos;
@@ -72,7 +52,6 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
     {
         Assert.IsNotNull(mob, "Mob cannot be null.");
         SpawnMob();
-        RestartAnimationCoroutine();
         NUM_MOBS++;
     }
 
@@ -82,7 +61,6 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
     public override void UpdateModel()
     {
         base.UpdateModel();
-        TryRemoveModel();
         UpdateStateFSM();
         UpdateMob();
     }
@@ -96,22 +74,6 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
         oldCooldown -= Time.deltaTime;
         GetMob().SetAttackCooldown(oldCooldown);
     }
-
-    /// <summary>
-    /// Sets the State of this MobController. This helps keep track of
-    /// what its Mob should do and what it is doing, and it is essential
-    /// for the FSM logic. 
-    /// </summary>
-    /// <param name="state"></param>
-    protected void SetState(T state) { this.state = state; }
-
-    /// <summary>
-    /// Returns the State of this MobController. This helps keep track of
-    /// what its Mob should do and what it is doing, and it is essential
-    /// for the FSM logic. 
-    /// </summary>
-    /// <returns>The State of this MobController. </returns>
-    protected T GetState() { return state; }
 
     /// <summary>
     /// Returns this MobController's Mob model. Inheriting controller
@@ -176,6 +138,22 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
     //--------------------BEGIN STATE LOGIC----------------------//
 
     /// <summary>
+    /// Sets the State of this MobController. This helps keep track of
+    /// what its Mob should do and what it is doing, and it is essential
+    /// for the FSM logic. 
+    /// </summary>
+    /// <param name="state"></param>
+    protected void SetState(T state) { this.state = state; }
+
+    /// <summary>
+    /// Returns the State of this MobController. This helps keep track of
+    /// what its Mob should do and what it is doing, and it is essential
+    /// for the FSM logic. 
+    /// </summary>
+    /// <returns>The State of this MobController. </returns>
+    protected T GetState() { return state; }
+
+    /// <summary>
     /// Processes this MobController's state FSM to determine the
     /// correct state. Takes the current state and chooses whether
     /// or not to switch to another based on game conditions. /// 
@@ -210,6 +188,13 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
     /// </summary>
     protected abstract void ExecuteChaseState();
 
+    /// <summary>
+    /// Returns true if two states are equal.
+    /// </summary>
+    /// <param name="stateA">The first state.</param>
+    /// <param name="stateB">The second state</param>
+    /// <returns>true if two states are equal; otherwise, false. </returns>
+    protected abstract bool StateEquals(T stateA, T stateB);
 
     //----------------------END STATE LOGIC----------------------//
 
@@ -223,7 +208,7 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
     /// Sets where the Mob should move next.
     /// </summary>
     /// <param name="nextPos">where the Mob should move next.</param>
-    protected void SetNextMovePos(Vector3? nextPos) { nextMovePos = nextPos; }
+    protected virtual void SetNextMovePos(Vector3? nextPos) { nextMovePos = nextPos; }
 
     /// <summary>
     /// Returns true if this MobController's model is not null.
@@ -242,33 +227,7 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
         GetMob().OnSpawn();
     }
 
-    //--------------------BEGIN ANIMATION LOGIC----------------------//
-
-    /// <summary>
-    /// Returns the reference to this MobController's Mob's animation coroutine.
-    /// </summary>
-    /// <returns>the reference to this MobController's Mob's animation coroutine</returns>
-    protected IEnumerator GetAnimationReference() { return animationReference; }
-
-    /// <summary>
-    /// Returns the current frame limit.
-    /// </summary>
-    /// <returns>the current frame limit.</returns>
-    public int GetFrameCount() { return currentAnimationTrack == null ? 0 : currentAnimationTrack.Length; }
-
-    /// <summary>
-    /// Increments the frame count by one; or, if it is already
-    /// the final frame in the current animation, sets it to 0.
-    /// </summary>
-    protected void NextFrame() { frame = (frame + 1 >= GetFrameCount()) ? 0 : frame + 1; }
-
-    /// <summary>
-    /// Returns the current frame number of the animation in the Mob's
-    /// animation loop.
-    /// </summary>
-    /// <returns>the current frame number of the animation in the Mob's
-    /// animation loop. </returns>
-    public int GetFrameNumber() { return frame; }
+    //---------------------ANIMATION LOGIC----------------------//
 
     /// <summary>
     /// Returns the State that triggered the Mob's most recent
@@ -284,119 +243,4 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
     /// </summary>
     /// <param name="animationState">the animation state to set.</param>
     protected void SetAnimationState(T animationState) { this.animationState = animationState; }
-
-    /// <summary>
-    /// Sets the duration of the current animation.
-    /// </summary>
-    /// <param name="dur">The time to complete a full cycle of the current
-    /// animation.</param>
-    protected void SetAnimationDuration(float dur)
-    {
-        Assert.IsTrue(dur > 0, "Must have positive animation duration.");
-        currentAnimationDuration = dur;
-    }
-
-    /// <summary>
-    /// Returns the duration of the current animation.
-    /// </summary>
-    /// <returns>The time to complete a full cycle of the current
-    /// animation. </returns>
-    protected float GetAnimationDuration() { return currentAnimationDuration; }
-
-    /// <summary>
-    /// Sets the animation track of the current animation. 
-    /// </summary>
-    /// <param name="track">the animation track to set.</param>
-    /// <param name="newAnimationState">the state that triggered this animation.</param>
-    /// <param name="startFrame">optionally, choose which frame to start with.</param>
-    protected void SetAnimationTrack(Sprite[] track, T newAnimationState, int startFrame = 0)
-    {
-        Assert.IsNotNull(track, "Animation track is null.");
-        currentAnimationTrack = track;
-        if (!StateEquals(GetAnimationState(), newAnimationState)) frame = startFrame;
-        SetAnimationState(newAnimationState);
-    }
-
-    /// <summary>
-    /// Returns true if the Mob is set up with an animation track.
-    /// </summary>
-    /// <returns>true if the Mob is set up with an animation track;
-    /// otherwise, false. </returns>
-    protected bool HasAnimationTrack() { return currentAnimationTrack != null; }
-
-    /// <summary>
-    /// Returns the Sprite at the current frame of the current
-    /// animation.
-    /// </summary>
-    /// <returns>the Sprite at the current frame of the current
-    /// animation</returns>
-    protected Sprite GetSpriteAtCurrentFrame()
-    {
-        Assert.IsTrue(HasAnimationTrack(), GetMob().NAME + " has no animation track.");
-        return currentAnimationTrack[GetFrameNumber()];
-    }
-
-    /// <summary>
-    /// Stops the current animation coroutine (if there is one) and
-    /// starts a new one.
-    /// </summary>
-    protected void RestartAnimationCoroutine()
-    {
-        if (animationReference != null) SceneController.EndCoroutine(animationReference);
-        animationReference = CoPlayAnimation();
-        SceneController.BeginCoroutine(animationReference);
-    }
-
-    /// <summary>
-    /// Plays the current animation of the Mob. Acts like a flipbook;
-    /// keeps track of frames and increments this counter to apply
-    /// the correct Sprites to the Mob's SpriteRenderer. <br></br>
-    /// 
-    /// This method is also responsible for choosing the correct animation
-    /// based off the state T.  
-    /// /// </summary>
-    /// <returns>A reference to the coroutine.</returns>
-    protected abstract IEnumerator CoPlayAnimation();
-
-    /// <summary>
-    /// Adds one chunk of Time.deltaTime to the animation
-    /// counter that tracks the current state.
-    /// </summary>
-    protected abstract void AgeAnimationCounter();
-
-    /// <summary>
-    /// Returns the animation counter for the current state.
-    /// </summary>
-    /// <returns>the animation counter for the current state.</returns>
-    protected abstract float GetAnimationCounter();
-
-    /// <summary>
-    /// Sets the animation counter for the current state to 0.
-    /// </summary>
-    protected abstract void ResetAnimationCounter();
-
-    /// <summary>
-    /// Checks to see if the next frame in the animation needs to be
-    /// displayed. If so, displays it.
-    /// </summary>
-    protected virtual void StepAnimation()
-    {
-        AgeAnimationCounter();
-        float stepTime = GetAnimationDuration() / GetFrameCount();
-        if (GetAnimationCounter() - stepTime > 0)
-        {
-            NextFrame();
-            ResetAnimationCounter();
-        }
-    }
-
-    //---------------------END ANIMATION LOGIC-----------------------//
-
-    /// <summary>
-    /// Returns true if two states are equal.
-    /// </summary>
-    /// <param name="stateA">The first state.</param>
-    /// <param name="stateB">The second state</param>
-    /// <returns>true if two states are equal; otherwise, false. </returns>
-    protected abstract bool StateEquals(T stateA, T stateB);
 }

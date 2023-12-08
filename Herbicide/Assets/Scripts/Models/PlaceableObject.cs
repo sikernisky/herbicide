@@ -11,7 +11,7 @@ using UnityEngine.Assertions;
 /// react to the world and update its animation based off
 /// game events, please inherit from Mob. 
 /// </summary>
-public abstract class PlaceableObject : MonoBehaviour, ISlottable, ITargetable
+public abstract class PlaceableObject : MonoBehaviour, ISlottable, ITargetable, IAnimatable
 {
     //--------------------BEGIN STATS----------------------//
 
@@ -57,10 +57,35 @@ public abstract class PlaceableObject : MonoBehaviour, ISlottable, ITargetable
 
     //---------------------END STATS-----------------------//
 
+    //--------------------BEGIN ANIM----------------------//
+
+    /// <summary>
+    /// This PlaceableObject's active animation track.
+    /// </summary>
+    public Sprite[] CurrentAnimationTrack { get; private set; }
+
+    /// <summary>
+    /// The duration of this PlaceableObject's active animation.
+    /// </summary>
+    public float CurrentAnimationDuration { get; private set; }
+
+    /// <summary>
+    /// The most up to date frame number of this PlaceableObject's active animation.
+    /// </summary>
+    public int CurrentFrame { get; private set; }
+
+    //----------------------END ANIM----------------------//
+
     /// <summary>
     /// The scale of this PlaceableObject when placed.
     /// </summary>
     protected virtual Vector3 PLACEMENT_SCALE => Vector3.one;
+
+    Sprite[] IAnimatable.CurrentAnimationTrack => throw new System.NotImplementedException();
+
+    float IAnimatable.CurrentAnimationDuration => throw new System.NotImplementedException();
+
+    int IAnimatable.CurrentFrame => throw new System.NotImplementedException();
 
     /// <summary>
     /// true if this PlaceableObject has been defined; otherwise, false.
@@ -309,6 +334,12 @@ public abstract class PlaceableObject : MonoBehaviour, ISlottable, ITargetable
     public abstract void SetColliderProperties();
 
     /// <summary>
+    /// Sets this PlaceableObject's Transform's local scale.
+    /// </summary>
+    /// <param name="scale">The scale to set to.</param>
+    public void SetSize(Vector3 scale) { transform.localScale = scale; }
+
+    /// <summary>
     /// Sets this PlaceableObject's SpriteRenderer to its most up-to date
     /// (attached) component.
     /// </summary>
@@ -405,7 +436,70 @@ public abstract class PlaceableObject : MonoBehaviour, ISlottable, ITargetable
     /// <param name="other">The other collider.</param>
     public void OnTriggerEnter2D(Collider2D other)
     {
-        // Debug.Log($"OnCollision event has subscribers: {OnCollision != null}");
+        //!! Ignore 0 references, this is an event. 
         OnCollision?.Invoke(other);
     }
+
+    //--------------------BEGIN ANIM----------------------//
+
+    /// <summary>
+    /// Sets this PlaceableObject's current animation track.
+    /// </summary>
+    /// <param name="track">The current animation track.</param>
+    /// <param name="startFrame">optionally, choose which frame to start with.</param>
+    public void SetAnimationTrack(Sprite[] track, int startFrame = 0)
+    {
+        Assert.IsNotNull(track, "Cannot set to a null animation track.");
+        Assert.IsTrue(track.Length > 0, "Cannot have an empty animation track.");
+        CurrentAnimationTrack = track;
+        CurrentFrame = startFrame;
+    }
+
+    /// <summary>
+    /// Returns true if this PlaceableObject has a valid animation track set up.
+    /// </summary>
+    /// <returns> true if this PlaceableObject has a valid animation track set up;
+    /// otherwise, false. /// </returns>
+    public bool HasAnimationTrack() { return CurrentAnimationTrack != null; }
+
+    /// <summary>
+    /// Sets the duration of this PlaceableObject's current animation.
+    /// </summary>
+    /// <param name="duration">The duration of the current animation track.</param>
+    public void SetAnimationDuration(float duration)
+    {
+        Assert.IsTrue(duration > 0, "Must have positive animation duration.");
+        CurrentAnimationDuration = duration;
+    }
+
+    /// <summary>
+    /// Returns the length of this PlaceableObject's current animationt track.
+    /// </summary>
+    /// <returns>the length of this PlaceableObject's current animationt track;
+    /// 0 if null.</returns>
+    public int NumFrames() { return HasAnimationTrack() ? CurrentAnimationTrack.Length : 0; }
+
+
+    /// <summary>
+    /// Increments the frame count by one; or, if it is already
+    /// the final frame in the current animation, sets it to 0.
+    /// </summary>
+    public void NextFrame()
+    {
+        CurrentFrame = (CurrentFrame + 1 >= NumFrames()) ? 0 : CurrentFrame + 1;
+    }
+
+    /// <summary>
+    /// Returns the Sprite at the current frame of the current
+    /// animation.
+    /// </summary>
+    /// <returns>the Sprite at the current frame of the current
+    /// animation</returns>
+    public Sprite GetSpriteAtCurrentFrame()
+    {
+        Assert.IsTrue(HasAnimationTrack(), NAME + " has no animation set up.");
+        return CurrentAnimationTrack[CurrentFrame];
+    }
+
+    //----------------------END ANIM----------------------//
 }

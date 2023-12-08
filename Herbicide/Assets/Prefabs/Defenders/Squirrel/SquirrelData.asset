@@ -9,25 +9,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d4e5022693f04247a6e7fcf60f16366, type: 3}
-  m_Name: SquirrelAnimation
+  m_Script: {fileID: 11500000, guid: bcfc6a25ac6474835b7d1c94b33a6868, type: 3}
+  m_Name: SquirrelData
   m_EditorClassIdentifier: 
+  defenderPrefab: {fileID: 2896626616884615408, guid: 7ffe22d2f864c433cb6da24359a7d202, type: 3}
   defenderType: 0
   movementAnimationNorth: []
   movementAnimationEast: []
   movementAnimationSouth: []
   movementAnimationWest: []
   attackAnimationNorth:
-  - {fileID: -1129439068, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
   - {fileID: 241803896, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
   attackAnimationEast:
-  - {fileID: -1741764920, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
   - {fileID: 1842010287, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
   attackAnimationSouth:
-  - {fileID: -1985209435, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
   - {fileID: -1116763224, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
   attackAnimationWest:
-  - {fileID: 629033695, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
   - {fileID: 362384017, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
   idleAnimationNorth:
   - {fileID: -1129439068, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}

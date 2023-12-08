@@ -15,19 +15,11 @@ public class EnemyFactory : MonoBehaviour
     private static EnemyFactory instance;
 
     /// <summary>
-    /// All Enemy Prefabs, indexed by type:<br></br>
-    /// 
-    /// 0 --> Kudzu
-    /// </summary>
-    [SerializeField]
-    private List<GameObject> enemyPrefabs;
-
-    /// <summary>
     /// All ScriptableObjects containing animation data about
     /// different enemies.
     /// </summary>
     [SerializeField]
-    private List<EnemyAnimation> enemyAnimationDataList;
+    private List<EnemyScriptable> enemyScriptables;
 
     /// <summary>
     /// Finds and sets the EnemyFactory singleton.
@@ -53,7 +45,7 @@ public class EnemyFactory : MonoBehaviour
     ///  null if the enemy type is not found.</returns>
     public static Sprite[] GetMovementTrack(Enemy.EnemyType type, Enemy.EnemyHealthState state, Direction direction)
     {
-        EnemyAnimation data = instance.enemyAnimationDataList.Find(x => x.GetEnemyType() == type);
+        EnemyScriptable data = instance.enemyScriptables.Find(x => x.GetEnemyType() == type);
 
         if (data != null)
         {
@@ -81,7 +73,7 @@ public class EnemyFactory : MonoBehaviour
     /// if the enemy type is not found.</returns>
     public static Sprite[] GetAttackTrack(Enemy.EnemyType type, Enemy.EnemyHealthState state, Direction direction)
     {
-        EnemyAnimation data = instance.enemyAnimationDataList.Find(x => x.GetEnemyType() == type);
+        EnemyScriptable data = instance.enemyScriptables.Find(x => x.GetEnemyType() == type);
 
         if (data != null)
         {
@@ -109,7 +101,7 @@ public class EnemyFactory : MonoBehaviour
     /// if the enemy type is not found.</returns>
     public static Sprite[] GetIdleTrack(Enemy.EnemyType type, Enemy.EnemyHealthState state, Direction direction)
     {
-        EnemyAnimation data = instance.enemyAnimationDataList.Find(x => x.GetEnemyType() == type);
+        EnemyScriptable data = instance.enemyScriptables.Find(x => x.GetEnemyType() == type);
 
         if (data != null)
         {
@@ -130,20 +122,22 @@ public class EnemyFactory : MonoBehaviour
     //Todo: implemement static animation track.
 
     /// <summary>
-    /// Returns the Enemy component of a given type. Does not instantiate anything --
+    /// Returns the prefab GameObject of a given Enemy type. Does not instantiate anything --
     /// it is important to do so with the returned component outside of this method.
     /// </summary>
     /// <param name="enemyType">The type of Enemy to get.</param>
     /// <returns>an Enemy component of the given type. </returns>
-    public static Enemy MakeEnemy(string enemyType)
+    public static GameObject GetEnemyPrefab(string enemyType)
     {
         Assert.IsNotNull(enemyType, "enemyType is null.");
 
-        GameObject prefabToClone = null;
+        Enemy.EnemyType type;
+        if (enemyType.ToLower() == "kudzu") type = Enemy.EnemyType.KUDZU;
+        else type = Enemy.EnemyType.KUDZU;
 
-        if (enemyType.ToLower() == "kudzu") prefabToClone = instance.enemyPrefabs[0];
-
+        EnemyScriptable data = instance.enemyScriptables.Find(x => x.GetEnemyType() == type);
+        GameObject prefabToClone = data.GetPrefab();
         Assert.IsNotNull(prefabToClone);
-        return prefabToClone.GetComponent<Enemy>();
+        return prefabToClone;
     }
 }

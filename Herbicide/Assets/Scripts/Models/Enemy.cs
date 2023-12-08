@@ -23,12 +23,6 @@ public abstract class Enemy : Mob
     public abstract float LOOT_DROP_CHANCE { get; }
 
     /// <summary>
-    /// Reference to the Prefab for this Enemy.
-    /// </summary>
-    [SerializeField]
-    private GameObject prefab;
-
-    /// <summary>
     /// The world position where this Enemy spawns.
     /// </summary>
     private Vector3 spawnPosition;
@@ -116,12 +110,6 @@ public abstract class Enemy : Mob
     /// </summary>
     /// <returns>the current HealthState of this Enemy.</returns>
     public EnemyHealthState GetHealthState() { return healthState; }
-
-    /// <summary>
-    /// Returns a copy of the prefab that this Enemy represents.
-    /// </summary>
-    /// <returns>a copy of the prefab that this Enemy represents.</returns>
-    public GameObject CloneEnemy() { return Instantiate(prefab); } //TODO: Move to EnemyFactory
 
     /// <summary>
     /// Sets the SpawnTime of this Enemy.

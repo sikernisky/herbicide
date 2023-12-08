@@ -14,10 +14,28 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
     private static int NUM_BUTTERFLIES;
 
     /// <summary>
-    /// true if the Butterfly has attacked during its current attack sequence;
-    /// otherwise, false.
+    /// Counts the number of seconds in the idle animation; resets
+    /// on step.
     /// </summary>
-    private bool bombed;
+    private float idleAnimationCounter;
+
+    /// <summary>
+    /// Counts the number of seconds in the chase animation; resets
+    /// on step.
+    /// </summary>
+    private float chaseAnimationCounter;
+
+    /// <summary>
+    /// Counts the number of seconds in the attack animation; resets
+    /// on step.
+    /// </summary>
+    private float attackAnimationCounter;
+
+    /// <summary>
+    /// Counts the number of seconds in the backup animation; resets
+    /// on step.
+    /// </summary>
+    private float backupAnimationCounter;
 
     /// <summary>
     /// State of a Butterfly. 
@@ -28,6 +46,7 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
         IDLE,
         CHASE,
         ATTACK,
+        BACKUP,
         INVALID
     }
 
@@ -62,66 +81,9 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
         if (!ValidModel()) return;
         base.UpdateMob();
         ExecuteChaseState();
+        ExecuteBackupState();
     }
 
-    /// <summary>
-    /// Plays the current animation of the Butterfly. Acts like a flipbook;
-    /// keeps track of frames and increments this counter to apply
-    /// the correct Sprites to the Butterfly's SpriteRenderer. <br></br>
-    /// 
-    /// This method is also responsible for choosing the correct animation
-    /// based off the ButterflyState. 
-    /// /// </summary>
-    /// <returns>A reference to the coroutine.</returns>
-    protected override IEnumerator CoPlayAnimation()
-    {
-        while (true)
-        {
-            //(1): Choose the right animation based off the current state.
-            //float animationTime;
-            float animationTime = 0;
-            switch (GetState())
-            {
-                case ButterflyState.SPAWN:
-                    GetButterfly().FaceDirection(Direction.NORTH);
-                    break;
-                case ButterflyState.CHASE:
-                    animationTime = GetButterfly().ATTACK_ANIMATION_DURATION;
-                    Sprite[] chaseTrack = DefenderFactory.GetMovementTrack(
-                        GetButterfly().TYPE,
-                        GetButterfly().GetDirection());
-                    SetAnimationTrack(chaseTrack, GetState());
-                    break;
-                case ButterflyState.ATTACK:
-                    animationTime = GetButterfly().ATTACK_ANIMATION_DURATION;
-                    Sprite[] attackTrack = DefenderFactory.GetAttackTrack(
-                        GetButterfly().TYPE,
-                        GetButterfly().GetDirection());
-                    SetAnimationTrack(attackTrack, GetState());
-                    break;
-                case ButterflyState.IDLE:
-                    animationTime = GetButterfly().IDLE_ANIMATION_DURATION;
-                    Sprite[] idleTrack = DefenderFactory.GetMovementTrack(
-                        GetButterfly().TYPE,
-                        GetButterfly().GetDirection());
-                    SetAnimationTrack(idleTrack, GetState());
-                    break;
-                default: //Default to Idle animation
-                    throw new System.Exception("Animation not supported for " + GetState() + ".");
-            }
-
-            //(2): Flip the flipbook.
-            if (HasAnimationTrack() && animationTime > 0)
-            {
-                float waitTime = animationTime / (GetFrameCount() + 1);
-                GetButterfly().SetSprite(GetSpriteAtCurrentFrame());
-                yield return new WaitForSeconds(waitTime);
-                NextFrame();
-                bombed = false;
-            }
-            else yield return null;
-        }
-    }
 
     /// <summary>
     /// Handles all collisions between this controller's Butterfly
@@ -159,11 +121,10 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
     {
         if (GetGameState() != GameState.ONGOING)
         {
-            SetState(ButterflyState.IDLE);
+            SetState(ButterflyState.CHASE);
             return;
         }
 
-        //Debug.Log(GetState());
 
         switch (GetState())
         {
@@ -177,19 +138,55 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
                 break;
             case ButterflyState.CHASE:
                 if (GetTarget() == null || !GetTarget().Targetable()) break;
-                else if (GetButterfly().DistanceToTarget(GetTarget()) <= GetButterfly().GetAttackRange())
-                    SetState(ButterflyState.ATTACK);
+                else if (GetButterfly().DistanceToTarget(GetTarget()) <= GetButterfly().GetAttackRange()
+                        && GetButterfly().GetAttackCooldown() <= 0) { SetState(ButterflyState.BACKUP); }
                 else if (GetButterfly().DistanceToTarget(GetTarget()) > GetButterfly().GetChaseRange())
                     SetState(ButterflyState.IDLE);
                 break;
             case ButterflyState.ATTACK:
                 if (GetTarget() == null || !GetTarget().Targetable()) break;
-                if (GetButterfly().DistanceToTarget(GetTarget()) > GetButterfly().GetAttackRange())
-                    SetState(ButterflyState.CHASE);
+                if (GetAnimationCounter() > 0) break;
+                if (GetButterfly().GetAttackCooldown() > 0)
+                {
+                    if (GetButterfly().DistanceToTarget(GetTarget()) > GetButterfly().GetChaseRange())
+                    {
+                        SetState(ButterflyState.CHASE);
+                    }
+                    else SetState(ButterflyState.BACKUP);
+                }
+                break;
+            case ButterflyState.BACKUP:
+                if (GetTarget() == null || !GetTarget().Targetable()) break;
+                float epsilon = .01f;
+                float difference = GetButterfly().GetAttackRange() - GetButterfly().DistanceToTarget(GetTarget());
+                bool backedUp = Mathf.Abs(difference) <= epsilon;
+                if (backedUp && GetButterfly().GetAttackCooldown() <= 0) SetState(ButterflyState.ATTACK);
+                else if (backedUp && GetButterfly().GetAttackCooldown() > 0) SetState(ButterflyState.CHASE);
                 break;
             case ButterflyState.INVALID:
                 throw new System.Exception("Invalid state.");
         }
+    }
+
+    /// <summary>
+    /// Runs logic relevant to the Butterfly's idle state.
+    /// </summary>
+    protected override void ExecuteIdleState()
+    {
+        if (GetState() != ButterflyState.IDLE) return;
+
+        GetButterfly().SetAnimationDuration(GetButterfly().IDLE_ANIMATION_DURATION);
+        Sprite[] idleTrack = DefenderFactory.GetMovementTrack(
+            GetButterfly().TYPE,
+            Direction.NORTH); //NORTH animation supported.
+        GetButterfly().SetAnimationTrack(idleTrack);
+        if (GetAnimationState() != ButterflyState.IDLE) GetButterfly().SetAnimationTrack(idleTrack);
+        else GetButterfly().SetAnimationTrack(idleTrack, GetButterfly().CurrentFrame);
+        SetAnimationState(ButterflyState.IDLE);
+
+        //Step the animation.
+        StepAnimation();
+        GetButterfly().SetSprite(GetButterfly().GetSpriteAtCurrentFrame());
     }
 
     /// <summary>
@@ -200,9 +197,59 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
         if (GetState() != ButterflyState.CHASE) return;
         if (GetTarget() == null || !GetTarget().Targetable()) return;
 
+        //Set up the animation
+        GetButterfly().SetAnimationDuration(GetButterfly().MOVE_ANIMATION_DURATION);
+        Sprite[] chaseTrack = DefenderFactory.GetMovementTrack(
+            GetButterfly().TYPE,
+            Direction.NORTH); //NORTH animation supported.
+        if (GetAnimationState() != ButterflyState.CHASE) GetButterfly().SetAnimationTrack(chaseTrack);
+        else GetButterfly().SetAnimationTrack(chaseTrack, GetButterfly().CurrentFrame);
+        SetAnimationState(ButterflyState.CHASE);
+
+        //Step the animation.
+        StepAnimation();
+        GetButterfly().SetSprite(GetButterfly().GetSpriteAtCurrentFrame());
+
+        if (GetButterfly().DistanceToTarget(GetTarget()) <= GetButterfly().GetAttackRange()) return;
+
         Vector2 targetPosition = GetTarget().GetPosition();
         Vector2 currentPosition = GetButterfly().GetPosition();
         Vector2 direction = (targetPosition - currentPosition).normalized;
+        Vector2 newPosition = currentPosition + direction * GetButterfly().GetMovementSpeed() * Time.deltaTime;
+        GetButterfly().SetWorldPosition(newPosition);
+    }
+
+    /// <summary>
+    /// Runs logic relevant to the Buttefly's backing up state.
+    /// </summary>
+    protected virtual void ExecuteBackupState()
+    {
+        if (GetState() != ButterflyState.BACKUP) return;
+        if (GetTarget() == null || !GetTarget().Targetable()) return;
+
+        //Set up the animation
+        GetButterfly().SetAnimationDuration(GetButterfly().MOVE_ANIMATION_DURATION);
+        Sprite[] backupTrack = DefenderFactory.GetMovementTrack(
+            GetButterfly().TYPE,
+            Direction.NORTH); //NORTH animation supported.
+        if (GetAnimationState() != ButterflyState.BACKUP) GetButterfly().SetAnimationTrack(backupTrack);
+        else GetButterfly().SetAnimationTrack(backupTrack, GetButterfly().CurrentFrame);
+        SetAnimationState(ButterflyState.BACKUP);
+
+        //Step the animation.
+        StepAnimation();
+        GetButterfly().SetSprite(GetButterfly().GetSpriteAtCurrentFrame());
+
+        Vector2 targetPosition = GetTarget().GetPosition();
+        float radius = GetButterfly().GetAttackRange();
+
+        Vector2 northBackup = new Vector3(
+                    targetPosition.x + radius * Mathf.Cos(90f),
+                    targetPosition.y + radius * Mathf.Sin(90f),
+                    1);
+
+        Vector2 currentPosition = GetButterfly().GetPosition();
+        Vector2 direction = (northBackup - currentPosition).normalized;
         Vector2 newPosition = currentPosition + direction * GetButterfly().GetMovementSpeed() * Time.deltaTime;
         GetButterfly().SetWorldPosition(newPosition);
     }
@@ -212,16 +259,37 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
     /// </summary>
     protected override void ExecuteAttackState()
     {
-        if (!ValidModel()) return;
         if (GetTarget() == null || !GetTarget().Targetable()) return;
         if (GetState() != ButterflyState.ATTACK) return;
 
-        if (!CanAttack()) return;
-        Vector3 targetPosition = GetTarget().GetAttackPosition();
-        ProjectileController.ProjectileType bomb = ProjectileController.ProjectileType.BUTTERFLY_BOMB;
-        ProjectileController.LobShot(bomb, GetButterfly().transform, GetTarget().GetTransform(), .2f, 1f);
-        bombed = true;
+        //Set up the animation
+        GetButterfly().SetAnimationDuration(GetButterfly().ATTACK_ANIMATION_DURATION);
+        Sprite[] attackTrack = DefenderFactory.GetAttackTrack(
+            GetButterfly().TYPE,
+            Direction.NORTH); //NORTH animation supported.
+        if (GetAnimationState() != ButterflyState.ATTACK) GetButterfly().SetAnimationTrack(attackTrack);
+        else GetButterfly().SetAnimationTrack(attackTrack, GetButterfly().CurrentFrame);
+        SetAnimationState(ButterflyState.ATTACK);
 
+        //Step the animation.
+        StepAnimation();
+        GetButterfly().SetSprite(GetButterfly().GetSpriteAtCurrentFrame());
+
+        if (!CanAttack()) return;
+        GameObject bombPrefab = ProjectileFactory.GetProjectilePrefab(Projectile.ProjectileType.BOMB);
+        Assert.IsNotNull(bombPrefab);
+        GameObject clonedBomb = GameObject.Instantiate(bombPrefab);
+        Assert.IsNotNull(clonedBomb);
+        Bomb clonedBombComp = clonedBomb.GetComponent<Bomb>();
+        Vector3 targetPosition = GetTarget().GetAttackPosition();
+        BombController bombController =
+            new BombController(clonedBombComp, GetButterfly().GetPosition(), targetPosition);
+        AddProjectileController(bombController);
+
+        // Vector3 targetPosition = GetTarget().GetAttackPosition();
+        // ProjectileManager.ProjectileType bomb = ProjectileManager.ProjectileType.BUTTERFLY_BOMB;
+        // ProjectileManager.LobShot(bomb, GetButterfly().transform, GetTarget().GetTransform(), .5f, .5f, 1.5f);
+        GetButterfly().ResetAttackCooldown();
     }
 
     /// <summary>
@@ -233,32 +301,49 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
     {
         if (!base.CanAttack()) return false; //Cooldown
         if (GetTarget() == null || !GetTarget().Targetable()) return false;
-        if (GetFrameNumber() != 0) return false;
-        if (bombed) return false;
         if (GetState() != ButterflyState.ATTACK) return false;
         return true;
     }
 
-    /// <summary>
-    /// Runs logic relevant to the Butterfly's idle state.
-    /// </summary>
-    protected override void ExecuteIdleState() { return; }
+    //---------------------END STATE LOGIC-----------------------//
 
+    /// <summary>
+    /// Adds one chunk of Time.deltaTime to the animation
+    /// counter that tracks the current state.
+    /// </summary>
     protected override void AgeAnimationCounter()
     {
-        throw new System.NotImplementedException();
+        ButterflyState state = GetState();
+        if (state == ButterflyState.IDLE) idleAnimationCounter += Time.deltaTime;
+        else if (state == ButterflyState.CHASE) chaseAnimationCounter += Time.deltaTime;
+        else if (state == ButterflyState.ATTACK) attackAnimationCounter += Time.deltaTime;
+        else if (state == ButterflyState.BACKUP) backupAnimationCounter += Time.deltaTime;
     }
 
+    /// <summary>
+    /// Returns the animation counter for the current state.
+    /// </summary>
+    /// <returns>the animation counter for the current state.</returns>
     protected override float GetAnimationCounter()
     {
-        throw new System.NotImplementedException();
+        ButterflyState state = GetState();
+        if (state == ButterflyState.IDLE) return idleAnimationCounter;
+        else if (state == ButterflyState.CHASE) return chaseAnimationCounter;
+        else if (state == ButterflyState.ATTACK) return attackAnimationCounter;
+        else if (state == ButterflyState.BACKUP) return backupAnimationCounter;
+        else throw new System.Exception("State " + state + " has no counter.");
     }
 
+    /// <summary>
+    /// Sets the animation counter for the current state to 0.
+    /// </summary>
     protected override void ResetAnimationCounter()
     {
-        throw new System.NotImplementedException();
+        ButterflyState state = GetState();
+        if (state == ButterflyState.IDLE) idleAnimationCounter = 0;
+        else if (state == ButterflyState.CHASE) chaseAnimationCounter = 0;
+        else if (state == ButterflyState.ATTACK) attackAnimationCounter = 0;
+        else if (state == ButterflyState.BACKUP) backupAnimationCounter = 0;
     }
-
-    //---------------------END STATE LOGIC-----------------------//
 
 }

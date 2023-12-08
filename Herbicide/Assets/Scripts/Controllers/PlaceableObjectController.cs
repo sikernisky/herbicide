@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -33,6 +34,12 @@ public abstract class PlaceableObjectController
     private static List<PlaceableObject> ALL_PLACEABLES = new List<PlaceableObject>();
 
     /// <summary>
+    /// All ProjectileControllers this MobController has not yet passed
+    /// to the ControllerController.
+    /// </summary>
+    private List<PlaceableObjectController> projectileControllers;
+
+    /// <summary>
     /// The color strength, from 0-1, of the damage flash animation.
     /// </summary>
     private const float FLASH_INTENSITY = .4f;
@@ -58,13 +65,19 @@ public abstract class PlaceableObjectController
         GetModel().SubscribeToCollision(HandleCollision);
         id = ALL_PLACEABLES.Count;
         ALL_PLACEABLES.Add(placeableObject);
+        projectileControllers = new List<PlaceableObjectController>();
     }
 
     /// <summary>
     /// Main update loop for this Controller's model. 
     /// </summary>
     /// <param name="targets">A complete list of ITargetables in the scene.</param>
-    public virtual void UpdateModel() { UpdateDamageFlash(); }
+    public virtual void UpdateModel()
+    {
+        UpdateDamageFlash();
+        TryRemoveModel();
+        UpdateTilePosition();
+    }
 
     /// <summary>
     /// Informs this MobController of the most recent GameState so
@@ -147,6 +160,51 @@ public abstract class PlaceableObjectController
     }
 
     /// <summary>
+    /// Finds the coordinates of the Tile(s) this PlaceableObject rests on.
+    /// </summary>
+    private void UpdateTilePosition()
+    {
+        if (!ValidModel()) return;
+        Vector2 worldPos = GetModel().GetPosition();
+        int tileX = TileGrid.PositionToCoordinate(worldPos.x);
+        int tileY = TileGrid.PositionToCoordinate(worldPos.y);
+        GetModel().SetTileCoordinates(tileX, tileY);
+    }
+
+    /// <summary>
+    /// Adds one chunk of Time.deltaTime to the animation
+    /// counter that tracks the current state.
+    /// </summary>
+    protected abstract void AgeAnimationCounter();
+
+    /// <summary>
+    /// Returns the animation counter for the current state.
+    /// </summary>
+    /// <returns>the animation counter for the current state.</returns>
+    protected abstract float GetAnimationCounter();
+
+    /// <summary>
+    /// Sets the animation counter for the current state to 0.
+    /// </summary>
+    protected abstract void ResetAnimationCounter();
+
+    /// <summary>
+    /// Checks to see if the next frame in the animation needs to be
+    /// displayed. If so, displays it.
+    /// </summary>
+    protected virtual void StepAnimation()
+    {
+        AgeAnimationCounter();
+        float stepTime = GetModel().CurrentAnimationDuration / GetModel().NumFrames();
+        if (GetAnimationCounter() - stepTime > 0)
+        {
+
+            GetModel().NextFrame();
+            ResetAnimationCounter();
+        }
+    }
+
+    /// <summary>
     /// Returns a list of all PlaceableObjects that are also ITargetables
     /// (all of them). 
     /// </summary>
@@ -177,4 +235,31 @@ public abstract class PlaceableObjectController
     /// </summary>
     /// <param name="other">the other collider.</param>
     protected abstract void HandleCollision(Collider2D other);
+
+    /// <summary>
+    /// Returns a new list of ProjectileControllers that this MobController has
+    /// created but not yet passed to the ControllerController. Then, wipes
+    /// the original list.
+    /// </summary>
+    /// <returns>a list of ProjectileControllers that this MobController has
+    /// created but not yet passed to the ControllerController.</returns>
+
+    public List<PlaceableObjectController> ExtricateProjectileControllers()
+    {
+        List<PlaceableObjectController> copied =
+            new List<PlaceableObjectController>(projectileControllers);
+        projectileControllers.Clear();
+        return copied;
+    }
+
+    /// <summary>
+    /// Adds a ProjectileController to the list of PlaceableObjectControllers that
+    /// need to be extricated by the ProjectileController.
+    /// </summary>
+    /// <param name="projectileController">The ProjectileController to add.</param>
+    protected void AddProjectileController(PlaceableObjectController projectileController)
+    {
+        Assert.IsNotNull(projectileController, "ProjectileController is null.");
+        projectileControllers.Add(projectileController);
+    }
 }

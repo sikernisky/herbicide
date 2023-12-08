@@ -45,7 +45,7 @@ public class DefenderFactory : MonoBehaviour
     /// different Defenders.
     /// </summary>
     [SerializeField]
-    private List<DefenderAnimation> defenderAnimationDataList;
+    private List<DefenderScriptable> defenderScriptables;
 
 
     /// <summary>
@@ -92,14 +92,15 @@ public class DefenderFactory : MonoBehaviour
     /// <summary>
     /// Returns the GameObject prefab that represents a placed Defender.
     /// </summary>
-    /// <param name="type">the type of Defender</param>
+    /// <param name="defenderType">the type of Defender</param>
     /// <returns>the GameObject prefab that represents a placed Defender</returns>
-    public static GameObject GetDefenderPrefab(Defender.DefenderType type)
+    public static GameObject GetDefenderPrefab(Defender.DefenderType defenderType)
     {
-        int index = (int)type;
-        if (index < 0 || index >= instance.prefabs.Length) return null;
-
-        return instance.prefabs[index];
+        DefenderScriptable data = instance.defenderScriptables.Find(
+            x => x.GetDefenderType() == defenderType);
+        GameObject prefabToClone = data.GetPrefab();
+        Assert.IsNotNull(prefabToClone);
+        return prefabToClone;
     }
 
     /// <summary>
@@ -112,7 +113,7 @@ public class DefenderFactory : MonoBehaviour
     public static Sprite[] GetAttackTrack(Defender.DefenderType type, Direction direction)
     {
 
-        DefenderAnimation data = instance.defenderAnimationDataList.Find(
+        DefenderScriptable data = instance.defenderScriptables.Find(
             x => x.GetDefenderType() == type);
 
         if (data != null) return data.GetAttackAnimation(direction);
@@ -130,7 +131,7 @@ public class DefenderFactory : MonoBehaviour
     public static Sprite[] GetMovementTrack(Defender.DefenderType type, Direction direction)
     {
 
-        DefenderAnimation data = instance.defenderAnimationDataList.Find(
+        DefenderScriptable data = instance.defenderScriptables.Find(
             x => x.GetDefenderType() == type);
 
         if (data != null) return data.GetMovementAnimation(direction);
@@ -149,7 +150,7 @@ public class DefenderFactory : MonoBehaviour
     public static Sprite[] GetIdleTrack(Defender.DefenderType type, Direction direction)
     {
 
-        DefenderAnimation data = instance.defenderAnimationDataList.Find(x => x.GetDefenderType() == type);
+        DefenderScriptable data = instance.defenderScriptables.Find(x => x.GetDefenderType() == type);
 
         if (data != null) return data.GetIdleAnimation(direction);
 

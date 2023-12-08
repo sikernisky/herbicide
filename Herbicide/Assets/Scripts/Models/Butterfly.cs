@@ -80,16 +80,19 @@ public class Butterfly : Defender
     /// </summary>
     public override float MIN_MOVEMENT_SPEED => 0f;
 
-
-    //---------------------END STATS-----------------------//
-
     //------------------BEGIN ANIMATION--------------------//
 
     /// <summary>
     /// How many seconds a Butterfly's attack animation lasts,
     /// from start to finish. 
     /// </summary>
-    public float ATTACK_ANIMATION_DURATION => 1f;
+    public float ATTACK_ANIMATION_DURATION => .4f;
+
+    /// <summary>
+    /// How many seconds a Butterfly's move animation lasts,
+    /// from start to finish. 
+    /// </summary>
+    public float MOVE_ANIMATION_DURATION => .75f;
 
     /// <summary>
     /// How many seconds a Butterfly's idle animation lasts,

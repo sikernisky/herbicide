@@ -25,6 +25,11 @@ public class ControllerController : MonoBehaviour
     private List<PlaceableObjectController> treeControllers;
 
     /// <summary>
+    /// List of active ProjectileControllers.
+    /// </summary>
+    private List<PlaceableObjectController> projectileControllers;
+
+    /// <summary>
     /// Reference to the ControllerController singleton.
     /// </summary>
     private static ControllerController instance;
@@ -53,6 +58,7 @@ public class ControllerController : MonoBehaviour
         instance.defenderControllers = new List<PlaceableObjectController>();
         instance.enemyControllers = new List<PlaceableObjectController>();
         instance.treeControllers = new List<PlaceableObjectController>();
+        instance.projectileControllers = new List<PlaceableObjectController>();
     }
 
     /// <summary>
@@ -168,6 +174,7 @@ public class ControllerController : MonoBehaviour
         enemyControllers.RemoveAll(ec => ec.ShouldRemoveController());
         treeControllers.RemoveAll(tc => tc.ShouldRemoveController());
         defenderControllers.RemoveAll(dc => dc.ShouldRemoveController());
+        projectileControllers.RemoveAll(pc => pc.ShouldRemoveController());
     }
 
     /// <summary>
@@ -179,6 +186,28 @@ public class ControllerController : MonoBehaviour
         enemyControllers.ForEach(ec => ec.InformOfGameState(gameState));
         defenderControllers.ForEach(dc => dc.InformOfGameState(gameState));
         treeControllers.ForEach(tc => tc.InformOfGameState(gameState));
+        projectileControllers.ForEach(pc => pc.InformOfGameState(gameState));
+    }
+
+    /// <summary>
+    /// Cycles through all Defender and Enemy controllers to gather
+    /// uncollected ProjectileControllers. 
+    /// </summary>
+    private void CollectProjectileControllers()
+    {
+        foreach (PlaceableObjectController defController in defenderControllers)
+        {
+            List<PlaceableObjectController> projectiles =
+                defController.ExtricateProjectileControllers();
+            projectiles.ForEach(pc => projectileControllers.Add(pc));
+        }
+
+        foreach (PlaceableObjectController emyController in enemyControllers)
+        {
+            List<PlaceableObjectController> projectiles =
+                emyController.ExtricateProjectileControllers();
+            projectiles.ForEach(pc => projectileControllers.Add(pc));
+        }
     }
 
     /// <summary>
@@ -199,6 +228,10 @@ public class ControllerController : MonoBehaviour
 
         //Update TreeControllers
         instance.treeControllers.ForEach(tc => tc.UpdateModel());
+
+        //Update ProjectileControllers
+        instance.CollectProjectileControllers();
+        instance.projectileControllers.ForEach(pc => pc.UpdateModel());
     }
 
     /// <summary>

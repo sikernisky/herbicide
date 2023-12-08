@@ -64,19 +64,20 @@ public class EnemyManager : MonoBehaviour
         //Instantiate Enemy objects NOW so they're ready to go at runtime.
         foreach (ObjectData obToSpawn in instance.enemyData)
         {
-            Enemy spawnedEnemy = EnemyFactory.MakeEnemy(obToSpawn.GetEnemyName());
+            GameObject spawnedEnemy = EnemyFactory.GetEnemyPrefab(obToSpawn.GetEnemyName());
             Assert.IsNotNull(spawnedEnemy);
-            Enemy clonedEnemy = spawnedEnemy.CloneEnemy().GetComponent<Enemy>();
-            clonedEnemy.gameObject.SetActive(false);
+            GameObject clonedEnemy = Instantiate(spawnedEnemy);
+            Enemy clonedEnemyComp = clonedEnemy.GetComponent<Enemy>();
+            clonedEnemyComp.gameObject.SetActive(false);
             Vector2 spawnWorldPos = new Vector2(
                 TileGrid.CoordinateToPosition(obToSpawn.GetSpawnCoordinates(mapHeight).x),
                 TileGrid.CoordinateToPosition(obToSpawn.GetSpawnCoordinates(mapHeight).y)
             );
             float spawnTime = obToSpawn.GetSpawnTime();
 
-            clonedEnemy.SetSpawnTime(spawnTime);
-            clonedEnemy.SetSpawnWorldPosition(spawnWorldPos);
-            ControllerController.MakeEnemyController(clonedEnemy, spawnTime, spawnWorldPos);
+            clonedEnemyComp.SetSpawnTime(spawnTime);
+            clonedEnemyComp.SetSpawnWorldPosition(spawnWorldPos);
+            ControllerController.MakeEnemyController(clonedEnemyComp, spawnTime, spawnWorldPos);
         }
 
         instance.populated = true;

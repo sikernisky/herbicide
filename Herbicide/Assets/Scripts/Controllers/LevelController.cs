@@ -88,11 +88,10 @@ public class LevelController : MonoBehaviour
     /// (3) Checks for input events.<br></br>
     /// (4) Update the Enemy Manager.<br></br>
     /// (5) Update Mob Controllers.<br></br>
-    /// (6) Update Projectiles.<br></br>
-    /// (7) Update Currencies.<br></br>
-    /// (8) Update Balance.<br></br>
-    /// (9) Update TileGrid.<br></br>
-    /// (10) Update Canvas.<br></br>
+    /// (6) Update Currencies.<br></br>
+    /// (7) Update Balance.<br></br>
+    /// (8) Update TileGrid.<br></br>
+    /// (9) Update Canvas.<br></br>
     /// </summary>
     void Update()
     {
@@ -110,19 +109,16 @@ public class LevelController : MonoBehaviour
         //(5) Update Controllers.
         ControllerController.UpdateAllControllers(SceneController.GetTimeElapsed());
 
-        //(6) Update Projectiles.
-        ProjectileController.CheckProjectiles();
-
-        //(7) Update the Economy.
+        //(6) Update the Economy.
         EconomyController.UpdateEconomy();
 
-        //(8) Update Inventory.
+        //(7) Update Inventory.
         InventoryController.UpdateSlots(EconomyController.GetMoney());
 
-        //(9) Update TileGrid.
+        //(8) Update TileGrid.
         TileGrid.TrackEnemyTilePositions(ControllerController.GetAllActiveEnemies());
 
-        //(10) Update Canvas.
+        //(9) Update Canvas.
         CanvasController.UpdateCanvas(SceneController.GetFPS());
 
         //Debug.Log(SceneController.GetTimeElapsed());
@@ -143,7 +139,7 @@ public class LevelController : MonoBehaviour
         PlacementController.SetSingleton(instance);
         InventoryController.SetSingleton(instance);
         EnemyManager.SetSingleton(instance);
-        ProjectileController.SetSingleton(instance);
+        ProjectileManager.SetSingleton(instance);
         ControllerController.SetSingleton(instance);
         EconomyController.SetSingleton(instance);
         CanvasController.SetSingleton(instance);
@@ -158,6 +154,7 @@ public class LevelController : MonoBehaviour
         EdgeFactory.SetSingleton(instance);
         EnemyFactory.SetSingleton(instance);
         FlooringFactory.SetSingleton(instance);
+        ProjectileFactory.SetSingleton(instance);
         TileFactory.SetSingleton(instance);
         TreeFactory.SetSingleton(instance);
     }

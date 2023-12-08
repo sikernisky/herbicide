@@ -1,197 +1,286 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using System;
 
 /// <summary>
-/// Responsible for creating, destroying, moving, and manipulating
-/// projectiles.
+/// Abstract class to represent controllers of Projectiles.
+/// 
+/// The ProjectileController is responsible for manipulating its Projectile and bringing
+/// it to life. This includes moving it, choosing targets, playing animations,
+/// and more.
 /// </summary>
-public class ProjectileController : MonoBehaviour
+public abstract class ProjectileController<T> : PlaceableObjectController where T : Enum
 {
     /// <summary>
-    /// Reference to the ProjectileController singleton.
+    /// The number of Projectiles assigned to ProjectileControllers since
+    /// this scene began.
     /// </summary>
-    private static ProjectileController instance;
+    private static int NUM_PROJECTILES;
 
     /// <summary>
-    /// All active Projectiles.
+    /// The Projectile's state.
     /// </summary>
-    private static List<Projectile> activeProjectiles;
+    private T state;
 
     /// <summary>
-    /// Enum to represent all different types of projectiles.
+    /// The State that triggered the Projectile's most recent animation.
     /// </summary>
-    public enum ProjectileType
+    private T animationState;
+
+    /// <summary>
+    /// Where the projectile started.
+    /// </summary>
+    private Vector3 start;
+
+    /// <summary>
+    /// Where the projectile should go.
+    /// </summary>
+    private Vector3 destination;
+
+    /// <summary>
+    /// The direction of the projectile during a LinearShot.
+    /// </summary>
+    private Vector3 linearDirection;
+
+    /// <summary>
+    /// Progress metric in our parabolic shot.
+    /// </summary>
+    private float parabolicProgress;
+
+    /// <summary>
+    /// Step metric in our parabolic shot.
+    /// </summary>
+    private float parabolicStep;
+
+    /// <summary>
+    /// true if the Projectile hit its target and deployed its Hazard;
+    /// otherwise, false. If the projectile does not apply a Hazard,
+    /// this is irrelevant.
+    /// </summary>
+    private bool hazardApplied;
+
+
+    /// <summary>
+    /// Makes a new ProjectileController for this Projectile.
+    /// </summary>
+    /// <param name="projectile">the Projectile that needs a controller.</param>
+    /// <param name="start">where the Projectile started.</param>
+    /// <param name="destination">where the Projectile should go.</param>
+    public ProjectileController(Projectile projectile, Vector3 start, Vector3 destination)
+     : base(projectile)
     {
-        ACORN,
-        BUTTERFLY_BOMB
+        Assert.IsNotNull(projectile, "Projectile cannot be null.");
+        this.start = start;
+        this.destination = destination;
+        projectile.transform.position = start;
+        linearDirection = (destination - GetProjectile().GetPosition()).normalized;
+        NUM_PROJECTILES++;
     }
 
     /// <summary>
-    /// Prefab for an acorn Projectile.
+    /// Main update loop for the ProjectileController. Here's where
+    /// it manipulates its Projectile based off game state. 
     /// </summary>
-    [SerializeField]
-    private GameObject acorn;
-
-    /// <summary>
-    /// Prefab for an Butterfly  Bomb Projectile.
-    /// </summary>
-    [SerializeField]
-    private GameObject butterflyBomb;
-
-
-
-    /// <summary>
-    /// Finds and sets the ProjectileController singleton. Instantiates
-    /// its list of active projectiles.
-    /// </summary>
-    /// <param name="levelController">The LevelController singleton.</param>
-    public static void SetSingleton(LevelController levelController)
+    public override void UpdateModel()
     {
-        Assert.IsNotNull(levelController);
-
-        ProjectileController[] projectileControllers = FindObjectsOfType<ProjectileController>();
-        Assert.IsNotNull(projectileControllers);
-        Assert.AreEqual(1, projectileControllers.Length);
-        instance = projectileControllers[0];
-
-        activeProjectiles = new List<Projectile>();
+        base.UpdateModel();
+        if (!ValidModel()) return;
+        GetProjectile().AddToLifespan(Time.deltaTime);
+        UpdateStateFSM();
+        ExecuteMovingState();
+        ExecuteCollidingState();
+        ExecuteDeadState();
     }
 
     /// <summary>
-    /// Shoots a Projectile at a target location. These projectiles fire in a straight line
-    /// until its lifespan runs out or it hits a target. 
+    /// Returns true if this ProjectileController hosts a valid Projectile.
     /// </summary>
-    /// <param name="projectile">The type of projectile to Instantiate.</param>
-    /// <param name="owner">The Transform that is shooting the projectile.</param>
-    /// <param name="targetPos">The target location to shoot towards.</param>
-    public static void LinearShot(ProjectileType projectile, Transform owner, Vector3 targetPos)
+    /// <returns>true if this ProjectileController hosts a valid Projectile;
+    /// otherwise, false. </returns>
+    public override bool ValidModel() { return GetProjectile() != null; }
+
+    /// <summary>
+    /// Returns this ProjectileController's Projectile model. Inheriting controller
+    /// classes use this method to access their Projectile; then, they cast
+    /// it to its respective type.
+    /// </summary>
+    /// <returns>this ProjectileController's Projectile model.</returns>
+    protected Projectile GetProjectile() { return GetModel() as Projectile; }
+
+    /// <summary>
+    /// Handles a collision between the Projectile and some other Collider2D.
+    /// </summary>
+    /// <param name="other">Some other Collider2D.</param>
+    protected override void HandleCollision(Collider2D other) { return; }
+
+    /// <summary>
+    /// Returns the position to where the Projectile should go.
+    /// </summary>
+    /// <returns>the position to where the Projectile should go.</returns>
+    protected Vector3 GetDestination() { return destination; }
+
+    /// <summary>
+    /// Returns true if the projectile applied its Hazard.
+    /// </summary>
+    /// <returns>true if the projectile applied its Hazard; otherwise,
+    /// false.</returns>
+    protected virtual bool AppliedHazard() { return hazardApplied; }
+
+    /// <summary>
+    /// Informs the ProjectileController that it applied its Hazard, if
+    /// it has one.
+    /// </summary>
+    protected virtual void ApplyHazard() { hazardApplied = true; }
+
+    /// <summary>
+    /// Checks if this ProjectileController's Projectile should be removed from
+    /// the game. If so, clears it.
+    /// </summary>
+    protected override void TryRemoveModel()
     {
-        //Safety checks and extraction
-        GameObject projectileOb = instance.GetProjectileFromType(projectile);
-        Assert.IsNotNull(projectileOb);
-        Projectile projectileComp = projectileOb.GetComponent<Projectile>();
-        Assert.IsNotNull(projectileComp);
+        if (!ValidModel()) return;
+        if (GetProjectile().GetVictim() == null && !GetProjectile().Expired() && GetProjectile().IsActive()) return;
 
-        //Put the projectile in its starting spot
-        projectileOb.transform.SetParent(owner);
-        projectileOb.transform.localPosition = new Vector3(0, 0, 1);
+        GetProjectile().OnDie();
+        GameObject.Destroy(GetProjectile().gameObject);
+        GameObject.Destroy(GetProjectile());
 
-        //Physics calculations
-        Vector3 direction = targetPos - projectileOb.transform.position;
-        Vector3 unitDirection = direction.normalized;
-        Vector3 velocity = unitDirection * projectileComp.GetSpeed();
-
-        //Apply velocity
-        projectileComp.GetBody().velocity = velocity;
-
-        //Add to active Projectiles
-        activeProjectiles.Add(projectileComp);
+        //We are done with our Defender.
+        RemoveModel();
     }
 
     /// <summary>
-    /// Lobs a Projectile at a target location. These projectiles require a fixed
-    /// travel time and curve intensity/height. 
+    /// Returns the distance between the Projectile's starting position
+    /// to its target position.
     /// </summary>
-    /// <param name="projectile">The type of projectile to Instantiate.</param>
-    /// <param name="owner">The Transform that is shooting the projectile.</param>
-    /// <param name="targetTransform">The target's transform to shoot towards.</param>
-    /// <param name="travelTime">How long it takes for this projectile to reach
-    /// its target.</param>
-    /// <param name="height">How tall the lob is.</param>
-    public static void LobShot(ProjectileType projectile,
-     Transform owner, Transform targetTransform, float travelTime, float height)
-    {
-        //Safety checks and extraction
-        GameObject projectileOb = instance.GetProjectileFromType(projectile);
-        Assert.IsNotNull(projectileOb);
-        Projectile projectileComp = projectileOb.GetComponent<Projectile>();
-        Assert.IsNotNull(projectileComp);
+    /// <returns>the distance between the Projectile's starting position
+    /// to its target position.</returns>
+    protected float GetInitialTargetDistance() { return Vector3.Distance(start, destination); }
 
-        //Put the projectile in its starting spot
-        projectileOb.transform.SetParent(owner);
-        projectileOb.transform.localPosition = new Vector3(0, 0, 1);
-
-        // Start the lobbing coroutine
-        projectileComp.StartCoroutine(
-            instance.CoLobParabola(
-                projectileComp,
-                projectileOb.transform.position,
-                targetTransform.position,
-                travelTime,
-                height
-            )
-        );
-    }
-    /// <summary>
-    /// Executes a lob shot to a moving target. Updates the projectile's position
-    /// to hit a moving target over a specified time frame, accounting for the target's motion.
-    /// </summary>
-    /// <param name="projectile">The Projectile to lob.</param>
-    /// <param name="startPos">The starting position of the projectile.</param>
-    /// <param name="targetPos">The target position.</param>
-    /// <param name="travelTime">How long it takes for the projectile to reach its target.</param>
-    /// <param name="height">The peak height of the lob trajectory.</param>
-    /// <returns>Returns an IEnumerator for coroutine support.</returns>
-    private IEnumerator CoLobParabola(Projectile projectile, Vector3 startPos, Vector3 targetPos, float travelTime, float height)
-    {
-        Transform projectileTransform = projectile.transform;
-        float time = 0f;
-
-        while (time < travelTime)
-        {
-            time += Time.deltaTime;
-            float linearTime = time / travelTime;
-
-            // Parabolic trajectory calculation
-            float heightAtTime = (-4 * height * linearTime * linearTime) + (4 * height * linearTime);
-            Vector3 pos = Vector3.Lerp(startPos, targetPos, linearTime) + new Vector3(0, heightAtTime, 0);
-
-            projectileTransform.position = pos;
-            yield return null;
-        }
-
-        projectileTransform.position = targetPos; // Ensure projectile reaches the exact target position
-        yield return null;
-    }
+    //-----------------------STATE LOGIC------------------------//
 
     /// <summary>
-    /// Examines all active Projectiles: <br></br>
-    /// 
-    /// (1) Adds to lifespan of Projectiles <br></br>
-    /// (2) Removes inactive Projectiles
+    /// Sets the State of this ProjectileController. This helps keep track of
+    /// what its Projectile should do and what it is doing, and it is essential
+    /// for the FSM logic. 
     /// </summary>
-    public static void CheckProjectiles()
-    {
-        if (activeProjectiles == null) return;
+    /// <param name="state">The new state.</param>
+    protected void SetState(T state) { this.state = state; }
 
-        foreach (Projectile proj in activeProjectiles)
-        {
-            if (proj == null) continue;
-            proj.AddToLifespan(Time.deltaTime);
-            if (!proj.IsActive() || proj.Expired()) Destroy(proj.gameObject);
-        }
-        activeProjectiles.RemoveAll(proj => proj == null);
+    /// <summary>
+    /// Returns the State of this ProjectileController. This helps keep track of
+    /// what its Projectile should do and what it is doing, and it is essential
+    /// for the FSM logic. 
+    /// </summary>
+    /// <returns>The State of this ProjectileController. </returns>
+    protected T GetState() { return state; }
+
+    /// <summary>
+    /// Processes this ProjectileController's state FSM to determine the
+    /// correct state. Takes the current state and chooses whether
+    /// or not to switch to another based on game conditions. /// 
+    /// </summary>
+    protected abstract void UpdateStateFSM();
+
+    /// <summary>
+    /// Returns true if two states are equal.
+    /// </summary>
+    /// <param name="stateA">The first state.</param>
+    /// <param name="stateB">The second state</param>
+    /// <returns>true if two states are equal; otherwise, false. </returns>
+    protected abstract bool StateEquals(T stateA, T stateB);
+
+    /// <summary>
+    /// Logic to execute when this ProjectileController's Projectile is moving.
+    /// The ProjectileController manipulates the Projectile model by calling
+    /// its methods.
+    /// </summary>
+    protected abstract void ExecuteMovingState();
+
+    /// <summary>
+    /// Logic to execute when this ProjectileController's Projectile is moving.
+    /// The ProjectileController manipulates the Projectile model by calling
+    /// its methods.
+    /// </summary>
+    protected abstract void ExecuteCollidingState();
+
+    /// <summary>
+    /// Logic to execute when this ProjectileController's Projectile is dead.
+    /// The ProjectileController manipulates the Projectile model by calling
+    /// its methods.
+    /// </summary>
+    protected abstract void ExecuteDeadState();
+
+    //---------------------ANIMATION LOGIC----------------------//
+
+    /// <summary>
+    /// Returns the State that triggered the Projectile's most recent
+    /// animation.
+    /// </summary>
+    /// <returns>the State that triggered the Projectile's most recent
+    /// animation.</returns>
+    protected T GetAnimationState() { return animationState; }
+
+    /// <summary>
+    /// Sets the State that triggered the Projectile's most recent
+    /// animation.
+    /// </summary>
+    /// <param name="animationState">the animation state to set.</param>
+    protected void SetAnimationState(T animationState) { this.animationState = animationState; }
+
+
+    //------------------------SHOT/MOVEMENT TYPES------------------------//
+
+    /// <summary>
+    /// Called each frame: moves the Projectile towards its target in a lobbing
+    /// fashion.
+    /// </summary>
+    protected virtual void ParabolicShot(float height, float maxSize)
+    {
+        if (GetProjectile() == null) return;
+
+        float totalTime = GetInitialTargetDistance() / GetProjectile().GetSpeed();
+        parabolicStep = Time.deltaTime / totalTime;
+        parabolicProgress = Mathf.Min(parabolicProgress + parabolicStep, 1f);
+
+        float parabola = 1.0f - 4.0f * (parabolicProgress - 0.5f) * (parabolicProgress - 0.5f);
+        Vector3 nextPos = Vector3.Lerp(start, destination, parabolicProgress);
+        nextPos.y += parabola * height;
+
+        Vector3 nextShadowPos = nextPos;
+        nextShadowPos.y -= parabola * height;
+        nextShadowPos.x += (parabola * height) / 2f;
+
+        float newSize = parabola * maxSize;
+        newSize = Mathf.Clamp(newSize, 1f, maxSize);
+        GetProjectile().transform.localScale = new Vector3(newSize, newSize, 1);
+        GetProjectile().SetWorldPosition(nextPos);
+        GetProjectile().SetShadowPosition(nextShadowPos);
+
+        if (parabolicProgress == 1) GetProjectile().SetReachedTarget();
     }
 
     /// <summary>
-    /// Returns a copy of the GameObject that represents a given projectile 
-    /// type.
+    /// Called each frame: moves the Projectile towards its target in a linear
+    /// fashion.
     /// </summary>
-    /// <param name="projectile">The type of projectile to generate</param>
-    /// <returns>A GameObject that represents the given projectile type.</returns>
-    private GameObject GetProjectileFromType(ProjectileType projectile)
+    protected virtual void LinearShot()
     {
-        switch (projectile)
-        {
-            case ProjectileType.ACORN:
-                return Instantiate(acorn);
-            case ProjectileType.BUTTERFLY_BOMB:
-                return Instantiate(butterflyBomb);
-            default:
-                throw new System.Exception("Projectile doesn't exist.");
-        }
+        if (GetProjectile() == null) return;
+
+        Vector3 currentPosition = GetProjectile().GetPosition();
+        Vector3 targetPosition = GetDestination();
+
+        // Calculate the step size
+        float step = GetProjectile().GetSpeed() * Time.deltaTime;
+
+        // Calculate the new position by moving along the direction vector
+        Vector3 newPosition = currentPosition + linearDirection * step;
+        GetProjectile().SetWorldPosition(newPosition);
+
+        // Check if the projectile has reached the destination
+        if (currentPosition == targetPosition) { }
     }
 }

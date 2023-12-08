@@ -47,6 +47,11 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     /// </summary>
     private float attackAnimationCounter;
 
+    /// <summary>
+    /// Counts the number of seconds until the Kudzu can hop again.
+    /// </summary>
+    private float hopCooldownCounter;
+
 
     /// <summary>
     /// Makes a new KudzuController.
@@ -85,17 +90,6 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     public override bool ValidModel() { return GetKudzu() != null; }
 
     /// <summary>
-    /// Plays the current animation of the Kudzu. Acts like a flipbook;
-    /// keeps track of frames and increments this counter to apply
-    /// the correct Sprites to the Kudzu's SpriteRenderer. <br></br>
-    /// </summary>
-    /// <returns>A reference to the coroutine.</returns>
-    protected override IEnumerator CoPlayAnimation()
-    {
-        yield return null;
-    }
-
-    /// <summary>
     /// Handles all collisions between this controller's Kudzu
     /// model and some other collider.
     /// </summary>
@@ -105,11 +99,11 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         if (other == null) return;
 
         Projectile projectile = other.gameObject.GetComponent<Projectile>();
-        if (projectile != null && projectile.IsActive())
+        if (projectile != null)
         {
             SoundController.PlaySoundEffect("kudzuHit");
             GetKudzu().AdjustHealth(-projectile.GetDamage());
-            projectile.SetAsInactive();
+            projectile.SetCollided(GetKudzu());
         }
     }
 
@@ -119,6 +113,16 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     public override void MoveModel(Vector3 targetPosition, float duration, AnimationCurve lerp = null)
     {
         return;
+    }
+
+    /// <summary>
+    /// Sets the position at which the Kudzu will move towards next.
+    /// </summary>
+    /// <param name="nextPos">the position at which the Kudzu will move towards next.</param>
+    protected override void SetNextMovePos(Vector3? nextPos)
+    {
+        base.SetNextMovePos(nextPos);
+        hopCooldownCounter = GetKudzu().HOP_COOLDOWN;
     }
 
     //--------------------BEGIN STATE LOGIC----------------------//
@@ -197,16 +201,20 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     {
         if (GetState() != KudzuState.IDLE) return;
 
-        //Setup animations
-        SetAnimationDuration(GetKudzu().MOVE_ANIMATION_DURATION);
+        //Set up the animation
+        GetKudzu().SetAnimationDuration(GetKudzu().MOVE_ANIMATION_DURATION);
         Sprite[] chaseTrack = EnemyFactory.GetMovementTrack(
             GetKudzu().TYPE,
             GetKudzu().GetHealthState(),
             GetKudzu().GetDirection());
-        SetAnimationTrack(chaseTrack, GetState());
+        if (GetAnimationState() != KudzuState.IDLE) GetKudzu().SetAnimationTrack(chaseTrack);
+        else GetKudzu().SetAnimationTrack(chaseTrack, GetKudzu().CurrentFrame);
+        SetAnimationState(KudzuState.IDLE);
+
 
         //Step the animation.
         StepAnimation();
+        GetKudzu().SetSprite(GetKudzu().GetSpriteAtCurrentFrame());
     }
 
     /// <summary>
@@ -217,32 +225,48 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         if (GetState() != KudzuState.CHASE) return;
         if (GetTarget() == null || !GetTarget().Targetable()) return;
 
-        //Set up the animation.
-        SetAnimationDuration(GetKudzu().MOVE_ANIMATION_DURATION);
+        //Set up the animation
+        GetKudzu().SetAnimationDuration(GetKudzu().MOVE_ANIMATION_DURATION);
         Sprite[] chaseTrack = EnemyFactory.GetMovementTrack(
             GetKudzu().TYPE,
             GetKudzu().GetHealthState(),
             GetKudzu().GetDirection());
-        SetAnimationTrack(chaseTrack, GetState());
-        GetKudzu().SetSprite(GetSpriteAtCurrentFrame());
+        if (GetAnimationState() != KudzuState.CHASE) GetKudzu().SetAnimationTrack(chaseTrack);
+        else GetKudzu().SetAnimationTrack(chaseTrack, GetKudzu().CurrentFrame);
+        SetAnimationState(KudzuState.CHASE);
 
         //Step the animation.
         StepAnimation();
+        GetKudzu().SetSprite(GetKudzu().GetSpriteAtCurrentFrame());
 
-        if (GetKudzu().DistanceToTarget(GetTarget()) <= GetKudzu().GetAttackRange()) return;
+        if (GetKudzu().DistanceToTarget(GetTarget()) <= GetKudzu().GetAttackRange())
+        {
+            GetKudzu().FaceTarget(GetTarget());
+            return;
+        }
 
         Vector3 currentPos = GetKudzu().GetPosition();
         Vector3 targetPosition = TileGrid.NextTilePosTowardsGoal(currentPos, GetTarget().GetPosition());
 
-        //Only update the target position if the Kudzu has reached its last one.
-        if (GetKudzu().GetPosition() == GetNextMovePos() || GetNextMovePos() == null)
+        hopCooldownCounter -= Time.deltaTime;
+
+        //If no move pos has ever been set, set it!
+        if (GetNextMovePos() == null) SetNextMovePos(targetPosition);
+
+        //If we've completed the move to our destination, we need to wait before hopping again.
+        else if (GetKudzu().GetPosition() == GetNextMovePos() && GetKudzu().CurrentFrame == 3)
+        {
             SetNextMovePos(targetPosition);
+        }
+
+        //Only move if the cooldown is 0.
+        if (hopCooldownCounter > 0) return;
 
         // Smooth movement
         Vector3 adjusted = new Vector3(GetNextMovePos().Value.x, GetNextMovePos().Value.y, 1);
-        GetKudzu().FaceTarget(adjusted);
         float step = GetKudzu().GetMovementSpeed() * Time.deltaTime;
         Vector3 newPosition = Vector3.MoveTowards(currentPos, adjusted, step);
+        if (GetKudzu().GetPosition() != adjusted) GetKudzu().FaceTarget(adjusted);
         GetKudzu().SetWorldPosition(newPosition);
     }
 
@@ -253,22 +277,24 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     {
         if (GetState() != KudzuState.ATTACK) return;
         if (GetTarget() == null || !GetTarget().Targetable()) return;
-        GetKudzu().FaceTarget(GetTarget());
 
         //Animation Logic.
-        SetAnimationDuration(GetKudzu().ATTACK_ANIMATION_DURATION);
+        GetKudzu().SetAnimationDuration(GetKudzu().ATTACK_ANIMATION_DURATION);
         Sprite[] attackTrack = EnemyFactory.GetAttackTrack(
             GetKudzu().TYPE,
             GetKudzu().GetHealthState(),
             GetKudzu().GetDirection());
-        SetAnimationTrack(attackTrack, GetState());
-        GetKudzu().SetSprite(GetSpriteAtCurrentFrame());
+        if (GetAnimationState() != KudzuState.ATTACK) GetKudzu().SetAnimationTrack(attackTrack);
+        else GetKudzu().SetAnimationTrack(attackTrack, GetKudzu().CurrentFrame);
+        SetAnimationState(KudzuState.ATTACK);
 
         //Step the animation.
         StepAnimation();
+        GetKudzu().SetSprite(GetKudzu().GetSpriteAtCurrentFrame());
 
         //Attack Logic
         if (!CanAttack()) return;
+        GetKudzu().FaceTarget(GetTarget());
         GetTarget().AdjustHealth(-GetKudzu().BONK_DAMAGE);
         GetKudzu().ResetAttackCooldown();
     }
@@ -285,6 +311,10 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         if (GetTarget() == null || !GetTarget().Targetable()) return false; //Invalid target
         return true;
     }
+
+
+
+    //---------------------END STATE LOGIC-----------------------//
 
     /// <summary>
     /// Adds one chunk of Time.deltaTime to the animation
@@ -321,6 +351,4 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         else if (state == KudzuState.CHASE) chaseAnimationCounter = 0;
         else if (state == KudzuState.ATTACK) attackAnimationCounter = 0;
     }
-
-    //---------------------END STATE LOGIC-----------------------//
 }

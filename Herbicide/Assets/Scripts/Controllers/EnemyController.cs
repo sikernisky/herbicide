@@ -36,15 +36,12 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     {
         if (!ValidModel()) return;
         base.UpdateMob();
-        TryRemoveModel();
-        UpdateStateFSM();
         if (GetGameState() != GameState.ONGOING) return;
 
         if (!GetEnemy().Spawned()) SpawnMob();
         if (!GetEnemy().Spawned()) return;
 
         ElectTarget(FilterTargets(GetAllTargetableObjects()));
-        UpdateEnemyTilePosition();
         RectifyEnemySortingOrder();
         UpdateEnemyHealthState();
         UpdateEnemyCollider();
@@ -109,24 +106,11 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     {
         if (!ValidModel()) return;
         GetEnemy().OnDie();
-        SceneController.EndCoroutine(GetAnimationReference());
         GameObject.Destroy(GetEnemy().gameObject);
         GameObject.Destroy(GetEnemy());
 
         //We are done with our Enemy.
         RemoveModel();
-    }
-
-    /// <summary>
-    /// Updates the Enemy controlled by this EnemyController so that it stores
-    /// the correct coordinates of the Tile that it is currently standing on.
-    /// </summary>
-    private void UpdateEnemyTilePosition()
-    {
-        Vector2 enemyWorldPos = GetEnemy().GetPosition();
-        int enemyTileX = TileGrid.PositionToCoordinate(enemyWorldPos.x);
-        int enemyTileY = TileGrid.PositionToCoordinate(enemyWorldPos.y);
-        GetEnemy().SetTileCoordinates(enemyTileX, enemyTileY);
     }
 
     /// <summary>
