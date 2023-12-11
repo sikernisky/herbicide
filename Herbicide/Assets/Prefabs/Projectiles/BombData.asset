@@ -16,3 +16,6 @@ MonoBehaviour:
   projectileType: 1
   moveAnimation:
   - {fileID: -1529360231, guid: e66ac4fa854de416193e45b480609eac, type: 3}
+  - {fileID: 2011314375, guid: e66ac4fa854de416193e45b480609eac, type: 3}
+  - {fileID: 830527539, guid: e66ac4fa854de416193e45b480609eac, type: 3}
+  - {fileID: -13508652, guid: e66ac4fa854de416193e45b480609eac, type: 3}

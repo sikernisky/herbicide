@@ -107,7 +107,7 @@ public class LevelController : MonoBehaviour
         //(4) Update the EnemyManager. (TODO: Implement when needed.)
 
         //(5) Update Controllers.
-        ControllerController.UpdateAllControllers(SceneController.GetTimeElapsed());
+        ControllerController.UpdateAllControllers();
 
         //(6) Update the Economy.
         EconomyController.UpdateEconomy();
@@ -139,7 +139,6 @@ public class LevelController : MonoBehaviour
         PlacementController.SetSingleton(instance);
         InventoryController.SetSingleton(instance);
         EnemyManager.SetSingleton(instance);
-        ProjectileManager.SetSingleton(instance);
         ControllerController.SetSingleton(instance);
         EconomyController.SetSingleton(instance);
         CanvasController.SetSingleton(instance);
@@ -154,6 +153,7 @@ public class LevelController : MonoBehaviour
         EdgeFactory.SetSingleton(instance);
         EnemyFactory.SetSingleton(instance);
         FlooringFactory.SetSingleton(instance);
+        HazardFactory.SetSingleton(instance);
         ProjectileFactory.SetSingleton(instance);
         TileFactory.SetSingleton(instance);
         TreeFactory.SetSingleton(instance);

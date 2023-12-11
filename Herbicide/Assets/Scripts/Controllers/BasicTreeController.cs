@@ -35,6 +35,17 @@ public class BasicTreeController : TreeController<BasicTreeController.BasicTreeS
     }
 
     /// <summary>
+    /// Main update loop for the BasicTree.
+    /// </summary>
+    protected override void UpdateMob()
+    {
+        base.UpdateMob();
+        if (!ValidModel()) return;
+
+        ExecuteIdleState();
+    }
+
+    /// <summary>
     /// Handles all collisions between this controller's BasicTree
     /// model and some other collider.
     /// </summary>
@@ -78,19 +89,12 @@ public class BasicTreeController : TreeController<BasicTreeController.BasicTreeS
     }
 
     /// <summary>
-    /// Runs logic relevant to the BasicTrees's idle state.
+    /// Runs logic relevant to the BasicTree's IDLE state.
     /// </summary>
-    protected override void ExecuteIdleState() { return; }
-
-    /// <summary>
-    /// Runs logic relevant to the BasicTrees's attacking state.
-    /// </summary>
-    protected override void ExecuteAttackState() { return; }
-
-    /// <summary>
-    /// Runs logic relevant to the BasicTrees's chasing state.
-    /// </summary>
-    protected override void ExecuteChaseState() { return; }
+    protected virtual void ExecuteIdleState()
+    {
+        if (GetState() != BasicTreeState.IDLE) return;
+    }
 
     protected override void AgeAnimationCounter()
     {

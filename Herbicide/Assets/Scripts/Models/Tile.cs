@@ -293,10 +293,22 @@ public abstract class Tile : MonoBehaviour, ISurface
         occupant = placeableObject;
         occupant.Define(new Vector2Int(GetX(), GetY()), GetPlaceableObjectNeighbors());
 
-        Defender placedDefender = prefabClone.GetComponent<Defender>();
-        if (placedDefender != null) ControllerController.MakeDefenderController(placedDefender);
 
-        return true;
+        Defender placedDefender = prefabClone.GetComponent<Defender>();
+        if (placedDefender != null)
+        {
+            ControllerController.MakeDefenderController(placedDefender);
+            return true;
+        }
+
+        Hazard placedSlowZone = prefabClone.GetComponent<Hazard>();
+        if (placedSlowZone != null)
+        {
+            ControllerController.MakeHazardController(placedSlowZone);
+            return true;
+        }
+
+        return false; //Something wrong happpend, should have entered IF blocks.
     }
 
     /// <summary>

@@ -32,7 +32,6 @@ public abstract class TreeController<T> : MobController<T> where T : Enum
         if (GetGameState() != GameState.ONGOING) return;
         UpdateStateFSM();
         ElectTarget(FilterTargets(GetAllTargetableObjects()));
-        ExecuteIdleState();
     }
 
     /// <summary>

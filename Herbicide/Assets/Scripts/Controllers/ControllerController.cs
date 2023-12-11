@@ -30,6 +30,11 @@ public class ControllerController : MonoBehaviour
     private List<PlaceableObjectController> projectileControllers;
 
     /// <summary>
+    /// List of active HazardControllers.
+    /// </summary>
+    private List<PlaceableObjectController> hazardControllers;
+
+    /// <summary>
     /// Reference to the ControllerController singleton.
     /// </summary>
     private static ControllerController instance;
@@ -59,12 +64,15 @@ public class ControllerController : MonoBehaviour
         instance.enemyControllers = new List<PlaceableObjectController>();
         instance.treeControllers = new List<PlaceableObjectController>();
         instance.projectileControllers = new List<PlaceableObjectController>();
+        instance.hazardControllers = new List<PlaceableObjectController>();
     }
 
     /// <summary>
-    /// Adds a Defender to the queue of Defenders who need a DefenderController.
+    /// Creates a DefenderController for a Defender of a given type. Adds it to
+    /// its respective list of controllers that the ControllerController
+    /// updates each frame.
     /// </summary>
-    /// <param name="defender">The Defender to add to the queue.</param>
+    /// <param name="defender">The Defender that needs a Controller.</param>
     public static void MakeDefenderController(Defender defender)
     {
         if (defender == null) return;
@@ -87,11 +95,13 @@ public class ControllerController : MonoBehaviour
     }
 
     /// <summary>
-    /// Adds an Enemy to the queue of Enemies who need an EnemyController.
+    /// Creates an EnemyController for an Enemy of a given type. Adds it to
+    /// its respective list of controllers that the ControllerController
+    /// updates each frame.
     /// </summary>
-    /// <param name="enemy">The Enemy to add to the queue.</param>
-    /// <param name="spawnTime">when the Enemy should spawn in the level. </param>
-    /// <param name="spawnCoords">where this Enemy should spawn</param>
+    /// <param name="enemy">The Enemy that needs a controller.</param>
+    /// <param name="spawnTime">When the Enemy should spawn in the level. </param>
+    /// <param name="spawnCoords">Where this Enemy should spawn.</param>
     public static void MakeEnemyController(Enemy enemy, float spawnTime, Vector2 spawnCoords)
     {
         if (enemy == null) return;
@@ -110,11 +120,11 @@ public class ControllerController : MonoBehaviour
     }
 
     /// <summary>
-    /// Adds a non-Defender Placeable Object to the queue of 
-    /// PlaceableObjects that need a DefenderController.
+    /// Creates a TreeController for a Tree of a given type. Adds it to
+    /// its respective list of controllers that the ControllerController
+    /// updates each frame.
     /// </summary>
-    /// <param name="defender">The non-Defender Placeable Object to add to
-    /// the queue.</param>
+    /// <param name="tree">The tree that needs a Controller.</param>
     public static void MakeTreeController(Tree tree)
     {
         if (tree == null) return;
@@ -129,6 +139,29 @@ public class ControllerController : MonoBehaviour
                 break;
             default:
                 throw new System.Exception("Tree " + tree.NAME + " not supported.");
+        }
+    }
+
+    /// <summary>
+    /// Creates a HazardController for a Hazard of a given type. Adds it to
+    /// its respective list of controllers that the ControllerController
+    /// updates each frame.
+    /// </summary>
+    /// <param name="hazard">The Hazard that needs a controller.</param>
+    /// <param name="startPos">Where the Hazard starts.</param>
+    public static void MakeHazardController(Hazard hazard)
+    {
+        if (hazard == null) return;
+        switch (hazard.TYPE)
+        {
+            case Hazard.HazardType.BOMB_SPLAT:
+                BombSplat bombSplat = hazard as BombSplat;
+                Assert.IsNotNull(bombSplat, "BombSplat is null.");
+                SlowZoneController szc = new SlowZoneController(bombSplat);
+                instance.hazardControllers.Add(szc);
+                break;
+            default:
+                throw new System.Exception("Hazard " + hazard.NAME + " not supported.");
         }
     }
 
@@ -190,48 +223,75 @@ public class ControllerController : MonoBehaviour
     }
 
     /// <summary>
-    /// Cycles through all Defender and Enemy controllers to gather
-    /// uncollected ProjectileControllers. 
+    /// Runs through the list of uncollected PlaceableObjectControllers to identify
+    /// their most downcasted version. Adds it to the correct list.
     /// </summary>
-    private void CollectProjectileControllers()
+    /// <param name="controllers">The list of PlaceableObjectControllers to filter.</param>
+    private void FilterCollectedControllers(List<PlaceableObjectController> controllers)
     {
-        foreach (PlaceableObjectController defController in defenderControllers)
+
+        List<PlaceableObjectController> defControllers = new List<PlaceableObjectController>();
+        List<PlaceableObjectController> emyControllers = new List<PlaceableObjectController>();
+        List<PlaceableObjectController> treControllers = new List<PlaceableObjectController>();
+        List<PlaceableObjectController> proControllers = new List<PlaceableObjectController>();
+        List<PlaceableObjectController> hazControllers = new List<PlaceableObjectController>();
+
+        foreach (PlaceableObjectController controller in controllers)
         {
-            List<PlaceableObjectController> projectiles =
-                defController.ExtricateProjectileControllers();
-            projectiles.ForEach(pc => projectileControllers.Add(pc));
+            List<PlaceableObjectController> extricatedControllers =
+                controller.ExtricateControllers();
+
+            foreach (PlaceableObjectController extricatedController in extricatedControllers)
+            {
+                if (extricatedController.GetModel() as Defender != null)
+                    defControllers.Add(extricatedController);
+                else if (extricatedController.GetModel() as Enemy != null)
+                    emyControllers.Add(extricatedController);
+                else if (extricatedController.GetModel() as Projectile != null)
+                    proControllers.Add(extricatedController);
+                else if (extricatedController.GetModel() as Hazard != null)
+                    hazControllers.Add(extricatedController);
+                else if (extricatedController.GetModel() as Tree != null)
+                    treControllers.Add(extricatedController);
+            }
         }
 
-        foreach (PlaceableObjectController emyController in enemyControllers)
-        {
-            List<PlaceableObjectController> projectiles =
-                emyController.ExtricateProjectileControllers();
-            projectiles.ForEach(pc => projectileControllers.Add(pc));
-        }
+        defenderControllers.AddRange(defControllers);
+        enemyControllers.AddRange(emyControllers);
+        treeControllers.AddRange(treControllers);
+        hazardControllers.AddRange(hazControllers);
+        projectileControllers.AddRange(proControllers);
     }
 
     /// <summary>
     /// Updates all Controllers managed by the ControllerController.
     /// </summary>
     /// <param name="dt">Current game time</param>
-    public static void UpdateAllControllers(float dt)
+    public static void UpdateAllControllers()
     {
-        //General updates
+        // General updates
         instance.TryRemoveControllers();
         instance.InformControllersOfGameState();
 
-        //Update EnemyControllers
+        // Update EnemyControllers
+        instance.FilterCollectedControllers(instance.enemyControllers);
         instance.enemyControllers.ForEach(ec => ec.UpdateModel());
 
-        //Update DefenderControllers
+        // Update DefenderControllers
+        instance.FilterCollectedControllers(instance.defenderControllers);
         instance.defenderControllers.ForEach(dc => dc.UpdateModel());
 
-        //Update TreeControllers
+        // Update TreeControllers
+        instance.FilterCollectedControllers(instance.treeControllers);
         instance.treeControllers.ForEach(tc => tc.UpdateModel());
 
-        //Update ProjectileControllers
-        instance.CollectProjectileControllers();
+        // Update ProjectileControllers
+        instance.FilterCollectedControllers(instance.projectileControllers);
         instance.projectileControllers.ForEach(pc => pc.UpdateModel());
+
+        // Update HazardControllers
+        instance.FilterCollectedControllers(instance.hazardControllers);
+        instance.hazardControllers.ForEach(hc => hc.UpdateModel());
     }
 
     /// <summary>

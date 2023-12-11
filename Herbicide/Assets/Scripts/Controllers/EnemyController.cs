@@ -6,7 +6,11 @@ using System.Linq;
 using System;
 
 /// <summary>
-/// Controls an Enemy.
+/// Abstract class to represent controllers of Enemies.
+/// 
+/// The EnemyController is responsible for manipulating its Enemy and bringing
+/// it to life. This includes moving it, choosing targets, playing animations,
+/// and more.
 /// </summary>
 public abstract class EnemyController<T> : MobController<T> where T : Enum
 {
@@ -41,13 +45,9 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
         if (!GetEnemy().Spawned()) SpawnMob();
         if (!GetEnemy().Spawned()) return;
 
-        ElectTarget(FilterTargets(GetAllTargetableObjects()));
         RectifyEnemySortingOrder();
         UpdateEnemyHealthState();
         UpdateEnemyCollider();
-
-        //STATE LOGIC
-        ExecuteIdleState();
     }
 
     /// <summary>
@@ -107,7 +107,6 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
         if (!ValidModel()) return;
         GetEnemy().OnDie();
         GameObject.Destroy(GetEnemy().gameObject);
-        GameObject.Destroy(GetEnemy());
 
         //We are done with our Enemy.
         RemoveModel();
@@ -136,6 +135,8 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     /// reach./// </returns>
     protected override List<ITargetable> FilterTargets(List<ITargetable> targetables)
     {
+        if (!GetEnemy().Spawned()) return null;
+
         Assert.IsNotNull(targetables, "List of targets is null.");
         List<ITargetable> filteredTargets = new List<ITargetable>();
         filteredTargets.AddRange(targetables.Where(tar =>
@@ -144,5 +145,25 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
             tar.Targetable())
         );
         return filteredTargets;
+    }
+
+    /// <summary>
+    /// Handles all collisions between this controller's Enemy
+    /// model and some other collider.
+    /// </summary>
+    /// <param name="other">the other collider.</param>
+    protected override void HandleCollision(Collider2D other)
+    {
+        if (other == null) return;
+
+        Acorn acorn = other.gameObject.GetComponent<Acorn>();
+        BombSplat bombSplat = other.gameObject.GetComponent<BombSplat>();
+
+        if (acorn != null)
+        {
+            SoundController.PlaySoundEffect("kudzuHit");
+            GetEnemy().AdjustHealth(-acorn.GetDamage());
+            acorn.SetCollided(GetEnemy());
+        }
     }
 }

@@ -56,17 +56,4 @@ public class Bomb : Projectile
     /// from start to finish. 
     /// </summary>
     public override float MOVE_ANIMATION_DURATION => .5f;
-
-    /// <summary>
-    /// The splatter GameObject.
-    /// </summary>
-    [SerializeField]
-    private GameObject splatter;
-
-
-    /// <summary>
-    /// Returns the Bomb's splatter GameObject.
-    /// </summary>
-    /// <returns>the Bomb's splatter GameObject.</returns>
-    public GameObject GetSplatter() { return splatter; }
 }

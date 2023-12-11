@@ -21,7 +21,7 @@ public class ProjectileFactory : MonoBehaviour
 
 
     /// <summary>
-    /// Finds and sets the ProjectileController singleton.
+    /// Finds and sets the ProjectileFactory singleton.
     /// </summary>
     /// <param name="levelController">The LevelController singleton.</param>
     public static void SetSingleton(LevelController levelController)
@@ -51,7 +51,7 @@ public class ProjectileFactory : MonoBehaviour
     /// <summary>
     /// Returns the GameObject prefab that represents a Projectile.
     /// </summary>
-    /// <param name="defenderType">the type of Projectile</param>
+    /// <param name="projectileType">the type of Projectile</param>
     /// <returns>the GameObject prefab that represents a Projectile</returns>
     public static GameObject GetProjectilePrefab(Projectile.ProjectileType projectileType)
     {

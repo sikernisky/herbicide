@@ -96,6 +96,10 @@
   <properties>
    <property name="layerClass" value="EnemyLayer"/>
   </properties>
-  <object id="284" gid="20" x="336" y="112" width="16" height="16"/>
+  <object id="284" gid="20" x="336" y="112" width="16" height="16">
+   <properties>
+    <property name="spawnTime" value="1"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

@@ -80,8 +80,10 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
     {
         if (!ValidModel()) return;
         base.UpdateMob();
+        ExecuteIdleState();
         ExecuteChaseState();
         ExecuteBackupState();
+        ExecuteAttackState();
     }
 
 
@@ -119,6 +121,7 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
     /// </summary>
     protected override void UpdateStateFSM()
     {
+        if (!ValidModel()) return;
         if (GetGameState() != GameState.ONGOING)
         {
             SetState(ButterflyState.CHASE);
@@ -171,7 +174,7 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
     /// <summary>
     /// Runs logic relevant to the Butterfly's idle state.
     /// </summary>
-    protected override void ExecuteIdleState()
+    protected virtual void ExecuteIdleState()
     {
         if (GetState() != ButterflyState.IDLE) return;
 
@@ -192,7 +195,7 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
     /// <summary>
     /// Runs logic relevant to the Buttefly's chasing state.
     /// </summary>
-    protected override void ExecuteChaseState()
+    protected virtual void ExecuteChaseState()
     {
         if (GetState() != ButterflyState.CHASE) return;
         if (GetTarget() == null || !GetTarget().Targetable()) return;
@@ -210,7 +213,8 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
         StepAnimation();
         GetButterfly().SetSprite(GetButterfly().GetSpriteAtCurrentFrame());
 
-        if (GetButterfly().DistanceToTarget(GetTarget()) <= GetButterfly().GetAttackRange()) return;
+        float distance = GetButterfly().DistanceToTarget(GetTarget());
+        if (distance <= GetButterfly().GetAttackRange()) return;
 
         Vector2 targetPosition = GetTarget().GetPosition();
         Vector2 currentPosition = GetButterfly().GetPosition();
@@ -257,7 +261,7 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
     /// <summary>
     /// Runs logic relevant to the Butterfly's attacking state.
     /// </summary>
-    protected override void ExecuteAttackState()
+    protected virtual void ExecuteAttackState()
     {
         if (GetTarget() == null || !GetTarget().Targetable()) return;
         if (GetState() != ButterflyState.ATTACK) return;
@@ -284,11 +288,8 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
         Vector3 targetPosition = GetTarget().GetAttackPosition();
         BombController bombController =
             new BombController(clonedBombComp, GetButterfly().GetPosition(), targetPosition);
-        AddProjectileController(bombController);
+        AddController(bombController);
 
-        // Vector3 targetPosition = GetTarget().GetAttackPosition();
-        // ProjectileManager.ProjectileType bomb = ProjectileManager.ProjectileType.BUTTERFLY_BOMB;
-        // ProjectileManager.LobShot(bomb, GetButterfly().transform, GetTarget().GetTransform(), .5f, .5f, 1.5f);
         GetButterfly().ResetAttackCooldown();
     }
 

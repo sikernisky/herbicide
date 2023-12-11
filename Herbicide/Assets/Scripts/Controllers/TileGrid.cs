@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 using System;
+using UnityEngine.UIElements;
 
 
 /// <summary>
@@ -409,7 +410,7 @@ public class TileGrid : MonoBehaviour
                     Tree tree = TreeFactory.GetTreePrefab(
                         Tree.TreeType.BASIC).GetComponent<Tree>();
                     if (tree == null) break;
-                    PlaceOnTile(tileToFloor, tree, GetNeighbors(tileToFloor));
+                    PlaceOnTile(tileToFloor, tree);
                 }
                 break;
             default:
@@ -570,8 +571,7 @@ public class TileGrid : MonoBehaviour
             ISlottable placingItem = PlacementController.GetObjectPlacing();
             PlaceableObject itemPlaceable = placingItem as PlaceableObject;
             IUsable itemUsable = placingItem as IUsable;
-            ISurface[] tileNeighbors = GetNeighbors(tile);
-            if (PlaceOnTile(tile, itemPlaceable, tileNeighbors))
+            if (PlaceOnTile(tile, itemPlaceable))
             {
                 //Stop the placement event.
                 PlacementController.StopGhostPlacing();
@@ -756,17 +756,36 @@ public class TileGrid : MonoBehaviour
     /// </summary>
     /// <param name="candidate">The PlaceableObject to place.</param>
     /// <param name="target">The Tile to place on.</param>
-    /// <param name="neighbors">The Tile's neighbors' PlaceableObject.</param>
     /// <returns>true if the PlaceableObject was placed; otherwise, false.</returns>
-    public static bool PlaceOnTile(Tile target, PlaceableObject candidate, ISurface[] neighbors)
+    public static bool PlaceOnTile(Tile target, PlaceableObject candidate)
     {
         //Safety checks
-        if (target == null || candidate == null || neighbors == null) return false;
+        if (target == null || candidate == null) return false;
+        ISurface[] neighbors = instance.GetNeighbors(target);
+        if (neighbors == null) return false;
         Assert.IsNotNull(target as ISurface);
 
         //TODO: IMPLEMENT
         bool result = target.Place(candidate, instance.GetNeighbors(target));
         return result;
+    }
+
+    /// <summary>
+    /// Returns true if the placing of a PlaceableObject on a Tile will be
+    /// successful. If so, places it. Otherwise, does nothing and returns false.
+    /// This method takes the coordinates of the Tile.
+    /// </summary>
+    /// <param name="candidate">The PlaceableObject to place.</param>
+    /// <param name="targetCoords">The coordinates of the Tile to place on.</param>
+    /// <returns>true if the PlaceableObject was placed; otherwise, false.</returns>
+    public static bool PlaceOnTile(Vector2Int targetCoords, PlaceableObject candidate)
+    {
+        //Safety checks
+        int xCoord = PositionToCoordinate(targetCoords.x);
+        int yCoord = PositionToCoordinate(targetCoords.y);
+        Tile target = instance.TileExistsAt(xCoord, yCoord);
+
+        return PlaceOnTile(target, candidate);
     }
 
     /// <summary>

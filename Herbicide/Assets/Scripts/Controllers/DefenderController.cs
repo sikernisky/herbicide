@@ -5,6 +5,10 @@ using UnityEngine.Assertions;
 
 /// <summary>
 /// Abstract class to represent controllers of Defenders.
+/// 
+/// The DefenderController is responsible for manipulating its Defender and bringing
+/// it to life. This includes moving it, choosing targets, playing animations,
+/// and more.
 /// </summary>
 public abstract class DefenderController<T> : MobController<T> where T : Enum
 {
@@ -29,11 +33,7 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
         if (!ValidModel()) return;
         base.UpdateMob();
 
-        ExecuteIdleState();
         if (GetGameState() != GameState.ONGOING) return;
-
-        ElectTarget(FilterTargets(GetAllTargetableObjects()));
-        ExecuteAttackState();
     }
 
     /// <summary>
@@ -59,11 +59,13 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
         targetables.RemoveAll(t => t == null);
         foreach (ITargetable target in targetables)
         {
-            if (target as Enemy == null) continue;
-            float distanceToTarget = GetDefender().DistanceToTarget(target);
+            Enemy targetAsEnemy = target as Enemy;
+            if (targetAsEnemy == null) continue;
+            if (!targetAsEnemy.Spawned()) continue;
+            float distanceToTarget = GetDefender().DistanceToTarget(targetAsEnemy);
             if (distanceToTarget > GetDefender().GetChaseRange()) continue;
-            if (!target.Targetable()) continue;
-            filteredTargets.Add(target);
+            if (!targetAsEnemy.Targetable()) continue;
+            filteredTargets.Add(targetAsEnemy);
         }
         return filteredTargets;
     }

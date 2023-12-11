@@ -93,13 +93,19 @@ public class BombController : ProjectileController<BombController.BombState>
         if (!ValidModel()) return;
         if (GetState() != BombState.COLLIDING) return;
 
-        GameObject splatterCopy = GameObject.Instantiate(GetBomb().GetSplatter());
-        splatterCopy.SetActive(true);
-        splatterCopy.transform.position = new Vector3(
-            GetBomb().GetX(),
-            GetBomb().GetY(),
-            1
-        );
+        // GameObject splatterCopy = GameObject.Instantiate(GetBomb().GetSplatter());
+        // splatterCopy.SetActive(true);
+
+        Vector2Int tilePos = new Vector2Int(GetBomb().GetX(), GetBomb().GetY());
+        GameObject bombSplatPrefab = HazardFactory.GetHazardPrefab(Hazard.HazardType.BOMB_SPLAT);
+        Assert.IsNotNull(bombSplatPrefab);
+        BombSplat bombSplatComp = bombSplatPrefab.GetComponent<BombSplat>();
+        Assert.IsNotNull(bombSplatComp);
+
+        if (TileGrid.PlaceOnTile(tilePos, bombSplatComp))
+        {
+
+        }
 
         ApplyHazard();
     }

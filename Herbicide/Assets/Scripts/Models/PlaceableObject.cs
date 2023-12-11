@@ -414,9 +414,8 @@ public abstract class PlaceableObject : MonoBehaviour, ISlottable, ITargetable, 
     /// <param name="target">The ITargetable from which to calculate distance.</param>
     public float DistanceToTarget(ITargetable target)
     {
-        if (target == null) return float.MaxValue;
-        GetPosition();
-        return Vector3.Distance(GetPosition(), target.GetPosition());
+        try { return Vector3.Distance(GetPosition(), target.GetPosition()); }
+        catch { return -1f; }
     }
 
     /// <summary>

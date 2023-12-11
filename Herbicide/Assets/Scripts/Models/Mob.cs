@@ -212,12 +212,12 @@ public abstract class Mob : PlaceableObject, IAttackable
     public float GetMovementSpeed() { return movementSpeed; }
 
     /// <summary>
-    /// Sets this IAttackable's movement speed.
+    /// Adds some amount to this Mob's movement speed.
     /// </summary>
-    /// <param name="amount">The new movement speed.</param>
-    public void SetMovementSpeed(float amount)
+    /// <param name="amount">The amount to add.</param>
+    public void AdjustMovementSpeed(float amount)
     {
-        movementSpeed = Mathf.Clamp(amount, MIN_MOVEMENT_SPEED, MAX_MOVEMENT_SPEED);
+        movementSpeed = Mathf.Clamp(movementSpeed + amount, MIN_MOVEMENT_SPEED, MAX_MOVEMENT_SPEED);
     }
 
     /// <summary>

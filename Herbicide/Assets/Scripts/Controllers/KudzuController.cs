@@ -70,11 +70,10 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     {
         base.UpdateMob();
 
-        //STATE LOGIC (UpdateFSM() is called in base())
-        //Debug.Log(GetState());
         if (!ValidModel()) return;
-        ExecuteAttackState();
+        ExecuteIdleState();
         ExecuteChaseState();
+        ExecuteAttackState();
     }
 
     /// <summary>
@@ -88,24 +87,6 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     /// </summary>
     /// <returns>true if this KudzuController's has a not NULL Kudzu model</returns>
     public override bool ValidModel() { return GetKudzu() != null; }
-
-    /// <summary>
-    /// Handles all collisions between this controller's Kudzu
-    /// model and some other collider.
-    /// </summary>
-    /// <param name="other">the other collider.</param>
-    protected override void HandleCollision(Collider2D other)
-    {
-        if (other == null) return;
-
-        Projectile projectile = other.gameObject.GetComponent<Projectile>();
-        if (projectile != null)
-        {
-            SoundController.PlaySoundEffect("kudzuHit");
-            GetKudzu().AdjustHealth(-projectile.GetDamage());
-            projectile.SetCollided(GetKudzu());
-        }
-    }
 
     /// <summary>
     /// Does not move the Kudzu model. This is overriden to ensure any Kudzu 
@@ -197,7 +178,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     /// <summary>
     /// Runs logic for the Kudzu model's idle state.
     /// </summary>
-    protected override void ExecuteIdleState()
+    protected virtual void ExecuteIdleState()
     {
         if (GetState() != KudzuState.IDLE) return;
 
@@ -210,7 +191,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         if (GetAnimationState() != KudzuState.IDLE) GetKudzu().SetAnimationTrack(chaseTrack);
         else GetKudzu().SetAnimationTrack(chaseTrack, GetKudzu().CurrentFrame);
         SetAnimationState(KudzuState.IDLE);
-
+        GetKudzu().FaceDirection(Direction.SOUTH);
 
         //Step the animation.
         StepAnimation();
@@ -220,7 +201,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     /// <summary>
     /// Runs logic for the Kudzu model's chase state. 
     /// </summary>
-    protected override void ExecuteChaseState()
+    protected virtual void ExecuteChaseState()
     {
         if (GetState() != KudzuState.CHASE) return;
         if (GetTarget() == null || !GetTarget().Targetable()) return;
@@ -265,6 +246,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         // Smooth movement
         Vector3 adjusted = new Vector3(GetNextMovePos().Value.x, GetNextMovePos().Value.y, 1);
         float step = GetKudzu().GetMovementSpeed() * Time.deltaTime;
+        step = Mathf.Clamp(step, 0f, step);
         Vector3 newPosition = Vector3.MoveTowards(currentPos, adjusted, step);
         if (GetKudzu().GetPosition() != adjusted) GetKudzu().FaceTarget(adjusted);
         GetKudzu().SetWorldPosition(newPosition);
@@ -273,7 +255,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     /// <summary>
     /// Runs logic for the Kudzu model's attack state. 
     /// </summary>
-    protected override void ExecuteAttackState()
+    protected virtual void ExecuteAttackState()
     {
         if (GetState() != KudzuState.ATTACK) return;
         if (GetTarget() == null || !GetTarget().Targetable()) return;

@@ -34,10 +34,10 @@ public abstract class PlaceableObjectController
     private static List<PlaceableObject> ALL_PLACEABLES = new List<PlaceableObject>();
 
     /// <summary>
-    /// All ProjectileControllers this MobController has not yet passed
+    /// All controllers this MobController has not yet passed
     /// to the ControllerController.
     /// </summary>
-    private List<PlaceableObjectController> projectileControllers;
+    private List<PlaceableObjectController> controllers;
 
     /// <summary>
     /// The color strength, from 0-1, of the damage flash animation.
@@ -65,7 +65,7 @@ public abstract class PlaceableObjectController
         GetModel().SubscribeToCollision(HandleCollision);
         id = ALL_PLACEABLES.Count;
         ALL_PLACEABLES.Add(placeableObject);
-        projectileControllers = new List<PlaceableObjectController>();
+        controllers = new List<PlaceableObjectController>();
     }
 
     /// <summary>
@@ -148,12 +148,19 @@ public abstract class PlaceableObjectController
     private void UpdateDamageFlash()
     {
         float remainingFlashTime = GetModel().TimeRemaningInFlashAnimation();
-        // if (GetModel().NAME == "Squirrel") Debug.Log(remainingFlashTime);
-        if (remainingFlashTime <= 0) return;
+        if (remainingFlashTime <= 0)
+        {
+            GetModel().SetColor(Color.white); // Explicitly set to white when the flash time ends
+            return;
+        }
         float newDamageFlashingTime = Mathf.Clamp(remainingFlashTime - Time.deltaTime, 0, FLASH_DURATION);
         GetModel().SetRemainingFlashAnimationTime(newDamageFlashingTime);
-        float lerpTarget = Mathf.Abs(remainingFlashTime - FLASH_DURATION / 2f) * (FLASH_INTENSITY * 10f);
-        float score = Mathf.Lerp(FLASH_INTENSITY, 1f, lerpTarget);
+
+        // Simplified lerp target calculation
+        float lerpFactor = Mathf.Cos((Mathf.PI * remainingFlashTime) / FLASH_DURATION);
+        lerpFactor = Mathf.Clamp(lerpFactor, 0, 1);
+
+        float score = Mathf.Lerp(FLASH_INTENSITY, 1f, lerpFactor);
         byte greenBlueComponent = (byte)(score * 255);
         Color32 color = new Color32(255, greenBlueComponent, greenBlueComponent, 255);
         GetModel().SetColor(color);
@@ -237,29 +244,29 @@ public abstract class PlaceableObjectController
     protected abstract void HandleCollision(Collider2D other);
 
     /// <summary>
-    /// Returns a new list of ProjectileControllers that this MobController has
+    /// Returns a new list of PlaceableObjectControllers that this MobController has
     /// created but not yet passed to the ControllerController. Then, wipes
     /// the original list.
     /// </summary>
-    /// <returns>a list of ProjectileControllers that this MobController has
+    /// <returns>a list of PlaceableObjectControllers that this MobController has
     /// created but not yet passed to the ControllerController.</returns>
 
-    public List<PlaceableObjectController> ExtricateProjectileControllers()
+    public List<PlaceableObjectController> ExtricateControllers()
     {
         List<PlaceableObjectController> copied =
-            new List<PlaceableObjectController>(projectileControllers);
-        projectileControllers.Clear();
+            new List<PlaceableObjectController>(controllers);
+        controllers.Clear();
         return copied;
     }
 
     /// <summary>
-    /// Adds a ProjectileController to the list of PlaceableObjectControllers that
-    /// need to be extricated by the ProjectileController.
+    /// Adds a PlaceableObjectControllers to the list of PlaceableObjectControllers that
+    /// need to be extricated by the ControllerController.
     /// </summary>
-    /// <param name="projectileController">The ProjectileController to add.</param>
-    protected void AddProjectileController(PlaceableObjectController projectileController)
+    /// <param name="projectileController">The PlaceableObjectControllers to add.</param>
+    protected void AddController(PlaceableObjectController projectileController)
     {
         Assert.IsNotNull(projectileController, "ProjectileController is null.");
-        projectileControllers.Add(projectileController);
+        controllers.Add(projectileController);
     }
 }

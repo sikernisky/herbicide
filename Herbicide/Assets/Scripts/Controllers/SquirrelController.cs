@@ -50,6 +50,18 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     }
 
     /// <summary>
+    /// Main update loop for the Squirrel.
+    /// </summary>
+    protected override void UpdateMob()
+    {
+        base.UpdateMob();
+        if (!ValidModel()) return;
+
+        ExecuteIdleState();
+        ExecuteAttackState();
+    }
+
+    /// <summary>
     /// Returns this SquirrelController's Squirrel.
     /// </summary>
     /// <returns>this SquirrelController's Squirrel.</returns>
@@ -126,7 +138,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     /// <summary>
     /// Runs logic relevant to the Squirrel's idle state.
     /// </summary>
-    protected override void ExecuteIdleState()
+    protected virtual void ExecuteIdleState()
     {
         if (!ValidModel()) return;
         if (GetState() != SquirrelState.IDLE) return;
@@ -148,7 +160,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     /// <summary>
     /// Runs logic relevant to the Squirrel's attacking state.
     /// </summary>
-    protected override void ExecuteAttackState()
+    protected virtual void ExecuteAttackState()
     {
         if (!ValidModel()) return;
         if (GetTarget() == null || !GetTarget().Targetable()) return;
@@ -179,16 +191,11 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         Acorn clonedAcornComp = clonedAcorn.GetComponent<Acorn>();
         Vector3 targetPosition = GetTarget().GetAttackPosition();
         AcornController acornController = new AcornController(clonedAcornComp, GetSquirrel().GetPosition(), targetPosition);
-        AddProjectileController(acornController);
+        AddController(acornController);
 
         // Reset attack animation.
         GetSquirrel().ResetAttackCooldown();
     }
-
-    /// <summary>
-    /// Runs logic relevant to the Squirrel's chasing state.
-    /// </summary>
-    protected override void ExecuteChaseState() { return; }
 
     /// <summary>
     /// Returns true if the Squirrel can shoot an acorn.

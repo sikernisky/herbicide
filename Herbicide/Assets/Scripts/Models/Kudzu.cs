@@ -125,7 +125,7 @@ public class Kudzu : Enemy
     /// <summary>
     /// Minumum movement speed of a Kudzu.
     /// </summary>
-    public override float MIN_MOVEMENT_SPEED => float.MinValue;
+    public override float MIN_MOVEMENT_SPEED => 0f;
 
     /// <summary>
     /// true if this Kudzu is currently hopping.

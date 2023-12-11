@@ -70,6 +70,7 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
     /// </summary>
     protected virtual void UpdateMob()
     {
+        ElectTarget(FilterTargets(GetAllTargetableObjects()));
         float oldCooldown = GetMob().GetAttackCooldown();
         oldCooldown -= Time.deltaTime;
         GetMob().SetAttackCooldown(oldCooldown);
@@ -113,11 +114,11 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
     /// is allowed to set as its target. /// </param>
     protected virtual void ElectTarget(List<ITargetable> filteredTargetables)
     {
-        Assert.IsNotNull(filteredTargetables, "List of targets is null.");
+        if (filteredTargetables == null) return;
         if (!ValidModel()) return;
 
         //If the current target is feasible, return
-        if (GetTarget() != null && GetTarget().Targetable()) return;
+        if ((GetTarget() != null && !System.Object.Equals(GetTarget(), null)) && GetTarget().Targetable()) return;
 
         //ResetAnimationCounter();
         int random = UnityEngine.Random.Range(0, filteredTargetables.Count);
@@ -161,32 +162,12 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
     protected abstract void UpdateStateFSM();
 
     /// <summary>
-    /// Logic to execute when this MobController's Mob is idle.
-    /// The MobController manipulates the Mob model by calling
-    /// its methods.
-    /// </summary>
-    protected abstract void ExecuteIdleState();
-
-    /// <summary>
-    /// Logic to execute when this MobController's Mob is attacking.
-    /// The MobController manipulates the Mob model by calling
-    /// its methods.
-    /// </summary>
-    protected abstract void ExecuteAttackState();
-
-    /// <summary>
     /// Returns true if the Mob can attack this frame.
     /// </summary>
     /// <returns>true if the Mob can attack this frame; 
     /// otherwise, false. </returns>
     protected virtual bool CanAttack() { return GetMob().GetAttackCooldown() <= 0; }
 
-    /// <summary>
-    /// Logic to execute when this MobController's Mob is chasing.
-    /// The MobController manipulates the Mob model by calling
-    /// its methods.
-    /// </summary>
-    protected abstract void ExecuteChaseState();
 
     /// <summary>
     /// Returns true if two states are equal.

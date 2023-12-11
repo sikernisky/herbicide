@@ -8,7 +8,7 @@ using System;
 /// Abstract class to represent controllers of Projectiles.
 /// 
 /// The ProjectileController is responsible for manipulating its Projectile and bringing
-/// it to life. This includes moving it, choosing targets, playing animations,
+/// it to life. This includes moving it, firing in a specific way, playing animations,
 /// and more.
 /// </summary>
 public abstract class ProjectileController<T> : PlaceableObjectController where T : Enum
@@ -141,13 +141,15 @@ public abstract class ProjectileController<T> : PlaceableObjectController where 
     protected override void TryRemoveModel()
     {
         if (!ValidModel()) return;
-        if (GetProjectile().GetVictim() == null && !GetProjectile().Expired() && GetProjectile().IsActive()) return;
+        if (GetProjectile().GetVictim() == null &&
+            !GetProjectile().Expired() &&
+            GetProjectile().IsActive()) return;
 
         GetProjectile().OnDie();
         GameObject.Destroy(GetProjectile().gameObject);
         GameObject.Destroy(GetProjectile());
 
-        //We are done with our Defender.
+        //We are done with our Projectile.
         RemoveModel();
     }
 

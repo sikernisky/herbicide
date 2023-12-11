@@ -69,9 +69,10 @@ public class EnemyManager : MonoBehaviour
             GameObject clonedEnemy = Instantiate(spawnedEnemy);
             Enemy clonedEnemyComp = clonedEnemy.GetComponent<Enemy>();
             clonedEnemyComp.gameObject.SetActive(false);
-            Vector2 spawnWorldPos = new Vector2(
+            Vector3 spawnWorldPos = new Vector3(
                 TileGrid.CoordinateToPosition(obToSpawn.GetSpawnCoordinates(mapHeight).x),
-                TileGrid.CoordinateToPosition(obToSpawn.GetSpawnCoordinates(mapHeight).y)
+                TileGrid.CoordinateToPosition(obToSpawn.GetSpawnCoordinates(mapHeight).y),
+                1
             );
             float spawnTime = obToSpawn.GetSpawnTime();
 

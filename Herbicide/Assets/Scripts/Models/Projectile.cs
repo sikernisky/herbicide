@@ -81,6 +81,11 @@ public abstract class Projectile : PlaceableObject
     /// </summary>
     public abstract float LIFESPAN { get; }
 
+    /// <summary>
+    /// How long this Projectile has been active
+    /// </summary>
+    private float age;
+
     //----------------------------------------------//
 
     /// <summary>
@@ -93,11 +98,6 @@ public abstract class Projectile : PlaceableObject
     /// true if this Projectile is active in the scene.
     /// </summary>
     private bool active = true;
-
-    /// <summary>
-    /// How long this Projectile has been active
-    /// </summary>
-    private float age;
 
     /// <summary>
     /// Projectile's RigidBody component.
