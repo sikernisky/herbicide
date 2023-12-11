@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Linq;
 using UnityEngine.Assertions;
+using System.Collections.Generic;
+using System;
 
 /// <summary>
 /// Abstract class for something unreactive that can be placed on the
@@ -81,27 +83,17 @@ public abstract class PlaceableObject : MonoBehaviour, ISlottable, ITargetable, 
     /// </summary>
     protected virtual Vector3 PLACEMENT_SCALE => Vector3.one;
 
-    Sprite[] IAnimatable.CurrentAnimationTrack => throw new System.NotImplementedException();
-
-    float IAnimatable.CurrentAnimationDuration => throw new System.NotImplementedException();
-
-    int IAnimatable.CurrentFrame => throw new System.NotImplementedException();
-
     /// <summary>
-    /// true if this PlaceableObject has been defined; otherwise, false.
+    /// true if this PlaceableObject occupies a Tile, preventing
+    /// further placement; otherwise, false.
     /// </summary>
-    private bool defined;
+    public abstract bool OCCUPIER { get; }
 
     /// <summary>
     /// SpriteRenderer component for this PlaceableObject
     /// </summary>
     [SerializeField]
     private SpriteRenderer placeableRenderer;
-
-    /// <summary>
-    /// The four neighboring PlaceableObjects
-    /// </summary>
-    private PlaceableObject[] neighbors;
 
     /// <summary>
     /// Coordinates of the Tile on which this PlaceableObject sits.
@@ -137,28 +129,11 @@ public abstract class PlaceableObject : MonoBehaviour, ISlottable, ITargetable, 
     /// </summary>
     public event CollisionHandler OnCollision;
 
-
     /// <summary>
-    /// Initializes this PlaceableObject. Called when it is placed on the TileGrid.
-    /// Sets the SpriteRenderer component.
+    /// Every Effect that is currently modifying this PlaceableObject.s
     /// </summary>
-    /// <param name="coordinates">The X, Y tile coordinates where this PlaceableObject is.</param>
-    /// <param name="neighbors">The neighboring PlaceableObjects</param>
-    public virtual void Define(Vector2Int coordinates, PlaceableObject[] neighbors)
-    {
-        if (neighbors == null) return;
-        placeableRenderer = GetComponent<SpriteRenderer>();
-        this.coordinates = coordinates;
-        this.neighbors = neighbors;
-        defined = true;
-    }
+    private HashSet<Effect> activeEffects = new HashSet<Effect>();
 
-    /// <summary>
-    /// Returns true if this PlaceableObject is defined.
-    /// </summary>
-    /// <returns>true if this PlaceableObject is defined; otherwise, 
-    /// false. </returns>
-    public bool Defined() { return defined; }
 
     /// <summary>
     /// Returns this PlaceableObject's placement scale.
@@ -353,6 +328,51 @@ public abstract class PlaceableObject : MonoBehaviour, ISlottable, ITargetable, 
     public Sprite GetSprite() { return placeableRenderer.sprite; }
 
     /// <summary>
+    /// Adds an effect to this PlaceableObject's list of active effects.
+    /// If this effect is already applied or exceeds the maximum number
+    /// of stacks possible, does nothing.
+    /// </summary>
+    public void ApplyEffect(Effect effect)
+    {
+        Assert.IsNotNull(effect, "Effect is null.");
+        Assert.IsNotNull(activeEffects, "Effects list is null.");
+        int maxStacks = effect.MAX_STACKS;
+        Type effectTYPE = effect.GetType();
+        int sameType = activeEffects.Count(e => e.GetType() == effectTYPE);
+        if (sameType >= maxStacks) return;
+        activeEffects.Add(effect);
+    }
+
+    /// <summary>
+    /// Removes an Effect from this PlaceableObject's list of
+    /// active effects. If this Effect does not exist on this
+    /// PlaceableObject, does nothing.
+    /// </summary>
+    /// <param name="effect">The effect to remove.</param>
+    public void RemoveEffect(Effect effect)
+    {
+        Assert.IsNotNull(effect, "Effect is null.");
+        Assert.IsNotNull(activeEffects, "Effects list is null.");
+        if (!activeEffects.Contains(effect)) return;
+        effect.EndEffect();
+        activeEffects.Remove(effect);
+    }
+
+    /// <summary>
+    /// Iterates through the list of active Effects and updates
+    /// each one.
+    /// </summary>
+    public void UpdateEffects()
+    {
+        Assert.IsNotNull(activeEffects, "Effects list is null.");
+
+        List<Effect> exp = new List<Effect>();
+        foreach (Effect effect in activeEffects) { if (effect.Expired()) exp.Add(effect); }
+        foreach (Effect effect in exp) { RemoveEffect(effect); }
+        foreach (Effect effect in activeEffects) { effect.InflictEffect(); }
+    }
+
+    /// <summary>
     /// Starts the Damage Flash animation by resetting the amount of time
     /// left in the animation to the total amount of time it takes to
     /// complete one animation cycle/// 
@@ -390,23 +410,6 @@ public abstract class PlaceableObject : MonoBehaviour, ISlottable, ITargetable, 
     /// <returns>the Direction to which this PlaceableObject faces</returns>
     public Direction GetDirection() { return direction; }
 
-    /// <summary>
-    /// Sets the neighbors of this PlaceableObject.
-    /// </summary>
-    /// <param name="neighbors">the new neighbors of this PlaceableObject.</param>
-    protected void UpdatePlaceableNeighbors(PlaceableObject[] neighbors)
-    {
-        if (neighbors != null) this.neighbors = neighbors;
-    }
-
-    /// <summary>
-    /// Returns a copy of the array containing this PlaceableObject's neighbors.
-    /// </summary>
-    protected PlaceableObject[] GetPlaceableNeighbors()
-    {
-        PlaceableObject[] copyNeighbors = GetPlaceableNeighbors().ToArray();
-        return copyNeighbors;
-    }
 
     /// <summary>
     /// Returns the Euclidian distance from this PlaceableObject to an ITargetable.
@@ -438,6 +441,11 @@ public abstract class PlaceableObject : MonoBehaviour, ISlottable, ITargetable, 
         //!! Ignore 0 references, this is an event. 
         OnCollision?.Invoke(other);
     }
+
+    /// <summary>
+    /// Called when this PlaceableObject is placed.
+    /// </summary>
+    public virtual void OnPlace() { return; }
 
     //--------------------BEGIN ANIM----------------------//
 

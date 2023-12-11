@@ -39,6 +39,11 @@ public abstract class Tree : Mob, ISurface
     private GameObject ghostDefender;
 
     /// <summary>
+    /// Trees occupy Tiles & Flooring.
+    /// </summary>
+    public override bool OCCUPIER => true;
+
+    /// <summary>
     /// Represents a type of Tree.
     /// </summary>
     public enum TreeType
@@ -87,13 +92,12 @@ public abstract class Tree : Mob, ISurface
     }
 
     /// <summary>
-    /// Initializes this Tree when placed on the TileGrid. Sets its Sprite to
-    /// its placed Sprite.
+    /// Called when this Tree is placed.
     /// </summary>
     /// <param name="neighbors">The PlaceableObjects surrounding this Tree.</param>
-    public override void Define(Vector2Int coordinates, PlaceableObject[] neighbors)
+    public override void OnPlace()
     {
-        base.Define(coordinates, neighbors);
+        base.OnPlace();
         SetSortingOrder(10000 - (int)transform.position.y * 100);
         SetSprite(TreeFactory.GetTreePlacedSprite(TYPE));
     }

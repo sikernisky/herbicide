@@ -96,7 +96,7 @@ public abstract class ProjectileController<T> : PlaceableObjectController where 
 
     /// <summary>
     /// Returns true if this ProjectileController hosts a valid Projectile.
-    /// </summary>
+    /// /// </summary>
     /// <returns>true if this ProjectileController hosts a valid Projectile;
     /// otherwise, false. </returns>
     public override bool ValidModel() { return GetProjectile() != null; }

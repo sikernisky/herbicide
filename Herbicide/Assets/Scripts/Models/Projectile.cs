@@ -89,6 +89,11 @@ public abstract class Projectile : PlaceableObject
     //----------------------------------------------//
 
     /// <summary>
+    /// By default, Projectiles do not occupy Tiles.
+    /// </summary>
+    public override bool OCCUPIER => false;
+
+    /// <summary>
     /// How many seconds a Projectile's move animation lasts,
     /// from start to finish. 
     /// </summary>

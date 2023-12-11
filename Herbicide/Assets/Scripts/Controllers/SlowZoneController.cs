@@ -50,7 +50,6 @@ public class SlowZoneController : HazardController<SlowZoneController.SlowZoneSt
     {
         Assert.IsNotNull(slowZone, "SlowZone is null.");
         slowedTargets = new HashSet<ITargetable>();
-        Debug.Log("new set");
         NUM_SLOW_ZONES++;
     }
 
@@ -99,37 +98,6 @@ public class SlowZoneController : HazardController<SlowZoneController.SlowZoneSt
     /// </summary>
     /// <param name="other">The other Collider2D.</param>
     protected override void HandleCollision(Collider2D other) { return; }
-
-    /// <summary>
-    /// Checks the list of slowed ITargetables and removes any
-    /// that are no longer in attack range.
-    /// </summary>
-    protected void CleanSlowedTargets()
-    {
-        HashSet<ITargetable> targetsToClean = new HashSet<ITargetable>();
-        foreach (ITargetable t in GetSlowedTargets())
-        {
-            Enemy e = t as Enemy;
-            Assert.IsNotNull(e, "A non-Enemy target has been slowed.");
-
-            // If the target is null
-            if (e == null) targetsToClean.Add(e);
-
-            // If the target has left attack range
-            else if (GetSlowZone().DistanceToTarget(e) > GetSlowZone().GetAttackRange())
-                targetsToClean.Add(e);
-        }
-
-        foreach (ITargetable t in targetsToClean)
-        {
-            Enemy e = t as Enemy;
-            Assert.IsNotNull(e, "A non-Enemy target has been slowed.");
-
-            float reduced = e.BASE_MOVEMENT_SPEED * GetSlowZone().GetSlowRate();
-            e.AdjustMovementSpeed(reduced);
-            slowedTargets.Remove(e);
-        }
-    }
 
     /// <summary>
     /// Adds an ITargetable to the set of slowed ITargetables.
@@ -194,18 +162,8 @@ public class SlowZoneController : HazardController<SlowZoneController.SlowZoneSt
     {
         if (GetState() != SlowZoneState.ACTIVE) return;
         if (GetTarget() == null || !GetTarget().Targetable()) return;
-        CleanSlowedTargets();
 
-        if (!slowedTargets.Contains(GetTarget()))
-        {
-            AddSlowedTarget(GetTarget());
-        }
-        else return;
-
-        Enemy e = GetTarget() as Enemy;
-        float reduction = e.BASE_MOVEMENT_SPEED * GetSlowZone().GetSlowRate();
-        e.AdjustMovementSpeed(-reduction);
-        Debug.Log(e.GetMovementSpeed());
+        GetTarget().ApplyEffect(new SlowEffect(GetTarget() as Mob));
     }
 
     //---------------------ANIMATION LOGIC----------------------//

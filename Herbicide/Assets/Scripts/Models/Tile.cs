@@ -290,8 +290,8 @@ public abstract class Tile : MonoBehaviour, ISurface
         prefabClone.transform.position = transform.position;
         prefabClone.transform.localScale = placeableObject.GetPlacementScale();
         prefabClone.transform.SetParent(transform);
-        occupant = placeableObject;
-        occupant.Define(new Vector2Int(GetX(), GetY()), GetPlaceableObjectNeighbors());
+        placeableObject.OnPlace();
+        if (placeableObject.OCCUPIER) occupant = placeableObject;
 
 
         Defender placedDefender = prefabClone.GetComponent<Defender>();
@@ -325,7 +325,6 @@ public abstract class Tile : MonoBehaviour, ISurface
         if (candidate as Squirrel != null) return false;
         if (candidate as Tree != null) return false;
         if (Occupied()) return false;
-        if (Floored() && !GetFlooring().CanPlace(candidate, neighbors)) return false;
 
         return true;
     }

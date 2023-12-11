@@ -16,7 +16,7 @@ public class BombSplat : SlowZone
     /// <summary>
     /// Type of the BombSplat Hazard.
     /// </summary>
-    public override HazardType TYPE => Hazard.HazardType.BOMB_SPLAT;
+    public override HazardType TYPE => HazardType.BOMB_SPLAT;
 
     /// <summary>
     /// Starting health of a BombSplat.
@@ -29,10 +29,9 @@ public class BombSplat : SlowZone
     public override string NAME => "BombSplat";
 
     /// <summary>
-    /// Starting amount, between 0 and 1, by which this
-    /// BombSplat slows its target.
+    /// BombSplat Hazards occupy Tiles.
     /// </summary>
-    public override float BASE_SLOW_RATE => 0.5f;
+    public override bool OCCUPIER => true;
 
 
     /// <summary>

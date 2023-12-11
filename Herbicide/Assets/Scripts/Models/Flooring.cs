@@ -194,8 +194,8 @@ public abstract class Flooring : MonoBehaviour, ISurface
         prefabClone.transform.position = transform.position;
         prefabClone.transform.localScale = placeableObject.GetPlacementScale();
         prefabClone.transform.SetParent(transform);
-        occupant = placeableObject;
-        occupant.Define(new Vector2Int(GetX(), GetY()), GetPlaceableObjectNeighbors());
+        if (placeableObject.OCCUPIER) occupant = placeableObject;
+        placeableObject.OnPlace();
         SetTilingIndex(GetTilingIndex(neighbors));
 
         //Did we place a Tree? Give it a controller and neighbors.

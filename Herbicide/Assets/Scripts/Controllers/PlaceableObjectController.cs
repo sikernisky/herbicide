@@ -74,6 +74,7 @@ public abstract class PlaceableObjectController
     /// <param name="targets">A complete list of ITargetables in the scene.</param>
     public virtual void UpdateModel()
     {
+        GetModel().UpdateEffects();
         UpdateDamageFlash();
         TryRemoveModel();
         UpdateTilePosition();
@@ -177,6 +178,7 @@ public abstract class PlaceableObjectController
         int tileY = TileGrid.PositionToCoordinate(worldPos.y);
         GetModel().SetTileCoordinates(tileX, tileY);
     }
+
 
     /// <summary>
     /// Adds one chunk of Time.deltaTime to the animation

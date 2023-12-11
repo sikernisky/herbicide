@@ -98,8 +98,12 @@ public abstract class Mob : PlaceableObject, IAttackable
     /// </summary>
     private float movementSpeed;
 
-
     //---------------------END STATS-----------------------//
+
+    /// <summary>
+    /// By default, Mobs do not occupy Tiles.
+    /// </summary>
+    public override bool OCCUPIER => false;
 
     /// <summary>
     /// true if this Mob is spawned in the scene.
@@ -215,7 +219,7 @@ public abstract class Mob : PlaceableObject, IAttackable
     /// Adds some amount to this Mob's movement speed.
     /// </summary>
     /// <param name="amount">The amount to add.</param>
-    public void AdjustMovementSpeed(float amount)
+    public virtual void AdjustMovementSpeed(float amount)
     {
         movementSpeed = Mathf.Clamp(movementSpeed + amount, MIN_MOVEMENT_SPEED, MAX_MOVEMENT_SPEED);
     }

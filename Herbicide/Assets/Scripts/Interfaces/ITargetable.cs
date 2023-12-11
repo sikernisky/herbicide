@@ -120,4 +120,22 @@ public interface ITargetable
     /// <returns>true if something can target this ITargetable; otherwise, false.
     /// /// </returns>
     bool Targetable();
+
+    /// <summary>
+    /// Applies an Effect to this ITargetable.
+    /// </summary>
+    /// <param name="effect">The effect to apply.</param>
+    void ApplyEffect(Effect effect);
+
+    /// <summary>
+    /// Removes an Effect from this ITargetable.
+    /// </summary>
+    /// <param name="effect">The effect to apply.</param>
+    void RemoveEffect(Effect effect);
+
+    /// <summary>
+    /// Runs through every Effect on this ITargetable and inflicts
+    /// it as necessary.
+    /// </summary>
+    void UpdateEffects();
 }
