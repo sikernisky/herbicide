@@ -128,12 +128,12 @@ public class PlacementController : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns the ISlottable that is currently being placed. If there is none,
+    /// Returns the Model that is currently being placed. If there is none,
     /// returns null. 
     /// </summary>
-    /// <returns>the ISlottable that is currently being placed; null if no ISlottable
+    /// <returns>the Model that is currently being placed; null if no Model
     /// is being placed.</returns>
-    public static ISlottable GetObjectPlacing()
+    public static Model GetObjectPlacing()
     {
         return instance.placingSlot.GetOccupant();
     }

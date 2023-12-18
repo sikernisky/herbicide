@@ -568,9 +568,8 @@ public class TileGrid : MonoBehaviour
         //(1) and (2): Placing and Using
         if (PlacementController.Placing())
         {
-            ISlottable placingItem = PlacementController.GetObjectPlacing();
+            Model placingItem = PlacementController.GetObjectPlacing();
             PlaceableObject itemPlaceable = placingItem as PlaceableObject;
-            IUsable itemUsable = placingItem as IUsable;
             if (PlaceOnTile(tile, itemPlaceable))
             {
                 //Stop the placement event.
@@ -593,7 +592,7 @@ public class TileGrid : MonoBehaviour
         //Tile was hovered over. Put hover logic here.
         if (PlacementController.Placing())
         {
-            ISlottable placingSlottable = PlacementController.GetObjectPlacing();
+            Model placingSlottable = PlacementController.GetObjectPlacing();
             PlaceableObject placingPlaceable = placingSlottable as PlaceableObject;
             if (tile.GhostPlace(placingPlaceable)) PlacementController.StartGhostPlacing(tile);
         }
@@ -817,7 +816,7 @@ public class TileGrid : MonoBehaviour
         Tile t = instance.TileExistsAt(x, y);
         if (t == null) return;
 
-        t.PaintTile(color);
+        t.SetColor(color);
     }
 
     /// <summary>
@@ -922,7 +921,7 @@ public class TileGrid : MonoBehaviour
 
         foreach (KeyValuePair<Vector2Int, Tile> pair in instance.tileMap)
         {
-            instance.tileMap[pair.Key].PaintTile(Color.white);
+            instance.tileMap[pair.Key].SetColor(Color.white);
         }
     }
 
@@ -960,7 +959,7 @@ public class TileGrid : MonoBehaviour
         Tile startTile = instance.TileExistsAt(xStartCoord, yStartCoord);
         Tile goalTile = instance.TileExistsAt(xGoalCoord, yGoalCoord);
 
-        if (instance.IsDebugging()) goalTile.PaintTile(PATHFINDING_RED);
+        if (instance.IsDebugging()) goalTile.SetColor(PATHFINDING_RED);
         if (startTile == null || goalTile == null) return startPos;
 
         //Initialize data structures.
@@ -987,12 +986,12 @@ public class TileGrid : MonoBehaviour
                         {
                             if (instance.IsDebugging())
                             {
-                                if (!tileToPaint.IsWalkable()) tileToPaint.PaintTile(Color.blue);
-                                else tileToPaint.PaintTile(Color.red);
+                                if (!tileToPaint.IsWalkable()) tileToPaint.SetColor(Color.blue);
+                                else tileToPaint.SetColor(Color.red);
                             }
                         }
                         Tile nextTile = path[1];
-                        startTile.PaintTile(Color.white);
+                        startTile.SetColor(Color.white);
                         return new Vector3(nextTile.GetX(), nextTile.GetY(), 1);
                     }
                 }
@@ -1061,7 +1060,7 @@ public class TileGrid : MonoBehaviour
         List<Tile> path = new List<Tile> { current };
         while (cameFrom.ContainsKey(current))
         {
-            if (IsDebugging()) current.PaintTile(PATHFINDING_BLUE);
+            if (IsDebugging()) current.SetColor(PATHFINDING_BLUE);
             current = cameFrom[current];
             Assert.IsNotNull(current);
             path.Add(current);

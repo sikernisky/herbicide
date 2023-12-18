@@ -129,11 +129,6 @@ public class Butterfly : Defender
 
 
     /// <summary>
-    /// Called when this Butterfly dies.
-    /// </summary>
-    public override void OnDie() { return; }
-
-    /// <summary>
     /// Returns true if this Butterfly is targetable; it never is.
     /// </summary>
     /// <returns>true if this Butterfly is targetable; otherwise, false.

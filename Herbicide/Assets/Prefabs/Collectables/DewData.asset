@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00325b4e6c64440a7b66643def5bb094, type: 3}
+  m_Name: DewData
+  m_EditorClassIdentifier: 
+  collectablePrefab: {fileID: 7255375230871180526, guid: 268bcc35a02fd48119a5e3cb9ae357e3, type: 3}
+  collectableType: 1

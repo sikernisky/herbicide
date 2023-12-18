@@ -62,11 +62,6 @@ public class BombSplat : SlowZone
     }
 
     /// <summary>
-    /// Called when a BombSplat dies.
-    /// </summary>
-    public override void OnDie() { return; }
-
-    /// <summary>
     /// Sets the BombSplat's 2D Collider properties.
     /// </summary>
     public override void SetColliderProperties() { return; }

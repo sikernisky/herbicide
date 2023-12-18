@@ -11,6 +11,7 @@ using UnityEngine.Assertions;
 /// it to life. This includes moving it, choosing targets, playing animations,
 /// and more.
 /// </summary>
+/// <typeparam name="T">Enum to represent state of the Hazard.</typeparam>
 public abstract class HazardController<T> : MobController<T> where T : Enum
 {
     /// <summary>
@@ -37,19 +38,15 @@ public abstract class HazardController<T> : MobController<T> where T : Enum
     protected Hazard GetHazard() { return GetMob() as Hazard; }
 
     /// <summary>
-    /// Checks if this HazardController's Hazard should be removed from
-    /// the game. If so, clears it.
+    /// Returns true if this controller's Hazard should be destoyed and
+    /// set to null.
     /// </summary>
-    protected override void TryRemoveModel()
+    /// <returns>true if this controller's Hazard should be destoyed and
+    /// set to null; otherwise, false.</returns>
+    protected override bool ShouldRemoveModel()
     {
-        if (!ValidModel()) return;
-        if (!GetHazard().Expired()) return;
+        if (GetHazard().Expired()) return true;
 
-        GetHazard().OnDie();
-        GameObject.Destroy(GetHazard().gameObject);
-        GameObject.Destroy(GetHazard());
-
-        //We are done with our Hazard.
-        RemoveModel();
+        return false;
     }
 }

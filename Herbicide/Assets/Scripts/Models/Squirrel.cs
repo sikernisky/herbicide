@@ -29,7 +29,7 @@ public class Squirrel : Defender
     /// <summary>
     /// Starting attack range of a Squirrel
     /// </summary>
-    public override float BASE_ATTACK_RANGE => 20f;
+    public override float BASE_ATTACK_RANGE => 5f;
 
     /// <summary>
     /// Maximum attack range of a Squirrel
@@ -119,11 +119,6 @@ public class Squirrel : Defender
     /// </summary>
     public override DefenderClass CLASS => DefenderClass.TREBUCHET;
 
-
-    /// <summary>
-    /// Called when this Squirrel dies.
-    /// </summary>
-    public override void OnDie() { return; }
 
     /// <summary>
     /// Sets this Squirrel's 2D Collider's properties.

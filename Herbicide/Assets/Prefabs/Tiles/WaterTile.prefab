@@ -97,3 +97,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0dcfb7b8d5844218a5a374e4df32d3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  modelRenderer: {fileID: 5117693834016305980}
+  modelCollider: {fileID: 0}

@@ -7,7 +7,7 @@ using UnityEngine.Assertions;
 /// Represents something that can be shot and collide with an
 /// ITargetable.
 /// </summary>
-public abstract class Projectile : PlaceableObject
+public abstract class Projectile : Model
 {
     /// <summary>
     /// Type of this Projectile.
@@ -15,26 +15,6 @@ public abstract class Projectile : PlaceableObject
     public abstract ProjectileType TYPE { get; }
 
     //--------------------STATS---------------------//
-
-    /// <summary>
-    /// Starting health of this Projectile.
-    /// </summary>
-    public override int BASE_HEALTH => 1;
-
-    /// <summary>
-    /// Maximum health of this Projectile.
-    /// </summary>
-    public override int MAX_HEALTH => 1;
-
-    /// <summary>
-    /// Minimum health of this Projectile.
-    /// </summary>
-    public override int MIN_HEALTH => 0;
-
-    /// <summary>
-    /// Cost to place this Projectile.
-    /// </summary>
-    public override int COST => 0;
 
     /// <summary>
     /// Starting speed of this Projectile.
@@ -87,11 +67,6 @@ public abstract class Projectile : PlaceableObject
     private float age;
 
     //----------------------------------------------//
-
-    /// <summary>
-    /// By default, Projectiles do not occupy Tiles.
-    /// </summary>
-    public override bool OCCUPIER => false;
 
     /// <summary>
     /// How many seconds a Projectile's move animation lasts,
@@ -253,43 +228,14 @@ public abstract class Projectile : PlaceableObject
     }
 
     /// <summary>
-    /// Returns the Sprite that represents this Projectile in the inventory.
-    /// </summary>
-    /// <returns>the Sprite that represents this Projectile in the inventory.</returns>
-    public override Sprite GetInventorySprite() { return null; }
-
-    /// <summary>
-    /// Returns the Sprite that represents this Projectile during placement.
-    /// </summary>
-    /// <returns>the Sprite that represents this Projectile during placement.</returns>
-    public override Sprite GetPlacementSprite() { return null; }
-
-    /// <summary>
-    /// Returns a Projectile GameObject that can be placed on the
-    /// TileGrid.
-    /// </summary>
-    /// <returns>a Projectile GameObject that can be placed on the
-    /// TileGrid.</returns>
-    public override GameObject MakePlaceableObject()
-    {
-        return Instantiate(ProjectileFactory.GetProjectilePrefab(TYPE));
-    }
-
-    /// <summary>
     /// Resets this Projectile's stats to their starting
     /// values.
     /// </summary>
     public override void ResetStats()
     {
-        base.ResetStats();
         ResetSpeed();
         ResetDamage();
     }
-
-    /// <summary>
-    /// Called when this Projectile dies.
-    /// </summary>
-    public override void OnDie() { return; }
 
     /// <summary>
     /// Sets this Projectile's 2D Collider's properties.
@@ -301,4 +247,26 @@ public abstract class Projectile : PlaceableObject
     /// </summary>
     /// <param name="position">The position to set the shadow to.</param>
     public void SetShadowPosition(Vector3 position) { shadow.transform.position = position; }
+
+    /// <summary>
+    /// Returns the Sprite component that represents this Projectile in
+    /// the Inventory.
+    /// </summary>
+    /// <returns>the Sprite component that represents this Projectile in
+    /// the Inventory.</returns>
+    public override Sprite GetInventorySprite()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    /// <summary>
+    /// Returns a Sprite that represents this Projectile when it is
+    /// being placed.
+    /// </summary>
+    /// <returns> a Sprite that represents this Projectile when it is
+    /// being placed.</returns>
+    public override Sprite GetPlacementSprite()
+    {
+        throw new System.NotImplementedException();
+    }
 }

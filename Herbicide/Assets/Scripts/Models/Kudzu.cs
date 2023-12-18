@@ -9,7 +9,7 @@ using UnityEngine.Assertions;
 public class Kudzu : Enemy
 {
     /// <summary>
-    /// Name of a Kudzu.
+    /// Name of this Kudzu.
     /// </summary>
     public override string NAME => "Kudzu";
 
@@ -26,7 +26,7 @@ public class Kudzu : Enemy
     /// <summary>
     /// The cooldown between each hop. 
     /// </summary>
-    public float HOP_COOLDOWN => 1.25f;
+    public float HOP_COOLDOWN => .2f;
 
     /// <summary>
     /// Base health of a Kudzu.
@@ -46,7 +46,7 @@ public class Kudzu : Enemy
     /// <summary>
     /// Amount of attack cooldown this Kudzu starts with.
     /// </summary>
-    public override float BASE_ATTACK_COOLDOWN => 3f;
+    public override float BASE_ATTACK_COOLDOWN => 0.5f;
 
     /// <summary>
     /// Most amount of attack cooldown this Kudzu can have.
@@ -115,7 +115,7 @@ public class Kudzu : Enemy
     /// <summary>
     /// Starting movement speed of a Kudzu.
     /// </summary>
-    public override float BASE_MOVEMENT_SPEED => 4f;
+    public override float BASE_MOVEMENT_SPEED => 8f;
 
     /// <summary>
     /// Maximum movement speed of a Kudzu.
@@ -126,11 +126,6 @@ public class Kudzu : Enemy
     /// Minumum movement speed of a Kudzu.
     /// </summary>
     public override float MIN_MOVEMENT_SPEED => 0f;
-
-    /// <summary>
-    /// true if this Kudzu is currently hopping.
-    /// </summary>
-    private bool hopping;
 
     /// <summary>
     /// How many seconds remain before this Kudzu can hop.

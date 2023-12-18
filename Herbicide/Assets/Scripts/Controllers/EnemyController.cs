@@ -12,6 +12,7 @@ using System;
 /// it to life. This includes moving it, choosing targets, playing animations,
 /// and more.
 /// </summary>
+/// <typeparam name="T">Enum to represent state of the Enemy.</typeparam>
 public abstract class EnemyController<T> : MobController<T> where T : Enum
 {
     /// <summary>
@@ -69,14 +70,6 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     private void UpdateEnemyHealthState() { GetEnemy().UpdateHealthState(); }
 
     /// <summary>
-    /// Returns true if the Enemy controlled by this EnemyController
-    /// is not null.
-    /// </summary>
-    /// <returns>true if the Enemy controlled by this EnemyController
-    /// is not null; otherwise, returns false.</returns>
-    public override bool ValidModel() { return GetEnemy() != null; }
-
-    /// <summary>
     /// Returns the Enemy controlled by this EnemyController.
     /// </summary>
     /// <returns>the Enemy controlled by this EnemyController.</returns>
@@ -99,28 +92,19 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     }
 
     /// <summary>
-    /// Destroys this EnemyController's Enemy model, removing it
-    /// from the scene and triggering its death logic.
+    /// Returns true if this controller's Enemy should be destoyed and
+    /// set to null.
     /// </summary>
-    protected virtual void DestroyEnemy()
+    /// <returns>true if this controller's Enemy should be destoyed and
+    /// set to null; otherwise, false.</returns>
+    protected override bool ShouldRemoveModel()
     {
-        if (!ValidModel()) return;
-        GetEnemy().OnDie();
-        GameObject.Destroy(GetEnemy().gameObject);
+        if (!GetEnemy().Spawned()) return false;
 
-        //We are done with our Enemy.
-        RemoveModel();
-    }
+        if (!TileGrid.OnWalkableTile(GetEnemy().GetPosition())) return true;
+        else if (GetEnemy().GetHealth() <= 0) return true;
 
-    /// <summary>
-    /// Checks if this EnemyController's model should be removed from
-    /// the scene. If so, removes it.
-    /// </summary>
-    protected override void TryRemoveModel()
-    {
-        if (!GetEnemy().Spawned()) return;
-        if (!TileGrid.OnWalkableTile(GetEnemy().GetPosition())) DestroyEnemy();
-        else if (GetEnemy().GetHealth() <= 0) DestroyEnemy();
+        return false;
     }
 
     /// <summary>
@@ -139,11 +123,15 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
 
         Assert.IsNotNull(targetables, "List of targets is null.");
         List<ITargetable> filteredTargets = new List<ITargetable>();
-        filteredTargets.AddRange(targetables.Where(tar =>
-            (tar as Tree != null || tar as Butterfly != null) &&
-            TileGrid.CanReach(GetEnemy().GetPosition(), tar.GetPosition()) &&
-            tar.Targetable())
-        );
+
+        foreach (ITargetable potentialTarget in targetables)
+        {
+            bool canReach = TileGrid.CanReach(GetEnemy().GetPosition(), potentialTarget.GetPosition());
+            bool targetable = potentialTarget.Targetable();
+            bool isTree = potentialTarget as Tree != null;
+
+            if (isTree && canReach && targetable) filteredTargets.Add(potentialTarget);
+        }
         return filteredTargets;
     }
 

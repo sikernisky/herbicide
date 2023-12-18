@@ -78,23 +78,6 @@ public abstract class Enemy : Mob
     public bool ReadyToSpawn() { return !Spawned() && SceneController.GetTimeElapsed() >= GetSpawnTime(); }
 
     /// <summary>
-    /// Called when this Enemy dies.
-    /// </summary>
-    public override void OnDie() { DropDeathLoot(); }
-
-    /// <summary>
-    /// Spawns the loot dropped by this Enemy when it dies. 
-    /// </summary>
-    public virtual void DropDeathLoot()
-    {
-        Assert.IsTrue(LOOT_DROP_CHANCE >= 0f && LOOT_DROP_CHANCE <= 1f);
-        int multipliedChance = (int)(LOOT_DROP_CHANCE * 100);
-        int randomNumber = UnityEngine.Random.Range(1, 101);
-        if (multipliedChance <= randomNumber) return; //Loot drop "missed".
-        EconomyController.SpawnSeedToken(GetAttackPosition());
-    }
-
-    /// <summary>
     /// Updates this Enemy's HealthState.
     /// </summary>
     public void UpdateHealthState()

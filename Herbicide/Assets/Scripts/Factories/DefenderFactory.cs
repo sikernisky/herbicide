@@ -33,14 +33,6 @@ public class DefenderFactory : MonoBehaviour
     private Sprite[] placedSprites;
 
     /// <summary>
-    /// Holds all placed Defender prefabs. They are indexed by
-    /// their Type enum.
-    /// </summary>
-    [SerializeField]
-    private GameObject[] prefabs;
-
-
-    /// <summary>
     /// All ScriptableObjects containing animation data about
     /// different Defenders.
     /// </summary>

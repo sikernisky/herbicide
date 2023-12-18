@@ -15,6 +15,20 @@ public abstract class TreeController<T> : MobController<T> where T : Enum
     /// </summary>
     private static int NUM_TREES;
 
+    /// <summary>
+    /// The maximum number of targets a Tree can select at once.
+    /// </summary>
+    protected override int MAX_TARGETS => 0;
+
+    /// <summary>
+    /// The rate at which the Tree drops it resource.
+    /// </summary>
+    private float resourceDropInterval;
+
+    /// <summary>
+    /// Number of seconds since the Tree last dropped a resource.
+    /// </summary>
+    private float timeSinceLastDrop;
 
     /// <summary>
     /// Makes a new TreeController for a Tree.
@@ -38,31 +52,7 @@ public abstract class TreeController<T> : MobController<T> where T : Enum
     /// Returns this TreeController's Tree model.
     /// </summary>
     /// <returns>this TreeController's Tree model.</returns>
-    private Tree GetTree() { return GetModel() as Tree; }
-
-    /// <summary>
-    /// Returns true if this TreeController's model is a Tree and is 
-    /// not NULL.
-    /// </summary>
-    /// <returns>true if this TreeController's model is a Tree and is 
-    /// not NULL.</returns>
-    public override bool ValidModel() { return GetTree() != null; }
-
-    /// <summary>
-    /// Sets this TreeController's target from a filtered list of ITargetables.
-    /// </summary>
-    /// <param name="filteredTargetables">a list of ITargables that this TreeController
-    /// is allowed to set as its target. /// </param>
-    protected override void ElectTarget(List<ITargetable> filteredTargetables)
-    {
-        if (!ValidModel()) return;
-        if (GetTarget() != null) return;
-        Assert.IsNotNull(filteredTargetables, "List of targets is null.");
-
-        int random = UnityEngine.Random.Range(0, filteredTargetables.Count);
-        if (filteredTargetables.Count == 0) SetTarget(null);
-        else SetTarget(filteredTargetables[random]);
-    }
+    protected Tree GetTree() { return GetModel() as Tree; }
 
     /// <summary>
     /// Parses the list of all ITargetables in the scene such that it
@@ -82,19 +72,35 @@ public abstract class TreeController<T> : MobController<T> where T : Enum
     }
 
     /// <summary>
-    /// Checks if this TreeController's Tree should be removed from
-    /// the game. If so, clears it.
+    /// Returns true if this controller's Tree should be destoyed and
+    /// set to null.
     /// </summary>
-    protected override void TryRemoveModel()
+    /// <returns>true if this controller's Tree should be destoyed and
+    /// set to null; otherwise, false.</returns>
+    protected override bool ShouldRemoveModel()
     {
-        if (!ValidModel()) return;
-        if (GetTree().GetHealth() > 0) return;
+        if (GetTree().GetHealth() <= 0) return true;
 
-        GetTree().OnDie();
-        GameObject.Destroy(GetTree().gameObject);
-        GameObject.Destroy(GetTree());
-
-        //We are done with our Tree.
-        RemoveModel();
+        return false;
     }
+
+    /// <summary>
+    /// Different Trees output different resources; outputs the
+    /// correct resource for the Tree model.
+    /// </summary>
+    protected void EmitResources()
+    {
+        resourceDropInterval = 1f / GetTree().GetResourceDropRate();
+        timeSinceLastDrop += Time.deltaTime;
+        if (timeSinceLastDrop >= resourceDropInterval)
+        {
+            DropResources();
+            timeSinceLastDrop = 0;
+        }
+    }
+
+    /// <summary>
+    /// Drops one prefab of the Tree's resource.
+    /// </summary> <summary>
+    protected abstract void DropResources();
 }

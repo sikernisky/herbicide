@@ -9,9 +9,14 @@ using UnityEngine;
 public class SoilFlooring : Flooring
 {
     /// <summary>
+    /// Name of this SoilFlooring.
+    /// </summary>
+    public override string NAME => "SoilFlooring";
+
+    /// <summary>
     /// Flooring type of this SoilFlooring
     /// </summary>
-    protected override Flooring.FlooringType type => Flooring.FlooringType.SOIL;
+    protected override FlooringType type => FlooringType.SOIL;
 
 
     /// <summary>

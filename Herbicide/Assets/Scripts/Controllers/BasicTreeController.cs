@@ -24,6 +24,7 @@ public class BasicTreeController : TreeController<BasicTreeController.BasicTreeS
     private static int NUM_BASIC_TREES;
 
 
+
     /// <summary>
     /// Makes a new BasicTreeController.
     /// </summary>
@@ -63,7 +64,7 @@ public class BasicTreeController : TreeController<BasicTreeController.BasicTreeS
     /// <param name="stateA">The first state.</param>
     /// <param name="stateB">The second state.</param>
     /// <returns>true if two BasicTreeStates are equal; otherwise, false.</returns>
-    protected override bool StateEquals(BasicTreeState stateA, BasicTreeState stateB)
+    public override bool StateEquals(BasicTreeState stateA, BasicTreeState stateB)
     {
         return stateA == stateB;
     }
@@ -74,7 +75,7 @@ public class BasicTreeController : TreeController<BasicTreeController.BasicTreeS
     /// 
     /// SPAWN --> IDLE : always <br></br>
     /// </summary>
-    protected override void UpdateStateFSM()
+    public override void UpdateStateFSM()
     {
         switch (GetState())
         {
@@ -94,23 +95,46 @@ public class BasicTreeController : TreeController<BasicTreeController.BasicTreeS
     protected virtual void ExecuteIdleState()
     {
         if (GetState() != BasicTreeState.IDLE) return;
+        if (!ValidModel()) return;
+
+        EmitResources();
     }
 
-    protected override void AgeAnimationCounter()
-    {
-        throw new System.NotImplementedException();
-    }
+    /// <summary>
+    /// Adds one chunk of Time.deltaTime to the animation
+    /// counter that tracks the current state.
+    /// </summary>
+    public override void AgeAnimationCounter() { throw new System.NotImplementedException(); }
 
-    protected override float GetAnimationCounter()
-    {
-        throw new System.NotImplementedException();
-    }
+    /// <summary>
+    /// Returns the animation counter for the current state.
+    /// </summary>
+    /// <returns>the animation counter for the current state.</returns>
+    public override float GetAnimationCounter() { throw new System.NotImplementedException(); }
 
-    protected override void ResetAnimationCounter()
-    {
-        throw new System.NotImplementedException();
-    }
+    /// <summary>
+    /// Sets the animation counter for the current state to 0.
+    /// </summary>
+    public override void ResetAnimationCounter() { throw new System.NotImplementedException(); }
 
     //---------------------END STATE LOGIC-----------------------//
 
+    /// <summary>
+    /// Drops one prefab of the BasicTree's resource.
+    /// </summary>
+    protected override void DropResources()
+    {
+        GameObject dewPrefab = CollectableFactory.GetCollectablePrefab(Collectable.CollectableType.DEW);
+        GameObject clonedDew = GameObject.Instantiate(dewPrefab);
+        Assert.IsNotNull(clonedDew);
+        Dew dewComp = clonedDew.GetComponent<Dew>();
+        Assert.IsNotNull(dewComp);
+        Vector3 dropPosition = new Vector3(
+            GetTree().GetX() + GetTree().DEFENDER_OFFSET_X,
+            GetTree().GetY() + GetTree().DEFENDER_OFFSET_Y,
+            1
+        );
+        DewController dewController = new DewController(dewComp, dropPosition);
+        AddController(dewController);
+    }
 }

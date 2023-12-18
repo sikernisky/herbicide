@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Represents a GameObject that can host a PlaceableObject. In other
+/// Contract for a model that can host a PlaceableObject. In other
 /// words, a PlaceableObject can be placed on an ISurface.
 /// </summary>
 public interface ISurface

@@ -1,0 +1,220 @@
+===============================================================================
+EXTENSION NAME : linecount
+EXTENSION VERSION : 0.1.7
+-------------------------------------------------------------------------------
+count time : 2023-12-13 16:45:22
+count workspace : /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide
+total files : 208
+total code lines : 47956
+total comment lines : 6401
+total blank lines : 7020
+
+.VSCodeCounter/2023-06-04_21-10-44/details.md, code is 92, comment is 0, blank is 6.
+.VSCodeCounter/2023-06-04_21-10-44/diff-details.md, code is 9, comment is 0, blank is 6.
+.VSCodeCounter/2023-06-04_21-10-44/diff.csv, code is 2, comment is 0, blank is 0.
+.VSCodeCounter/2023-06-04_21-10-44/diff.md, code is 12, comment is 0, blank is 7.
+.VSCodeCounter/2023-06-04_21-10-44/diff.txt, code is 19, comment is 0, blank is 3.
+.VSCodeCounter/2023-06-04_21-10-44/results.csv, code is 85, comment is 0, blank is 0.
+.VSCodeCounter/2023-06-04_21-10-44/results.json, code is 1, comment is 0, blank is 0.
+.VSCodeCounter/2023-06-04_21-10-44/results.md, code is 45, comment is 0, blank is 7.
+.VSCodeCounter/2023-06-04_21-10-44/results.txt, code is 135, comment is 0, blank is 3.
+.VSCodeCounter/2023-08-15_20-50-54/details.md, code is 117, comment is 0, blank is 6.
+.VSCodeCounter/2023-08-15_20-50-54/diff-details.md, code is 112, comment is 0, blank is 6.
+.VSCodeCounter/2023-08-15_20-50-54/diff.csv, code is 105, comment is 0, blank is 0.
+.VSCodeCounter/2023-08-15_20-50-54/diff.md, code is 63, comment is 0, blank is 7.
+.VSCodeCounter/2023-08-15_20-50-54/diff.txt, code is 173, comment is 0, blank is 3.
+.VSCodeCounter/2023-08-15_20-50-54/results.csv, code is 110, comment is 0, blank is 0.
+.VSCodeCounter/2023-08-15_20-50-54/results.json, code is 1, comment is 0, blank is 0.
+.VSCodeCounter/2023-08-15_20-50-54/results.md, code is 56, comment is 0, blank is 7.
+.VSCodeCounter/2023-08-15_20-50-54/results.txt, code is 171, comment is 0, blank is 3.
+.vsconfig, code is 5, comment is 0, blank is 1.
+Assembly-CSharp.csproj, code is 903, comment is 0, blank is 0.
+Assets/Animation/Animations/FlashRed.anim, code is 296, comment is 0, blank is 0.
+Assets/Animation/Animators/EnemyAnimator.controller, code is 416, comment is 0, blank is 0.
+Assets/Levels/level0.json, code is 204, comment is 0, blank is 0.
+Assets/Levels/level_easy.json, code is 44, comment is 0, blank is 0.
+Assets/Levels/level_hard.json, code is 148, comment is 0, blank is 0.
+Assets/Levels/level_medium.json, code is 0, comment is 0, blank is 0.
+Assets/Scripts/Controllers/AcornController.cs, code is 52, comment is 56, blank is 15.
+Assets/Scripts/Controllers/BasicTreeController.cs, code is 53, comment is 49, blank is 17.
+Assets/Scripts/Controllers/BombController.cs, code is 99, comment is 70, blank is 26.
+Assets/Scripts/Controllers/ButterflyController.cs, code is 208, comment is 113, blank is 45.
+Assets/Scripts/Controllers/ControllerController.cs, code is 178, comment is 91, blank is 34.
+Assets/Scripts/Controllers/DefenderController.cs, code is 38, comment is 39, blank is 10.
+Assets/Scripts/Controllers/EconomyController.cs, code is 74, comment is 55, blank is 21.
+Assets/Scripts/Controllers/EnemyController.cs, code is 80, comment is 71, blank is 23.
+Assets/Scripts/Controllers/EnemyManager.cs, code is 78, comment is 48, blank is 19.
+Assets/Scripts/Controllers/HazardController.cs, code is 20, comment is 25, blank is 6.
+Assets/Scripts/Controllers/InputController.cs, code is 176, comment is 132, blank is 55.
+Assets/Scripts/Controllers/InventoryController.cs, code is 93, comment is 73, blank is 24.
+Assets/Scripts/Controllers/JSONController.cs, code is 48, comment is 38, blank is 13.
+Assets/Scripts/Controllers/KudzuController.cs, code is 188, comment is 111, blank is 43.
+Assets/Scripts/Controllers/LevelController.cs, code is 111, comment is 94, blank is 37.
+Assets/Scripts/Controllers/MainMenuController.cs, code is 56, comment is 49, blank is 14.
+Assets/Scripts/Controllers/MobController.cs, code is 113, comment is 159, blank is 38.
+Assets/Scripts/Controllers/ModelController.cs, code is 90, comment is 107, blank is 27.
+Assets/Scripts/Controllers/PlaceableObjectController.cs, code is 20, comment is 31, blank is 7.
+Assets/Scripts/Controllers/PlacementController.cs, code is 112, comment is 78, blank is 30.
+Assets/Scripts/Controllers/ProjectileController.cs, code is 89, comment is 149, blank is 44.
+Assets/Scripts/Controllers/SlowZoneController.cs, code is 99, comment is 87, blank is 24.
+Assets/Scripts/Controllers/SoundController.cs, code is 47, comment is 32, blank is 11.
+Assets/Scripts/Controllers/SquirrelController.cs, code is 136, comment is 93, blank is 31.
+Assets/Scripts/Controllers/SynergyController.cs, code is 20, comment is 17, blank is 4.
+Assets/Scripts/Controllers/TileGrid.cs, code is 561, comment is 395, blank is 130.
+Assets/Scripts/Controllers/TreeController.cs, code is 30, comment is 45, blank is 11.
+Assets/Scripts/Factories/DefenderFactory.cs, code is 66, comment is 66, blank is 27.
+Assets/Scripts/Factories/EdgeFactory.cs, code is 30, comment is 30, blank is 9.
+Assets/Scripts/Factories/EnemyFactory.cs, code is 81, comment is 45, blank is 17.
+Assets/Scripts/Factories/FlooringFactory.cs, code is 30, comment is 30, blank is 10.
+Assets/Scripts/Factories/HazardFactory.cs, code is 26, comment is 18, blank is 5.
+Assets/Scripts/Factories/ProjectileFactory.cs, code is 34, comment is 23, blank is 7.
+Assets/Scripts/Factories/TileFactory.cs, code is 32, comment is 32, blank is 9.
+Assets/Scripts/Factories/TreeFactory.cs, code is 41, comment is 43, blank is 16.
+Assets/Scripts/Interfaces/IAnimatable.cs, code is 15, comment is 40, blank is 10.
+Assets/Scripts/Interfaces/IAttackable.cs, code is 20, comment is 54, blank is 14.
+Assets/Scripts/Interfaces/ISlottable.cs, code is 9, comment is 18, blank is 3.
+Assets/Scripts/Interfaces/IStateTracker.cs, code is 13, comment is 37, blank is 6.
+Assets/Scripts/Interfaces/ISurface.cs, code is 23, comment is 102, blank is 18.
+Assets/Scripts/Interfaces/ITargetable.cs, code is 28, comment is 91, blank is 22.
+Assets/Scripts/Interfaces/IUsable.cs, code is 6, comment is 5, blank is 1.
+Assets/Scripts/Loading/LayerData.cs, code is 74, comment is 73, blank is 19.
+Assets/Scripts/Loading/ObjectData.cs, code is 66, comment is 63, blank is 18.
+Assets/Scripts/Loading/PropertiesData.cs, code is 19, comment is 18, blank is 4.
+Assets/Scripts/Loading/TiledData.cs, code is 82, comment is 66, blank is 15.
+Assets/Scripts/Loading/TilesetData.cs, code is 27, comment is 26, blank is 6.
+Assets/Scripts/Models/Acorn.cs, code is 16, comment is 34, blank is 10.
+Assets/Scripts/Models/AnimatedTile.cs, code is 31, comment is 20, blank is 7.
+Assets/Scripts/Models/BasicTree.cs, code is 25, comment is 60, blank is 20.
+Assets/Scripts/Models/Bomb.cs, code is 16, comment is 34, blank is 9.
+Assets/Scripts/Models/BombSplat.cs, code is 19, comment is 43, blank is 11.
+Assets/Scripts/Models/Butterfly.cs, code is 31, comment is 87, blank is 29.
+Assets/Scripts/Models/Collectable.cs, code is 7, comment is 7, blank is 1.
+Assets/Scripts/Models/Currency.cs, code is 46, comment is 60, blank is 19.
+Assets/Scripts/Models/Defender.cs, code is 30, comment is 40, blank is 9.
+Assets/Scripts/Models/DefenderScriptable.cs, code is 89, comment is 66, blank is 19.
+Assets/Scripts/Models/Direction.cs, code is 7, comment is 4, blank is 1.
+Assets/Scripts/Models/EdgeTile.cs, code is 11, comment is 11, blank is 2.
+Assets/Scripts/Models/Effect.cs, code is 32, comment is 47, blank is 11.
+Assets/Scripts/Models/Enemy.cs, code is 52, comment is 68, blank is 18.
+Assets/Scripts/Models/EnemyScriptable.cs, code is 234, comment is 177, blank is 49.
+Assets/Scripts/Models/Flooring.cs, code is 182, comment is 165, blank is 55.
+Assets/Scripts/Models/GameState.cs, code is 9, comment is 3, blank is 0.
+Assets/Scripts/Models/GrassTile.cs, code is 27, comment is 34, blank is 8.
+Assets/Scripts/Models/Hazard.cs, code is 16, comment is 29, blank is 8.
+Assets/Scripts/Models/HazardScriptable.cs, code is 18, comment is 18, blank is 4.
+Assets/Scripts/Models/InventorySlot.cs, code is 69, comment is 67, blank is 21.
+Assets/Scripts/Models/Kudzu.cs, code is 47, comment is 111, blank is 32.
+Assets/Scripts/Models/Mob.cs, code is 116, comment is 193, blank is 61.
+Assets/Scripts/Models/Model.cs, code is 109, comment is 164, blank is 45.
+Assets/Scripts/Models/PlaceableObject.cs, code is 29, comment is 71, blank is 14.
+Assets/Scripts/Models/Projectile.cs, code is 64, comment is 146, blank is 40.
+Assets/Scripts/Models/ProjectileScriptable.cs, code is 21, comment is 25, blank is 10.
+Assets/Scripts/Models/SeedToken.cs, code is 15, comment is 6, blank is 3.
+Assets/Scripts/Models/ShoreTile.cs, code is 9, comment is 13, blank is 3.
+Assets/Scripts/Models/SlowEffect.cs, code is 31, comment is 30, blank is 7.
+Assets/Scripts/Models/SlowZone.cs, code is 19, comment is 43, blank is 13.
+Assets/Scripts/Models/SoilFlooring.cs, code is 31, comment is 19, blank is 5.
+Assets/Scripts/Models/Sound.cs, code is 25, comment is 27, blank is 6.
+Assets/Scripts/Models/Squirrel.cs, code is 30, comment is 81, blank is 28.
+Assets/Scripts/Models/Tile.cs, code is 288, comment is 254, blank is 91.
+Assets/Scripts/Models/Tree.cs, code is 133, comment is 145, blank is 40.
+Assets/Scripts/Models/WaterTile.cs, code is 9, comment is 12, blank is 3.
+Assets/Scripts/View/CameraController.cs, code is 44, comment is 38, blank is 9.
+Assets/Scripts/View/CanvasController.cs, code is 128, comment is 87, blank is 31.
+Assets/Scripts/View/SceneController.cs, code is 82, comment is 58, blank is 19.
+Assets/TextMesh Pro/Fonts/LiberationSans - OFL.txt, code is 29, comment is 1, blank is 17.
+Assets/TextMesh Pro/Fonts/LiberationSans.ttf, it is a binary file.
+Assets/TextMesh Pro/Resources/LineBreaking Following Characters.txt, code is 1, comment is 0, blank is 0.
+Assets/TextMesh Pro/Resources/LineBreaking Leading Characters.txt, code is 1, comment is 0, blank is 0.
+Assets/TextMesh Pro/Shaders/TMP_Bitmap-Custom-Atlas.shader, code is 109, comment is 2, blank is 32.
+Assets/TextMesh Pro/Shaders/TMP_Bitmap-Mobile.shader, code is 112, comment is 3, blank is 30.
+Assets/TextMesh Pro/Shaders/TMP_Bitmap.shader, code is 109, comment is 2, blank is 32.
+Assets/TextMesh Pro/Shaders/TMP_SDF Overlay.shader, code is 243, comment is 8, blank is 70.
+Assets/TextMesh Pro/Shaders/TMP_SDF SSD.shader, code is 241, comment is 5, blank is 65.
+Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Masking.shader, code is 189, comment is 15, blank is 49.
+Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Overlay.shader, code is 183, comment is 13, blank is 49.
+Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile SSD.shader, code is 83, comment is 4, blank is 20.
+Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile.shader, code is 184, comment is 13, blank is 49.
+Assets/TextMesh Pro/Shaders/TMP_SDF-Surface-Mobile.shader, code is 103, comment is 9, blank is 27.
+Assets/TextMesh Pro/Shaders/TMP_SDF-Surface.shader, code is 122, comment is 5, blank is 32.
+Assets/TextMesh Pro/Shaders/TMP_SDF.shader, code is 243, comment is 8, blank is 70.
+Assets/TextMesh Pro/Shaders/TMP_Sprite.shader, code is 97, comment is 0, blank is 19.
+Assets/TextMesh Pro/Shaders/TMPro.cginc, code is 63, comment is 3, blank is 19.
+Assets/TextMesh Pro/Shaders/TMPro_Mobile.cginc, code is 122, comment is 3, blank is 33.
+Assets/TextMesh Pro/Shaders/TMPro_Properties.cginc, code is 62, comment is 44, blank is 13.
+Assets/TextMesh Pro/Shaders/TMPro_Surface.cginc, code is 76, comment is 8, blank is 18.
+Assets/TextMesh Pro/Sprites/EmojiOne Attribution.txt, code is 2, comment is 1, blank is 1.
+Assets/TextMesh Pro/Sprites/EmojiOne.json, code is 155, comment is 0, blank is 1.
+Builds/Herbicide_Gameplay_Prototype.zip, it is a binary file.
+Builds/HerbicideGameplayPrototype.app/Contents/_CodeSignature/CodeResources, code is 1861, comment is 5, blank is 0.
+Builds/HerbicideGameplayPrototype.app/Contents/Frameworks/libmono-native.dylib, it is a binary file.
+Builds/HerbicideGameplayPrototype.app/Contents/Frameworks/libmonobdwgc-2.0.dylib, it is a binary file.
+Builds/HerbicideGameplayPrototype.app/Contents/Frameworks/libMonoPosixHelper.dylib, it is a binary file.
+Builds/HerbicideGameplayPrototype.app/Contents/Frameworks/UnityPlayer.dylib, it is a binary file.
+Builds/HerbicideGameplayPrototype.app/Contents/Info.plist, code is 45, comment is 0, blank is 0.
+Builds/HerbicideGameplayPrototype.app/Contents/MacOS/Herbicide, it is a binary file.
+Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/2.0/Browsers/Compat.browser, code is 4, comment is 35, blank is 0.
+Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/2.0/DefaultWsdlHelpGenerator.aspx, code is 1583, comment is 42, blank is 277.
+Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/2.0/machine.config, code is 263, comment is 0, blank is 17.
+Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/2.0/settings.map, code is 43, comment is 0, blank is 5.
+Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/2.0/web.config, code is 148, comment is 0, blank is 5.
+Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/4.0/Browsers/Compat.browser, code is 4, comment is 35, blank is 0.
+Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/4.0/DefaultWsdlHelpGenerator.aspx, code is 1583, comment is 42, blank is 277.
+Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/4.0/machine.config, code is 289, comment is 0, blank is 18.
+Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/4.0/settings.map, code is 43, comment is 0, blank is 5.
+Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/4.0/web.config, code is 245, comment is 0, blank is 7.
+Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/4.5/Browsers/Compat.browser, code is 4, comment is 35, blank is 0.
+Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/4.5/DefaultWsdlHelpGenerator.aspx, code is 1583, comment is 42, blank is 277.
+Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/4.5/machine.config, code is 292, comment is 0, blank is 18.
+Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/4.5/settings.map, code is 43, comment is 0, blank is 5.
+Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/4.5/web.config, code is 245, comment is 0, blank is 7.
+Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/browscap.ini, code is 12363, comment is 204, blank is 3170.
+Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/config, code is 46, comment is 0, blank is 0.
+Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/mconfig/config.xml, code is 525, comment is 30, blank is 61.
+Builds/HerbicideGameplayPrototype.app/Contents/PlugIns/lib_burst_generated.bundle, it is a binary file.
+Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/app.info, code is 2, comment is 0, blank is 0.
+Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/boot.config, code is 3, comment is 0, blank is 0.
+Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/globalgamemanagers, it is a binary file.
+Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/globalgamemanagers.assets, it is a binary file.
+Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/level0, it is a binary file.
+Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/resources.assets, it is a binary file.
+Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/resources.assets.resS, it is a binary file.
+Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/Resources/unity_builtin_extra, it is a binary file.
+Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/RuntimeInitializeOnLoads.json, code is 1, comment is 0, blank is 0.
+Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/ScriptingAssemblies.json, code is 1, comment is 0, blank is 0.
+Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/sharedassets0.assets, it is a binary file.
+Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/sharedassets0.assets.resS, it is a binary file.
+Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/sharedassets0.resource, it is a binary file.
+Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/StreamingAssets/UnityServicesProjectConfiguration.json, code is 1, comment is 0, blank is 0.
+Builds/HerbicideGameplayPrototype.app/Contents/Resources/DefaultPreferences.plist, code is 8, comment is 0, blank is 0.
+Builds/HerbicideGameplayPrototype.app/Contents/Resources/MainMenu.nib/designable.nib, code is 88, comment is 0, blank is 0.
+Builds/HerbicideGameplayPrototype.app/Contents/Resources/MainMenu.nib/keyedobjects.nib, it is a binary file.
+Builds/HerbicideGameplayPrototype.app/Contents/Resources/PlayerIcon.icns, it is a binary file.
+Builds/HerbicideGameplayPrototype.app/Contents/Resources/unity default resources, it is a binary file.
+Herbicide.sln, code is 20, comment is 0, blank is 0.
+HerbicideTiled.tiled-project, code is 106, comment is 0, blank is 6.
+HerbicideTiled.tiled-session, code is 64, comment is 0, blank is 2.
+Logs/AssetImportWorker0-prev.log, code is 3549, comment is 0, blank is 92.
+Logs/AssetImportWorker0.log, code is 1081, comment is 0, blank is 45.
+Logs/AssetImportWorker1-prev.log, code is 3531, comment is 0, blank is 92.
+Logs/AssetImportWorker1.log, code is 949, comment is 0, blank is 45.
+Logs/AssetImportWorker2-prev.log, code is 1386, comment is 0, blank is 53.
+Logs/AssetImportWorker3-prev.log, code is 1374, comment is 0, blank is 53.
+Logs/Packages-Update.log, code is 43, comment is 0, blank is 3.
+Logs/shadercompiler-AssetImportWorker0.log, code is 2, comment is 0, blank is 1.
+Logs/shadercompiler-UnityShaderCompiler0.log, code is 2, comment is 0, blank is 1.
+Packages/manifest.json, code is 43, comment is 0, blank is 0.
+Packages/packages-lock.json, code is 466, comment is 0, blank is 0.
+Tiled/HerbicideTiled.tiled-project, code is 11, comment is 0, blank is 1.
+Tiled/HerbicideTiled.tiled-session, code is 22, comment is 0, blank is 0.
+Tiled/Objects/propertytypes.xml, code is 2, comment is 0, blank is 0.
+Tiled/Tilemaps/level0.tmx, code is 105, comment is 0, blank is 0.
+Tiled/Tilesets/Enemies.tsx, code is 10, comment is 0, blank is 0.
+Tiled/Tilesets/Grass.tsx, code is 4, comment is 0, blank is 0.
+Tiled/Tilesets/Shore.tsx, code is 9, comment is 0, blank is 0.
+Tiled/Tilesets/Soil.tsx, code is 4, comment is 0, blank is 0.
+Tiled/Tilesets/Water.tsx, code is 4, comment is 0, blank is 0.
+UserSettings/Layouts/CurrentMaximizeLayout.dwlt, code is 1058, comment is 0, blank is 0.
+UserSettings/Layouts/default-2021.dwlt, code is 1153, comment is 0, blank is 0.
+UserSettings/Search.settings, code is 1, comment is 0, blank is 0.
+===============================================================================

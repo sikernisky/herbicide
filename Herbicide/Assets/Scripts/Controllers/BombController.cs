@@ -65,7 +65,7 @@ public class BombController : ProjectileController<BombController.BombState>
     /// <summary>
     /// Performs logic for the Bomb's Moving state.
     /// </summary>
-    protected override void ExecuteMovingState()
+    public override void ExecuteMovingState()
     {
         if (!ValidModel()) return;
         if (GetState() != BombState.MOVING) return;
@@ -88,7 +88,7 @@ public class BombController : ProjectileController<BombController.BombState>
     /// <summary>
     /// Performs logic for the Bomb's Colliding state.
     /// </summary>
-    protected override void ExecuteCollidingState()
+    public override void ExecuteCollidingState()
     {
         if (!ValidModel()) return;
         if (GetState() != BombState.COLLIDING) return;
@@ -113,7 +113,7 @@ public class BombController : ProjectileController<BombController.BombState>
     /// <summary>
     /// Performs logic for the Bomb's Dead state.
     /// </summary>
-    protected override void ExecuteDeadState()
+    public override void ExecuteDeadState()
     {
         if (!ValidModel()) return;
         if (GetState() != BombState.DEAD) return;
@@ -127,7 +127,7 @@ public class BombController : ProjectileController<BombController.BombState>
     /// <param name="stateA">The first state.</param>
     /// <param name="stateB">The second state.</param>
     /// <returns>true if two BombStates are equal; otherwise, false.</returns>
-    protected override bool StateEquals(BombState stateA, BombState stateB)
+    public override bool StateEquals(BombState stateA, BombState stateB)
     {
         return stateA == stateB;
     }
@@ -140,7 +140,7 @@ public class BombController : ProjectileController<BombController.BombState>
     /// MOVING --> COLLIDING : when hits valid target <br></br>
     /// COLLIDING --> DEAD : when all effects have been applied to valid target <br></br>
     /// </summary>
-    protected override void UpdateStateFSM()
+    public override void UpdateStateFSM()
     {
         switch (GetState())
         {
@@ -164,7 +164,7 @@ public class BombController : ProjectileController<BombController.BombState>
     /// Adds one chunk of Time.deltaTime to the animation
     /// counter that tracks the current state.
     /// </summary>
-    protected override void AgeAnimationCounter()
+    public override void AgeAnimationCounter()
     {
         BombState state = GetState();
         if (state == BombState.MOVING) movingAnimationCounter += Time.deltaTime;
@@ -175,7 +175,7 @@ public class BombController : ProjectileController<BombController.BombState>
     /// Returns the animation counter for the current state.
     /// </summary>
     /// <returns>the animation counter for the current state.</returns>
-    protected override float GetAnimationCounter()
+    public override float GetAnimationCounter()
     {
         BombState state = GetState();
         if (state == BombState.MOVING) return movingAnimationCounter;
@@ -186,7 +186,7 @@ public class BombController : ProjectileController<BombController.BombState>
     /// <summary>
     /// Sets the animation counter for the current state to 0.
     /// </summary>
-    protected override void ResetAnimationCounter()
+    public override void ResetAnimationCounter()
     {
         BombState state = GetState();
         if (state == BombState.MOVING) movingAnimationCounter = 0;

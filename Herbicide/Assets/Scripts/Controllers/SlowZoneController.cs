@@ -19,6 +19,11 @@ public class SlowZoneController : HazardController<SlowZoneController.SlowZoneSt
     private static int NUM_SLOW_ZONES;
 
     /// <summary>
+    /// The maximum number of targets a SlowZone can select at once.
+    /// </summary>
+    protected override int MAX_TARGETS => int.MaxValue;
+
+    /// <summary>
     /// Counts the number of seconds in the active animation; resets
     /// on step.
     /// </summary>
@@ -127,7 +132,7 @@ public class SlowZoneController : HazardController<SlowZoneController.SlowZoneSt
     /// <param name="stateA">The first state.</param>
     /// <param name="stateB">The second state.</param>
     /// <returns>true if the two states are equal; othewise, false.</returns>
-    protected override bool StateEquals(SlowZoneState stateA, SlowZoneState stateB)
+    public override bool StateEquals(SlowZoneState stateA, SlowZoneState stateB)
     {
         return stateA == stateB;
     }
@@ -139,7 +144,7 @@ public class SlowZoneController : HazardController<SlowZoneController.SlowZoneSt
     /// SPAWN --> ACTIVE : when spawned <br></br>
     /// ACTIVE --> DEAD : when killed or times out <br></br>
     /// </summary>
-    protected override void UpdateStateFSM()
+    public override void UpdateStateFSM()
     {
         switch (GetState())
         {
@@ -161,9 +166,12 @@ public class SlowZoneController : HazardController<SlowZoneController.SlowZoneSt
     protected virtual void ExecuteActiveState()
     {
         if (GetState() != SlowZoneState.ACTIVE) return;
-        if (GetTarget() == null || !GetTarget().Targetable()) return;
 
-        GetTarget().ApplyEffect(new SlowEffect(GetTarget() as Mob));
+        foreach (ITargetable t in GetTargets())
+        {
+            Mob mob = t as Mob;
+            t.ApplyEffect(new SlowEffect(mob));
+        }
     }
 
     //---------------------ANIMATION LOGIC----------------------//
@@ -172,7 +180,7 @@ public class SlowZoneController : HazardController<SlowZoneController.SlowZoneSt
     /// Adds one chunk of Time.deltaTime to the animation
     /// counter that tracks the current state.
     /// </summary>
-    protected override void AgeAnimationCounter()
+    public override void AgeAnimationCounter()
     {
         SlowZoneState state = GetState();
         if (state == SlowZoneState.ACTIVE) activeAnimationCounter += Time.deltaTime;
@@ -182,7 +190,7 @@ public class SlowZoneController : HazardController<SlowZoneController.SlowZoneSt
     /// Returns the animation counter for the current state.
     /// </summary>
     /// <returns>the animation counter for the current state.</returns>
-    protected override float GetAnimationCounter()
+    public override float GetAnimationCounter()
     {
         SlowZoneState state = GetState();
         if (state == SlowZoneState.ACTIVE) return activeAnimationCounter;
@@ -192,7 +200,7 @@ public class SlowZoneController : HazardController<SlowZoneController.SlowZoneSt
     /// <summary>
     /// Sets the animation counter for the current state to 0.
     /// </summary>
-    protected override void ResetAnimationCounter()
+    public override void ResetAnimationCounter()
     {
         SlowZoneState state = GetState();
         if (state == SlowZoneState.ACTIVE) activeAnimationCounter = 0;

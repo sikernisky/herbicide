@@ -11,10 +11,10 @@ using TMPro;
 public class InventorySlot : MonoBehaviour
 {
     /// <summary>
-    /// The ISlottable that occupies this InventorySlot; null if this
+    /// The Model that occupies this InventorySlot; null if this
     /// Inventory slot is empty.
     /// </summary>
-    private ISlottable occupant;
+    private Model occupant;
 
 
     /// <summary>
@@ -73,13 +73,13 @@ public class InventorySlot : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns true if this InventorySlot can be loaded with an ISlottable.
+    /// Returns true if this InventorySlot can be loaded with an Model.
     /// If so, loads it.
     /// </summary>
     /// <param name="item"></param>
-    /// <returns>true if this InventorySlot can be loaded with an ISlottable;
+    /// <returns>true if this InventorySlot can be loaded with an Model;
     /// otherwise, false.</returns>
-    public bool Load(ISlottable item)
+    public bool Load(Model item)
     {
         if (!CanLoad(item)) return false;
 
@@ -134,12 +134,12 @@ public class InventorySlot : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns true if this InventorySlot can load a given ISlottable.
+    /// Returns true if this InventorySlot can load a given Model.
     /// </summary>
-    /// <param name="slottable">the ISlottable to check</param>
-    /// <returns>true if this InventorySlot can load the ISlottable; otherwise,
+    /// <param name="slottable">the Model to check</param>
+    /// <returns>true if this InventorySlot can load the Model; otherwise,
     /// false.</returns>
-    private bool CanLoad(ISlottable slottable)
+    private bool CanLoad(Model slottable)
     {
         if (slottable == null) return false;
         if (Occupied()) return false;
@@ -147,10 +147,10 @@ public class InventorySlot : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns the ISlottable that occupies this InventorySlot.
+    /// Returns the Model that occupies this InventorySlot.
     /// </summary>
-    /// <returns>the ISlottable that occupies this InventorySlot.</returns>
-    public ISlottable GetOccupant()
+    /// <returns>the Model that occupies this InventorySlot.</returns>
+    public Model GetOccupant()
     {
         return occupant;
     }

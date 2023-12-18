@@ -16,6 +16,11 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     private static int NUM_SQUIRRELS;
 
     /// <summary>
+    /// The maximum number of targets a Squirrel can select at once.
+    /// </summary>
+    protected override int MAX_TARGETS => 1;
+
+    /// <summary>
     /// State of a Squirrel. 
     /// </summary>
     public enum SquirrelState
@@ -68,20 +73,17 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     private Squirrel GetSquirrel() { return GetMob() as Squirrel; }
 
     /// <summary>
-    /// Returns true if the Squirrel controlled by this SquirrelController
-    /// is not null.
-    /// </summary>
-    /// <returns>true if the Squirrel controlled by this SquirrelController
-    /// is not null; otherwise, returns false.</returns>
-    public override bool ValidModel() { return GetSquirrel() != null; }
-
-    /// <summary>
     /// Handles all collisions between this controller's Squirrel
     /// model and some other collider.
     /// </summary>
     /// <param name="other">the other collider.</param>
     protected override void HandleCollision(Collider2D other) { throw new NotImplementedException(); }
 
+    /// <summary>
+    /// Returns the Squirrel's target if it has one. 
+    /// </summary>
+    /// <returns>the Squirrel's target; null if it doesn't have one.</returns>
+    private ITargetable GetTarget() { return NumTargets() == 1 ? GetTargets()[0] : null; }
 
     //--------------------BEGIN STATE LOGIC----------------------//
 
@@ -91,7 +93,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     /// <param name="stateA">The first state.</param>
     /// <param name="stateB">The second state.</param>
     /// <returns>true if two SquirrelStates are equal; otherwise, false.</returns>
-    protected override bool StateEquals(SquirrelState stateA, SquirrelState stateB)
+    public override bool StateEquals(SquirrelState stateA, SquirrelState stateB)
     {
         return stateA == stateB;
     }
@@ -104,7 +106,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     /// IDLE --> ATTACK : if target in range <br></br>
     /// ATTACK --> IDLE : if no target in range
     /// </summary>
-    protected override void UpdateStateFSM()
+    public override void UpdateStateFSM()
     {
         if (!ValidModel()) return;
         if (GetGameState() != GameState.ONGOING)
@@ -202,7 +204,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     /// </summary>
     /// <returns>true if the Squirrel can shoot an acorn; otherwise,
     /// false.</returns>
-    protected override bool CanAttack()
+    public override bool CanAttack()
     {
         if (!base.CanAttack()) return false; //Cooldown
         if (GetState() != SquirrelState.ATTACK) return false; //Not in the attack state.
@@ -214,7 +216,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     /// Adds one chunk of Time.deltaTime to the animation
     /// counter that tracks the current state.
     /// </summary>
-    protected override void AgeAnimationCounter()
+    public override void AgeAnimationCounter()
     {
         SquirrelState state = GetState();
         if (state == SquirrelState.IDLE) idleAnimationCounter += Time.deltaTime;
@@ -225,7 +227,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     /// Returns the animation counter for the current state.
     /// </summary>
     /// <returns>the animation counter for the current state.</returns>
-    protected override float GetAnimationCounter()
+    public override float GetAnimationCounter()
     {
         SquirrelState state = GetState();
         if (state == SquirrelState.IDLE) return idleAnimationCounter;
@@ -236,7 +238,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     /// <summary>
     /// Sets the animation counter for the current state to 0.
     /// </summary>
-    protected override void ResetAnimationCounter()
+    public override void ResetAnimationCounter()
     {
         SquirrelState state = GetState();
         if (state == SquirrelState.IDLE) idleAnimationCounter = 0;

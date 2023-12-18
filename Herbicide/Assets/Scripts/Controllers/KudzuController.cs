@@ -25,6 +25,11 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     }
 
     /// <summary>
+    /// The maximum number of targets a Kudzu can select at once.
+    /// </summary>
+    protected override int MAX_TARGETS => 1;
+
+    /// <summary>
     /// The number of Kudzus spawned so far this scene.
     /// </summary>
     private static int NUM_KUDZUS;
@@ -83,20 +88,6 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     private Kudzu GetKudzu() { return GetModel() as Kudzu; }
 
     /// <summary>
-    /// Returns true if this KudzuController's has a not NULL Kudzu model.
-    /// </summary>
-    /// <returns>true if this KudzuController's has a not NULL Kudzu model</returns>
-    public override bool ValidModel() { return GetKudzu() != null; }
-
-    /// <summary>
-    /// Does not move the Kudzu model. This is overriden to ensure any Kudzu 
-    /// movement executes in CoHop(). 
-    public override void MoveModel(Vector3 targetPosition, float duration, AnimationCurve lerp = null)
-    {
-        return;
-    }
-
-    /// <summary>
     /// Sets the position at which the Kudzu will move towards next.
     /// </summary>
     /// <param name="nextPos">the position at which the Kudzu will move towards next.</param>
@@ -106,6 +97,12 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         hopCooldownCounter = GetKudzu().HOP_COOLDOWN;
     }
 
+    /// <summary>
+    /// Returns the Kudzu's target if it has one. 
+    /// </summary>
+    /// <returns>the Kudzu's target; null if it doesn't have one.</returns>
+    private ITargetable GetTarget() { return NumTargets() == 1 ? GetTargets()[0] : null; }
+
     //--------------------BEGIN STATE LOGIC----------------------//
 
     /// <summary>
@@ -114,7 +111,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     /// <param name="stateA">The first state.</param>
     /// <param name="stateB">The second state.</param>
     /// <returns>true if two KudzuStates are equal; otherwise, false.</returns>
-    protected override bool StateEquals(KudzuState stateA, KudzuState stateB)
+    public override bool StateEquals(KudzuState stateA, KudzuState stateB)
     {
         return stateA == stateB;
     }
@@ -130,7 +127,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     /// ATTACK --> CHASE : if target not in attack range, or attack on cooldown <br></br>
     /// CHASE --> IDLE : if target not in chase range <br></br>
     /// </summary>
-    protected override void UpdateStateFSM()
+    public override void UpdateStateFSM()
     {
         if (!ValidModel()) return;
         if (GetGameState() != GameState.ONGOING)
@@ -286,7 +283,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     /// </summary>
     /// <returns>true if the Kudzu can bonk a target; otherwise,
     /// false.</returns>
-    protected override bool CanAttack()
+    public override bool CanAttack()
     {
         if (!base.CanAttack()) return false; //Cooldown
         if (GetState() != KudzuState.ATTACK) return false; //Not in the attack state.
@@ -294,15 +291,13 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         return true;
     }
 
-
-
     //---------------------END STATE LOGIC-----------------------//
 
     /// <summary>
     /// Adds one chunk of Time.deltaTime to the animation
     /// counter that tracks the current state.
     /// </summary>
-    protected override void AgeAnimationCounter()
+    public override void AgeAnimationCounter()
     {
         KudzuState state = GetState();
         if (state == KudzuState.IDLE) idleAnimationCounter += Time.deltaTime;
@@ -314,7 +309,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     /// Returns the animation counter for the current state.
     /// </summary>
     /// <returns>the animation counter for the current state.</returns>
-    protected override float GetAnimationCounter()
+    public override float GetAnimationCounter()
     {
         KudzuState state = GetState();
         if (state == KudzuState.IDLE) return idleAnimationCounter;
@@ -326,7 +321,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     /// <summary>
     /// Sets the animation counter for the current state to 0.
     /// </summary>
-    protected override void ResetAnimationCounter()
+    public override void ResetAnimationCounter()
     {
         KudzuState state = GetState();
         if (state == KudzuState.IDLE) idleAnimationCounter = 0;

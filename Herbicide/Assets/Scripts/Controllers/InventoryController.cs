@@ -61,7 +61,7 @@ public class InventoryController : MonoBehaviour
     /// </summary>
     /// <param name="index">the index of the InventorySlot to load</param>
     /// <param name="item">the item to load into the InventorySlot</param>
-    private void LoadSlot(int index, ISlottable item)
+    private void LoadSlot(int index, Model item)
     {
         //Safety checks
         if (index < 0 || index >= instance.slots.Length) return;
@@ -90,20 +90,20 @@ public class InventoryController : MonoBehaviour
     /// <summary>
     /// Loads the entire Inventory.<br><br>
     /// 
-    /// This method takes in an array of ISlottables. One by one, in order,
+    /// This method takes in an array of Models. One by one, in order,
     /// the InventoryController will load its InventorySlots with each
-    /// ISlottable in the array. This means the number of items passed into
+    /// Model in the array. This means the number of items passed into
     /// this method may not exceed the number of InventorySlots managed
     /// by the InventoryController.
     /// </summary>
     /// <param name="items">The items to load, in order and one by one,
     /// into the Inventory.</param>
-    public static void LoadEntireInventory(ISlottable[] items)
+    public static void LoadEntireInventory(Model[] items)
     {
         //Safety checks.
         if (items == null) return;
         if (items.Length > instance.slots.Length) return;
-        foreach (ISlottable item in items)
+        foreach (Model item in items)
         {
             if (item == null) return;
         }
@@ -114,7 +114,7 @@ public class InventoryController : MonoBehaviour
 
         //Load the slots.
         int counter = 0;
-        foreach (ISlottable item in items)
+        foreach (Model item in items)
         {
             instance.LoadSlot(counter, items[counter]);
             counter++;
@@ -173,7 +173,7 @@ public class InventoryController : MonoBehaviour
         if (!slot.CanUse()) return;
 
         //Start the placement event
-        ISlottable occupant = slot.GetOccupant();
+        Model occupant = slot.GetOccupant();
         if (occupant == null) return;
         PlacementController.StartPlacingObject(slot);
     }

@@ -21,12 +21,6 @@ public class EconomyController : MonoBehaviour
     public const int MIN_MONEY = 0;
 
     /// <summary>
-    /// Prefab for a Seed Token.
-    /// </summary>
-    [SerializeField]
-    private GameObject currencyPrefab;
-
-    /// <summary>
     /// Text component that displays the current amount of currency.
     /// </summary>
     [SerializeField]
@@ -46,26 +40,6 @@ public class EconomyController : MonoBehaviour
     /// How much money the player has.
     /// </summary>
     private static int currentMoney;
-
-
-    /// <summary>
-    /// Creates a SeedToken at a given position.
-    /// </summary>
-    /// <param name="position">The position at which to create the Seed Token.
-    /// </param>
-    public static void SpawnSeedToken(Vector2 position)
-    {
-        GameObject newToken = Instantiate(instance.currencyPrefab);
-        Assert.IsNotNull(newToken);
-        SeedToken tokenComp = newToken.GetComponent<SeedToken>();
-        Assert.IsNotNull(tokenComp);
-
-        Vector3 tokenPos = new Vector3(position.x, position.y, 1);
-        newToken.transform.position = tokenPos;
-        newToken.transform.SetParent(instance.transform);
-        instance.activeCurrency.Add(tokenComp);
-        tokenComp.OnSpawn();
-    }
 
     /// <summary>
     /// Finds and sets the EconomyController singleton.
@@ -88,16 +62,16 @@ public class EconomyController : MonoBehaviour
     /// </summary>
     public static void CheckCurrencyPickup()
     {
-        Collectable c = InputController.CollectableClickedUp();
-        Currency curr = c as Currency;
-        if (curr == null) return;
+        // Collectable c = InputController.CollectableClickedUp();
+        // Currency curr = c as Currency;
+        // if (curr == null) return;
 
-        //Handle logic here.
-        Assert.IsTrue(instance.activeCurrency.Contains(curr));
-        curr.OnCollect();
-        instance.activeCurrency.Remove(curr);
-        Deposit(curr.VALUE);
-        Destroy(curr.gameObject);
+        // //Handle logic here.
+        // Assert.IsTrue(instance.activeCurrency.Contains(curr));
+        // curr.OnCollect();
+        // instance.activeCurrency.Remove(curr);
+        // Deposit(curr.BASE_VALUE);
+        // Destroy(curr.gameObject);
     }
 
     /// <summary>
@@ -108,14 +82,8 @@ public class EconomyController : MonoBehaviour
     /// </summary>
     public static void UpdateEconomy()
     {
-        foreach (Currency c in instance.activeCurrency)
-        {
-            c.UpdateCurrency();
-        }
-
-        if (currentMoney >= 0) instance.currencyText.text = currentMoney.ToString();
+        instance.currencyText.text = currentMoney.ToString();
     }
-
 
     /// <summary>
     /// Adds to the player's currency balance.
@@ -123,28 +91,24 @@ public class EconomyController : MonoBehaviour
     /// <param name="amount">How much to add.</param>
     private static void Deposit(int amount)
     {
-        if (amount < 0) return;
-        int incremented = GetMoney() + amount;
+        int incremented = GetBalance() + amount;
         currentMoney = Mathf.Clamp(incremented, MIN_MONEY, MAX_MONEY);
     }
 
     /// <summary>
-    /// Subtracts from the player's current balance.
+    /// Cashes in a currency, potentially modifying the player's
+    /// balance.
     /// </summary>
-    /// <param name="amount">How much to subtract.</param>
-    private static void Withdraw(int amount)
+    /// <param name="currency">The currency to cash in.</param>
+    public static void CashIn(Currency currency)
     {
-        if (amount < 0) return;
-        int decremented = GetMoney() - amount;
-        currentMoney = Mathf.Clamp(decremented, MIN_MONEY, MAX_MONEY);
+        Assert.IsNotNull(currency, "Currency is null.");
+        Deposit(currency.GetValue());
     }
 
     /// <summary>
     /// Returns the amount of money the player currently has.
     ///  </summary>
     /// <returns>how much money the player has.</returns>
-    public static int GetMoney()
-    {
-        return currentMoney;
-    }
+    public static int GetBalance() { return currentMoney; }
 }

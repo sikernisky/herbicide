@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 
 /// <summary>
@@ -8,82 +9,51 @@ using UnityEngine;
 public abstract class Currency : Collectable
 {
     /// <summary>
-    /// Value of this currency.
+    /// Starting value of this currency.
     /// </summary>
-    public virtual int VALUE => 1;
+    public virtual int BASE_VALUE => 1;
 
     /// <summary>
-    /// Seconds to complete a bob cycle.
+    /// Maximum value of this currency.
     /// </summary>
-    protected virtual float BOB_SPEED => 3f;
+    public virtual int MAX_VALUE => int.MaxValue;
 
     /// <summary>
-    /// How "tall" this Currency bobs.
+    /// Mimimum value of this currency.
     /// </summary>
-    protected virtual float BOB_HEIGHT => .15f;
+    public virtual int MIN_VALUE => int.MinValue;
 
     /// <summary>
-    /// Starting position of this Currency when it bobs up and down.
+    /// Current value of this Currency.
     /// </summary>
-    private Vector3 bobStartPosition;
+    private int value;
 
-    /// <summary>
-    /// true if this Currency's bobbing start position has been set. 
-    /// </summary>
-    private bool startPositionSet;
-
-    /// <summary>
-    /// Time offset to create varying bobbing animations.
-    /// </summary>
-    private float timeOffset;
-
-    /// <summary>
-    /// Reference to this Currency's SpriteRenderer component.
-    /// </summary>
-    [SerializeField]
-    private SpriteRenderer currencyRenderer;
-
-    /// <summary>
-    /// Collects this currency, updating the player's balance and playing
-    /// relevant animations and sounds. Last, destroys the currency.
-    /// </summary>
-    public override void OnCollect()
-    {
-        SoundController.PlaySoundEffect("collectCurrency");
-    }
-
-    /// <summary>
-    /// Updates this Currency.
-    /// </summary>
-    public void UpdateCurrency()
-    {
-        Bob();
-    }
 
     /// <summary>
     /// Performs actions when this Currency spawns in game. Sets the
     /// starting position for the Bob animation.
     /// </summary>
-    public void OnSpawn()
-    {
-        bobStartPosition = transform.position;
-        timeOffset = Random.Range(0f, Mathf.PI * 2);
-        startPositionSet = true;
-    }
+    public override void ResetStats() { ResetValue(); }
 
     /// <summary>
-    /// Bobs this Currency up and down.
+    /// Adds some amount to this Currency's value.
     /// </summary>
-    protected virtual void Bob()
-    {
-        if (!startPositionSet) return;
+    /// <param name="amount">The amount to add.</param>
+    public void AdjustValue(int amount) { value = Mathf.Clamp(value + amount, MIN_VALUE, MAX_VALUE); }
 
-        float t = (Mathf.Cos((Time.time + timeOffset) * BOB_SPEED) + 1) * 0.5f;
-        float newY = Mathf.Lerp(-BOB_HEIGHT, BOB_HEIGHT, t);
-        Vector3 newPosition = new Vector3(
-            bobStartPosition.x,
-            bobStartPosition.y + newY,
-            bobStartPosition.z);
-        transform.position = newPosition;
-    }
+    /// <summary>
+    /// Resets this Currency's value to its starting amount.
+    /// </summary>
+    public void ResetValue() { value = BASE_VALUE; }
+
+    /// <summary>
+    /// Returns this Currency's current value.
+    /// </summary>
+    /// <returns>this Currency's current value.</returns>
+    public int GetValue() { return value; }
+
+    /// <summary>
+    /// Sets this Currency's 2D Collider properties.
+    /// </summary>
+    public override void SetColliderProperties() { return; }
 }

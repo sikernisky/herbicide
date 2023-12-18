@@ -92,10 +92,11 @@ public class DefenderScriptable : ScriptableObject
     [SerializeField]
     private Sprite[] idleAnimationWest;
 
+
     /// <summary>
-    /// Returns the DefenderType that this DefenderAnimation is storing.
+    /// Returns the DefenderType that this DefenderScriptable is storing.
     /// </summary>
-    /// <returns>the DefenderAnimation that this DefenderAnimation is storing.
+    /// <returns>the DefenderAnimation that this DefenderScriptable is storing.
     /// </returns>
     public Defender.DefenderType GetDefenderType() => defenderType;
 

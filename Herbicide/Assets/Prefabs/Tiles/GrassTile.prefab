@@ -46,8 +46,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57c332472cf9b4aff924b2c9c0b371b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lightGrass: {fileID: 66583197, guid: 54168f64e88c845d69d9c0cb9b3d4da7, type: 3}
-  darkGrass: {fileID: -193012655, guid: 54168f64e88c845d69d9c0cb9b3d4da7, type: 3}
+  modelRenderer: {fileID: 562383745849371865}
+  modelCollider: {fileID: 6701418950225822535}
 --- !u!212 &562383745849371865
 SpriteRenderer:
   m_ObjectHideFlags: 0

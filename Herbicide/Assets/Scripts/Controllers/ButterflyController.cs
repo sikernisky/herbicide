@@ -14,6 +14,11 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
     private static int NUM_BUTTERFLIES;
 
     /// <summary>
+    /// The maximum number of targets a Butterfly can select at once.
+    /// </summary>
+    protected override int MAX_TARGETS => 1;
+
+    /// <summary>
     /// Counts the number of seconds in the idle animation; resets
     /// on step.
     /// </summary>
@@ -65,14 +70,6 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
     private Butterfly GetButterfly() { return GetMob() as Butterfly; }
 
     /// <summary>
-    /// Returns true if the Butterfly controlled by this ButterflyController
-    /// is not null.
-    /// </summary>
-    /// <returns>true if the Butterfly controlled by this ButterflyController
-    /// is not null; otherwise, returns false.</returns>
-    public override bool ValidModel() { return GetButterfly() != null; }
-
-    /// <summary>
     /// Updates the Butterfly controlled by this ButterflyController.
     /// </summary>
     /// <param name="targets">A complete list of ITargetables in the scene.</param>
@@ -97,6 +94,12 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
         throw new System.NotImplementedException();
     }
 
+    /// <summary>
+    /// Returns the Butterfly's target if it has one. 
+    /// </summary>
+    /// <returns>the Butterfly's target; null if it doesn't have one.</returns>
+    private ITargetable GetTarget() { return NumTargets() == 1 ? GetTargets()[0] : null; }
+
     //--------------------BEGIN STATE LOGIC----------------------//
 
     /// <summary>
@@ -105,7 +108,7 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
     /// <param name="stateA">The first state.</param>
     /// <param name="stateB">The second state.</param>
     /// <returns>true if two ButterflyStates are equal; otherwise, false.</returns>
-    protected override bool StateEquals(ButterflyState stateA, ButterflyState stateB)
+    public override bool StateEquals(ButterflyState stateA, ButterflyState stateB)
     {
         return stateA == stateB;
     }
@@ -119,7 +122,7 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
     /// ATTACK --> CHASE : if target not in attack range <br></br>
     /// CHASE --> IDLE : if target not in chase range <br></br>
     /// </summary>
-    protected override void UpdateStateFSM()
+    public override void UpdateStateFSM()
     {
         if (!ValidModel()) return;
         if (GetGameState() != GameState.ONGOING)
@@ -298,7 +301,7 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
     /// </summary>
     /// <returns>true if the Butterfly can lob a bomb; 
     /// otherwise, false.</returns>
-    protected override bool CanAttack()
+    public override bool CanAttack()
     {
         if (!base.CanAttack()) return false; //Cooldown
         if (GetTarget() == null || !GetTarget().Targetable()) return false;
@@ -312,7 +315,7 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
     /// Adds one chunk of Time.deltaTime to the animation
     /// counter that tracks the current state.
     /// </summary>
-    protected override void AgeAnimationCounter()
+    public override void AgeAnimationCounter()
     {
         ButterflyState state = GetState();
         if (state == ButterflyState.IDLE) idleAnimationCounter += Time.deltaTime;
@@ -325,7 +328,7 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
     /// Returns the animation counter for the current state.
     /// </summary>
     /// <returns>the animation counter for the current state.</returns>
-    protected override float GetAnimationCounter()
+    public override float GetAnimationCounter()
     {
         ButterflyState state = GetState();
         if (state == ButterflyState.IDLE) return idleAnimationCounter;
@@ -338,7 +341,7 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
     /// <summary>
     /// Sets the animation counter for the current state to 0.
     /// </summary>
-    protected override void ResetAnimationCounter()
+    public override void ResetAnimationCounter()
     {
         ButterflyState state = GetState();
         if (state == ButterflyState.IDLE) idleAnimationCounter = 0;

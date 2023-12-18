@@ -4,11 +4,11 @@
     ],
     "fileStates": {
         "Tiled/Tilemaps/level0.tmx": {
-            "scale": 3.5722,
+            "scale": 3.9662,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 281.7591400257544,
-                "y": 104.13750629863948
+                "x": 264.35883213151124,
+                "y": 116.48429226967878
             }
         },
         "Tiled/Tilesets/Enemies.tsx": {

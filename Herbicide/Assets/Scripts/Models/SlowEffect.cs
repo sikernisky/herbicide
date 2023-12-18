@@ -25,11 +25,6 @@ public class SlowEffect : Effect
     /// </summary>
     protected virtual float SLOW_RATE => .75f;
 
-    /// <summary>
-    /// true if this SlowEffect has reduce its subject's movement
-    /// speed; otherwise, false. 
-    /// </summary>
-    private bool slowed;
 
     /// <summary>
     /// Creates a new SlowEffect.
@@ -41,15 +36,15 @@ public class SlowEffect : Effect
     /// <summary>
     /// Slows the subject by SLOW_RATE.
     /// </summary>
-    public override void InflictEffect()
+    public override void UpdateEffect()
     {
-        base.InflictEffect();
+        base.UpdateEffect();
         if (GetSubject() == null) return;
-        if (slowed) return;
+        if (Applied()) return;
         Mob subject = GetSubject() as Mob;
         float reduction = subject.BASE_MOVEMENT_SPEED * SLOW_RATE;
         subject.AdjustMovementSpeed(-reduction);
-        slowed = true;
+        SetApplied(true);
     }
 
     /// <summary>
@@ -60,7 +55,7 @@ public class SlowEffect : Effect
     {
         base.EndEffect();
         if (GetSubject() == null) return;
-        if (!slowed) return;
+        if (!Applied()) return;
         Mob subject = GetSubject() as Mob;
         float reduction = subject.BASE_MOVEMENT_SPEED * SLOW_RATE;
         subject.AdjustMovementSpeed(reduction);

@@ -97,6 +97,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfaf279e0234c4be69fd61307581eb78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  placeableRenderer: {fileID: -8767331185759359155}
-  treeCollider: {fileID: 0}
-  treeRenderer: {fileID: -8767331185759359155}
+  modelRenderer: {fileID: -8767331185759359155}
+  modelCollider: {fileID: 0}

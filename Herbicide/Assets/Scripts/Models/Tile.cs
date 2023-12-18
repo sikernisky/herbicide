@@ -7,13 +7,8 @@ using UnityEngine.Assertions;
 /// Represents a set of space in the TileGrid with unique (X, Y) coordinates.
 /// Tiles may be floored and placed on.
 /// </summary>
-public abstract class Tile : MonoBehaviour, ISurface
+public abstract class Tile : Model, ISurface
 {
-    /// <summary>
-    /// (X, Y) coordinates of this Tile.
-    /// </summary>
-    private Vector2Int coordinates;
-
     /// <summary>
     /// The PlaceableObject on this Tile; null if Tile is unoccupied.
     /// </summary>
@@ -33,11 +28,6 @@ public abstract class Tile : MonoBehaviour, ISurface
     /// true if this Tile is spawned in a TileGrid.
     /// </summary>
     private bool defined;
-
-    /// <summary>
-    /// This Tile's SpriteRenderer component.
-    /// </summary>
-    private SpriteRenderer tileRenderer;
 
     /// <summary>
     /// This Tile's four neighbors.
@@ -106,31 +96,11 @@ public abstract class Tile : MonoBehaviour, ISurface
 
         if (defined) return;
 
-        coordinates = new Vector2Int(x, y);
-        tileRenderer = GetComponent<SpriteRenderer>();
+        SetTileCoordinates(x, y);
         name = type.ToString() + " (" + x + ", " + y + ")";
         defined = true;
     }
 
-    /// <summary>
-    /// Returns the X-Coordinate of this Tile.
-    /// </summary>
-    /// <returns>the X-Coordinate of this Tile.</returns>
-    public int GetX()
-    {
-        AssertDefined();
-        return coordinates.x;
-    }
-
-    /// <summary>
-    /// Returns the Y-Coordinate of this Tile.
-    /// </summary>
-    /// <returns>the Y-Coordinate of this Tile.</returns>
-    public int GetY()
-    {
-        AssertDefined();
-        return coordinates.y;
-    }
 
     /// <summary>
     /// Returns true if this Tile has an Enemy on it; otherwise, returns
@@ -152,17 +122,6 @@ public abstract class Tile : MonoBehaviour, ISurface
         AssertDefined();
         if (Floored()) return GetFlooring().Occupied();
         return occupant != null;
-    }
-
-    /// <summary>
-    /// Sets the Sprite of this Tile's SpriteRenderer component.
-    /// </summary>
-    /// <param name="newSprite">the new Sprite.</param>
-    protected void SetSprite(Sprite newSprite)
-    {
-        if (newSprite == null) return;
-        if (tileRenderer == null) tileRenderer = GetComponent<SpriteRenderer>();
-        tileRenderer.sprite = newSprite;
     }
 
     /// <summary>
@@ -330,14 +289,14 @@ public abstract class Tile : MonoBehaviour, ISurface
     }
 
     /// <summary>
-    /// Returns true if an IUsable can be used on this Tile.
-    /// If it can, uses the IUsable.
+    /// Returns true if an Model can be used on this Tile.
+    /// If it can, uses the Model.
     /// </summary>
-    /// <param name="candidate">The IUsable to use.</param>
+    /// <param name="candidate">The Model to use.</param>
     /// <param name="neighbors">This Tile's neighbors.</param>
-    /// <returns>true if an IUsable can be used on this Tile;
+    /// <returns>true if an Model can be used on this Tile;
     /// otherwise, false.</returns>
-    public virtual bool Use(IUsable candidate, ISurface[] neighbors)
+    public virtual bool Use(Model candidate, ISurface[] neighbors)
     {
         //Safety check
         AssertDefined();
@@ -348,13 +307,13 @@ public abstract class Tile : MonoBehaviour, ISurface
     }
 
     /// <summary>
-    /// Returns true if an IUsable can be used on this Tile.
+    /// Returns true if an Model can be used on this Tile.
     /// </summary>
-    /// <param name="candidate">The IUsable to use.</param>
+    /// <param name="candidate">The Model to use.</param>
     /// <param name="neighbors">This Tile's neighbors.</param>
-    /// <returns>true if an IUsable can be placed on this Tile;
+    /// <returns>true if an Model can be placed on this Tile;
     /// otherwise, false.</returns>
-    public virtual bool CanUse(IUsable candidate, ISurface[] neighbors)
+    public virtual bool CanUse(Model candidate, ISurface[] neighbors)
     {
         AssertDefined();
         if (candidate == null || neighbors == null) return false;
@@ -447,14 +406,10 @@ public abstract class Tile : MonoBehaviour, ISurface
     /// this paint command to the flooring instead.
     /// </summary>
     /// <param name="paintColor">the color with which to paint this Tile.</param>
-    public void PaintTile(Color32 paintColor)
+    public override void SetColor(Color32 paintColor)
     {
-        if (Floored())
-        {
-            GetFlooring().PaintFlooring(paintColor);
-
-        }
-        else tileRenderer.color = paintColor;
+        if (Floored()) GetFlooring().SetColor(paintColor);
+        else base.SetColor(paintColor);
     }
 
     /// <summary>
@@ -664,12 +619,35 @@ public abstract class Tile : MonoBehaviour, ISurface
     }
 
     /// <summary>
-    /// Returns this Tile's (X, Y) coordinates in Vector2Int format.
+    /// Resets this Tile's stats to their starting values.
     /// </summary>
-    /// <returns>this Tile's (X, Y) coordinates in Vector2Int format.</returns>
-    public Vector2Int GetPosition()
+    public override void ResetStats() { return; }
+
+    /// <summary>
+    /// Sets the 2D Collider properties of this Tile.
+    /// </summary>
+    public override void SetColliderProperties() { return; }
+
+    /// <summary>
+    /// Returns the Sprite component that represents this Tile in
+    /// the Inventory.
+    /// </summary>
+    /// <returns>the Sprite component that represents this Tile in
+    /// the Inventory.</returns>
+    public override Sprite GetInventorySprite()
     {
-        return new Vector2Int(GetX(), GetY());
+        throw new System.NotImplementedException();
+    }
+
+    /// <summary>
+    /// Returns a Sprite that represents this Tile when it is
+    /// being placed.
+    /// </summary>
+    /// <returns> a Sprite that represents this Tile when it is
+    /// being placed.</returns>
+    public override Sprite GetPlacementSprite()
+    {
+        throw new System.NotImplementedException();
     }
 }
 

@@ -3,10 +3,10 @@
 /// </summary>
 public enum GameState
 {
-    WIN,
-    LOSE,
-    ONGOING,
-    TIE,
-    MENU,
-    INVALID
+    WIN, // The player won.
+    LOSE, // The player lost.
+    ONGOING, // Main gameplay; in a level.
+    TIE, // The player neither won nor lost.
+    MENU, // The player is on the Main Menu.
+    INVALID // Something went wrong.
 }

@@ -53,7 +53,7 @@ public class AcornController : ProjectileController<AcornController.AcornState>
     /// MOVING --> COLLIDING : when hits valid target <br></br>
     /// COLLIDING --> DEAD : when all effects have been applied to valid target <br></br>
     /// </summary>
-    protected override void UpdateStateFSM()
+    public override void UpdateStateFSM()
     {
         switch (GetState())
         {
@@ -75,7 +75,7 @@ public class AcornController : ProjectileController<AcornController.AcornState>
     /// <param name="stateA">The first state.</param>
     /// <param name="stateB">The second state.</param>
     /// <returns>true if two AcornStates are equal; otherwise, false.</returns>
-    protected override bool StateEquals(AcornState stateA, AcornState stateB)
+    public override bool StateEquals(AcornState stateA, AcornState stateB)
     {
         return stateA == stateB;
     }
@@ -83,7 +83,7 @@ public class AcornController : ProjectileController<AcornController.AcornState>
     /// <summary>
     /// Runs logic relevant to the Acorn's MOVING state.
     /// </summary>
-    protected override void ExecuteMovingState()
+    public override void ExecuteMovingState()
     {
         if (!ValidModel()) return;
         if (GetState() != AcornState.MOVING) return;
@@ -95,12 +95,12 @@ public class AcornController : ProjectileController<AcornController.AcornState>
     /// <summary>
     /// Runs logic relevant to the Acorn's COLLIDING state.
     /// </summary>
-    protected override void ExecuteCollidingState() { return; }
+    public override void ExecuteCollidingState() { return; }
 
     /// <summary>
     /// Runs logic relevant to the Acorn's DEAD state.
     /// </summary>
-    protected override void ExecuteDeadState() { return; }
+    public override void ExecuteDeadState() { return; }
 
     //---------------------ANIMATION LOGIC----------------------//
 
@@ -108,16 +108,16 @@ public class AcornController : ProjectileController<AcornController.AcornState>
     /// Adds one chunk of Time.deltaTime to the animation
     /// counter that tracks the current state.
     /// </summary>
-    protected override void AgeAnimationCounter() { throw new System.NotImplementedException(); }
+    public override void AgeAnimationCounter() { throw new System.NotImplementedException(); }
 
     /// <summary>
     /// Sets the animation counter for the current state to 0.
     /// </summary>
-    protected override void ResetAnimationCounter() { throw new System.NotImplementedException(); }
+    public override void ResetAnimationCounter() { throw new System.NotImplementedException(); }
 
     /// <summary>
     /// Returns the animation counter for the current state.
     /// </summary>
     /// <returns>the animation counter for the current state.</returns>
-    protected override float GetAnimationCounter() { throw new System.NotImplementedException(); }
+    public override float GetAnimationCounter() { throw new System.NotImplementedException(); }
 }

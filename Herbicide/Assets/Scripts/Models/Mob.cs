@@ -9,9 +9,29 @@ using UnityEngine.Assertions;
 /// implement attack functionality, but they don't need to represent
 /// things that can attack. 
 /// </summary>
-public abstract class Mob : PlaceableObject, IAttackable
+public abstract class Mob : PlaceableObject, IAttackable, ITargetable
 {
     //--------------------BEGIN STATS----------------------//
+
+    /// <summary>
+    /// Amount of health this Mob starts with.
+    /// </summary>
+    public abstract int BASE_HEALTH { get; }
+
+    /// <summary>
+    /// Most amount of health this Mob can have.
+    /// </summary>
+    public abstract int MAX_HEALTH { get; }
+
+    /// <summary>
+    /// Least amount of health this Mob can have.
+    /// </summary>
+    public abstract int MIN_HEALTH { get; }
+
+    /// <summary>
+    /// Current amount of health.
+    /// </summary>
+    private int health;
 
     /// <summary>
     /// Amount of attack range this Mob starts with.
@@ -49,6 +69,11 @@ public abstract class Mob : PlaceableObject, IAttackable
     public float MIN_ATTACK_COOLDOWN => 0f;
 
     /// <summary>
+    /// This Mob's current attack cooldown cap.
+    /// </summary>
+    private float attackCooldownCap;
+
+    /// <summary>
     /// This Mob's current attack cooldown.
     /// </summary>
     private float attackCooldown;
@@ -74,11 +99,6 @@ public abstract class Mob : PlaceableObject, IAttackable
     private float chaseRange;
 
     /// <summary>
-    /// This Mob's current attack speed. 
-    /// </summary>
-    private float attackSpeed;
-
-    /// <summary>
     /// Amount of movement speed this Mob starts with.
     /// </summary>
     public abstract float BASE_MOVEMENT_SPEED { get; }
@@ -99,6 +119,16 @@ public abstract class Mob : PlaceableObject, IAttackable
     private float movementSpeed;
 
     //---------------------END STATS-----------------------//
+
+    /// <summary>
+    /// How long to flash when this Mob takes damage.
+    /// </summary>
+    public virtual float DAMAGE_FLASH_TIME => 0.5f;
+
+    /// <summary>
+    /// How much time remains in the current Damage Flash animation.
+    /// </summary>
+    private float remainingFlashAnimationTime;
 
     /// <summary>
     /// By default, Mobs do not occupy Tiles.
@@ -126,7 +156,7 @@ public abstract class Mob : PlaceableObject, IAttackable
     /// spawned.
     /// </summary>
     /// <returns>true if this Mob is dead; otherwise, false.</returns>
-    public override bool Dead() { return base.Dead() && spawned; }
+    public override bool Dead() { return GetHealth() <= 0 && spawned; }
 
     /// <summary>
     /// Returns true if this Mob is spawned in the scene.
@@ -141,7 +171,31 @@ public abstract class Mob : PlaceableObject, IAttackable
     /// to attack. </param>
     /// <returns>true if this Mob can attack a target;
     /// otherwise, false.</returns>
-    public virtual bool CanAttack(ITargetable target) { return target != null && GetAttackSpeed() > 0; }
+    public virtual bool CanAttack(ITargetable target) { return target != null; }
+
+
+    /// <summary>
+    /// Adds some amount (can be negative) of health to this Mob.
+    /// </summary>
+    /// <param name="amount">The amount of health to adjust.</param>
+    public virtual void AdjustHealth(int amount)
+    {
+        int healthBefore = GetHealth();
+        health = Mathf.Clamp(GetHealth() + amount, MIN_HEALTH, MAX_HEALTH);
+        if (GetHealth() < healthBefore) FlashDamage();
+    }
+
+    /// <summary>
+    /// Returns this Mob's current health.
+    /// </summary>
+    /// <returns>this Mob's current health.</returns>
+    public int GetHealth() { return health; }
+
+    /// <summary>
+    /// Resets this Mob's health to its starting health value.
+    /// </summary>
+    public void ResetHealth() { health = BASE_HEALTH; }
+
 
     /// <summary>
     /// Returns this Mob's current attack range.
@@ -170,18 +224,40 @@ public abstract class Mob : PlaceableObject, IAttackable
     public float GetAttackCooldown() { return attackCooldown; }
 
     /// <summary>
-    /// Sets this Mob's attack cooldown.
+    /// Adds some amount to this Mob's attack cooldown.
     /// </summary>
     /// <param name="amount">The new attack cooldown.</param>
-    public void SetAttackCooldown(float amount)
+    public void AdjustAttackCooldown(float amount)
     {
-        attackCooldown = Mathf.Clamp(amount, MIN_ATTACK_COOLDOWN, MAX_ATTACK_COOLDOWN);
+        attackCooldown = Mathf.Clamp(GetAttackCooldown() + amount,
+            MIN_ATTACK_COOLDOWN, attackCooldownCap);
     }
+
+    /// <summary>
+    /// Adds some amount to this Mob's attack cooldown cap
+    /// </summary>
+    /// <param name="amount">The new attack cooldown cap.</param>
+    public void AdjustAttackCooldownCap(float amount)
+    {
+        attackCooldownCap = Mathf.Clamp(attackCooldownCap + amount,
+            MIN_ATTACK_COOLDOWN, MAX_ATTACK_COOLDOWN);
+    }
+
+    /// <summary>
+    /// Returns this Mob's attack cooldown cap.
+    /// </summary>
+    /// <returns>this Mob's attack cooldown cap.</returns>
+    public float GetAttackCooldownCap() { return attackCooldownCap; }
+
+    /// <summary>
+    /// Resets this Mob's attack cooldown to its currently capped value.
+    /// </summary>
+    public void ResetAttackCooldown() { attackCooldown = attackCooldownCap; }
 
     /// <summary>
     /// Resets this Mob's attack cooldown to its starting value.
     /// </summary>
-    public void ResetAttackCooldown() { attackCooldown = BASE_ATTACK_COOLDOWN; }
+    public void ResetAttackCooldownToBase() { attackCooldownCap = BASE_ATTACK_COOLDOWN; }
 
     /// <summary>
     /// Returns this Mob's current chase range.
@@ -204,12 +280,6 @@ public abstract class Mob : PlaceableObject, IAttackable
     public void ResetChaseRange() { chaseRange = BASE_CHASE_RANGE; }
 
     /// <summary>
-    /// Returns this Mob's current attack speed.
-    /// </summary>
-    /// <returns>this Mob's current attack speed.</returns>
-    public float GetAttackSpeed() { return attackSpeed; }
-
-    /// <summary>
     /// Returns this Mob's current movement speed.
     /// </summary>
     /// <returns>this Mob's current movement speed.</returns>
@@ -221,7 +291,8 @@ public abstract class Mob : PlaceableObject, IAttackable
     /// <param name="amount">The amount to add.</param>
     public virtual void AdjustMovementSpeed(float amount)
     {
-        movementSpeed = Mathf.Clamp(movementSpeed + amount, MIN_MOVEMENT_SPEED, MAX_MOVEMENT_SPEED);
+        movementSpeed = Mathf.Clamp(movementSpeed + amount,
+            MIN_MOVEMENT_SPEED, MAX_MOVEMENT_SPEED);
     }
 
     /// <summary>
@@ -234,11 +305,22 @@ public abstract class Mob : PlaceableObject, IAttackable
     /// </summary>
     public override void ResetStats()
     {
-        base.ResetStats();
+        ResetHealth();
         ResetAttackRange();
         ResetChaseRange();
         ResetMovementSpeed();
-        SetAttackCooldown(0);
+        ResetAttackCooldownToBase();
+        AdjustAttackCooldown(0);
+    }
+
+    /// <summary>
+    /// Returns the Euclidian distance from this Mob to an ITargetable.
+    /// </summary>
+    /// <param name="target">The ITargetable from which to calculate distance.</param>
+    public float DistanceToTarget(ITargetable target)
+    {
+        try { return Vector3.Distance(GetPosition(), target.GetPosition()); }
+        catch { return -1f; }
     }
 
     /// <summary>
@@ -276,4 +358,31 @@ public abstract class Mob : PlaceableObject, IAttackable
         if (!xGreater && yDistance <= 0) FaceDirection(Direction.NORTH);
         if (!xGreater && yDistance > 0) FaceDirection(Direction.SOUTH);
     }
+
+
+    /// <summary>
+    /// Starts the Damage Flash animation by resetting the amount of time
+    /// left in the animation to the total amount of time it takes to
+    /// complete one animation cycle
+    /// </summary>
+    public void FlashDamage() { SetRemainingFlashAnimationTime(DAMAGE_FLASH_TIME); }
+
+    /// <summary>
+    /// Sets the amount of time this Mob's has left in its
+    /// flash animation.
+    /// </summary>
+    /// <param name="value">The new amount of time that this Mob
+    /// has left in its flash animation. .</param>
+    public void SetRemainingFlashAnimationTime(float value)
+    {
+        remainingFlashAnimationTime = Mathf.Clamp(value, 0, DAMAGE_FLASH_TIME);
+    }
+
+    /// <summary>
+    /// Returns the amount of time that remains in this Mob's
+    /// flash animation. 
+    /// </summary>
+    /// <returns>the amount of time that remains in this Mob's
+    /// flash animation</returns>
+    public float TimeRemaningInFlashAnimation() { return remainingFlashAnimationTime; }
 }

@@ -78,6 +78,11 @@ public class LevelController : MonoBehaviour
 
         //(5) Load the Inventory
         InventoryController.LoadEntireInventory(items);
+
+        //(6) Load the Synergies (TODO: Remove this static HashSet with dynamic one)
+        HashSet<SynergyController.Synergy> synergies = new HashSet<SynergyController.Synergy>();
+        synergies.Add(SynergyController.Synergy.TRIPLE_THREAT);
+        SynergyController.LoadAllSynergies(synergies);
     }
 
     /// <summary>
@@ -86,7 +91,7 @@ public class LevelController : MonoBehaviour
     /// (1) Update and inform controllers of game state.<br></br>
     /// (2) Update Scene.<br></br>
     /// (3) Checks for input events.<br></br>
-    /// (4) Update the Enemy Manager.<br></br>
+    /// (4) Update the SynergyController.<br></br>
     /// (5) Update Mob Controllers.<br></br>
     /// (6) Update Currencies.<br></br>
     /// (7) Update Balance.<br></br>
@@ -104,7 +109,8 @@ public class LevelController : MonoBehaviour
         //(3) Check input events.
         CheckInputEvents();
 
-        //(4) Update the EnemyManager. (TODO: Implement when needed.)
+        //(4) Update SynergyController.
+        SynergyController.UpdateSynergyController(ModelController.GetAllTargetableObjects());
 
         //(5) Update Controllers.
         ControllerController.UpdateAllControllers();
@@ -113,15 +119,12 @@ public class LevelController : MonoBehaviour
         EconomyController.UpdateEconomy();
 
         //(7) Update Inventory.
-        InventoryController.UpdateSlots(EconomyController.GetMoney());
+        InventoryController.UpdateSlots(EconomyController.GetBalance());
 
         //(8) Update TileGrid.
-        TileGrid.TrackEnemyTilePositions(ControllerController.GetAllActiveEnemies());
 
         //(9) Update Canvas.
         CanvasController.UpdateCanvas(SceneController.GetFPS());
-
-        //Debug.Log(SceneController.GetTimeElapsed());
     }
 
     /// <summary>
@@ -143,12 +146,14 @@ public class LevelController : MonoBehaviour
         EconomyController.SetSingleton(instance);
         CanvasController.SetSingleton(instance);
         SoundController.SetSingleton(instance);
+        SynergyController.SetSingleton(instance);
     }
 
     /// <summary>
     /// Instantiates all Factories.
     private void MakeFactories()
     {
+        CollectableFactory.SetSingleton(instance);
         DefenderFactory.SetSingleton(instance);
         EdgeFactory.SetSingleton(instance);
         EnemyFactory.SetSingleton(instance);
@@ -160,8 +165,7 @@ public class LevelController : MonoBehaviour
     }
 
     /// <summary>
-    /// Finds and assigns the LevelController instance. Also instantiates
-    /// the list of EnemyControllers.
+    /// Finds and assigns the LevelController instance.
     /// </summary>
     private void SetSingleton()
     {
@@ -182,22 +186,22 @@ public class LevelController : MonoBehaviour
     /// <return>The most updated GameState.</return>
     private GameState DetermineGameState()
     {
-        HashSet<Tree> activeTrees = ControllerController.GetAllActiveTrees();
-        HashSet<Enemy> activeEnemies = ControllerController.GetAllActiveEnemies();
+        int activeTrees = ControllerController.NumActiveTrees();
+        int activeEnemies = ControllerController.NumActiveEnemies();
         int enemiesRemaining = EnemyManager.EnemiesRemaining(SceneController.GetTimeElapsed());
-        bool enemiesPresent = (enemiesRemaining > 0 || activeEnemies.Count > 0);
+        bool enemiesPresent = (enemiesRemaining > 0 || activeEnemies > 0);
 
         //Win condition: All enemies dead, at least one Tree alive.
-        if (!enemiesPresent && activeTrees.Count > 0) currentGameState = GameState.WIN;
+        if (!enemiesPresent && activeTrees > 0) currentGameState = GameState.WIN;
 
         //Lose condition: All trees dead, at least one Enemy alive.
-        else if (enemiesPresent && activeTrees.Count == 0) currentGameState = GameState.LOSE;
+        else if (enemiesPresent && activeTrees == 0) currentGameState = GameState.LOSE;
 
         //Tie condition: All trees and enemies dead. 
-        else if (!enemiesPresent && activeTrees.Count == 0) currentGameState = GameState.TIE;
+        else if (!enemiesPresent && activeTrees == 0) currentGameState = GameState.TIE;
 
         //Ongoing condition: At least one tree and enemy alive.
-        else if (enemiesPresent && activeTrees.Count > 0) currentGameState = GameState.ONGOING;
+        else if (enemiesPresent && activeTrees > 0) currentGameState = GameState.ONGOING;
 
         //Something went wrong.
         else currentGameState = GameState.INVALID;

@@ -210,8 +210,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6657c8ad1d0c346bdb453598880067af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  placeableRenderer: {fileID: 2953693878866687739}
-  placeableCollider: {fileID: 6401887153725895990}
+  modelRenderer: {fileID: 2953693878866687739}
+  modelCollider: {fileID: 6401887153725895990}
   projectileBody: {fileID: 0}
   shadow: {fileID: 1744281055030702719}
   lobCurve:
@@ -238,7 +238,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  splatter: {fileID: 8455877236155592535}
 --- !u!1001 &5918044984002739070
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -311,10 +310,5 @@ PrefabInstance:
 --- !u!4 &929868549824254572 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6829304258456119570, guid: c1aa7565e9a224f17a3d30bc8127ec3b, type: 3}
-  m_PrefabInstance: {fileID: 5918044984002739070}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &8455877236155592535 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2844112247693661225, guid: c1aa7565e9a224f17a3d30bc8127ec3b, type: 3}
   m_PrefabInstance: {fileID: 5918044984002739070}
   m_PrefabAsset: {fileID: 0}

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Represents something that can be targeted and attacked.
+/// Contract for a model that can be targeted and attacked.
 /// </summary>
 public interface ITargetable
 {
@@ -85,11 +85,6 @@ public interface ITargetable
     /// <param name="value">The new amount of time that this ITargetable
     /// has left in its flash animation. .</param>
     void SetRemainingFlashAnimationTime(float value);
-
-    /// <summary>
-    /// Called when this ITargetable dies.
-    /// </summary>
-    void OnDie();
 
     /// <summary>
     /// Returns true if this ITargetable is no longer alive.

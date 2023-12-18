@@ -1,0 +1,1285 @@
+{
+    "extension": "linecount",
+    "version": "0.1.7",
+    "workspace": "/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide",
+    "linecount": [
+        {
+            "version": "0.1.7",
+            "counttime": "2023-12-13 16:45:22",
+            "filesum": 208,
+            "codesum": 47956,
+            "commentsum": 6401,
+            "blanksum": 7020,
+            "filelist": [
+                {
+                    "blank": 6,
+                    "code": 92,
+                    "comment": 0,
+                    "filename": ".VSCodeCounter/2023-06-04_21-10-44/details.md"
+                },
+                {
+                    "blank": 6,
+                    "code": 9,
+                    "comment": 0,
+                    "filename": ".VSCodeCounter/2023-06-04_21-10-44/diff-details.md"
+                },
+                {
+                    "blank": 0,
+                    "code": 2,
+                    "comment": 0,
+                    "filename": ".VSCodeCounter/2023-06-04_21-10-44/diff.csv"
+                },
+                {
+                    "blank": 7,
+                    "code": 12,
+                    "comment": 0,
+                    "filename": ".VSCodeCounter/2023-06-04_21-10-44/diff.md"
+                },
+                {
+                    "blank": 3,
+                    "code": 19,
+                    "comment": 0,
+                    "filename": ".VSCodeCounter/2023-06-04_21-10-44/diff.txt"
+                },
+                {
+                    "blank": 0,
+                    "code": 85,
+                    "comment": 0,
+                    "filename": ".VSCodeCounter/2023-06-04_21-10-44/results.csv"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".VSCodeCounter/2023-06-04_21-10-44/results.json"
+                },
+                {
+                    "blank": 7,
+                    "code": 45,
+                    "comment": 0,
+                    "filename": ".VSCodeCounter/2023-06-04_21-10-44/results.md"
+                },
+                {
+                    "blank": 3,
+                    "code": 135,
+                    "comment": 0,
+                    "filename": ".VSCodeCounter/2023-06-04_21-10-44/results.txt"
+                },
+                {
+                    "blank": 6,
+                    "code": 117,
+                    "comment": 0,
+                    "filename": ".VSCodeCounter/2023-08-15_20-50-54/details.md"
+                },
+                {
+                    "blank": 6,
+                    "code": 112,
+                    "comment": 0,
+                    "filename": ".VSCodeCounter/2023-08-15_20-50-54/diff-details.md"
+                },
+                {
+                    "blank": 0,
+                    "code": 105,
+                    "comment": 0,
+                    "filename": ".VSCodeCounter/2023-08-15_20-50-54/diff.csv"
+                },
+                {
+                    "blank": 7,
+                    "code": 63,
+                    "comment": 0,
+                    "filename": ".VSCodeCounter/2023-08-15_20-50-54/diff.md"
+                },
+                {
+                    "blank": 3,
+                    "code": 173,
+                    "comment": 0,
+                    "filename": ".VSCodeCounter/2023-08-15_20-50-54/diff.txt"
+                },
+                {
+                    "blank": 0,
+                    "code": 110,
+                    "comment": 0,
+                    "filename": ".VSCodeCounter/2023-08-15_20-50-54/results.csv"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".VSCodeCounter/2023-08-15_20-50-54/results.json"
+                },
+                {
+                    "blank": 7,
+                    "code": 56,
+                    "comment": 0,
+                    "filename": ".VSCodeCounter/2023-08-15_20-50-54/results.md"
+                },
+                {
+                    "blank": 3,
+                    "code": 171,
+                    "comment": 0,
+                    "filename": ".VSCodeCounter/2023-08-15_20-50-54/results.txt"
+                },
+                {
+                    "blank": 1,
+                    "code": 5,
+                    "comment": 0,
+                    "filename": ".vsconfig"
+                },
+                {
+                    "blank": 0,
+                    "code": 903,
+                    "comment": 0,
+                    "filename": "Assembly-CSharp.csproj"
+                },
+                {
+                    "blank": 0,
+                    "code": 296,
+                    "comment": 0,
+                    "filename": "Assets/Animation/Animations/FlashRed.anim"
+                },
+                {
+                    "blank": 0,
+                    "code": 416,
+                    "comment": 0,
+                    "filename": "Assets/Animation/Animators/EnemyAnimator.controller"
+                },
+                {
+                    "blank": 0,
+                    "code": 204,
+                    "comment": 0,
+                    "filename": "Assets/Levels/level0.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 44,
+                    "comment": 0,
+                    "filename": "Assets/Levels/level_easy.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 148,
+                    "comment": 0,
+                    "filename": "Assets/Levels/level_hard.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0,
+                    "filename": "Assets/Levels/level_medium.json"
+                },
+                {
+                    "blank": 15,
+                    "code": 52,
+                    "comment": 56,
+                    "filename": "Assets/Scripts/Controllers/AcornController.cs"
+                },
+                {
+                    "blank": 17,
+                    "code": 53,
+                    "comment": 49,
+                    "filename": "Assets/Scripts/Controllers/BasicTreeController.cs"
+                },
+                {
+                    "blank": 26,
+                    "code": 99,
+                    "comment": 70,
+                    "filename": "Assets/Scripts/Controllers/BombController.cs"
+                },
+                {
+                    "blank": 45,
+                    "code": 208,
+                    "comment": 113,
+                    "filename": "Assets/Scripts/Controllers/ButterflyController.cs"
+                },
+                {
+                    "blank": 34,
+                    "code": 178,
+                    "comment": 91,
+                    "filename": "Assets/Scripts/Controllers/ControllerController.cs"
+                },
+                {
+                    "blank": 10,
+                    "code": 38,
+                    "comment": 39,
+                    "filename": "Assets/Scripts/Controllers/DefenderController.cs"
+                },
+                {
+                    "blank": 21,
+                    "code": 74,
+                    "comment": 55,
+                    "filename": "Assets/Scripts/Controllers/EconomyController.cs"
+                },
+                {
+                    "blank": 23,
+                    "code": 80,
+                    "comment": 71,
+                    "filename": "Assets/Scripts/Controllers/EnemyController.cs"
+                },
+                {
+                    "blank": 19,
+                    "code": 78,
+                    "comment": 48,
+                    "filename": "Assets/Scripts/Controllers/EnemyManager.cs"
+                },
+                {
+                    "blank": 6,
+                    "code": 20,
+                    "comment": 25,
+                    "filename": "Assets/Scripts/Controllers/HazardController.cs"
+                },
+                {
+                    "blank": 55,
+                    "code": 176,
+                    "comment": 132,
+                    "filename": "Assets/Scripts/Controllers/InputController.cs"
+                },
+                {
+                    "blank": 24,
+                    "code": 93,
+                    "comment": 73,
+                    "filename": "Assets/Scripts/Controllers/InventoryController.cs"
+                },
+                {
+                    "blank": 13,
+                    "code": 48,
+                    "comment": 38,
+                    "filename": "Assets/Scripts/Controllers/JSONController.cs"
+                },
+                {
+                    "blank": 43,
+                    "code": 188,
+                    "comment": 111,
+                    "filename": "Assets/Scripts/Controllers/KudzuController.cs"
+                },
+                {
+                    "blank": 37,
+                    "code": 111,
+                    "comment": 94,
+                    "filename": "Assets/Scripts/Controllers/LevelController.cs"
+                },
+                {
+                    "blank": 14,
+                    "code": 56,
+                    "comment": 49,
+                    "filename": "Assets/Scripts/Controllers/MainMenuController.cs"
+                },
+                {
+                    "blank": 38,
+                    "code": 113,
+                    "comment": 159,
+                    "filename": "Assets/Scripts/Controllers/MobController.cs"
+                },
+                {
+                    "blank": 27,
+                    "code": 90,
+                    "comment": 107,
+                    "filename": "Assets/Scripts/Controllers/ModelController.cs"
+                },
+                {
+                    "blank": 7,
+                    "code": 20,
+                    "comment": 31,
+                    "filename": "Assets/Scripts/Controllers/PlaceableObjectController.cs"
+                },
+                {
+                    "blank": 30,
+                    "code": 112,
+                    "comment": 78,
+                    "filename": "Assets/Scripts/Controllers/PlacementController.cs"
+                },
+                {
+                    "blank": 44,
+                    "code": 89,
+                    "comment": 149,
+                    "filename": "Assets/Scripts/Controllers/ProjectileController.cs"
+                },
+                {
+                    "blank": 24,
+                    "code": 99,
+                    "comment": 87,
+                    "filename": "Assets/Scripts/Controllers/SlowZoneController.cs"
+                },
+                {
+                    "blank": 11,
+                    "code": 47,
+                    "comment": 32,
+                    "filename": "Assets/Scripts/Controllers/SoundController.cs"
+                },
+                {
+                    "blank": 31,
+                    "code": 136,
+                    "comment": 93,
+                    "filename": "Assets/Scripts/Controllers/SquirrelController.cs"
+                },
+                {
+                    "blank": 4,
+                    "code": 20,
+                    "comment": 17,
+                    "filename": "Assets/Scripts/Controllers/SynergyController.cs"
+                },
+                {
+                    "blank": 130,
+                    "code": 561,
+                    "comment": 395,
+                    "filename": "Assets/Scripts/Controllers/TileGrid.cs"
+                },
+                {
+                    "blank": 11,
+                    "code": 30,
+                    "comment": 45,
+                    "filename": "Assets/Scripts/Controllers/TreeController.cs"
+                },
+                {
+                    "blank": 27,
+                    "code": 66,
+                    "comment": 66,
+                    "filename": "Assets/Scripts/Factories/DefenderFactory.cs"
+                },
+                {
+                    "blank": 9,
+                    "code": 30,
+                    "comment": 30,
+                    "filename": "Assets/Scripts/Factories/EdgeFactory.cs"
+                },
+                {
+                    "blank": 17,
+                    "code": 81,
+                    "comment": 45,
+                    "filename": "Assets/Scripts/Factories/EnemyFactory.cs"
+                },
+                {
+                    "blank": 10,
+                    "code": 30,
+                    "comment": 30,
+                    "filename": "Assets/Scripts/Factories/FlooringFactory.cs"
+                },
+                {
+                    "blank": 5,
+                    "code": 26,
+                    "comment": 18,
+                    "filename": "Assets/Scripts/Factories/HazardFactory.cs"
+                },
+                {
+                    "blank": 7,
+                    "code": 34,
+                    "comment": 23,
+                    "filename": "Assets/Scripts/Factories/ProjectileFactory.cs"
+                },
+                {
+                    "blank": 9,
+                    "code": 32,
+                    "comment": 32,
+                    "filename": "Assets/Scripts/Factories/TileFactory.cs"
+                },
+                {
+                    "blank": 16,
+                    "code": 41,
+                    "comment": 43,
+                    "filename": "Assets/Scripts/Factories/TreeFactory.cs"
+                },
+                {
+                    "blank": 10,
+                    "code": 15,
+                    "comment": 40,
+                    "filename": "Assets/Scripts/Interfaces/IAnimatable.cs"
+                },
+                {
+                    "blank": 14,
+                    "code": 20,
+                    "comment": 54,
+                    "filename": "Assets/Scripts/Interfaces/IAttackable.cs"
+                },
+                {
+                    "blank": 3,
+                    "code": 9,
+                    "comment": 18,
+                    "filename": "Assets/Scripts/Interfaces/ISlottable.cs"
+                },
+                {
+                    "blank": 6,
+                    "code": 13,
+                    "comment": 37,
+                    "filename": "Assets/Scripts/Interfaces/IStateTracker.cs"
+                },
+                {
+                    "blank": 18,
+                    "code": 23,
+                    "comment": 102,
+                    "filename": "Assets/Scripts/Interfaces/ISurface.cs"
+                },
+                {
+                    "blank": 22,
+                    "code": 28,
+                    "comment": 91,
+                    "filename": "Assets/Scripts/Interfaces/ITargetable.cs"
+                },
+                {
+                    "blank": 1,
+                    "code": 6,
+                    "comment": 5,
+                    "filename": "Assets/Scripts/Interfaces/IUsable.cs"
+                },
+                {
+                    "blank": 19,
+                    "code": 74,
+                    "comment": 73,
+                    "filename": "Assets/Scripts/Loading/LayerData.cs"
+                },
+                {
+                    "blank": 18,
+                    "code": 66,
+                    "comment": 63,
+                    "filename": "Assets/Scripts/Loading/ObjectData.cs"
+                },
+                {
+                    "blank": 4,
+                    "code": 19,
+                    "comment": 18,
+                    "filename": "Assets/Scripts/Loading/PropertiesData.cs"
+                },
+                {
+                    "blank": 15,
+                    "code": 82,
+                    "comment": 66,
+                    "filename": "Assets/Scripts/Loading/TiledData.cs"
+                },
+                {
+                    "blank": 6,
+                    "code": 27,
+                    "comment": 26,
+                    "filename": "Assets/Scripts/Loading/TilesetData.cs"
+                },
+                {
+                    "blank": 10,
+                    "code": 16,
+                    "comment": 34,
+                    "filename": "Assets/Scripts/Models/Acorn.cs"
+                },
+                {
+                    "blank": 7,
+                    "code": 31,
+                    "comment": 20,
+                    "filename": "Assets/Scripts/Models/AnimatedTile.cs"
+                },
+                {
+                    "blank": 20,
+                    "code": 25,
+                    "comment": 60,
+                    "filename": "Assets/Scripts/Models/BasicTree.cs"
+                },
+                {
+                    "blank": 9,
+                    "code": 16,
+                    "comment": 34,
+                    "filename": "Assets/Scripts/Models/Bomb.cs"
+                },
+                {
+                    "blank": 11,
+                    "code": 19,
+                    "comment": 43,
+                    "filename": "Assets/Scripts/Models/BombSplat.cs"
+                },
+                {
+                    "blank": 29,
+                    "code": 31,
+                    "comment": 87,
+                    "filename": "Assets/Scripts/Models/Butterfly.cs"
+                },
+                {
+                    "blank": 1,
+                    "code": 7,
+                    "comment": 7,
+                    "filename": "Assets/Scripts/Models/Collectable.cs"
+                },
+                {
+                    "blank": 19,
+                    "code": 46,
+                    "comment": 60,
+                    "filename": "Assets/Scripts/Models/Currency.cs"
+                },
+                {
+                    "blank": 9,
+                    "code": 30,
+                    "comment": 40,
+                    "filename": "Assets/Scripts/Models/Defender.cs"
+                },
+                {
+                    "blank": 19,
+                    "code": 89,
+                    "comment": 66,
+                    "filename": "Assets/Scripts/Models/DefenderScriptable.cs"
+                },
+                {
+                    "blank": 1,
+                    "code": 7,
+                    "comment": 4,
+                    "filename": "Assets/Scripts/Models/Direction.cs"
+                },
+                {
+                    "blank": 2,
+                    "code": 11,
+                    "comment": 11,
+                    "filename": "Assets/Scripts/Models/EdgeTile.cs"
+                },
+                {
+                    "blank": 11,
+                    "code": 32,
+                    "comment": 47,
+                    "filename": "Assets/Scripts/Models/Effect.cs"
+                },
+                {
+                    "blank": 18,
+                    "code": 52,
+                    "comment": 68,
+                    "filename": "Assets/Scripts/Models/Enemy.cs"
+                },
+                {
+                    "blank": 49,
+                    "code": 234,
+                    "comment": 177,
+                    "filename": "Assets/Scripts/Models/EnemyScriptable.cs"
+                },
+                {
+                    "blank": 55,
+                    "code": 182,
+                    "comment": 165,
+                    "filename": "Assets/Scripts/Models/Flooring.cs"
+                },
+                {
+                    "blank": 0,
+                    "code": 9,
+                    "comment": 3,
+                    "filename": "Assets/Scripts/Models/GameState.cs"
+                },
+                {
+                    "blank": 8,
+                    "code": 27,
+                    "comment": 34,
+                    "filename": "Assets/Scripts/Models/GrassTile.cs"
+                },
+                {
+                    "blank": 8,
+                    "code": 16,
+                    "comment": 29,
+                    "filename": "Assets/Scripts/Models/Hazard.cs"
+                },
+                {
+                    "blank": 4,
+                    "code": 18,
+                    "comment": 18,
+                    "filename": "Assets/Scripts/Models/HazardScriptable.cs"
+                },
+                {
+                    "blank": 21,
+                    "code": 69,
+                    "comment": 67,
+                    "filename": "Assets/Scripts/Models/InventorySlot.cs"
+                },
+                {
+                    "blank": 32,
+                    "code": 47,
+                    "comment": 111,
+                    "filename": "Assets/Scripts/Models/Kudzu.cs"
+                },
+                {
+                    "blank": 61,
+                    "code": 116,
+                    "comment": 193,
+                    "filename": "Assets/Scripts/Models/Mob.cs"
+                },
+                {
+                    "blank": 45,
+                    "code": 109,
+                    "comment": 164,
+                    "filename": "Assets/Scripts/Models/Model.cs"
+                },
+                {
+                    "blank": 14,
+                    "code": 29,
+                    "comment": 71,
+                    "filename": "Assets/Scripts/Models/PlaceableObject.cs"
+                },
+                {
+                    "blank": 40,
+                    "code": 64,
+                    "comment": 146,
+                    "filename": "Assets/Scripts/Models/Projectile.cs"
+                },
+                {
+                    "blank": 10,
+                    "code": 21,
+                    "comment": 25,
+                    "filename": "Assets/Scripts/Models/ProjectileScriptable.cs"
+                },
+                {
+                    "blank": 3,
+                    "code": 15,
+                    "comment": 6,
+                    "filename": "Assets/Scripts/Models/SeedToken.cs"
+                },
+                {
+                    "blank": 3,
+                    "code": 9,
+                    "comment": 13,
+                    "filename": "Assets/Scripts/Models/ShoreTile.cs"
+                },
+                {
+                    "blank": 7,
+                    "code": 31,
+                    "comment": 30,
+                    "filename": "Assets/Scripts/Models/SlowEffect.cs"
+                },
+                {
+                    "blank": 13,
+                    "code": 19,
+                    "comment": 43,
+                    "filename": "Assets/Scripts/Models/SlowZone.cs"
+                },
+                {
+                    "blank": 5,
+                    "code": 31,
+                    "comment": 19,
+                    "filename": "Assets/Scripts/Models/SoilFlooring.cs"
+                },
+                {
+                    "blank": 6,
+                    "code": 25,
+                    "comment": 27,
+                    "filename": "Assets/Scripts/Models/Sound.cs"
+                },
+                {
+                    "blank": 28,
+                    "code": 30,
+                    "comment": 81,
+                    "filename": "Assets/Scripts/Models/Squirrel.cs"
+                },
+                {
+                    "blank": 91,
+                    "code": 288,
+                    "comment": 254,
+                    "filename": "Assets/Scripts/Models/Tile.cs"
+                },
+                {
+                    "blank": 40,
+                    "code": 133,
+                    "comment": 145,
+                    "filename": "Assets/Scripts/Models/Tree.cs"
+                },
+                {
+                    "blank": 3,
+                    "code": 9,
+                    "comment": 12,
+                    "filename": "Assets/Scripts/Models/WaterTile.cs"
+                },
+                {
+                    "blank": 9,
+                    "code": 44,
+                    "comment": 38,
+                    "filename": "Assets/Scripts/View/CameraController.cs"
+                },
+                {
+                    "blank": 31,
+                    "code": 128,
+                    "comment": 87,
+                    "filename": "Assets/Scripts/View/CanvasController.cs"
+                },
+                {
+                    "blank": 19,
+                    "code": 82,
+                    "comment": 58,
+                    "filename": "Assets/Scripts/View/SceneController.cs"
+                },
+                {
+                    "blank": 17,
+                    "code": 29,
+                    "comment": 1,
+                    "filename": "Assets/TextMesh Pro/Fonts/LiberationSans - OFL.txt"
+                },
+                {
+                    "filename": "Assets/TextMesh Pro/Fonts/LiberationSans.ttf",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "Assets/TextMesh Pro/Resources/LineBreaking Following Characters.txt"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "Assets/TextMesh Pro/Resources/LineBreaking Leading Characters.txt"
+                },
+                {
+                    "blank": 32,
+                    "code": 109,
+                    "comment": 2,
+                    "filename": "Assets/TextMesh Pro/Shaders/TMP_Bitmap-Custom-Atlas.shader"
+                },
+                {
+                    "blank": 30,
+                    "code": 112,
+                    "comment": 3,
+                    "filename": "Assets/TextMesh Pro/Shaders/TMP_Bitmap-Mobile.shader"
+                },
+                {
+                    "blank": 32,
+                    "code": 109,
+                    "comment": 2,
+                    "filename": "Assets/TextMesh Pro/Shaders/TMP_Bitmap.shader"
+                },
+                {
+                    "blank": 70,
+                    "code": 243,
+                    "comment": 8,
+                    "filename": "Assets/TextMesh Pro/Shaders/TMP_SDF Overlay.shader"
+                },
+                {
+                    "blank": 65,
+                    "code": 241,
+                    "comment": 5,
+                    "filename": "Assets/TextMesh Pro/Shaders/TMP_SDF SSD.shader"
+                },
+                {
+                    "blank": 49,
+                    "code": 189,
+                    "comment": 15,
+                    "filename": "Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Masking.shader"
+                },
+                {
+                    "blank": 49,
+                    "code": 183,
+                    "comment": 13,
+                    "filename": "Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Overlay.shader"
+                },
+                {
+                    "blank": 20,
+                    "code": 83,
+                    "comment": 4,
+                    "filename": "Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile SSD.shader"
+                },
+                {
+                    "blank": 49,
+                    "code": 184,
+                    "comment": 13,
+                    "filename": "Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile.shader"
+                },
+                {
+                    "blank": 27,
+                    "code": 103,
+                    "comment": 9,
+                    "filename": "Assets/TextMesh Pro/Shaders/TMP_SDF-Surface-Mobile.shader"
+                },
+                {
+                    "blank": 32,
+                    "code": 122,
+                    "comment": 5,
+                    "filename": "Assets/TextMesh Pro/Shaders/TMP_SDF-Surface.shader"
+                },
+                {
+                    "blank": 70,
+                    "code": 243,
+                    "comment": 8,
+                    "filename": "Assets/TextMesh Pro/Shaders/TMP_SDF.shader"
+                },
+                {
+                    "blank": 19,
+                    "code": 97,
+                    "comment": 0,
+                    "filename": "Assets/TextMesh Pro/Shaders/TMP_Sprite.shader"
+                },
+                {
+                    "blank": 19,
+                    "code": 63,
+                    "comment": 3,
+                    "filename": "Assets/TextMesh Pro/Shaders/TMPro.cginc"
+                },
+                {
+                    "blank": 33,
+                    "code": 122,
+                    "comment": 3,
+                    "filename": "Assets/TextMesh Pro/Shaders/TMPro_Mobile.cginc"
+                },
+                {
+                    "blank": 13,
+                    "code": 62,
+                    "comment": 44,
+                    "filename": "Assets/TextMesh Pro/Shaders/TMPro_Properties.cginc"
+                },
+                {
+                    "blank": 18,
+                    "code": 76,
+                    "comment": 8,
+                    "filename": "Assets/TextMesh Pro/Shaders/TMPro_Surface.cginc"
+                },
+                {
+                    "blank": 1,
+                    "code": 2,
+                    "comment": 1,
+                    "filename": "Assets/TextMesh Pro/Sprites/EmojiOne Attribution.txt"
+                },
+                {
+                    "blank": 1,
+                    "code": 155,
+                    "comment": 0,
+                    "filename": "Assets/TextMesh Pro/Sprites/EmojiOne.json"
+                },
+                {
+                    "filename": "Builds/Herbicide_Gameplay_Prototype.zip",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 1861,
+                    "comment": 5,
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/_CodeSignature/CodeResources"
+                },
+                {
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/Frameworks/libmono-native.dylib",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/Frameworks/libmonobdwgc-2.0.dylib",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/Frameworks/libMonoPosixHelper.dylib",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/Frameworks/UnityPlayer.dylib",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 45,
+                    "comment": 0,
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/Info.plist"
+                },
+                {
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/MacOS/Herbicide",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 4,
+                    "comment": 35,
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/2.0/Browsers/Compat.browser"
+                },
+                {
+                    "blank": 277,
+                    "code": 1583,
+                    "comment": 42,
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/2.0/DefaultWsdlHelpGenerator.aspx"
+                },
+                {
+                    "blank": 17,
+                    "code": 263,
+                    "comment": 0,
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/2.0/machine.config"
+                },
+                {
+                    "blank": 5,
+                    "code": 43,
+                    "comment": 0,
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/2.0/settings.map"
+                },
+                {
+                    "blank": 5,
+                    "code": 148,
+                    "comment": 0,
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/2.0/web.config"
+                },
+                {
+                    "blank": 0,
+                    "code": 4,
+                    "comment": 35,
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/4.0/Browsers/Compat.browser"
+                },
+                {
+                    "blank": 277,
+                    "code": 1583,
+                    "comment": 42,
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/4.0/DefaultWsdlHelpGenerator.aspx"
+                },
+                {
+                    "blank": 18,
+                    "code": 289,
+                    "comment": 0,
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/4.0/machine.config"
+                },
+                {
+                    "blank": 5,
+                    "code": 43,
+                    "comment": 0,
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/4.0/settings.map"
+                },
+                {
+                    "blank": 7,
+                    "code": 245,
+                    "comment": 0,
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/4.0/web.config"
+                },
+                {
+                    "blank": 0,
+                    "code": 4,
+                    "comment": 35,
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/4.5/Browsers/Compat.browser"
+                },
+                {
+                    "blank": 277,
+                    "code": 1583,
+                    "comment": 42,
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/4.5/DefaultWsdlHelpGenerator.aspx"
+                },
+                {
+                    "blank": 18,
+                    "code": 292,
+                    "comment": 0,
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/4.5/machine.config"
+                },
+                {
+                    "blank": 5,
+                    "code": 43,
+                    "comment": 0,
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/4.5/settings.map"
+                },
+                {
+                    "blank": 7,
+                    "code": 245,
+                    "comment": 0,
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/4.5/web.config"
+                },
+                {
+                    "blank": 3170,
+                    "code": 12363,
+                    "comment": 204,
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/browscap.ini"
+                },
+                {
+                    "blank": 0,
+                    "code": 46,
+                    "comment": 0,
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/config"
+                },
+                {
+                    "blank": 61,
+                    "code": 525,
+                    "comment": 30,
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/mconfig/config.xml"
+                },
+                {
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/PlugIns/lib_burst_generated.bundle",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 2,
+                    "comment": 0,
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/app.info"
+                },
+                {
+                    "blank": 0,
+                    "code": 3,
+                    "comment": 0,
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/boot.config"
+                },
+                {
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/globalgamemanagers",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/globalgamemanagers.assets",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/level0",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/resources.assets",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/resources.assets.resS",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/Resources/unity_builtin_extra",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/RuntimeInitializeOnLoads.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/ScriptingAssemblies.json"
+                },
+                {
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/sharedassets0.assets",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/sharedassets0.assets.resS",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/sharedassets0.resource",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/StreamingAssets/UnityServicesProjectConfiguration.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 8,
+                    "comment": 0,
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/Resources/DefaultPreferences.plist"
+                },
+                {
+                    "blank": 0,
+                    "code": 88,
+                    "comment": 0,
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/Resources/MainMenu.nib/designable.nib"
+                },
+                {
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/Resources/MainMenu.nib/keyedobjects.nib",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/Resources/PlayerIcon.icns",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "Builds/HerbicideGameplayPrototype.app/Contents/Resources/unity default resources",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 20,
+                    "comment": 0,
+                    "filename": "Herbicide.sln"
+                },
+                {
+                    "blank": 6,
+                    "code": 106,
+                    "comment": 0,
+                    "filename": "HerbicideTiled.tiled-project"
+                },
+                {
+                    "blank": 2,
+                    "code": 64,
+                    "comment": 0,
+                    "filename": "HerbicideTiled.tiled-session"
+                },
+                {
+                    "blank": 92,
+                    "code": 3549,
+                    "comment": 0,
+                    "filename": "Logs/AssetImportWorker0-prev.log"
+                },
+                {
+                    "blank": 45,
+                    "code": 1081,
+                    "comment": 0,
+                    "filename": "Logs/AssetImportWorker0.log"
+                },
+                {
+                    "blank": 92,
+                    "code": 3531,
+                    "comment": 0,
+                    "filename": "Logs/AssetImportWorker1-prev.log"
+                },
+                {
+                    "blank": 45,
+                    "code": 949,
+                    "comment": 0,
+                    "filename": "Logs/AssetImportWorker1.log"
+                },
+                {
+                    "blank": 53,
+                    "code": 1386,
+                    "comment": 0,
+                    "filename": "Logs/AssetImportWorker2-prev.log"
+                },
+                {
+                    "blank": 53,
+                    "code": 1374,
+                    "comment": 0,
+                    "filename": "Logs/AssetImportWorker3-prev.log"
+                },
+                {
+                    "blank": 3,
+                    "code": 43,
+                    "comment": 0,
+                    "filename": "Logs/Packages-Update.log"
+                },
+                {
+                    "blank": 1,
+                    "code": 2,
+                    "comment": 0,
+                    "filename": "Logs/shadercompiler-AssetImportWorker0.log"
+                },
+                {
+                    "blank": 1,
+                    "code": 2,
+                    "comment": 0,
+                    "filename": "Logs/shadercompiler-UnityShaderCompiler0.log"
+                },
+                {
+                    "blank": 0,
+                    "code": 43,
+                    "comment": 0,
+                    "filename": "Packages/manifest.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 466,
+                    "comment": 0,
+                    "filename": "Packages/packages-lock.json"
+                },
+                {
+                    "blank": 1,
+                    "code": 11,
+                    "comment": 0,
+                    "filename": "Tiled/HerbicideTiled.tiled-project"
+                },
+                {
+                    "blank": 0,
+                    "code": 22,
+                    "comment": 0,
+                    "filename": "Tiled/HerbicideTiled.tiled-session"
+                },
+                {
+                    "blank": 0,
+                    "code": 2,
+                    "comment": 0,
+                    "filename": "Tiled/Objects/propertytypes.xml"
+                },
+                {
+                    "blank": 0,
+                    "code": 105,
+                    "comment": 0,
+                    "filename": "Tiled/Tilemaps/level0.tmx"
+                },
+                {
+                    "blank": 0,
+                    "code": 10,
+                    "comment": 0,
+                    "filename": "Tiled/Tilesets/Enemies.tsx"
+                },
+                {
+                    "blank": 0,
+                    "code": 4,
+                    "comment": 0,
+                    "filename": "Tiled/Tilesets/Grass.tsx"
+                },
+                {
+                    "blank": 0,
+                    "code": 9,
+                    "comment": 0,
+                    "filename": "Tiled/Tilesets/Shore.tsx"
+                },
+                {
+                    "blank": 0,
+                    "code": 4,
+                    "comment": 0,
+                    "filename": "Tiled/Tilesets/Soil.tsx"
+                },
+                {
+                    "blank": 0,
+                    "code": 4,
+                    "comment": 0,
+                    "filename": "Tiled/Tilesets/Water.tsx"
+                },
+                {
+                    "blank": 0,
+                    "code": 1058,
+                    "comment": 0,
+                    "filename": "UserSettings/Layouts/CurrentMaximizeLayout.dwlt"
+                },
+                {
+                    "blank": 0,
+                    "code": 1153,
+                    "comment": 0,
+                    "filename": "UserSettings/Layouts/default-2021.dwlt"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "UserSettings/Search.settings"
+                }
+            ]
+        }
+    ]
+}

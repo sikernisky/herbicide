@@ -13,14 +13,31 @@ using UnityEngine.Assertions;
 /// The MobController is responsible for manipulating its Mob and bringing
 /// it to life. This includes moving it, choosing targets, playing animations,
 /// and more.
-/// /// </summary>
-public abstract class MobController<T> : PlaceableObjectController where T : Enum
+/// </summary>
+/// <typeparam name="T">Enum to represent state of the Mob.</typeparam>
+public abstract class MobController<T> : ModelController, IStateTracker<T> where T : Enum
 {
     /// <summary>
-    /// The current target. Mobs will interperet a "target"
+    /// The list of current targets. Mobs will interperet a "target"
     /// in their own way.  
     /// </summary>
-    private ITargetable target;
+    private List<ITargetable> targets;
+
+    /// <summary>
+    /// The color strength, from 0-1, of the damage flash animation.
+    /// </summary>
+    private const float FLASH_INTENSITY = .4f;
+
+    /// <summary>
+    /// The total time in seconds, from start to finish, of a damage flash
+    /// animation.
+    /// </summary>
+    private const float FLASH_DURATION = .4f;
+
+    /// <summary>
+    /// The maximum number of targets the controller can have at once.
+    /// </summary>
+    protected abstract int MAX_TARGETS { get; }
 
     /// <summary>
     /// The Mob's state.
@@ -51,8 +68,11 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
     public MobController(Mob mob) : base(mob)
     {
         Assert.IsNotNull(mob, "Mob cannot be null.");
+        targets = new List<ITargetable>();
         SpawnMob();
         NUM_MOBS++;
+
+
     }
 
     /// <summary>
@@ -61,6 +81,7 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
     public override void UpdateModel()
     {
         base.UpdateModel();
+        UpdateDamageFlash();
         UpdateStateFSM();
         UpdateMob();
     }
@@ -70,11 +91,22 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
     /// </summary>
     protected virtual void UpdateMob()
     {
-        ElectTarget(FilterTargets(GetAllTargetableObjects()));
-        float oldCooldown = GetMob().GetAttackCooldown();
-        oldCooldown -= Time.deltaTime;
-        GetMob().SetAttackCooldown(oldCooldown);
+        List<ITargetable> filteredTargets = FilterTargets(GetAllTargetableObjects());
+        CleanTargets(filteredTargets);
+        ElectTarget(filteredTargets);
+        GetMob().AdjustAttackCooldown(-Time.deltaTime);
     }
+
+    /// <summary>
+    /// Queries the SynergyController to determine which Synergies are
+    /// active. Performs logic based on the active Synergies.
+    /// </summary>
+    protected override void UpdateSynergies() { return; }
+
+    /// <summary>
+    /// Adds to the Mob all Synergy effects that could affect it.
+    /// </summary>
+    protected override void ApplySynergies() { return; }
 
     /// <summary>
     /// Returns this MobController's Mob model. Inheriting controller
@@ -85,30 +117,41 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
     protected Mob GetMob() { return GetModel() as Mob; }
 
     /// <summary>
-    /// Returns this MobController's target. Mobs interperet targets
-    /// differently; for example, a Squirrel will attack its target,
+    /// Returns a list of this MobController's current targets. Mobs interperet
+    /// targets differently; for example, a Squirrel will attack its target,
     /// but some other Mob might heal its target.
     /// </summary>
     /// <returns>this MobController's target.</returns>
-    protected ITargetable GetTarget() { return target; }
+    protected List<ITargetable> GetTargets() { return targets; }
 
     /// <summary>
-    /// Sets this MobController's target. If the target is null,
-    /// it means that the Mob has no target. Make sure to use
+    /// Sets this MobController's target. Make sure to use
     /// ElectTarget() so that the right target for this Mob
     /// is selected.
     /// </summary>
-    /// <param name="targetable">The target to set.</param>
-    protected void SetTarget(ITargetable targetable) { target = targetable; }
+    /// <param name="targetable">The target to add.</param>
+    protected void AddTarget(ITargetable targetable)
+    {
+        Assert.IsNotNull(targetable, "Target cannot be null.");
+        Assert.IsFalse(NumTargets() >= MAX_TARGETS, GetMob() +
+            " already has " + NumTargets() + " targets.");
+        targets.Add(targetable);
+    }
 
     /// <summary>
-    /// Removes this MobController's target, setting it to null. 
+    /// Removes one of this MobController's targets.
     /// </summary>
-    protected void WipeTarget() { target = null; }
+    /// <param name="targetable">The target to remove.</param>
+    protected void RemoveTarget(ITargetable targetable)
+    {
+        Assert.IsNotNull(targetable, "Target cannot be null.");
+        Assert.IsTrue(targets.Contains(targetable), "Does not contain target " + targetable);
+        Debug.Log("removing target " + targetable.GetPosition());
+        targets.Remove(targetable);
+    }
 
     /// <summary>
-    /// Sets this MobController's target from a filtered list of ITargetables. By
-    /// default, this is a random target out of all filtered options. 
+    /// Sets this MobController's targets to be a filtered list of ITargetables.
     /// </summary>
     /// <param name="filteredTargetables">a list of ITargables that this EnemyController
     /// is allowed to set as its target. /// </param>
@@ -117,14 +160,51 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
         if (filteredTargetables == null) return;
         if (!ValidModel()) return;
 
-        //If the current target is feasible, return
-        if ((GetTarget() != null && !System.Object.Equals(GetTarget(), null)) && GetTarget().Targetable()) return;
+        //Debug.Log(NumTargets());
 
-        //ResetAnimationCounter();
-        int random = UnityEngine.Random.Range(0, filteredTargetables.Count);
-        if (filteredTargetables.Count == 0) SetTarget(null);
-        else SetTarget(filteredTargetables[random]);
+        //Add as many targets as possible.
+        foreach (ITargetable filteredTarget in filteredTargetables)
+        {
+            if (NumTargets() < MAX_TARGETS)
+            {
+                AddTarget(filteredTarget);
+            }
+        }
     }
+
+    /// <summary>
+    /// Runs through the list of the Mob's current targets and removes
+    /// those that no longer meet the standards of being a target.
+    /// </summary>
+    /// <param name="filteredTargetables">The most up to date list of
+    /// valid targets in the scene.</param>
+    protected virtual void CleanTargets(List<ITargetable> filteredTargetables)
+    {
+        if (filteredTargetables == null) return;
+
+        List<ITargetable> targetsToRemove = new List<ITargetable>();
+        foreach (ITargetable t in GetTargets())
+        {
+            if (t == null) continue;
+            if (!filteredTargetables.Contains(t)) targetsToRemove.Add(t);
+        }
+
+        foreach (ITargetable t in targetsToRemove)
+        {
+            if (GetTargets().Contains(t))
+            {
+                RemoveTarget(t);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Returns the current number of targets the Mob has
+    /// elected. 
+    /// </summary>
+    /// <returns>the current number of targets the Mob has
+    /// elected.</returns>
+    protected int NumTargets() { return targets.Count; }
 
     /// <summary>
     /// Parses the list of all ITargetables in the scene such that it
@@ -136,6 +216,33 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
     /// to target</returns>
     protected abstract List<ITargetable> FilterTargets(List<ITargetable> targetables);
 
+    /// <summary>
+    /// Animates this Controller's model's damage flash effect if it is
+    /// playing.
+    /// </summary>
+    private void UpdateDamageFlash()
+    {
+        if (GetMob() == null || System.Object.Equals(null, GetMob())) return;
+
+        float remainingFlashTime = GetMob().TimeRemaningInFlashAnimation();
+        if (remainingFlashTime <= 0)
+        {
+            GetModel().SetColor(Color.white); // Explicitly set to white when the flash time ends
+            return;
+        }
+        float newDamageFlashingTime = Mathf.Clamp(remainingFlashTime - Time.deltaTime, 0, FLASH_DURATION);
+        GetMob().SetRemainingFlashAnimationTime(newDamageFlashingTime);
+
+        // Simplified lerp target calculation
+        float lerpFactor = Mathf.Cos((Mathf.PI * remainingFlashTime) / FLASH_DURATION);
+        lerpFactor = Mathf.Clamp(lerpFactor, 0, 1);
+
+        float score = Mathf.Lerp(FLASH_INTENSITY, 1f, lerpFactor);
+        byte greenBlueComponent = (byte)(score * 255);
+        Color32 color = new Color32(255, greenBlueComponent, greenBlueComponent, 255);
+        GetModel().SetColor(color);
+    }
+
     //--------------------BEGIN STATE LOGIC----------------------//
 
     /// <summary>
@@ -144,7 +251,7 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
     /// for the FSM logic. 
     /// </summary>
     /// <param name="state"></param>
-    protected void SetState(T state) { this.state = state; }
+    public void SetState(T state) { this.state = state; }
 
     /// <summary>
     /// Returns the State of this MobController. This helps keep track of
@@ -152,22 +259,21 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
     /// for the FSM logic. 
     /// </summary>
     /// <returns>The State of this MobController. </returns>
-    protected T GetState() { return state; }
+    public T GetState() { return state; }
 
     /// <summary>
     /// Processes this MobController's state FSM to determine the
     /// correct state. Takes the current state and chooses whether
     /// or not to switch to another based on game conditions. /// 
     /// </summary>
-    protected abstract void UpdateStateFSM();
+    public abstract void UpdateStateFSM();
 
     /// <summary>
     /// Returns true if the Mob can attack this frame.
     /// </summary>
     /// <returns>true if the Mob can attack this frame; 
     /// otherwise, false. </returns>
-    protected virtual bool CanAttack() { return GetMob().GetAttackCooldown() <= 0; }
-
+    public virtual bool CanAttack() { return GetMob().GetAttackCooldown() <= 0; }
 
     /// <summary>
     /// Returns true if two states are equal.
@@ -175,7 +281,22 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
     /// <param name="stateA">The first state.</param>
     /// <param name="stateB">The second state</param>
     /// <returns>true if two states are equal; otherwise, false. </returns>
-    protected abstract bool StateEquals(T stateA, T stateB);
+    public abstract bool StateEquals(T stateA, T stateB);
+
+    /// <summary>
+    /// Returns the State that triggered the Mob's most recent
+    /// animation.
+    /// </summary>
+    /// <returns>the State that triggered the Mob's most recent
+    /// animation.</returns>
+    public T GetAnimationState() { return animationState; }
+
+    /// <summary>
+    /// Sets the State that triggered the Mob's most recent
+    /// animation.
+    /// </summary>
+    /// <param name="animationState">the animation state to set.</param>
+    public void SetAnimationState(T animationState) { this.animationState = animationState; }
 
     //----------------------END STATE LOGIC----------------------//
 
@@ -192,13 +313,6 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
     protected virtual void SetNextMovePos(Vector3? nextPos) { nextMovePos = nextPos; }
 
     /// <summary>
-    /// Returns true if this MobController's model is not null.
-    /// </summary>
-    /// <returns>true if this Controller's model is not null; otherwise,
-    /// false.</returns>
-    public override bool ValidModel() { return GetMob() != null; }
-
-    /// <summary>
     /// Brings this Controller's Mob into life by calling its OnSpawn()
     /// method. 
     /// </summary>
@@ -207,21 +321,4 @@ public abstract class MobController<T> : PlaceableObjectController where T : Enu
         GetMob().RefreshRenderer();
         GetMob().OnSpawn();
     }
-
-    //---------------------ANIMATION LOGIC----------------------//
-
-    /// <summary>
-    /// Returns the State that triggered the Mob's most recent
-    /// animation.
-    /// </summary>
-    /// <returns>the State that triggered the Mob's most recent
-    /// animation.</returns>
-    protected T GetAnimationState() { return animationState; }
-
-    /// <summary>
-    /// Sets the State that triggered the Mob's most recent
-    /// animation.
-    /// </summary>
-    /// <param name="animationState">the animation state to set.</param>
-    protected void SetAnimationState(T animationState) { this.animationState = animationState; }
 }

@@ -92,12 +92,6 @@ public class BasicTree : Tree
     /// </summary>
     public override float MIN_MOVEMENT_SPEED => 0f;
 
-
-    /// <summary>
-    /// Called when this BasicTree dies.
-    /// </summary>
-    public override void OnDie() { return; }
-
     /// <summary>
     /// Sets this BasicTree's 2D Collider's properties.
     /// </summary>

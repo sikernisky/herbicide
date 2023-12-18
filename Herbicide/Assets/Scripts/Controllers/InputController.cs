@@ -202,28 +202,29 @@ public class InputController : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns the first Collectable the player clicked on at this specific frame;
-    /// returns null if no Collectable was clicked on this frame.
+    /// Returns true if the player clicked on a specific Model this
+    /// frame.
     /// </summary>
-    /// <returns>the Collectable the player clicked on this frame, 
-    /// or null if they didn't.</returns>
-    public static Collectable CollectableClickedUp()
+    /// <param name="m">The Model to check.</param>
+    /// <returns>true if the player clicked on a specific Model this
+    /// frame; otherwise, false. </returns>
+    public static bool ModelClickedUp(Model m)
     {
         instance.AssertTempObjectsMade();
+        Assert.IsNotNull(m, "Model m is null.");
 
-        if (!DidPrimaryUp()) return null;
-        return instance.GetCollectableFromRaycast();
+        if (!DidPrimaryUp()) return false;
+        return instance.CheckModelFromRaycast(m);
     }
 
     /// <summary>
-    /// Returns the first Collectable component found after iterating through a
-    /// RayCastHit2D array generated from the player's mouse position.
-    /// Returns null if no Collectable component was found.
+    /// Returns true if the player clicked on a specific Model this
+    /// frame. Checks from all of the RaycastHit2Ds clicked.
     /// </summary>
-    /// <returns>the first Collectable component found after iterating through a
-    /// RayCastHit2D array. Returns null if no Collectable component was found.
-    /// </returns>
-    private Collectable GetCollectableFromRaycast()
+    /// <param name="m">The Model to check for. </param>
+    /// <returns>true if the player clicked on a specific Model this
+    /// frame; otherwise, false.</returns>
+    private bool CheckModelFromRaycast(Model m)
     {
         AssertTempObjectsMade();
 
@@ -234,11 +235,11 @@ public class InputController : MonoBehaviour
         foreach (RaycastHit2D hit in instance.hitTemp)
         {
             if (hit.collider == null) continue;
-            Collectable c = hit.collider.gameObject.GetComponent<Collectable>();
-            if (c != null) return c;
+            Model hitModel = hit.collider.gameObject.GetComponent<Model>();
+            if (m == hitModel) return true;
         }
 
-        return null;
+        return false;
     }
 
     /// <summary>
@@ -265,6 +266,28 @@ public class InputController : MonoBehaviour
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// Returns true if the player is hovering over a specific UI element.
+    /// </summary>
+    /// <param name="uiElement">The UI element to check.</param>
+    /// <returns>true if the player is hovering over a specific UI element;
+    /// otherwise, false. </returns>
+    public static bool IsHoveringUIElement(GameObject uiElement)
+    {
+        instance.AssertTempObjectsMade();
+
+        instance.pointerEventData.Reset();
+        instance.pointerEventData.position = GetMousePosition();
+        instance.raycastResults.Clear();
+        instance.graphicRayCaster.Raycast(instance.pointerEventData, instance.raycastResults);
+
+        foreach (RaycastResult result in instance.raycastResults)
+        {
+            if (result.gameObject == uiElement) return true;
+        }
+        return false;
     }
 
 

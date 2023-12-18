@@ -98,8 +98,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64b6a5e6d7209466bb25f57ef3e80284, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  placeableRenderer: {fileID: 932207588404711445}
-  placeableCollider: {fileID: -7458127901361770708}
+  modelRenderer: {fileID: 932207588404711445}
+  modelCollider: {fileID: -7458127901361770708}
 --- !u!61 &-7458127901361770708
 BoxCollider2D:
   m_ObjectHideFlags: 0

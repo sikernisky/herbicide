@@ -97,5 +97,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86256a868d6e84e28af43197abb9b2f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  placeableRenderer: {fileID: 3292846137764253807}
-  placeableCollider: {fileID: 0}
+  modelRenderer: {fileID: 3292846137764253807}
+  modelCollider: {fileID: 0}

@@ -8,6 +8,11 @@ using UnityEngine;
 public class WaterTile : Tile
 {
     /// <summary>
+    /// Name of this WaterTile.
+    /// </summary>
+    public override string NAME => "WaterTile";
+
+    /// <summary>
     /// WaterTiles are not walkable.
     /// </summary>
     public override bool WALKABLE => false;

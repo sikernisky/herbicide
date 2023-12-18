@@ -7,13 +7,8 @@ using UnityEngine.Assertions;
 /// Represents a GameObject that can be placed on a Tile to expand its
 /// behavior and complexity. 
 /// </summary>
-public abstract class Flooring : MonoBehaviour, ISurface
+public abstract class Flooring : Model, ISurface
 {
-    /// <summary>
-    /// (X, Y) coordinates of this Flooring
-    /// </summary>
-    private Vector2Int coordinates;
-
     /// <summary>
     /// Index of the Sprite in tile set this Flooring takes on
     /// </summary>
@@ -81,7 +76,7 @@ public abstract class Flooring : MonoBehaviour, ISurface
             flooringRenderer = GetComponent<SpriteRenderer>();
 
         defined = true;
-        coordinates = new Vector2Int(x, y);
+        SetTileCoordinates(x, y);
         name = type.ToString() + " (" + GetX() + ", " + GetY() + ")";
         UpdateSurfaceNeighbors(neighbors);
         this.typeOn = typeOn;
@@ -209,14 +204,13 @@ public abstract class Flooring : MonoBehaviour, ISurface
         return true;
     }
 
+
     /// <summary>
-    /// Sets the color of this Flooring's SpriteRenderer.
+    /// Sets the color of this Tile's SpriteRenderer. If it's floored, passes
+    /// this paint command to the flooring instead.
     /// </summary>
-    /// <param name="paintColor">the color with which to paint this Flooring.</param>
-    public void PaintFlooring(Color32 paintColor)
-    {
-        flooringRenderer.color = paintColor;
-    }
+    /// <param name="paintColor">the color with which to paint this Tile.</param>
+    public override void SetColor(Color32 paintColor) { base.SetColor(paintColor); }
 
     /// <summary>
     /// Returns true if a PlaceableObject can be placed on this Flooring.
@@ -271,24 +265,6 @@ public abstract class Flooring : MonoBehaviour, ISurface
     }
 
     /// <summary>
-    /// Returns the X-coordinate of this ISurface.
-    /// </summary>
-    /// <returns>the X-coordinate of this ISurface.</returns>
-    public int GetX()
-    {
-        return coordinates.x;
-    }
-
-    /// <summary>
-    /// Returns the X-coordinate of this ISurface.
-    /// </summary>
-    /// <returns>the X-coordinate of this ISurface.</returns>
-    public int GetY()
-    {
-        return coordinates.y;
-    }
-
-    /// <summary>
     /// Asserts that this Flooring is defined.
     /// </summary>
     public void AssertDefined()
@@ -301,10 +277,7 @@ public abstract class Flooring : MonoBehaviour, ISurface
     /// </summary>
     /// <returns>the PlaceableObject on this Flooring; null if there
     /// is none</returns>
-    public PlaceableObject GetPlaceableObject()
-    {
-        return occupant;
-    }
+    public PlaceableObject GetPlaceableObject() { return occupant; }
 
     /// <summary>
     /// Determines whether a PlaceableObject object can be potentially placed
@@ -388,10 +361,7 @@ public abstract class Flooring : MonoBehaviour, ISurface
     /// </summary>
     /// <returns>true if an Enemy is on this Flooring; otherwise,
     /// returns false.</returns>
-    public bool OccupiedByEnemy()
-    {
-        return occupiedByEnemy;
-    }
+    public bool OccupiedByEnemy() { return occupiedByEnemy; }
 
     /// <summary>
     /// Returns true if the ghost occupant on this Flooring is not null.
@@ -413,8 +383,37 @@ public abstract class Flooring : MonoBehaviour, ISurface
     /// </summary>
     /// <returns>true if a pathfinder can walk across this Flooring;
     /// otherwise, false.</returns>
-    public bool IsWalkable()
+    public bool IsWalkable() { return !Occupied(); }
+
+    /// <summary>
+    /// Resets this Tile's stats to their starting values.
+    /// </summary>
+    public override void ResetStats() { return; }
+
+    /// <summary>
+    /// Sets the 2D Collider properties of this Tile.
+    /// </summary>
+    public override void SetColliderProperties() { return; }
+
+    /// <summary>
+    /// Returns the Sprite component that represents this Flooring in
+    /// the Inventory.
+    /// </summary>
+    /// <returns>the Sprite component that represents this Flooring in
+    /// the Inventory.</returns>
+    public override Sprite GetInventorySprite()
     {
-        return !Occupied();
+        throw new System.NotImplementedException();
+    }
+
+    /// <summary>
+    /// Returns a Sprite that represents this Flooring when it is
+    /// being placed.
+    /// </summary>
+    /// <returns> a Sprite that represents this Flooring when it is
+    /// being placed.</returns>
+    public override Sprite GetPlacementSprite()
+    {
+        throw new System.NotImplementedException();
     }
 }

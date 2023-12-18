@@ -11,7 +11,8 @@ using System;
 /// it to life. This includes moving it, firing in a specific way, playing animations,
 /// and more.
 /// </summary>
-public abstract class ProjectileController<T> : PlaceableObjectController where T : Enum
+/// <typeparam name="T">Enum to represent state of the Projectile.</typeparam>
+public abstract class ProjectileController<T> : ModelController, IStateTracker<T> where T : Enum
 {
     /// <summary>
     /// The number of Projectiles assigned to ProjectileControllers since
@@ -95,13 +96,6 @@ public abstract class ProjectileController<T> : PlaceableObjectController where 
     }
 
     /// <summary>
-    /// Returns true if this ProjectileController hosts a valid Projectile.
-    /// /// </summary>
-    /// <returns>true if this ProjectileController hosts a valid Projectile;
-    /// otherwise, false. </returns>
-    public override bool ValidModel() { return GetProjectile() != null; }
-
-    /// <summary>
     /// Returns this ProjectileController's Projectile model. Inheriting controller
     /// classes use this method to access their Projectile; then, they cast
     /// it to its respective type.
@@ -135,22 +129,18 @@ public abstract class ProjectileController<T> : PlaceableObjectController where 
     protected virtual void ApplyHazard() { hazardApplied = true; }
 
     /// <summary>
-    /// Checks if this ProjectileController's Projectile should be removed from
-    /// the game. If so, clears it.
+    /// Returns true if this controller's Projectile should be destoyed and
+    /// set to null.
     /// </summary>
-    protected override void TryRemoveModel()
+    /// <returns>true if this controller's Projectile should be destoyed and
+    /// set to null; otherwise, false.</returns>
+    protected override bool ShouldRemoveModel()
     {
-        if (!ValidModel()) return;
-        if (GetProjectile().GetVictim() == null &&
-            !GetProjectile().Expired() &&
-            GetProjectile().IsActive()) return;
+        if (GetProjectile().GetVictim() != null) return true;
+        if (GetProjectile().Expired()) return true;
+        if (!GetProjectile().IsActive()) return true;
 
-        GetProjectile().OnDie();
-        GameObject.Destroy(GetProjectile().gameObject);
-        GameObject.Destroy(GetProjectile());
-
-        //We are done with our Projectile.
-        RemoveModel();
+        return false;
     }
 
     /// <summary>
@@ -169,7 +159,7 @@ public abstract class ProjectileController<T> : PlaceableObjectController where 
     /// for the FSM logic. 
     /// </summary>
     /// <param name="state">The new state.</param>
-    protected void SetState(T state) { this.state = state; }
+    public void SetState(T state) { this.state = state; }
 
     /// <summary>
     /// Returns the State of this ProjectileController. This helps keep track of
@@ -177,14 +167,14 @@ public abstract class ProjectileController<T> : PlaceableObjectController where 
     /// for the FSM logic. 
     /// </summary>
     /// <returns>The State of this ProjectileController. </returns>
-    protected T GetState() { return state; }
+    public T GetState() { return state; }
 
     /// <summary>
     /// Processes this ProjectileController's state FSM to determine the
     /// correct state. Takes the current state and chooses whether
     /// or not to switch to another based on game conditions. /// 
     /// </summary>
-    protected abstract void UpdateStateFSM();
+    public abstract void UpdateStateFSM();
 
     /// <summary>
     /// Returns true if two states are equal.
@@ -192,30 +182,28 @@ public abstract class ProjectileController<T> : PlaceableObjectController where 
     /// <param name="stateA">The first state.</param>
     /// <param name="stateB">The second state</param>
     /// <returns>true if two states are equal; otherwise, false. </returns>
-    protected abstract bool StateEquals(T stateA, T stateB);
+    public abstract bool StateEquals(T stateA, T stateB);
 
     /// <summary>
     /// Logic to execute when this ProjectileController's Projectile is moving.
     /// The ProjectileController manipulates the Projectile model by calling
     /// its methods.
     /// </summary>
-    protected abstract void ExecuteMovingState();
+    public abstract void ExecuteMovingState();
 
     /// <summary>
     /// Logic to execute when this ProjectileController's Projectile is moving.
     /// The ProjectileController manipulates the Projectile model by calling
     /// its methods.
     /// </summary>
-    protected abstract void ExecuteCollidingState();
+    public abstract void ExecuteCollidingState();
 
     /// <summary>
     /// Logic to execute when this ProjectileController's Projectile is dead.
     /// The ProjectileController manipulates the Projectile model by calling
     /// its methods.
     /// </summary>
-    protected abstract void ExecuteDeadState();
-
-    //---------------------ANIMATION LOGIC----------------------//
+    public abstract void ExecuteDeadState();
 
     /// <summary>
     /// Returns the State that triggered the Projectile's most recent
@@ -223,14 +211,14 @@ public abstract class ProjectileController<T> : PlaceableObjectController where 
     /// </summary>
     /// <returns>the State that triggered the Projectile's most recent
     /// animation.</returns>
-    protected T GetAnimationState() { return animationState; }
+    public T GetAnimationState() { return animationState; }
 
     /// <summary>
     /// Sets the State that triggered the Projectile's most recent
     /// animation.
     /// </summary>
     /// <param name="animationState">the animation state to set.</param>
-    protected void SetAnimationState(T animationState) { this.animationState = animationState; }
+    public void SetAnimationState(T animationState) { this.animationState = animationState; }
 
 
     //------------------------SHOT/MOVEMENT TYPES------------------------//

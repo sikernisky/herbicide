@@ -46,9 +46,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e9f2a47bc17a4fe09198dc7053bdfe2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  placeableRenderer: {fileID: 6638087620076510427}
-  placeableCollider: {fileID: -2548071115174396759}
-  prefab: {fileID: 7290264091372080636}
+  modelRenderer: {fileID: 6638087620076510427}
+  modelCollider: {fileID: -2548071115174396759}
 --- !u!212 &6638087620076510427
 SpriteRenderer:
   m_ObjectHideFlags: 0

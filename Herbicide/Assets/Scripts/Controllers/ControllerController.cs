@@ -12,27 +12,32 @@ public class ControllerController : MonoBehaviour
     /// <summary>
     /// List of active DefenderControllers.
     /// </summary>
-    private List<PlaceableObjectController> defenderControllers;
+    private List<ModelController> defenderControllers;
 
     /// <summary>
     /// List of active EnemyControllers.
     /// </summary>
-    private List<PlaceableObjectController> enemyControllers;
+    private List<ModelController> enemyControllers;
 
     /// <summary>
     /// List of active TreeControllers.
     /// </summary>
-    private List<PlaceableObjectController> treeControllers;
+    private List<ModelController> treeControllers;
 
     /// <summary>
     /// List of active ProjectileControllers.
     /// </summary>
-    private List<PlaceableObjectController> projectileControllers;
+    private List<ModelController> projectileControllers;
 
     /// <summary>
     /// List of active HazardControllers.
     /// </summary>
-    private List<PlaceableObjectController> hazardControllers;
+    private List<ModelController> hazardControllers;
+
+    /// <summary>
+    /// List of active CollectableControllers.
+    /// </summary>
+    private List<ModelController> collectableControllers;
 
     /// <summary>
     /// Reference to the ControllerController singleton.
@@ -60,12 +65,15 @@ public class ControllerController : MonoBehaviour
         Assert.AreEqual(1, controllerQueues.Length);
         instance = controllerQueues[0];
 
-        instance.defenderControllers = new List<PlaceableObjectController>();
-        instance.enemyControllers = new List<PlaceableObjectController>();
-        instance.treeControllers = new List<PlaceableObjectController>();
-        instance.projectileControllers = new List<PlaceableObjectController>();
-        instance.hazardControllers = new List<PlaceableObjectController>();
+        instance.defenderControllers = new List<ModelController>();
+        instance.enemyControllers = new List<ModelController>();
+        instance.treeControllers = new List<ModelController>();
+        instance.projectileControllers = new List<ModelController>();
+        instance.hazardControllers = new List<ModelController>();
+        instance.collectableControllers = new List<ModelController>();
     }
+
+
 
     /// <summary>
     /// Creates a DefenderController for a Defender of a given type. Adds it to
@@ -166,37 +174,52 @@ public class ControllerController : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns a set of all alive, active Enemy objects.
+    /// Returns the number of alive, active Enemies.
     /// </summary>
-    /// <returns> a set of all alive, active Enemy objects.</returns>
-    public static HashSet<Enemy> GetAllActiveEnemies()
+    /// <returns>the number of alive, active Enemies.</returns>
+    public static int NumActiveEnemies()
     {
-        HashSet<Enemy> enemies = new HashSet<Enemy>();
-        foreach (PlaceableObjectController pc in instance.enemyControllers)
+        int counter = 0;
+        foreach (ModelController pc in instance.enemyControllers)
         {
             if (pc == null || !pc.ValidModel()) continue;
             Enemy model = pc.GetModel() as Enemy;
             if (model == null) continue;
-            if (!model.Dead()) enemies.Add(model);
+            if (!model.Dead()) counter++;
         }
-        return enemies;
+        return counter;
     }
 
     /// <summary>
-    /// Returns a set of all alive, active Trees
+    /// Returns the number of alive, active Trees
     /// </summary>
-    /// <returns>a set of all alive, active Tree objects</returns>
-    public static HashSet<Tree> GetAllActiveTrees()
+    /// <returns>the number of alive, active Trees </returns>
+    public static int NumActiveTrees()
     {
-        HashSet<Tree> trees = new HashSet<Tree>();
-        foreach (PlaceableObjectController pc in instance.treeControllers)
+        int counter = 0;
+        foreach (ModelController mc in instance.treeControllers)
         {
-            if (pc == null || !pc.ValidModel()) continue;
-            Tree model = pc.GetModel() as Tree;
+            if (mc == null || !mc.ValidModel()) continue;
+            Tree model = mc.GetModel() as Tree;
             if (model == null) continue;
-            if (!model.Dead()) trees.Add(model);
+            if (!model.Dead()) counter++;
         }
-        return trees;
+        return counter;
+    }
+
+    /// <summary>
+    /// Returns the number of alive, active Squirrels.
+    /// </summary>
+    /// <returns>the number of alive, active Squirrels.</returns>
+    public static int NumActiveSquirrels()
+    {
+        int counter = 0;
+        foreach (ModelController mc in instance.defenderControllers)
+        {
+            if (mc == null || !mc.ValidModel()) continue;
+            if (mc.GetModel() as Squirrel != null) counter++;
+        }
+        return counter;
     }
 
     /// <summary>
@@ -208,6 +231,8 @@ public class ControllerController : MonoBehaviour
         treeControllers.RemoveAll(tc => tc.ShouldRemoveController());
         defenderControllers.RemoveAll(dc => dc.ShouldRemoveController());
         projectileControllers.RemoveAll(pc => pc.ShouldRemoveController());
+        hazardControllers.RemoveAll(hc => hc.ShouldRemoveController());
+        collectableControllers.RemoveAll(cc => cc.ShouldRemoveController());
     }
 
     /// <summary>
@@ -220,28 +245,31 @@ public class ControllerController : MonoBehaviour
         defenderControllers.ForEach(dc => dc.InformOfGameState(gameState));
         treeControllers.ForEach(tc => tc.InformOfGameState(gameState));
         projectileControllers.ForEach(pc => pc.InformOfGameState(gameState));
+        hazardControllers.ForEach(hc => hc.InformOfGameState(gameState));
+        collectableControllers.ForEach(cc => cc.InformOfGameState(gameState));
     }
 
     /// <summary>
-    /// Runs through the list of uncollected PlaceableObjectControllers to identify
+    /// Runs through the list of uncollected ModelControllers to identify
     /// their most downcasted version. Adds it to the correct list.
     /// </summary>
-    /// <param name="controllers">The list of PlaceableObjectControllers to filter.</param>
-    private void FilterCollectedControllers(List<PlaceableObjectController> controllers)
+    /// <param name="controllers">The list of ModelControllers to filter.</param>
+    private void AddCollectedControllers(List<ModelController> controllers)
     {
 
-        List<PlaceableObjectController> defControllers = new List<PlaceableObjectController>();
-        List<PlaceableObjectController> emyControllers = new List<PlaceableObjectController>();
-        List<PlaceableObjectController> treControllers = new List<PlaceableObjectController>();
-        List<PlaceableObjectController> proControllers = new List<PlaceableObjectController>();
-        List<PlaceableObjectController> hazControllers = new List<PlaceableObjectController>();
+        List<ModelController> defControllers = new List<ModelController>();
+        List<ModelController> emyControllers = new List<ModelController>();
+        List<ModelController> treControllers = new List<ModelController>();
+        List<ModelController> proControllers = new List<ModelController>();
+        List<ModelController> hazControllers = new List<ModelController>();
+        List<ModelController> colControllers = new List<ModelController>();
 
-        foreach (PlaceableObjectController controller in controllers)
+        foreach (ModelController controller in controllers)
         {
-            List<PlaceableObjectController> extricatedControllers =
+            List<ModelController> extricatedControllers =
                 controller.ExtricateControllers();
 
-            foreach (PlaceableObjectController extricatedController in extricatedControllers)
+            foreach (ModelController extricatedController in extricatedControllers)
             {
                 if (extricatedController.GetModel() as Defender != null)
                     defControllers.Add(extricatedController);
@@ -253,6 +281,8 @@ public class ControllerController : MonoBehaviour
                     hazControllers.Add(extricatedController);
                 else if (extricatedController.GetModel() as Tree != null)
                     treControllers.Add(extricatedController);
+                else if (extricatedController.GetModel() as Collectable != null)
+                    colControllers.Add(extricatedController);
             }
         }
 
@@ -261,6 +291,7 @@ public class ControllerController : MonoBehaviour
         treeControllers.AddRange(treControllers);
         hazardControllers.AddRange(hazControllers);
         projectileControllers.AddRange(proControllers);
+        collectableControllers.AddRange(colControllers);
     }
 
     /// <summary>
@@ -274,24 +305,28 @@ public class ControllerController : MonoBehaviour
         instance.InformControllersOfGameState();
 
         // Update EnemyControllers
-        instance.FilterCollectedControllers(instance.enemyControllers);
+        instance.AddCollectedControllers(instance.enemyControllers);
         instance.enemyControllers.ForEach(ec => ec.UpdateModel());
 
         // Update DefenderControllers
-        instance.FilterCollectedControllers(instance.defenderControllers);
+        instance.AddCollectedControllers(instance.defenderControllers);
         instance.defenderControllers.ForEach(dc => dc.UpdateModel());
 
         // Update TreeControllers
-        instance.FilterCollectedControllers(instance.treeControllers);
+        instance.AddCollectedControllers(instance.treeControllers);
         instance.treeControllers.ForEach(tc => tc.UpdateModel());
 
         // Update ProjectileControllers
-        instance.FilterCollectedControllers(instance.projectileControllers);
+        instance.AddCollectedControllers(instance.projectileControllers);
         instance.projectileControllers.ForEach(pc => pc.UpdateModel());
 
         // Update HazardControllers
-        instance.FilterCollectedControllers(instance.hazardControllers);
+        instance.AddCollectedControllers(instance.hazardControllers);
         instance.hazardControllers.ForEach(hc => hc.UpdateModel());
+
+        // Update CollectableControllers
+        instance.AddCollectedControllers(instance.collectableControllers);
+        instance.collectableControllers.ForEach(cc => cc.UpdateModel());
     }
 
     /// <summary>

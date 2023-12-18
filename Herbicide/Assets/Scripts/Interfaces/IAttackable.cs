@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Represents something that can attack an ITargetable
+/// Contract for a model that can attack an ITargetable
 /// and take damage.
 /// </summary>
 public interface IAttackable : ITargetable
@@ -84,5 +84,5 @@ public interface IAttackable : ITargetable
     /// Sets this IAttackable's positive attack cooldown.
     /// </summary>
     /// <param name="amount">The new attack cooldown.</param>
-    void SetAttackCooldown(float amount);
+    void AdjustAttackCooldown(float amount);
 }

@@ -10,12 +10,18 @@ using UnityEngine.Assertions;
 /// it to life. This includes moving it, choosing targets, playing animations,
 /// and more.
 /// </summary>
+/// <typeparam name="T">Enum to represent state of the Defender.</typeparam>
 public abstract class DefenderController<T> : MobController<T> where T : Enum
 {
     /// <summary>
     /// Total number of DefenderControllers created during this level so far.
     /// </summary>
     private static int NUM_DEFENDERS;
+
+    /// <summary>
+    /// The TripleThreat Synergy applied to the Defender.
+    /// </summary>
+    private TripleThreat tripleThreat;
 
     /// <summary>
     /// Makes a new DefenderController for a Defender.
@@ -34,6 +40,27 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
         base.UpdateMob();
 
         if (GetGameState() != GameState.ONGOING) return;
+    }
+
+    /// <summary>
+    /// Queries the SynergyController to determine which Synergies are
+    /// active. Performs logic based on the active Synergies.
+    /// </summary>
+    protected override void UpdateSynergies()
+    {
+        base.UpdateSynergies();
+        tripleThreat.ChangeTier(SynergyController.
+            GetSynergyTier(SynergyController.Synergy.TRIPLE_THREAT));
+    }
+
+    /// <summary>
+    /// Adds to the Defender all Synergy effects that could affect it.
+    /// </summary>
+    protected override void ApplySynergies()
+    {
+        base.ApplySynergies();
+        tripleThreat = new TripleThreat(GetModel(), 0);
+        GetModel().ApplyEffect(tripleThreat);
     }
 
     /// <summary>
@@ -71,20 +98,16 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     }
 
     /// <summary>
-    /// Checks if this DefenderController's Defender should be removed from
-    /// the game. If so, clears it.
+    /// Returns true if this controller's Defender should be destoyed and
+    /// set to null.
     /// </summary>
-    protected override void TryRemoveModel()
+    /// <returns>true if this controller's Defender should be destoyed and
+    /// set to null; otherwise, false.</returns>
+    protected override bool ShouldRemoveModel()
     {
-        if (!ValidModel()) return;
-        if (GetDefender().GetHealth() > 0) return;
+        if (GetDefender().GetHealth() <= 0) return true;
 
-        GetDefender().OnDie();
-        GameObject.Destroy(GetDefender().gameObject);
-        GameObject.Destroy(GetDefender());
-
-        //We are done with our Defender.
-        RemoveModel();
+        return false;
     }
 }
 
