@@ -31,7 +31,7 @@ public class BombSplat : SlowZone
     /// <summary>
     /// BombSplat Hazards occupy Tiles.
     /// </summary>
-    public override bool OCCUPIER => true;
+    public override bool OCCUPIER => false;
 
 
     /// <summary>

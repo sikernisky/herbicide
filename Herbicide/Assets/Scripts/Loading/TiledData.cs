@@ -124,9 +124,23 @@ public class TiledData
         List<LayerData> enemyLayers = new List<LayerData>();
         foreach (LayerData ld in layers)
         {
-            if (ld.IsObjectLayer() && !enemyLayers.Contains(ld)) enemyLayers.Add(ld);
+            if (ld.IsEnemyLayer() && !enemyLayers.Contains(ld)) enemyLayers.Add(ld);
         }
         return enemyLayers;
+    }
+
+    /// <summary>
+    /// Returns a list of LayerData objects that represent Placeable objects.
+    /// </summary>
+    /// <returns>a list of placable object LayerData objects.</returns>
+    public List<LayerData> GetPlaceableLayers()
+    {
+        List<LayerData> placeableLayers = new List<LayerData>();
+        foreach (LayerData ld in layers)
+        {
+            if (ld.IsPlaceableLayer() && !placeableLayers.Contains(ld)) placeableLayers.Add(ld);
+        }
+        return placeableLayers;
     }
 
     /// <summary>

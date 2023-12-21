@@ -21,7 +21,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// The list of current targets. Mobs will interperet a "target"
     /// in their own way.  
     /// </summary>
-    private List<ITargetable> targets;
+    private List<PlaceableObject> targets;
 
     /// <summary>
     /// The color strength, from 0-1, of the damage flash animation.
@@ -68,7 +68,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     public MobController(Mob mob) : base(mob)
     {
         Assert.IsNotNull(mob, "Mob cannot be null.");
-        targets = new List<ITargetable>();
+        targets = new List<PlaceableObject>();
         SpawnMob();
         NUM_MOBS++;
 
@@ -91,7 +91,8 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// </summary>
     protected virtual void UpdateMob()
     {
-        List<ITargetable> filteredTargets = FilterTargets(GetAllTargetableObjects());
+        if (!ValidModel()) return;
+        List<PlaceableObject> filteredTargets = FilterTargets(GetAllTargetableObjects());
         CleanTargets(filteredTargets);
         ElectTarget(filteredTargets);
         GetMob().AdjustAttackCooldown(-Time.deltaTime);
@@ -122,7 +123,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// but some other Mob might heal its target.
     /// </summary>
     /// <returns>this MobController's target.</returns>
-    protected List<ITargetable> GetTargets() { return targets; }
+    protected List<PlaceableObject> GetTargets() { return targets; }
 
     /// <summary>
     /// Sets this MobController's target. Make sure to use
@@ -130,7 +131,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// is selected.
     /// </summary>
     /// <param name="targetable">The target to add.</param>
-    protected void AddTarget(ITargetable targetable)
+    protected void AddTarget(PlaceableObject targetable)
     {
         Assert.IsNotNull(targetable, "Target cannot be null.");
         Assert.IsFalse(NumTargets() >= MAX_TARGETS, GetMob() +
@@ -142,20 +143,19 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// Removes one of this MobController's targets.
     /// </summary>
     /// <param name="targetable">The target to remove.</param>
-    protected void RemoveTarget(ITargetable targetable)
+    protected void RemoveTarget(PlaceableObject targetable)
     {
         Assert.IsNotNull(targetable, "Target cannot be null.");
         Assert.IsTrue(targets.Contains(targetable), "Does not contain target " + targetable);
-        Debug.Log("removing target " + targetable.GetPosition());
         targets.Remove(targetable);
     }
 
     /// <summary>
-    /// Sets this MobController's targets to be a filtered list of ITargetables.
+    /// Sets this MobController's targets to be a filtered list of PlaceableObjects.
     /// </summary>
-    /// <param name="filteredTargetables">a list of ITargables that this EnemyController
+    /// <param name="filteredTargetables">a list of PlaceableObjects that this EnemyController
     /// is allowed to set as its target. /// </param>
-    protected virtual void ElectTarget(List<ITargetable> filteredTargetables)
+    protected virtual void ElectTarget(List<PlaceableObject> filteredTargetables)
     {
         if (filteredTargetables == null) return;
         if (!ValidModel()) return;
@@ -163,7 +163,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
         //Debug.Log(NumTargets());
 
         //Add as many targets as possible.
-        foreach (ITargetable filteredTarget in filteredTargetables)
+        foreach (PlaceableObject filteredTarget in filteredTargetables)
         {
             if (NumTargets() < MAX_TARGETS)
             {
@@ -176,26 +176,15 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// Runs through the list of the Mob's current targets and removes
     /// those that no longer meet the standards of being a target.
     /// </summary>
-    /// <param name="filteredTargetables">The most up to date list of
+    /// <param name="filteredTargets">The most up to date list of
     /// valid targets in the scene.</param>
-    protected virtual void CleanTargets(List<ITargetable> filteredTargetables)
+    protected virtual void CleanTargets(List<PlaceableObject> filteredTargets)
     {
-        if (filteredTargetables == null) return;
+        if (filteredTargets == null) return;
 
-        List<ITargetable> targetsToRemove = new List<ITargetable>();
-        foreach (ITargetable t in GetTargets())
-        {
-            if (t == null) continue;
-            if (!filteredTargetables.Contains(t)) targetsToRemove.Add(t);
-        }
-
-        foreach (ITargetable t in targetsToRemove)
-        {
-            if (GetTargets().Contains(t))
-            {
-                RemoveTarget(t);
-            }
-        }
+        List<PlaceableObject> targetsToRemove = new List<PlaceableObject>();
+        GetTargets().RemoveAll(t => t == null || System.Object.Equals(t, null));
+        GetTargets().RemoveAll(t => !filteredTargets.Contains(t));
     }
 
     /// <summary>
@@ -207,14 +196,14 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     protected int NumTargets() { return targets.Count; }
 
     /// <summary>
-    /// Parses the list of all ITargetables in the scene such that it
-    /// only contains ITargetables that this MobController's Mob is allowed
+    /// Parses the list of all PlaceableObjects in the scene such that it
+    /// only contains PlaceableObjects that this MobController's Mob is allowed
     /// to target. /// 
     /// </summary>
-    /// <param name="targetables">the list of all ITargetables in the scene</param>
-    /// <returns>a list containing ITargetables that this MobController's Mob is allowed
+    /// <param name="targetables">the list of all PlaceableObjects in the scene</param>
+    /// <returns>a list containing PlaceableObjects that this MobController's Mob is allowed
     /// to target</returns>
-    protected abstract List<ITargetable> FilterTargets(List<ITargetable> targetables);
+    protected abstract List<PlaceableObject> FilterTargets(List<PlaceableObject> targetables);
 
     /// <summary>
     /// Animates this Controller's model's damage flash effect if it is
@@ -241,6 +230,42 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
         byte greenBlueComponent = (byte)(score * 255);
         Color32 color = new Color32(255, greenBlueComponent, greenBlueComponent, 255);
         GetModel().SetColor(color);
+    }
+
+    /// <summary>
+    /// Returns the closest position from the Mob to some PlaceableObject.<br></br>
+    /// 
+    /// This is needed because some Models are larger than 1x1. So traditional distance
+    /// calculations don't work anymore because they always used bottom left corner.
+    /// For example: <br></br>
+    /// 
+    /// [][]        [][]
+    /// [][x]       [x][]
+    /// [][] 
+    /// <br></br>
+    ///</summary>
+    /// <param name="target"></param>
+    /// <returns></returns>
+    protected Vector3 ClosestPositionToTarget(PlaceableObject target)
+    {
+        float minDistance = float.MaxValue;
+        Vector2Int closestPosition = new Vector2Int();
+        foreach (var thisCoord in GetMob().GetExpandedTileCoordinates())
+        {
+            foreach (var targetCoord in target.GetExpandedTileCoordinates())
+            {
+                float distance = Vector2Int.Distance(thisCoord, targetCoord);
+                Vector3 convertedThis = new Vector3(thisCoord.x, thisCoord.y, 1);
+                Vector3 convertedTarg = new Vector3(targetCoord.x, targetCoord.y, 1);
+                if (distance < minDistance && TileGrid.CanReach(convertedThis, convertedTarg))
+                {
+                    minDistance = distance;
+                    closestPosition = targetCoord;
+                }
+            }
+        }
+
+        return new Vector3(closestPosition.x, closestPosition.y, 1);
     }
 
     //--------------------BEGIN STATE LOGIC----------------------//

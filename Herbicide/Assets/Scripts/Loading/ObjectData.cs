@@ -72,12 +72,34 @@ public class ObjectData
     }
 
     /// <summary>
+    /// Returns true if this ObjectData is a deserialized structure.
+    /// </summary>
+    /// <returns>true if this ObjectData is a deserialized structure;
+    /// otherwise, false.</returns>
+    public bool IsStructure()
+    {
+        Assert.IsNotNull(type, "This ObjectData's `type` field is null.");
+        return type.ToLower() == "structure";
+    }
+
+    /// <summary>
     /// Returns the name of this Enemy ObjectData.
     /// </summary>
     /// <returns>the name of this Enemy ObjectData.</returns>
     public string GetEnemyName()
     {
         Assert.IsTrue(IsEnemy(), "This ObjectData is not an Enemy.");
+        if (objectName == null) FindObjectName();
+        return objectName;
+    }
+
+    /// <summary>
+    /// Returns the name of this Structure ObjectData.
+    /// </summary>
+    /// <returns>the name of this Structure ObjectData.</returns>
+    public string GetStructureName()
+    {
+        Assert.IsTrue(IsStructure(), "This ObjectData is not a Structure.");
         if (objectName == null) FindObjectName();
         return objectName;
     }
@@ -92,7 +114,8 @@ public class ObjectData
 
         foreach (PropertiesData pd in properties)
         {
-            if (pd.GetPropertyName().ToLower() == "enemyname")
+            if (pd.GetPropertyName().ToLower() == "enemyname" ||
+                pd.GetPropertyName().ToLower() == "structurename")
             {
                 objectName = pd.GetPropertyValue();
                 return;

@@ -12,6 +12,20 @@ using System.Linq;
 public abstract class Model : MonoBehaviour
 {
     /// <summary>
+    /// Different sorting layers a Model can take on.
+    /// </summary>
+    public enum SortingLayer
+    {
+        DEFAULT,
+        BASE_TILE,
+        FLOORING,
+        TREES,
+        DEFENDERS,
+        PROJECTILES,
+        DROPPED_ITEMS
+    }
+
+    /// <summary>
     /// Name of this Model.
     /// </summary>
     public abstract string NAME { get; }
@@ -38,9 +52,14 @@ public abstract class Model : MonoBehaviour
     private SpriteRenderer modelRenderer;
 
     /// <summary>
-    /// Coordinates of the current Tile on which this Model rests.
+    /// Coordinates of the bottom-leftmost Tile on which this Model rests.
     /// </summary>
     private Vector2Int coordinates;
+
+    /// <summary>
+    /// Coordinates of all Tiles on which this Model rests.
+    /// </summary>
+    private HashSet<Vector2Int> expandedCoordinates;
 
     /// <summary>
     /// This Model's Collider component. 
@@ -67,6 +86,13 @@ public abstract class Model : MonoBehaviour
     /// All active Effects inflicted upon this Model.
     /// </summary>
     private List<Effect> activeEffects = new List<Effect>();
+
+    /// <summary>
+    /// The (X, Y) dimensions of this Model.
+    /// </summary>
+    /// <value></value>
+    public virtual Vector2Int SIZE => new Vector2Int(1, 1);
+
 
 
     /// <summary>
@@ -179,15 +205,46 @@ public abstract class Model : MonoBehaviour
     public void SetTileCoordinates(int x, int y) { coordinates = new Vector2Int(x, y); }
 
     /// <summary>
+    /// Adds all of the (X, Y) Tile coordinates this Model expands on.
+    /// </summary>
+    /// <param name="x">The expanded X-Coordinate.</param>
+    /// <param name="y">The expanded Y-Coordinate.</param>
+    public void AddExpandedTileCoordinate(int x, int y)
+    {
+        if (expandedCoordinates == null) expandedCoordinates = new HashSet<Vector2Int>();
+        expandedCoordinates.Add(new Vector2Int(x, y));
+    }
+
+
+    /// <summary>
+    /// Returns a copy of the HashSet of this Model's expanded Tile coordinates.
+    /// </summary>
+    /// <returns>a copy of the HashSet of this Model's expanded Tile coordinates.</returns>
+    public HashSet<Vector2Int> GetExpandedTileCoordinates()
+    {
+        if (expandedCoordinates == null) return new HashSet<Vector2Int>();
+        return new HashSet<Vector2Int>(expandedCoordinates);
+    }
+
+    /// <summary>
+    /// Removes all stored (X, Y) Tile coordinates this Model expands on.
+    /// </summary>
+    public void WipeExpandedCoordinates()
+    {
+        if (expandedCoordinates == null) expandedCoordinates = new HashSet<Vector2Int>();
+        expandedCoordinates.Clear();
+    }
+
+    /// <summary>
     /// Sets the world position of this Model.
     /// </summary>
     /// <param name="pos">the position to set.</param>
     public void SetWorldPosition(Vector3 pos) { transform.position = pos; }
 
     /// <summary>
-    /// Returns the position of this Model.
+    /// Returns the world position of this Model.
     /// </summary>
-    /// <returns>the position of this Model.</returns>
+    /// <returns>the world position of this Model.</returns>
     public Vector3 GetPosition() { return transform.position; }
 
     /// <summary>
@@ -332,4 +389,19 @@ public abstract class Model : MonoBehaviour
     /// <returns> a Sprite that represents this Model when it is
     /// being placed.</returns>
     public abstract Sprite GetPlacementSprite();
+
+    /// <summary>
+    /// Sets this Model's sorting layer.
+    /// </summary>
+    /// <param name="layer">The layer to set to.</param>
+    public void SetSortingLayer(SortingLayer layer)
+    {
+        if (layer == SortingLayer.DEFAULT) modelRenderer.sortingLayerName = "Default";
+        if (layer == SortingLayer.BASE_TILE) modelRenderer.sortingLayerName = "BaseTile";
+        if (layer == SortingLayer.FLOORING) modelRenderer.sortingLayerName = "Flooring";
+        if (layer == SortingLayer.TREES) modelRenderer.sortingLayerName = "Trees";
+        if (layer == SortingLayer.DEFENDERS) modelRenderer.sortingLayerName = "Defenders";
+        if (layer == SortingLayer.PROJECTILES) modelRenderer.sortingLayerName = "Projectiles";
+        if (layer == SortingLayer.DROPPED_ITEMS) modelRenderer.sortingLayerName = "DroppedItems";
+    }
 }

@@ -9,29 +9,9 @@ using UnityEngine.Assertions;
 /// implement attack functionality, but they don't need to represent
 /// things that can attack. 
 /// </summary>
-public abstract class Mob : PlaceableObject, IAttackable, ITargetable
+public abstract class Mob : PlaceableObject
 {
     //--------------------BEGIN STATS----------------------//
-
-    /// <summary>
-    /// Amount of health this Mob starts with.
-    /// </summary>
-    public abstract int BASE_HEALTH { get; }
-
-    /// <summary>
-    /// Most amount of health this Mob can have.
-    /// </summary>
-    public abstract int MAX_HEALTH { get; }
-
-    /// <summary>
-    /// Least amount of health this Mob can have.
-    /// </summary>
-    public abstract int MIN_HEALTH { get; }
-
-    /// <summary>
-    /// Current amount of health.
-    /// </summary>
-    private int health;
 
     /// <summary>
     /// Amount of attack range this Mob starts with.
@@ -121,16 +101,6 @@ public abstract class Mob : PlaceableObject, IAttackable, ITargetable
     //---------------------END STATS-----------------------//
 
     /// <summary>
-    /// How long to flash when this Mob takes damage.
-    /// </summary>
-    public virtual float DAMAGE_FLASH_TIME => 0.5f;
-
-    /// <summary>
-    /// How much time remains in the current Damage Flash animation.
-    /// </summary>
-    private float remainingFlashAnimationTime;
-
-    /// <summary>
     /// By default, Mobs do not occupy Tiles.
     /// </summary>
     public override bool OCCUPIER => false;
@@ -140,6 +110,11 @@ public abstract class Mob : PlaceableObject, IAttackable, ITargetable
     /// </summary>
     private bool spawned;
 
+    /// <summary>
+    /// Where this mob spawned.
+    /// </summary>
+    private Vector3 spawnPos;
+
 
     /// <summary>
     /// Called when this Mob activates in the scene.
@@ -148,7 +123,14 @@ public abstract class Mob : PlaceableObject, IAttackable, ITargetable
     {
         spawned = true;
         ResetStats();
+        spawnPos = GetPosition();
     }
+
+    /// <summary>
+    /// Returns this Mob's spawn position.
+    /// </summary>
+    /// <returns>the position where this Mob spawned.</returns>
+    public Vector3 GetSpawnPos() { return spawnPos; }
 
     /// <summary>
     /// Returns true if this Mob is dead. This is when the Mob
@@ -167,35 +149,11 @@ public abstract class Mob : PlaceableObject, IAttackable, ITargetable
     /// <summary>
     /// Returns true if this Mob can attack a target.
     /// </summary>
-    /// <param name="target">The ITargetable that this Mob is trying
+    /// <param name="target">The Mob that this Mob is trying
     /// to attack. </param>
     /// <returns>true if this Mob can attack a target;
     /// otherwise, false.</returns>
-    public virtual bool CanAttack(ITargetable target) { return target != null; }
-
-
-    /// <summary>
-    /// Adds some amount (can be negative) of health to this Mob.
-    /// </summary>
-    /// <param name="amount">The amount of health to adjust.</param>
-    public virtual void AdjustHealth(int amount)
-    {
-        int healthBefore = GetHealth();
-        health = Mathf.Clamp(GetHealth() + amount, MIN_HEALTH, MAX_HEALTH);
-        if (GetHealth() < healthBefore) FlashDamage();
-    }
-
-    /// <summary>
-    /// Returns this Mob's current health.
-    /// </summary>
-    /// <returns>this Mob's current health.</returns>
-    public int GetHealth() { return health; }
-
-    /// <summary>
-    /// Resets this Mob's health to its starting health value.
-    /// </summary>
-    public void ResetHealth() { health = BASE_HEALTH; }
-
+    public virtual bool CanAttack(Mob target) { return target != null; }
 
     /// <summary>
     /// Returns this Mob's current attack range.
@@ -305,7 +263,7 @@ public abstract class Mob : PlaceableObject, IAttackable, ITargetable
     /// </summary>
     public override void ResetStats()
     {
-        ResetHealth();
+        base.ResetStats();
         ResetAttackRange();
         ResetChaseRange();
         ResetMovementSpeed();
@@ -313,26 +271,18 @@ public abstract class Mob : PlaceableObject, IAttackable, ITargetable
         AdjustAttackCooldown(0);
     }
 
-    /// <summary>
-    /// Returns the Euclidian distance from this Mob to an ITargetable.
-    /// </summary>
-    /// <param name="target">The ITargetable from which to calculate distance.</param>
-    public float DistanceToTarget(ITargetable target)
-    {
-        try { return Vector3.Distance(GetPosition(), target.GetPosition()); }
-        catch { return -1f; }
-    }
+
 
     /// <summary>
-    /// Changes this Mob's direction such that it faces some ITargetable.
+    /// Changes this Mob's direction such that it faces some PlaceableObject.
     /// </summary>
-    /// <param name="t">The ITargetable to face.</param>
-    public void FaceTarget(ITargetable t)
+    /// <param name="mob">The PlaceableObject to face.</param>
+    public void FaceTarget(PlaceableObject mob)
     {
-        Assert.IsNotNull(t, "Cannot face a null target.");
+        Assert.IsNotNull(mob, "Cannot face a null target.");
 
-        float xDistance = GetPosition().x - t.GetPosition().x;
-        float yDistance = GetPosition().y - t.GetPosition().y;
+        float xDistance = GetPosition().x - mob.GetPosition().x;
+        float yDistance = GetPosition().y - mob.GetPosition().y;
         bool xGreater = Mathf.Abs(xDistance) > Mathf.Abs(yDistance)
             ? true : false;
 
@@ -358,31 +308,4 @@ public abstract class Mob : PlaceableObject, IAttackable, ITargetable
         if (!xGreater && yDistance <= 0) FaceDirection(Direction.NORTH);
         if (!xGreater && yDistance > 0) FaceDirection(Direction.SOUTH);
     }
-
-
-    /// <summary>
-    /// Starts the Damage Flash animation by resetting the amount of time
-    /// left in the animation to the total amount of time it takes to
-    /// complete one animation cycle
-    /// </summary>
-    public void FlashDamage() { SetRemainingFlashAnimationTime(DAMAGE_FLASH_TIME); }
-
-    /// <summary>
-    /// Sets the amount of time this Mob's has left in its
-    /// flash animation.
-    /// </summary>
-    /// <param name="value">The new amount of time that this Mob
-    /// has left in its flash animation. .</param>
-    public void SetRemainingFlashAnimationTime(float value)
-    {
-        remainingFlashAnimationTime = Mathf.Clamp(value, 0, DAMAGE_FLASH_TIME);
-    }
-
-    /// <summary>
-    /// Returns the amount of time that remains in this Mob's
-    /// flash animation. 
-    /// </summary>
-    /// <returns>the amount of time that remains in this Mob's
-    /// flash animation</returns>
-    public float TimeRemaningInFlashAnimation() { return remainingFlashAnimationTime; }
 }

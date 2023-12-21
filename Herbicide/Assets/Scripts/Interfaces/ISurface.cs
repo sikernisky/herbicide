@@ -16,7 +16,7 @@ public interface ISurface
     /// <param name="neighbors">This ISurface's neighbors.</param>
     /// <returns>true if a PlaceableObject can be placed on this ISurface;
     /// otherwise, false.</returns>
-    bool Place(PlaceableObject candidate, ISurface[] neighbors);
+    void Place(PlaceableObject candidate, ISurface[] neighbors);
 
     /// <summary>
     /// Returns true if a PlaceableObject can be placed on this ISurface.
@@ -28,13 +28,19 @@ public interface ISurface
     bool CanPlace(PlaceableObject candidate, ISurface[] neighbors);
 
     /// <summary>
-    /// Returns true if there is a PlaceableObject on this ISurface that can
-    /// be removed. If so, removes the PlaceableObject.
+    /// Removes the PlaceableObject on this ISurface.
     /// </summary>
     /// <param name="neighbors">This ISurface's neighbors.</param>
-    /// <returns>true if a PlaceableObject can be removed from this ISurface;
-    /// otherwise, false.</returns>
-    bool Remove(ISurface[] neighbors);
+    void Remove(ISurface[] neighbors);
+
+    /// <summary>
+    /// Returns true if there is a PlaceableObject on this ISurface that
+    /// can be removed.
+    /// </summary>
+    /// <param name="neighbors">This ISurface's neighbors.</param>
+    /// <returns>true if there is a PlaceableObject on this ISurface that
+    /// can be removed; otherwise, false. </returns>
+    bool CanRemove(ISurface[] neighbors);
 
     /// <summary>
     /// Returns true if this ISurface is occupied; otherwise, returns false.

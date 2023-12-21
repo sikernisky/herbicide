@@ -101,6 +101,18 @@ public abstract class Tile : Model, ISurface
         defined = true;
     }
 
+    /// <summary>
+    /// Main update loop for this Tile.
+    /// </summary>
+    public void UpdateTile()
+    {
+        Nexus nexusOccupant = GetOccupant() as Nexus;
+        if (nexusOccupant != null)
+        {
+            ISurface[] neigbors = GetSurfaceNeighbors();
+            if (nexusOccupant.PickedUp() && CanRemove(neigbors)) Remove(neigbors);
+        }
+    }
 
     /// <summary>
     /// Returns true if this Tile has an Enemy on it; otherwise, returns
@@ -108,10 +120,7 @@ public abstract class Tile : Model, ISurface
     /// </summary>
     /// <returns>true if this Tile has an Enemy on it; otherwise, false.
     /// </returns>
-    public bool OccupiedByEnemy()
-    {
-        return occupiedByEnemy;
-    }
+    public bool OccupiedByEnemy() { return occupiedByEnemy; }
 
     /// <summary>
     /// Returns true if this Tile is occupied.
@@ -121,8 +130,14 @@ public abstract class Tile : Model, ISurface
     {
         AssertDefined();
         if (Floored()) return GetFlooring().Occupied();
-        return occupant != null;
+        return GetOccupant() != null;
     }
+
+    /// <summary>
+    /// Sets this Tile's occupant.
+    /// </summary>
+    /// <param name="occupant">The occupant.</param>
+    public void SetOccupant(PlaceableObject occupant) { this.occupant = occupant; }
 
     /// <summary>
     /// Returns this Tile's TileType.
@@ -206,18 +221,18 @@ public abstract class Tile : Model, ISurface
     }
 
     /// <summary>
-    /// Returns true if a PlaceableObject can be placed on this Tile.
-    /// If it can, places the PlaceableObject.
+    /// Places a PlaceableObject on this Tile.
     /// </summary>
     /// <param name="candidate">The PlaceableObject to place.</param>
     /// <param name="neighbors">This Tile's neighbors.</param>
-    /// <returns>true if a PlaceableObject can be placed on this Tile;
-    /// otherwise, false.</returns>
-    public virtual bool Place(PlaceableObject candidate, ISurface[] neighbors)
+    public virtual void Place(PlaceableObject candidate, ISurface[] neighbors)
     {
         //Safety check
         AssertDefined();
-        if (candidate == null || neighbors == null) return false;
+        Assert.IsNotNull(candidate, "Placement candidate can't be null.");
+        Assert.IsNotNull(neighbors, "Placement candidate's neighbors can't be null.");
+        Assert.IsTrue(CanPlace(candidate, neighbors), "Need to make sure placement is valid.");
+
         foreach (ISurface surface in neighbors)
         {
             if (surface != null) Assert.IsNotNull(surface as Tile);
@@ -233,41 +248,23 @@ public abstract class Tile : Model, ISurface
                 Tile t = (Tile)neighbors[i];
                 flooringNeighbors[i] = t.GetFlooring();
             }
-            return GetFlooring().Place(candidate, flooringNeighbors);
+            GetFlooring().Place(candidate, flooringNeighbors);
+            return;
         }
 
-        //3. Try placing on this Tile.
-        if (!CanPlace(candidate, neighbors)) return false;
 
-        GameObject prefabClone = candidate.MakePlaceableObject();
-        Assert.IsNotNull(prefabClone);
-        PlaceableObject placeableObject = prefabClone.GetComponent<PlaceableObject>();
-        Assert.IsNotNull(placeableObject);
-        SpriteRenderer prefabRenderer = prefabClone.GetComponent<SpriteRenderer>();
+
+        //3. Place on this Tile.
+
+
+        SpriteRenderer prefabRenderer = candidate.GetComponent<SpriteRenderer>();
 
         prefabRenderer.sortingOrder = GetY();
-        prefabClone.transform.position = transform.position;
-        prefabClone.transform.localScale = placeableObject.GetPlacementScale();
-        prefabClone.transform.SetParent(transform);
-        placeableObject.OnPlace();
-        if (placeableObject.OCCUPIER) occupant = placeableObject;
-
-
-        Defender placedDefender = prefabClone.GetComponent<Defender>();
-        if (placedDefender != null)
-        {
-            ControllerController.MakeDefenderController(placedDefender);
-            return true;
-        }
-
-        Hazard placedSlowZone = prefabClone.GetComponent<Hazard>();
-        if (placedSlowZone != null)
-        {
-            ControllerController.MakeHazardController(placedSlowZone);
-            return true;
-        }
-
-        return false; //Something wrong happpend, should have entered IF blocks.
+        candidate.transform.position = transform.position;
+        candidate.transform.localScale = candidate.GetPlacementScale();
+        candidate.transform.SetParent(transform);
+        candidate.OnPlace();
+        if (candidate.OCCUPIER) SetOccupant(candidate);
     }
 
     /// <summary>
@@ -280,6 +277,9 @@ public abstract class Tile : Model, ISurface
     public virtual bool CanPlace(PlaceableObject candidate, ISurface[] neighbors)
     {
         AssertDefined();
+        if (candidate == null || neighbors == null) return false;
+        if (Floored()) return GetFlooring().CanPlace(candidate, neighbors);
+
         if (candidate == null || neighbors == null) return false;
         if (candidate as Squirrel != null) return false;
         if (candidate as Tree != null) return false;
@@ -323,22 +323,42 @@ public abstract class Tile : Model, ISurface
     }
 
     /// <summary>
-    /// Returns true if there is a PlaceableObject on this Tile that can
-    /// be removed. If so, removes the PlaceableObject.
+    /// Removes the PlaceableObject on this Tile. This does not
+    /// destroy the occupant; that is the responsibility of its controller. 
     /// </summary>
     /// <param name="neighbors">This Tiles's neighbors.</param>
-    /// <returns>true if a PlaceableObject can be removed from this Tile;
-    /// otherwise, false.</returns>
-    public virtual bool Remove(ISurface[] neighbors)
+    public virtual void Remove(ISurface[] neighbors)
     {
         AssertDefined();
-        if (!Occupied() || neighbors == null) return false;
+        Assert.IsTrue(CanRemove(neighbors), "Need to check removal validity.");
 
-        //TODO: Implement
+        if (Floored()) GetFlooring().Remove(neighbors);
+        else occupant = null;
+    }
+
+    /// <summary>
+    /// Returns true if there is a PlaceableObject on this Tile that can be
+    /// removed. 
+    /// /// </summary>
+    /// <param name="neighbors">This Tile's neighbors.</param>
+    /// <returns>true if there is a PlaceableObject on this Tile that can be
+    /// removed; otherwise, false. </returns>
+    public virtual bool CanRemove(ISurface[] neighbors)
+    {
+        AssertDefined();
+        Assert.IsNotNull(neighbors, "Array of neighbors is null.");
+
+        if (Floored()) return GetFlooring().CanRemove(neighbors);
+        if (!Occupied()) return false;
 
         return true;
-
     }
+
+    /// <summary>
+    /// Returns this Tile's occupant.
+    /// </summary>
+    /// <returns>this Tile's occupant; null if there is none. </returns>
+    private PlaceableObject GetOccupant() { return occupant; }
 
     /// <summary>
     /// Updates this Tile's array of neighbors. If it has a Flooring component,
@@ -396,7 +416,7 @@ public abstract class Tile : Model, ISurface
     /// it is unoccupied.</returns>
     public PlaceableObject GetPlaceableObject()
     {
-        if (occupant != null) return occupant;
+        if (GetOccupant() != null) return GetOccupant();
         if (Floored() && GetFlooring().Occupied()) return GetFlooring().GetPlaceableObject();
         return null;
     }
@@ -528,7 +548,7 @@ public abstract class Tile : Model, ISurface
     public virtual bool IsWalkable()
     {
         if (Floored()) return GetFlooring().IsWalkable();
-        return WALKABLE;
+        return WALKABLE && !Occupied();
     }
 
     /// <summary>

@@ -38,6 +38,11 @@ public abstract class Enemy : Mob
     private EnemyHealthState healthState;
 
     /// <summary>
+    /// true if the Enemy escaped; otherwise, false.
+    /// </summary>
+    private bool escaped;
+
+    /// <summary>
     /// Type of this Enemy.
     /// </summary>
     public enum EnemyType
@@ -117,4 +122,15 @@ public abstract class Enemy : Mob
     /// </summary>
     /// <returns>the (X, Y) world position where this Enemy spawns.</returns>
     public Vector3 GetSpawnWorldPosition() { return spawnPosition; }
+
+    /// <summary>
+    /// Returns true if this Enemy escaped.
+    /// </summary>
+    /// <returns>true if this Enemy escaped; otherwise, false. </returns>
+    public bool Escaped() { return escaped; }
+
+    /// <summary>
+    /// Sets this Enemy as escaped.
+    /// </summary>
+    public void SetEscaped() { escaped = true; }
 }

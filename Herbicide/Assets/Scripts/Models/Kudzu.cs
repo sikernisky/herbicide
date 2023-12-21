@@ -26,17 +26,17 @@ public class Kudzu : Enemy
     /// <summary>
     /// The cooldown between each hop. 
     /// </summary>
-    public float HOP_COOLDOWN => .2f;
+    public float HOP_COOLDOWN => .25f;
 
     /// <summary>
     /// Base health of a Kudzu.
     /// </summary>
-    public override int BASE_HEALTH => 200;
+    public override int BASE_HEALTH => 150;
 
     /// <summary>
     /// Upper bound of a Kudzu's health. 
     /// </summary>
-    public override int MAX_HEALTH => 200;
+    public override int MAX_HEALTH => 150;
 
     /// <summary>
     /// Minimum health of a Kudzu
@@ -46,7 +46,7 @@ public class Kudzu : Enemy
     /// <summary>
     /// Amount of attack cooldown this Kudzu starts with.
     /// </summary>
-    public override float BASE_ATTACK_COOLDOWN => 0.5f;
+    public override float BASE_ATTACK_COOLDOWN => 1f;
 
     /// <summary>
     /// Most amount of attack cooldown this Kudzu can have.
@@ -98,7 +98,7 @@ public class Kudzu : Enemy
     /// How many seconds a Kudzu's move animation lasts,
     /// from start to finish. 
     /// </summary>
-    public float MOVE_ANIMATION_DURATION => .3f;
+    public float MOVE_ANIMATION_DURATION => HOP_COOLDOWN;
 
     /// <summary>
     /// How many seconds a Kudzu's attack animation lasts,
@@ -115,7 +115,7 @@ public class Kudzu : Enemy
     /// <summary>
     /// Starting movement speed of a Kudzu.
     /// </summary>
-    public override float BASE_MOVEMENT_SPEED => 8f;
+    public override float BASE_MOVEMENT_SPEED => 6f;
 
     /// <summary>
     /// Maximum movement speed of a Kudzu.

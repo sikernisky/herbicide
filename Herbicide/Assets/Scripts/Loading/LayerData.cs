@@ -60,6 +60,16 @@ public class LayerData
     }
 
     /// <summary>
+    /// Returns true if this LayerData layer stores Placeable objects.
+    /// </summary>
+    /// <returns>true if this LayerData stores Placeable objects. </returns>
+    public bool IsPlaceableLayer()
+    {
+        Assert.IsNotNull(GetLayerClass(), "This LayerData's `layerClass` is null.");
+        return GetLayerClass().ToLower() == "structurelayer";
+    }
+
+    /// <summary>
     /// Returns a copy of the list of all ObjectData objects within 
     /// this LayerData.
     /// </summary>
@@ -84,6 +94,19 @@ public class LayerData
         List<ObjectData> enemyObjects = new List<ObjectData>();
         GetObjectData().ForEach(o => { if (o.IsEnemy()) enemyObjects.Add(o); });
         return enemyObjects;
+    }
+
+    /// <summary>
+    /// Returns a list of all ObjectData objects within this LayerData whose
+    /// type is a Structure.
+    /// </summary>
+    /// <returns>a list of all Structure ObjectData objects within this LayerData.
+    /// </returns>
+    public List<ObjectData> GetStructureObjectData()
+    {
+        List<ObjectData> structureObjects = new List<ObjectData>();
+        GetObjectData().ForEach(o => { if (o.IsStructure()) structureObjects.Add(o); });
+        return structureObjects;
     }
 
     /// <summary>

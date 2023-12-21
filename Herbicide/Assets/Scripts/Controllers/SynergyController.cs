@@ -16,9 +16,9 @@ public class SynergyController : MonoBehaviour
     private static SynergyController instance;
 
     /// <summary>
-    /// Up to date list of active ITargetables.
+    /// Up to date list of active PlaceableObjects.
     /// </summary>
-    private static List<ITargetable> targetables;
+    private static List<PlaceableObject> placeableObjects;
 
     /// <summary>
     /// The Synergy slots.
@@ -78,15 +78,15 @@ public class SynergyController : MonoBehaviour
 
     /// <summary>
     /// Main update loop for the SynergyController. Gives it a list of active
-    /// ITargetables it needs to calculate current synergies.
+    /// PlaceableObjects it needs to calculate current synergies.
     /// </summary>
-    /// <param name="targetables">The most recent list of active ITargetable
+    /// <param name="targetables">The most recent list of active PlaceableObject
     /// objects.</param>
-    public static void UpdateSynergyController(List<ITargetable> targetables)
+    public static void UpdateSynergyController(List<PlaceableObject> targetables)
     {
         Assert.IsNotNull(targetables);
 
-        SynergyController.targetables = targetables;
+        SynergyController.placeableObjects = targetables;
         UpdateSynergySlots();
     }
 
@@ -114,13 +114,13 @@ public class SynergyController : MonoBehaviour
     /// 0 if no tier has been met.</returns>
     private static int GetTripleThreatTier()
     {
-        Assert.IsNotNull(targetables);
+        Assert.IsNotNull(placeableObjects);
         Assert.IsTrue(instance.chosenSynergies.Contains(Synergy.TRIPLE_THREAT));
 
         int numSquirrels = 0;
-        foreach (ITargetable targetable in targetables)
+        foreach (PlaceableObject target in placeableObjects)
         {
-            if (targetable as Squirrel != null) numSquirrels++;
+            if (target as Squirrel != null) numSquirrels++;
         }
 
         if (numSquirrels == 3) return 1;

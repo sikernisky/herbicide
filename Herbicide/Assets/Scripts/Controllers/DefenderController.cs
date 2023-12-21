@@ -70,21 +70,21 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     private Defender GetDefender() { return GetMob() as Defender; }
 
     /// <summary>
-    /// Parses the list of all ITargetables in the scene such that it
-    /// only contains ITargetables that this DefenderController's Defender is allowed
+    /// Parses the list of all PlaceableObjects in the scene such that it
+    /// only contains PlaceableObjects that this DefenderController's Defender is allowed
     /// to target. <br></br><br></br>
     /// 
     /// The Defender is allowed to target Enemy Mobs within its attack range.
     /// </summary>
-    /// <param name="targetables">the list of all ITargetables in the scene</param>
-    /// <returns>a list containing Enemy ITargetables that this DefenderController's Defender can
+    /// <param name="targetables">the list of all PlaceableObjects in the scene</param>
+    /// <returns>a list containing Enemy PlaceableObjects that this DefenderController's Defender can
     /// reach./// </returns>
-    protected override List<ITargetable> FilterTargets(List<ITargetable> targetables)
+    protected override List<PlaceableObject> FilterTargets(List<PlaceableObject> targetables)
     {
         Assert.IsNotNull(targetables, "List of targets is null.");
-        List<ITargetable> filteredTargets = new List<ITargetable>();
+        List<PlaceableObject> filteredTargets = new List<PlaceableObject>();
         targetables.RemoveAll(t => t == null);
-        foreach (ITargetable target in targetables)
+        foreach (PlaceableObject target in targetables)
         {
             Enemy targetAsEnemy = target as Enemy;
             if (targetAsEnemy == null) continue;
@@ -105,7 +105,7 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     /// set to null; otherwise, false.</returns>
     protected override bool ShouldRemoveModel()
     {
-        if (GetDefender().GetHealth() <= 0) return true;
+        if (GetDefender().Dead()) return true;
 
         return false;
     }

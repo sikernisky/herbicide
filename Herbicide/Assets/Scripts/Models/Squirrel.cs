@@ -29,7 +29,7 @@ public class Squirrel : Defender
     /// <summary>
     /// Starting attack range of a Squirrel
     /// </summary>
-    public override float BASE_ATTACK_RANGE => 5f;
+    public override float BASE_ATTACK_RANGE => 100f;
 
     /// <summary>
     /// Maximum attack range of a Squirrel
@@ -44,7 +44,7 @@ public class Squirrel : Defender
     /// <summary>
     /// Amount of attack cooldown this Squirrel starts with.
     /// </summary>
-    public override float BASE_ATTACK_COOLDOWN => 1.2f;
+    public override float BASE_ATTACK_COOLDOWN => .75f;
 
     /// <summary>
     /// Most amount of attack cooldown this Squirrel can have.
@@ -89,13 +89,13 @@ public class Squirrel : Defender
     /// How many seconds a Squirrel's attack animation lasts,
     /// from start to finish. 
     /// </summary>
-    public float ATTACK_ANIMATION_DURATION => 1f;
+    public float ATTACK_ANIMATION_DURATION => .25f;
 
     /// <summary>
     /// How many seconds a Squirrel's idle animation lasts,
     /// from start to finish. 
     /// </summary>
-    public float IDLE_ANIMATION_DURATION => 1f;
+    public float IDLE_ANIMATION_DURATION => Mathf.Clamp(GetAttackCooldown(), 0.0001f, float.MaxValue);
 
     //--------------------END ANIMATION--------------------//
 

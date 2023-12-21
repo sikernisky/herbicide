@@ -157,28 +157,24 @@ public abstract class Tree : Mob, ISurface
     /// <param name="neighbors">This Tree's neighboring ISurfaces.</param>
     /// <returns>true if a Defender was placed on this Tree; otherwise,
     /// false. </returns>
-    public bool Place(PlaceableObject candidate, ISurface[] neighbors)
+    public void Place(PlaceableObject candidate, ISurface[] neighbors)
     {
-        if (!CanPlace(candidate, neighbors)) return false;
+        Assert.IsNotNull(candidate, "Placement candidate can't be null.");
+        Assert.IsNotNull(neighbors, "Placement candidate's neighbors can't be null.");
+        Assert.IsTrue(CanPlace(candidate, neighbors), "Need to make sure placement is valid.");
 
-        GameObject prefabClone = (candidate as Defender).MakePlaceableObject();
-        Assert.IsNotNull(prefabClone);
-        Defender defenderComponent = prefabClone.GetComponent<Defender>();
-        Assert.IsNotNull(defenderComponent);
-        SpriteRenderer prefabRenderer = prefabClone.GetComponent<SpriteRenderer>();
 
-        defender = defenderComponent;
+        SpriteRenderer prefabRenderer = candidate.GetComponent<SpriteRenderer>();
+
+        defender = candidate.GetComponent<Defender>();
 
         string placeName = defender.NAME.ToLower() + "Place";
         SoundController.PlaySoundEffect(placeName);
-        defenderComponent.SetSortingOrder(GetSortingOrder() + 1);
-        prefabClone.transform.SetParent(transform);
-        prefabClone.transform.localPosition =
+        defender.SetSortingOrder(GetSortingOrder() + 1);
+        candidate.transform.SetParent(transform);
+        candidate.transform.localPosition =
             new Vector3(DEFENDER_OFFSET_X, DEFENDER_OFFSET_Y, 1);
-        prefabClone.transform.localScale = defenderComponent.GetPlacementScale();
-        ControllerController.MakeDefenderController(defenderComponent);
-
-        return true;
+        candidate.transform.localScale = defender.GetPlacementScale();
     }
 
     /// <summary>
@@ -192,7 +188,7 @@ public abstract class Tree : Mob, ISurface
     /// returns false. </returns>
     public bool CanPlace(PlaceableObject candidate, ISurface[] neighbors)
     {
-        if (candidate == null) return false;
+        if (candidate == null || neighbors == null) return false;
         if (Occupied()) return false;
         if (candidate as Butterfly != null) return false;
         if (candidate as Squirrel == null) return false;
@@ -200,16 +196,30 @@ public abstract class Tree : Mob, ISurface
     }
 
     /// <summary>
-    /// Removes a Defender off this Tree if there is one.
+    /// Removes the PlaceableObject from this Tree. This does not
+    /// destroy the occupant; that is the responsibility of its controller. 
     /// </summary>
-    /// <param name="neighbors">This Tree's neighboring ISurfaces.</param>
-    /// <returns>true if the remove was successful; otherwise, false.
-    /// </returns>
-    public bool Remove(ISurface[] neighbors)
+    /// <param name="neighbors">This Tree's neighbors.</param>
+    public virtual void Remove(ISurface[] neighbors)
     {
-        if (!Occupied()) return false;
+        Assert.IsTrue(CanRemove(neighbors), "Need to check removal validity.");
 
         defender = null;
+    }
+
+    /// <summary>
+    /// Returns true if there is a PlaceableObject on this Tree that can be
+    /// removed. 
+    /// /// </summary>
+    /// <param name="neighbors">This Tree's neighbors.</param>
+    /// <returns>true if there is a PlaceableObject on this Tree that can be
+    /// removed; otherwise, false. </returns>
+    public virtual bool CanRemove(ISurface[] neighbors)
+    {
+        Assert.IsNotNull(neighbors, "Array of neighbors is null.");
+
+        if (!Occupied()) return false;
+
         return true;
     }
 

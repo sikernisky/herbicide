@@ -4,8 +4,8 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Represents something that can be shot and collide with an
-/// ITargetable.
+/// Represents something that can be shot and collide with a
+/// Model.
 /// </summary>
 public abstract class Projectile : Model
 {
@@ -98,10 +98,10 @@ public abstract class Projectile : Model
     private AnimationCurve lobCurve;
 
     /// <summary>
-    /// The ITargetable that this Projectile hit; null if it hasn't hit
+    /// The Model that this Projectile hit; null if it hasn't hit
     /// something yet.
     /// </summary>
-    private ITargetable victim;
+    private Model victim;
 
     /// <summary>
     /// true if this Projectile traveled and reached its target destination;
@@ -120,22 +120,22 @@ public abstract class Projectile : Model
     }
 
     /// <summary>
-    /// Informs this Projectile that it collided with some ITargetable.
+    /// Informs this Projectile that it collided with some Model.
     /// </summary>
-    /// <param name="victim">The ITargetable this projectile collided with.
+    /// <param name="victim">The Model this projectile collided with.
     /// </param>
-    public void SetCollided(ITargetable victim)
+    public void SetCollided(Model victim)
     {
         Assert.IsNotNull(victim, "Victim cannot be null.");
         this.victim = victim;
     }
 
     /// <summary>
-    /// Returns the ITargetable that this Projectile hit. This 
+    /// Returns the Model that this Projectile hit. This 
     /// returns null if it hasn't hit anything.  
     /// </summary>
-    /// <returns>the ITargetable that this Projectile hit</returns>
-    public ITargetable GetVictim() { return victim; }
+    /// <returns>the Model that this Projectile hit</returns>
+    public Model GetVictim() { return victim; }
 
     /// <summary>
     /// Informs this Projectile that it reached its positional target.

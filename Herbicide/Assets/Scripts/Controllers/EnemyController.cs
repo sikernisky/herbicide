@@ -102,35 +102,48 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
         if (!GetEnemy().Spawned()) return false;
 
         if (!TileGrid.OnWalkableTile(GetEnemy().GetPosition())) return true;
-        else if (GetEnemy().GetHealth() <= 0) return true;
+        else if (GetEnemy().Dead()) return true;
+        else if (GetEnemy().Escaped()) return true;
 
         return false;
     }
 
     /// <summary>
-    /// Parses the list of all ITargetables in the scene such that it
-    /// only contains ITargetables that this EnemyController's Enemy is allowed
+    /// Parses the list of all PlaceableObjects in the scene such that it
+    /// only contains PlaceableObjects that this EnemyController's Enemy is allowed
     /// to target. <br></br><br></br>
     /// 
     /// The Enemy is allowed to target Defenders and player-sided PlaceableObjects.
     /// </summary>
-    /// <param name="targetables">the list of all ITargetables in the scene</param>
-    /// <returns>a list containing Enemy ITargetables that this EnemyController's Enemy can
+    /// <param name="targetables">the list of all PlaceableObjects in the scene</param>
+    /// <returns>a list containing Enemy PlaceableObjects that this EnemyController's Enemy can
     /// reach./// </returns>
-    protected override List<ITargetable> FilterTargets(List<ITargetable> targetables)
+    protected override List<PlaceableObject> FilterTargets(List<PlaceableObject> targetables)
     {
         if (!GetEnemy().Spawned()) return null;
 
         Assert.IsNotNull(targetables, "List of targets is null.");
-        List<ITargetable> filteredTargets = new List<ITargetable>();
+        List<PlaceableObject> filteredTargets = new List<PlaceableObject>();
 
-        foreach (ITargetable potentialTarget in targetables)
+        foreach (PlaceableObject potentialTarget in targetables)
         {
-            bool canReach = TileGrid.CanReach(GetEnemy().GetPosition(), potentialTarget.GetPosition());
-            bool targetable = potentialTarget.Targetable();
-            bool isTree = potentialTarget as Tree != null;
+            if (!potentialTarget.Targetable()) continue;
+            Nexus nexusTarget = potentialTarget as Nexus;
+            if (nexusTarget == null) continue;
+            if (nexusTarget.PickedUp()) continue;
+            if (nexusTarget.CashedIn()) continue;
+            bool reachable = false;
+            foreach (Vector2Int pos in potentialTarget.GetExpandedTileCoordinates())
+            {
+                if (TileGrid.CanReach(GetEnemy().GetPosition(), new Vector3(pos.x, pos.y, 1)))
+                {
+                    reachable = true;
+                    break;
+                }
+            }
+            if (!reachable) continue;
 
-            if (isTree && canReach && targetable) filteredTargets.Add(potentialTarget);
+            filteredTargets.Add(potentialTarget);
         }
         return filteredTargets;
     }

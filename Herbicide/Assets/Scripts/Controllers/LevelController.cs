@@ -122,6 +122,7 @@ public class LevelController : MonoBehaviour
         InventoryController.UpdateSlots(EconomyController.GetBalance());
 
         //(8) Update TileGrid.
+        TileGrid.UpdateTiles();
 
         //(9) Update Canvas.
         CanvasController.UpdateCanvas(SceneController.GetFPS());
@@ -160,6 +161,7 @@ public class LevelController : MonoBehaviour
         FlooringFactory.SetSingleton(instance);
         HazardFactory.SetSingleton(instance);
         ProjectileFactory.SetSingleton(instance);
+        StructureFactory.SetSingleton(instance);
         TileFactory.SetSingleton(instance);
         TreeFactory.SetSingleton(instance);
     }
@@ -188,20 +190,21 @@ public class LevelController : MonoBehaviour
     {
         int activeTrees = ControllerController.NumActiveTrees();
         int activeEnemies = ControllerController.NumActiveEnemies();
+        int activeNexii = ControllerController.NumActiveNexii();
         int enemiesRemaining = EnemyManager.EnemiesRemaining(SceneController.GetTimeElapsed());
         bool enemiesPresent = (enemiesRemaining > 0 || activeEnemies > 0);
 
         //Win condition: All enemies dead, at least one Tree alive.
-        if (!enemiesPresent && activeTrees > 0) currentGameState = GameState.WIN;
+        if (!enemiesPresent && activeNexii > 0) currentGameState = GameState.WIN;
 
         //Lose condition: All trees dead, at least one Enemy alive.
-        else if (enemiesPresent && activeTrees == 0) currentGameState = GameState.LOSE;
+        else if (enemiesPresent && activeNexii == 0) currentGameState = GameState.LOSE;
 
         //Tie condition: All trees and enemies dead. 
-        else if (!enemiesPresent && activeTrees == 0) currentGameState = GameState.TIE;
+        else if (!enemiesPresent && activeNexii == 0) currentGameState = GameState.TIE;
 
         //Ongoing condition: At least one tree and enemy alive.
-        else if (enemiesPresent && activeTrees > 0) currentGameState = GameState.ONGOING;
+        else if (enemiesPresent && activeNexii > 0) currentGameState = GameState.ONGOING;
 
         //Something went wrong.
         else currentGameState = GameState.INVALID;
@@ -232,6 +235,7 @@ public class LevelController : MonoBehaviour
         if (InputController.HoveringOverUIElement())
         {
             //Put events here to trigger if we're hovering over a Canvas / UI element.
+
         }
         else
         {

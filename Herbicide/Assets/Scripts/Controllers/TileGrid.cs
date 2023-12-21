@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using System;
 using UnityEngine.UIElements;
+using System.IO.Compression;
 
 
 /// <summary>
@@ -85,6 +86,11 @@ public class TileGrid : MonoBehaviour
     private Dictionary<Vector2Int, Tile> tileMap;
 
     /// <summary>
+    /// All GrassTiles in this TileGrid.
+    /// </summary>
+    private HashSet<Tile> grassTiles;
+
+    /// <summary>
     /// Tiles occupied by enemies, mapped to by the Enemies that
     /// occupy them.
     /// </summary>
@@ -106,6 +112,18 @@ public class TileGrid : MonoBehaviour
     /// </summary>
     private bool debugOn;
 
+
+    /// <summary>
+    /// Main update loop for the TileGrid; updates its Tiles.
+    /// </summary>
+    public static void UpdateTiles()
+    {
+        // TEMPORARY: We only need to update Grass Tiles.
+        foreach (Tile t in instance.grassTiles)
+        {
+            t.UpdateTile();
+        }
+    }
 
     /// <summary>
     /// Updates Tiles in this TileGrid with boolean values of whether an
@@ -187,6 +205,7 @@ public class TileGrid : MonoBehaviour
 
         //Initialize tile map. Set the center.
         instance.tileMap = new Dictionary<Vector2Int, Tile>();
+        instance.grassTiles = new HashSet<Tile>();
         instance.enemyLocations = new Dictionary<Enemy, Tile>();
         instance.edgeTiles = new HashSet<Tile>();
     }
@@ -223,6 +242,7 @@ public class TileGrid : MonoBehaviour
         data.GetGrassLayers().ForEach(l => SpawnLayer(l, layerWidth, layerHeight));
         data.GetShoreLayers().ForEach(l => SpawnLayer(l, layerWidth, layerHeight));
         data.GetSoilLayers().ForEach(l => SpawnLayer(l, layerWidth, layerHeight));
+        data.GetPlaceableLayers().ForEach(l => SpawnStructureLayer(l, data.GetMapHeight()));
 
         // For pathfinding, give tiles their neighbors
         instance.SetNeighbors(layerWidth, layerHeight);
@@ -243,7 +263,10 @@ public class TileGrid : MonoBehaviour
         Assert.IsNotNull(layer, "LayerData `layer` is null");
         Assert.IsTrue(layerHeight > 0, "Layer height must be positive.");
         Assert.IsTrue(layerWidth > 0, "Layer width must be positive.");
+        Assert.IsFalse(layer.IsObjectLayer(), "Cannot spawn object layers.");
         Assert.IsFalse(layer.IsEnemyLayer(), "Enemy Layers should not be handled by TileGrids.");
+        Assert.IsFalse(layer.IsPlaceableLayer(), "Use SpawnPlaceableLayer().");
+
 
         if (layer.IsTileLayer() || layer.IsFlooringLayer() || layer.IsEdgeLayer())
         {
@@ -269,6 +292,31 @@ public class TileGrid : MonoBehaviour
         else
         {
             //Future layer types go here.
+        }
+    }
+
+    /// <summary>
+    /// Spawns a layer of Placeable objects from a LayerData object.
+    /// </summary>
+    /// <param name="layer">The LayerData object to spawn.</param>
+    /// <param name="mapHeight">The height of the LayerData layer.</param>
+    private static void SpawnStructureLayer(LayerData layer, int mapHeight)
+    {
+        Assert.IsTrue(layer.IsObjectLayer(), "Cannot spawn tile layers.");
+        Assert.IsTrue(layer.IsPlaceableLayer(), "Layer does not hold Placeable objects.");
+        Assert.IsFalse(layer.IsEnemyLayer(), "Cannot spawn Enemy object layers.");
+
+
+        List<ObjectData> placeableObjects = new List<ObjectData>();
+        placeableObjects.AddRange(layer.GetStructureObjectData());
+
+        foreach (ObjectData obToSpawn in placeableObjects)
+        {
+            GameObject spawnedStructure = StructureFactory.GetStructurePrefab(obToSpawn.GetStructureName());
+            Assert.IsNotNull(spawnedStructure);
+            Structure structure = spawnedStructure.GetComponent<Structure>();
+            Tile targetTile = instance.TileExistsAt(obToSpawn.GetSpawnCoordinates(mapHeight).x, obToSpawn.GetSpawnCoordinates(mapHeight).y);
+            PlaceOnTile(targetTile, structure);
         }
     }
 
@@ -321,6 +369,10 @@ public class TileGrid : MonoBehaviour
         Vector2Int centerCoords = GetCenterCoordinates();
         float centerXPos = CoordinateToPosition(centerCoords.x) - TILE_SIZE / 2;
         float centerYPos = CoordinateToPosition(centerCoords.y) - TILE_SIZE / 2;
+
+        if (centerCoords.x % 2 == 0) centerXPos -= TILE_SIZE / 2;
+        if (centerCoords.y % 2 == 0) centerYPos -= TILE_SIZE / 2;
+
         return new Vector2(centerXPos, centerYPos);
     }
 
@@ -486,7 +538,7 @@ public class TileGrid : MonoBehaviour
     }
 
     /// <summary>
-    /// Adds a Tile to this TileGrid's Tile map, if possible.
+    /// Adds a Tile to this TileGrid's collections.
     /// </summary>
     /// <param name="t">the Tile to add</param>
     private void AddTile(Tile t)
@@ -497,6 +549,7 @@ public class TileGrid : MonoBehaviour
         Assert.IsNull(TileExistsAt(t.GetX(), t.GetY()));
         Vector2Int key = new Vector2Int(t.GetX(), t.GetY());
         tileMap.Add(key, t);
+        if (t.GetTileType() == Tile.TileType.GRASS) grassTiles.Add(t);
     }
 
 
@@ -550,6 +603,7 @@ public class TileGrid : MonoBehaviour
         if (tile == null) return;
 
         //Tile was clicked down. Put click logic here.
+        if (tile.Occupied()) Debug.Log("yes");
     }
 
     /// <summary>
@@ -755,18 +809,68 @@ public class TileGrid : MonoBehaviour
     /// </summary>
     /// <param name="candidate">The PlaceableObject to place.</param>
     /// <param name="target">The Tile to place on.</param>
+    /// <param name="existing">true if the PlaceableObject to place has already been instantiated. </param>
     /// <returns>true if the PlaceableObject was placed; otherwise, false.</returns>
-    public static bool PlaceOnTile(Tile target, PlaceableObject candidate)
+    public static bool PlaceOnTile(Tile target, PlaceableObject candidate, bool existing = false)
     {
-        //Safety checks
+        // Safety checks
         if (target == null || candidate == null) return false;
         ISurface[] neighbors = instance.GetNeighbors(target);
         if (neighbors == null) return false;
         Assert.IsNotNull(target as ISurface);
 
-        //TODO: IMPLEMENT
-        bool result = target.Place(candidate, instance.GetNeighbors(target));
-        return result;
+        // If we can't place on the Tile, return.
+        int targetX = target.GetX();
+        int targetY = target.GetY();
+        Vector2Int size = candidate.SIZE;
+        for (int x = targetX; x < size.x + targetX; x++)
+        {
+            for (int y = targetY; y < size.y + targetY; y++)
+            {
+                Tile tileAtExpansion = instance.tileMap[new Vector2Int(x, y)];
+                if (!tileAtExpansion.CanPlace(candidate, instance.GetNeighbors(tileAtExpansion)))
+                {
+                    return false;
+                }
+            }
+        }
+
+        // We can place.
+        if (!existing)
+        {
+            GameObject prefabClone = candidate.MakePlaceableObject();
+            Assert.IsNotNull(prefabClone);
+            candidate = prefabClone.GetComponent<PlaceableObject>();
+            Assert.IsNotNull(candidate);
+
+            Defender placedDefender = prefabClone.GetComponent<Defender>();
+            if (placedDefender != null) ControllerController.MakeDefenderController(placedDefender);
+
+            Hazard placedSlowZone = prefabClone.GetComponent<Hazard>();
+            if (placedSlowZone != null) ControllerController.MakeHazardController(placedSlowZone);
+
+            Structure placedStructure = prefabClone.GetComponent<Structure>();
+            if (placedStructure != null) ControllerController.MakeStructureController(placedStructure);
+
+            Tree placedTree = prefabClone.GetComponent<Tree>();
+            if (placedTree != null) ControllerController.MakeTreeController(placedTree);
+        }
+
+        // Place the candidate.
+        target.Place(candidate, instance.GetNeighbors(target));
+
+        // If the candidate is bigger than 1x1, set its expanded tiles to Occupied.
+        if (!candidate.OCCUPIER) return true;
+        for (int x = targetX; x < size.x + targetX; x++)
+        {
+            for (int y = targetY; y < size.y + targetY; y++)
+            {
+                Tile tileAtExpansion = instance.tileMap[new Vector2Int(x, y)];
+                tileAtExpansion.SetOccupant(candidate);
+            }
+        }
+
+        return true;
     }
 
     /// <summary>
@@ -776,33 +880,16 @@ public class TileGrid : MonoBehaviour
     /// </summary>
     /// <param name="candidate">The PlaceableObject to place.</param>
     /// <param name="targetCoords">The coordinates of the Tile to place on.</param>
+    /// <param name="existing">true if the PlaceableObject to place has already been instantiated. </param>
     /// <returns>true if the PlaceableObject was placed; otherwise, false.</returns>
-    public static bool PlaceOnTile(Vector2Int targetCoords, PlaceableObject candidate)
+    public static bool PlaceOnTile(Vector2Int targetCoords, PlaceableObject candidate, bool existing = false)
     {
         //Safety checks
         int xCoord = PositionToCoordinate(targetCoords.x);
         int yCoord = PositionToCoordinate(targetCoords.y);
         Tile target = instance.TileExistsAt(xCoord, yCoord);
 
-        return PlaceOnTile(target, candidate);
-    }
-
-    /// <summary>
-    /// Returns true if the clearing of a PlaceableObject off a Tile will be
-    /// successful. If so, clears it. Otherwise, does nothing and returns false.
-    /// </summary>
-    /// <param name="target">The Tile to place on.</param>
-    /// <param name="neighbors">The Tile's neighbors' PlaceableObjects.</param>
-    /// <returns>true if the PlaceableObject was placed; otherwise, false.</returns>
-    public static bool ClearTile(Tile target, ISurface[] neighbors)
-    {
-        //Safety checks
-        if (target == null || neighbors == null) return false;
-        Assert.IsNotNull(target as ISurface);
-
-        //TODO: IMPLEMENT
-        bool result = target.Remove(instance.GetNeighbors(target));
-        return result;
+        return PlaceOnTile(target, candidate, existing);
     }
 
     /// <summary>
@@ -949,7 +1036,6 @@ public class TileGrid : MonoBehaviour
     /// <param name="goalPos">The ending position of the path. </param>
     public static Vector3 NextTilePosTowardsGoal(Vector3 startPos, Vector3 goalPos)
     {
-        //Debug.Log("From " + startPos + " to " + goalPos);
 
         //From given positions, find the corresponding Tiles.
         int xStartCoord = PositionToCoordinate(startPos.x);
@@ -991,6 +1077,7 @@ public class TileGrid : MonoBehaviour
                             }
                         }
                         Tile nextTile = path[1];
+                        if (!nextTile.IsWalkable()) continue;
                         startTile.SetColor(Color.white);
                         return new Vector3(nextTile.GetX(), nextTile.GetY(), 1);
                     }
@@ -1080,6 +1167,5 @@ public class TileGrid : MonoBehaviour
     {
         return NextTilePosTowardsGoal(startPos, goalPos) != startPos;
     }
-
     //----------------------END PATHFINDING------------------------//
 }

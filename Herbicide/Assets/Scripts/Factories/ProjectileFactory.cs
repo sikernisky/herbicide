@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Produces assets for Projectiles.
+/// Manages assets for Projectiles.
 /// </summary>
 public class ProjectileFactory : MonoBehaviour
 {

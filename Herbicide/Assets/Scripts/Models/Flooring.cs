@@ -154,17 +154,16 @@ public abstract class Flooring : Model, ISurface
 
 
     /// <summary>
-    /// Returns true if a PlaceableObject can be placed on this Flooring.
-    /// If it can, places the PlaceableObject.
+    /// Places a PlaceableObject on this Flooring.
     /// </summary>
     /// <param name="candidate">The PlaceableObject to place.</param>
     /// <param name="neighbors">This Flooring's neighbors.</param>
-    /// <returns>true if a PlaceableObject can be placed on this Flooring;
-    /// otherwise, false.</returns>
-    public bool Place(PlaceableObject candidate, ISurface[] neighbors)
+    public void Place(PlaceableObject candidate, ISurface[] neighbors)
     {
         AssertDefined();
-        if (candidate == null || neighbors == null) return false;
+        Assert.IsNotNull(candidate, "Placement candidate can't be null.");
+        Assert.IsNotNull(neighbors, "Placement candidate's neighbors can't be null.");
+        Assert.IsTrue(CanPlace(candidate, neighbors), "Need to make sure placement is valid.");
 
         //1. If occupied with a Tree, and the candidate is a defender, pass event to that Tree.
         if (Occupied() && candidate as Defender != null)
@@ -172,36 +171,22 @@ public abstract class Flooring : Model, ISurface
             Tree tree = occupant as Tree;
             if (tree != null)
             {
-                return tree.Place(candidate as Defender, neighbors);
+                tree.Place(candidate as Defender, neighbors);
+                return;
             }
         }
 
-        //2. Try to place on Flooring
-        if (!CanPlace(candidate, neighbors)) return false;
+        (candidate as Tree).UpdateSurfaceNeighbors(neighbors);
 
-        GameObject prefabClone = candidate.MakePlaceableObject();
-        Assert.IsNotNull(prefabClone);
-        PlaceableObject placeableObject = prefabClone.GetComponent<PlaceableObject>();
-        Assert.IsNotNull(placeableObject);
-        SpriteRenderer prefabRenderer = prefabClone.GetComponent<SpriteRenderer>();
+        SpriteRenderer prefabRenderer = candidate.GetComponent<SpriteRenderer>();
 
         prefabRenderer.sortingOrder = GetY();
-        prefabClone.transform.position = transform.position;
-        prefabClone.transform.localScale = placeableObject.GetPlacementScale();
-        prefabClone.transform.SetParent(transform);
-        if (placeableObject.OCCUPIER) occupant = placeableObject;
-        placeableObject.OnPlace();
+        candidate.transform.position = transform.position;
+        candidate.transform.localScale = candidate.GetPlacementScale();
+        candidate.transform.SetParent(transform);
+        if (candidate.OCCUPIER) occupant = candidate;
+        candidate.OnPlace();
         SetTilingIndex(GetTilingIndex(neighbors));
-
-        //Did we place a Tree? Give it a controller and neighbors.
-        Tree placedTree = placeableObject as Tree;
-        if (placedTree != null)
-        {
-            ControllerController.MakeTreeController(placedTree);
-            placedTree.UpdateSurfaceNeighbors(neighbors);
-        }
-
-        return true;
     }
 
 
@@ -222,7 +207,13 @@ public abstract class Flooring : Model, ISurface
     public bool CanPlace(PlaceableObject candidate, ISurface[] neighbors)
     {
         AssertDefined();
-        if (Occupied()) return false;
+
+        if (candidate == null || neighbors == null) return false;
+
+        if (Occupied() && occupant as ISurface != null)
+            return (occupant as ISurface).CanPlace(candidate, neighbors);
+        else if (Occupied()) return false;
+
         if (candidate == null || neighbors == null) return false;
         if (candidate as Squirrel != null) return false;
 
@@ -230,19 +221,43 @@ public abstract class Flooring : Model, ISurface
     }
 
     /// <summary>
-    /// Returns true if there is an IPlaceable on this Flooring that can
-    /// be removed. If so, removes the IPlaceable.
+    /// Removes the PlaceableObject from this Flooring.
     /// </summary>
     /// <param name="neighbors">This Flooring's neighbors.</param>
-    /// <returns>true if an IPlaceable can be removed from this Flooring;
-    /// otherwise, false.</returns>
-    public bool Remove(ISurface[] neighbors)
+    public virtual void Remove(ISurface[] neighbors)
     {
         AssertDefined();
-        if (!Occupied() || neighbors == null) return false;
+        Assert.IsTrue(CanRemove(neighbors), "Need to check removal validity.");
 
-        throw new System.NotImplementedException();
+        Tree treeOccupant = GetOccupant() as Tree;
+        if (treeOccupant != null) treeOccupant.Remove(neighbors);
+        else occupant = null;
     }
+
+    /// <summary>
+    /// Returns true if there is a PlaceableObject on this Flooring that can be
+    /// removed. 
+    /// /// </summary>
+    /// <param name="neighbors">This Flooring's neighbors.</param>
+    /// <returns>true if there is a PlaceableObject on this Flooring that can be
+    /// removed; otherwise, false. </returns>
+    public virtual bool CanRemove(ISurface[] neighbors)
+    {
+        AssertDefined();
+        Assert.IsNotNull(neighbors, "Array of neighbors is null.");
+
+        if (!Occupied()) return false;
+        Tree treeOccupant = GetOccupant() as Tree;
+        if (treeOccupant != null) return treeOccupant.CanRemove(neighbors);
+
+        return true;
+    }
+
+    /// <summary>
+    /// Returns this Flooring's occupant.
+    /// </summary>
+    /// <returns>this Flooring's occupant; null if there is none. </returns>
+    private PlaceableObject GetOccupant() { return occupant; }
 
     /// <summary>
     /// Returns the index representing the correct Sprite in this 
@@ -383,7 +398,10 @@ public abstract class Flooring : Model, ISurface
     /// </summary>
     /// <returns>true if a pathfinder can walk across this Flooring;
     /// otherwise, false.</returns>
-    public bool IsWalkable() { return !Occupied(); }
+    public bool IsWalkable()
+    {
+        return !Occupied();
+    }
 
     /// <summary>
     /// Resets this Tile's stats to their starting values.

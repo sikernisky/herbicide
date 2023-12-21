@@ -40,6 +40,11 @@ public class ControllerController : MonoBehaviour
     private List<ModelController> collectableControllers;
 
     /// <summary>
+    /// List of active StructureControllers.
+    /// </summary>
+    private List<ModelController> structureControllers;
+
+    /// <summary>
     /// Reference to the ControllerController singleton.
     /// </summary>
     private static ControllerController instance;
@@ -71,6 +76,7 @@ public class ControllerController : MonoBehaviour
         instance.projectileControllers = new List<ModelController>();
         instance.hazardControllers = new List<ModelController>();
         instance.collectableControllers = new List<ModelController>();
+        instance.structureControllers = new List<ModelController>();
     }
 
 
@@ -156,7 +162,6 @@ public class ControllerController : MonoBehaviour
     /// updates each frame.
     /// </summary>
     /// <param name="hazard">The Hazard that needs a controller.</param>
-    /// <param name="startPos">Where the Hazard starts.</param>
     public static void MakeHazardController(Hazard hazard)
     {
         if (hazard == null) return;
@@ -171,6 +176,36 @@ public class ControllerController : MonoBehaviour
             default:
                 throw new System.Exception("Hazard " + hazard.NAME + " not supported.");
         }
+    }
+
+    /// <summary>
+    /// Creates a StructureController for a Structure of a given type. Adds it to
+    /// its respective list of controllers that the ControllerController
+    /// updates each frame.
+    /// </summary>
+    /// <param name="structure">The Structure that needs a controller.</param>
+    public static void MakeStructureController(Structure structure)
+    {
+        if (structure == null) return;
+
+        switch (structure.TYPE)
+        {
+            case Structure.StructureType.NEXUS:
+                Nexus nexus = structure as Nexus;
+                Assert.IsNotNull(nexus, "Nexus is null.");
+                NexusController nxc = new NexusController(nexus);
+                instance.structureControllers.Add(nxc);
+                break;
+            case Structure.StructureType.NEXUS_HOLE:
+                NexusHole nexusHole = structure as NexusHole;
+                Assert.IsNotNull(nexusHole, "NexusHole is null.");
+                NexusHoleController nhc = new NexusHoleController(nexusHole);
+                instance.structureControllers.Add(nhc);
+                break;
+            default:
+                throw new System.Exception("Structure " + structure.NAME + " not supported.");
+        }
+
     }
 
     /// <summary>
@@ -223,6 +258,21 @@ public class ControllerController : MonoBehaviour
     }
 
     /// <summary>
+    /// Returns the number of alive, active Nexii.
+    /// </summary>
+    /// <returns>the number of alive, active Nexii.</returns>
+    public static int NumActiveNexii()
+    {
+        int counter = 0;
+        foreach (ModelController mc in instance.structureControllers)
+        {
+            if (mc == null || !mc.ValidModel()) continue;
+            if (mc.GetModel() as Nexus != null) counter++;
+        }
+        return counter;
+    }
+
+    /// <summary>
     /// Attempts to remove any unused or defunct Controllers.
     /// </summary>
     private void TryRemoveControllers()
@@ -233,6 +283,7 @@ public class ControllerController : MonoBehaviour
         projectileControllers.RemoveAll(pc => pc.ShouldRemoveController());
         hazardControllers.RemoveAll(hc => hc.ShouldRemoveController());
         collectableControllers.RemoveAll(cc => cc.ShouldRemoveController());
+        structureControllers.RemoveAll(sc => sc.ShouldRemoveController());
     }
 
     /// <summary>
@@ -247,6 +298,7 @@ public class ControllerController : MonoBehaviour
         projectileControllers.ForEach(pc => pc.InformOfGameState(gameState));
         hazardControllers.ForEach(hc => hc.InformOfGameState(gameState));
         collectableControllers.ForEach(cc => cc.InformOfGameState(gameState));
+        structureControllers.ForEach(sc => sc.InformOfGameState(gameState));
     }
 
     /// <summary>
@@ -327,6 +379,9 @@ public class ControllerController : MonoBehaviour
         // Update CollectableControllers
         instance.AddCollectedControllers(instance.collectableControllers);
         instance.collectableControllers.ForEach(cc => cc.UpdateModel());
+
+        // Update StructureControllers
+        instance.structureControllers.ForEach(sc => sc.UpdateModel());
     }
 
     /// <summary>

@@ -29,6 +29,12 @@ public abstract class Collectable : Model
     private bool collected;
 
     /// <summary>
+    /// The AnimationCurve this Collectable follows when drifting upwards.
+    /// </summary>
+    [SerializeField]
+    private AnimationCurve driftUpCurve;
+
+    /// <summary>
     /// Types of Collectables.
     /// </summary>
     public enum CollectableType
@@ -75,5 +81,11 @@ public abstract class Collectable : Model
     {
         throw new System.NotImplementedException();
     }
+
+    /// <summary>
+    /// Returns this Collectable's drift-up curve.
+    /// </summary>
+    /// <returns>this Collectable's drift-up curve.</returns>
+    public AnimationCurve GetDriftUpCurve() { return driftUpCurve; }
 
 }

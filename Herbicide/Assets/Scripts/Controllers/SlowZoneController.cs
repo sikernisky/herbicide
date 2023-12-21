@@ -32,7 +32,7 @@ public class SlowZoneController : HazardController<SlowZoneController.SlowZoneSt
     /// <summary>
     /// List of targets this SlowZone is currently slowing. 
     /// </summary>
-    private HashSet<ITargetable> slowedTargets;
+    private HashSet<PlaceableObject> slowedTargets;
 
 
     /// <summary>
@@ -54,7 +54,7 @@ public class SlowZoneController : HazardController<SlowZoneController.SlowZoneSt
     public SlowZoneController(SlowZone slowZone) : base(slowZone)
     {
         Assert.IsNotNull(slowZone, "SlowZone is null.");
-        slowedTargets = new HashSet<ITargetable>();
+        slowedTargets = new HashSet<PlaceableObject>();
         NUM_SLOW_ZONES++;
     }
 
@@ -79,12 +79,12 @@ public class SlowZoneController : HazardController<SlowZoneController.SlowZoneSt
     /// <param name="targetables">the list of all ITargetables in the scene</param>
     /// <returns>a list containing SlowZone ITargetables that this SlowZoneController's 
     /// SlowZone can reach. </returns>
-    protected override List<ITargetable> FilterTargets(List<ITargetable> targetables)
+    protected override List<PlaceableObject> FilterTargets(List<PlaceableObject> targetables)
     {
         Assert.IsNotNull(targetables, "List of targets is null.");
-        List<ITargetable> filteredTargets = new List<ITargetable>();
+        List<PlaceableObject> filteredTargets = new List<PlaceableObject>();
         targetables.RemoveAll(t => t == null);
-        foreach (ITargetable target in targetables)
+        foreach (PlaceableObject target in targetables)
         {
             Enemy targetAsEnemy = target as Enemy;
             if (targetAsEnemy == null) continue; // Don't add non-Enemies
@@ -107,15 +107,15 @@ public class SlowZoneController : HazardController<SlowZoneController.SlowZoneSt
     /// <summary>
     /// Adds an ITargetable to the set of slowed ITargetables.
     /// </summary>
-    protected void AddSlowedTarget(ITargetable target) { slowedTargets.Add(target); }
+    protected void AddSlowedTarget(PlaceableObject target) { slowedTargets.Add(target); }
 
     /// <summary>
     /// Returns a copy of the HashSet of slowed ITargetables.
     /// </summary>
     /// <returns>a copy of the HashSet of slowed ITargetables.</returns>
-    protected HashSet<ITargetable> GetSlowedTargets()
+    protected HashSet<PlaceableObject> GetSlowedTargets()
     {
-        return new HashSet<ITargetable>(slowedTargets);
+        return new HashSet<PlaceableObject>(slowedTargets);
     }
 
     /// <summary>
@@ -167,10 +167,10 @@ public class SlowZoneController : HazardController<SlowZoneController.SlowZoneSt
     {
         if (GetState() != SlowZoneState.ACTIVE) return;
 
-        foreach (ITargetable t in GetTargets())
+        foreach (PlaceableObject target in GetTargets())
         {
-            Mob mob = t as Mob;
-            t.ApplyEffect(new SlowEffect(mob));
+            Mob mob = target as Mob;
+            target.ApplyEffect(new SlowEffect(mob));
         }
     }
 

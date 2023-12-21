@@ -37,6 +37,18 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
     /// </summary>
     private float timeOffset;
 
+    /// <summary>
+    /// true if the Collectable fully drifted upwards.
+    /// </summary>
+    private bool driftedUp;
+
+    private bool isDriftingUp = false;
+    private float driftStartTime;
+    private float driftDuration = .5f; // Duration of the drift in seconds
+    private float driftDistance;
+    private Vector3 originalScale;
+    private Vector3 originalPosition;
+
 
     /// <summary>
     /// Assigns a CollectableController to a Collectable Model.
@@ -143,4 +155,50 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
             bobStartPosition.z);
         GetCollectable().SetWorldPosition(newPosition);
     }
+
+
+    /// <summary>
+    /// Drifts the Collectable upwards in a straight line, slowly
+    /// reducing its size until it completely dissapears.  
+    /// </summary>
+    /// <param name="distance">How far to drift up.</param>
+    protected virtual void Drift(float distance)
+    {
+        if (!isDriftingUp)
+        {
+            // Start drifting
+            isDriftingUp = true;
+            driftStartTime = Time.time;
+            driftDistance = distance;
+            originalScale = GetCollectable().transform.localScale;
+            originalPosition = GetCollectable().GetPosition();
+        }
+        else
+        {
+            // Continue drifting
+            float elapsedTime = Time.time - driftStartTime;
+            if (elapsedTime < driftDuration)
+            {
+                AnimationCurve driftCurve = GetCollectable().GetDriftUpCurve();
+
+                // Interpolate position
+                float newY = Mathf.Lerp(originalPosition.y, originalPosition.y + driftDistance, elapsedTime / driftDuration);
+                Vector3 newPosition = new Vector3(originalPosition.x, newY, originalPosition.z);
+                GetCollectable().SetWorldPosition(newPosition);
+
+                // Scale based on animation curve
+                float scaleMultiplier = driftCurve.Evaluate(elapsedTime / driftDuration);
+                Vector3 newScale = originalScale * scaleMultiplier;
+                GetCollectable().transform.localScale = newScale;
+            }
+            else driftedUp = true;
+        }
+    }
+
+    /// <summary>
+    /// Returns true if the Collectable fully drifted upwards.
+    /// </summary>
+    /// <returns>true if the Collectable fully drifted upwards;
+    /// otherwise, false. </returns>
+    protected bool DriftedUp() { return driftedUp; }
 }

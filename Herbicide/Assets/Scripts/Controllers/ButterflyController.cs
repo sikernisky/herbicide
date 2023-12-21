@@ -98,7 +98,7 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
     /// Returns the Butterfly's target if it has one. 
     /// </summary>
     /// <returns>the Butterfly's target; null if it doesn't have one.</returns>
-    private ITargetable GetTarget() { return NumTargets() == 1 ? GetTargets()[0] : null; }
+    private PlaceableObject GetTarget() { return NumTargets() == 1 ? GetTargets()[0] : null; }
 
     //--------------------BEGIN STATE LOGIC----------------------//
 

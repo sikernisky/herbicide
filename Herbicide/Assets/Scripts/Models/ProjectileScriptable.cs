@@ -42,7 +42,7 @@ public class ProjectileScriptable : ScriptableObject
     public Sprite[] GetMovementAnimation() { return (Sprite[])moveAnimation.Clone(); }
 
     /// <summary>
-    /// Returns the prefab that represents this Projectiles.
+    /// Returns the prefab that represents this Projectile.
     /// </summary>
     /// <returns>the prefab that represents this Projectile.</returns>
     public GameObject GetPrefab()

@@ -83,7 +83,7 @@ public class DewController : CollectableController<DewController.DewState>
                 SetState(DewState.BOBBING);
                 break;
             case DewState.BOBBING:
-                if (ClickedOn()) SetState(DewState.COLLECTING);
+                if (DriftedUp()) SetState(DewState.COLLECTING);
                 break;
             case DewState.COLLECTING:
                 break;
@@ -98,7 +98,7 @@ public class DewController : CollectableController<DewController.DewState>
         if (!ValidModel()) return;
         if (GetState() != DewState.BOBBING) return;
 
-        BobUpAndDown();
+        Drift(.5f);
     }
 
     /// <summary>

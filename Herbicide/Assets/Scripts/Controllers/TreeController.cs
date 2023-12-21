@@ -55,20 +55,20 @@ public abstract class TreeController<T> : MobController<T> where T : Enum
     protected Tree GetTree() { return GetModel() as Tree; }
 
     /// <summary>
-    /// Parses the list of all ITargetables in the scene such that it
-    /// only contains ITargetables that this TreeController's Tree is allowed
+    /// Parses the list of all PlaceableObjects in the scene such that it
+    /// only contains PlaceableObjects that this TreeController's Tree is allowed
     /// to target. <br></br><br></br>
     /// 
     /// The Tree is allowed to NOTHING. Subcontrollers can override this if
     /// there is some weird Tree that can./// 
     /// </summary>
-    /// <param name="targetables">the list of all ITargetables in the scene</param>
-    /// <returns>a list containing Enemy ITargetables that this TreeController's Tree can
+    /// <param name="targetables">the list of all PlaceableObjects in the scene</param>
+    /// <returns>a list containing Enemy PlaceableObjects that this TreeController's Tree can
     /// reach./// </returns>
-    protected override List<ITargetable> FilterTargets(List<ITargetable> targetables)
+    protected override List<PlaceableObject> FilterTargets(List<PlaceableObject> targetables)
     {
         Assert.IsNotNull(targetables, "List of targets is null.");
-        return new List<ITargetable>(); //Empty -- no targets.
+        return new List<PlaceableObject>(); //Empty -- no targets.
     }
 
     /// <summary>

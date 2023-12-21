@@ -19,7 +19,7 @@ public class EdgeFactory : MonoBehaviour
     /// <summary>
     /// The largest index of an Edge Sprite.
     /// </summary>
-    private const int MAX_INDEX = 16;
+    private const int MAX_INDEX = 17;
 
     /// <summary>
     /// Array of Sprites for Shore Edges

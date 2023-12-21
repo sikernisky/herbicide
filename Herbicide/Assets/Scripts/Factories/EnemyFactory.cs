@@ -30,7 +30,7 @@ public class EnemyFactory : MonoBehaviour
         if (levelController == null) return;
 
         EnemyFactory[] enemyFactories = FindObjectsOfType<EnemyFactory>();
-        Assert.IsNotNull(enemyFactories, "Array of DefenderFactories is null.");
+        Assert.IsNotNull(enemyFactories, "Array of EnemyFactories is null.");
         Assert.AreEqual(1, enemyFactories.Length);
         instance = enemyFactories[0];
     }
@@ -118,8 +118,6 @@ public class EnemyFactory : MonoBehaviour
 
         return null;
     }
-
-    //Todo: implemement static animation track.
 
     /// <summary>
     /// Returns the prefab GameObject of a given Enemy type. Does not instantiate anything --

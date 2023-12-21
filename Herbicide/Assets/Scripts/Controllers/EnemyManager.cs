@@ -28,11 +28,6 @@ public class EnemyManager : MonoBehaviour
     private List<ObjectData> enemyData;
 
     /// <summary>
-    /// The height, in tiles, of all enemy layers in the map.
-    /// </summary>
-    private int mapHeight;
-
-    /// <summary>
     /// true if the EnemyManager has been populated.
     /// </summary>
     private bool populated;
@@ -50,7 +45,6 @@ public class EnemyManager : MonoBehaviour
         if (enemyLayers == null) return;
         Assert.IsFalse(Populated(), "Already populated.");
 
-        instance.mapHeight = mapHeight;
         List<ObjectData> enemyObjects = new List<ObjectData>();
         foreach (LayerData layer in enemyLayers)
         {

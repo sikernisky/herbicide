@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using System.Linq;
 
 public abstract class ModelController
 {
@@ -85,7 +86,7 @@ public abstract class ModelController
     {
         GetModel().UpdateEffects();
         if (ShouldRemoveModel()) DestroyAndRemoveModel();
-        UpdateTilePosition();
+        UpdateTilePositions();
         CheckModelClickUp();
         UpdateSynergies();
     }
@@ -93,13 +94,27 @@ public abstract class ModelController
     /// <summary>
     /// Finds the coordinates of the Tile(s) the Model is on.
     /// </summary>
-    private void UpdateTilePosition()
+    private void UpdateTilePositions()
     {
         if (!ValidModel()) return;
+
+        // Placed tile position
         Vector2 worldPos = GetModel().GetPosition();
         int tileX = TileGrid.PositionToCoordinate(worldPos.x);
         int tileY = TileGrid.PositionToCoordinate(worldPos.y);
         GetModel().SetTileCoordinates(tileX, tileY);
+
+        // Expanded tile position
+        GetModel().WipeExpandedCoordinates();
+        int placedX = GetModel().GetX();
+        int placedY = GetModel().GetY();
+        for (int x = placedX; x < placedX + GetModel().SIZE.x; x++)
+        {
+            for (int y = placedY; y < placedY + GetModel().SIZE.y; y++)
+            {
+                GetModel().AddExpandedTileCoordinate(x, y);
+            }
+        }
     }
 
     /// <summary>
@@ -120,6 +135,7 @@ public abstract class ModelController
     {
         if (GetModel() == null || System.Object.Equals(null, GetModel())) return;
 
+        OnDestroyModel();
         ALL_MODELS.Remove(GetModel());
         DestroyModel();
         model = null;
@@ -237,16 +253,16 @@ public abstract class ModelController
     }
 
     /// <summary>
-    /// Returns a list of all Models that are also ITargetables
+    /// Returns a list of all Models that are also PlaceableObjects
     /// (all of them). 
     /// </summary>
-    /// <returns>a list of all ITargetables in the scene.</returns>
-    public static List<ITargetable> GetAllTargetableObjects()
+    /// <returns>a list of all PlaceableObjects in the scene.</returns>
+    public static List<PlaceableObject> GetAllTargetableObjects()
     {
-        List<ITargetable> allTargetables = new List<ITargetable>();
+        List<PlaceableObject> allTargetables = new List<PlaceableObject>();
         foreach (Model model in ALL_MODELS)
         {
-            ITargetable targetable = model as ITargetable;
+            PlaceableObject targetable = model as PlaceableObject;
             if (targetable != null) allTargetables.Add(targetable);
         }
         return allTargetables;
@@ -280,4 +296,9 @@ public abstract class ModelController
         scheduledForDestruction = true;
         GameObject.Destroy(GetModel().gameObject);
     }
+
+    /// <summary>
+    /// Performs logic right before this Model is destroyed.
+    /// </summary>
+    protected virtual void OnDestroyModel() { return; }
 }

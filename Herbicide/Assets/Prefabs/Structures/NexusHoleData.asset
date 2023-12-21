@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b14742ae5811748ba8ff675a006e224c, type: 3}
+  m_Name: NexusHoleData
+  m_EditorClassIdentifier: 
+  structurePrefab: {fileID: 4163662290033397202, guid: 8f44873640b3841ecb097a1e827fe27b, type: 3}
+  structureType: 1

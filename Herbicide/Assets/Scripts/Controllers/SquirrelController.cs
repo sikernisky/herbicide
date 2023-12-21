@@ -6,7 +6,11 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Controller for a Squirrel Defender.
+/// Controls a Squirrel.
+/// 
+/// The SquirrelController is responsible for manipulating its Squirrel and bringing
+/// it to life. This includes moving it, choosing targets, playing animations,
+/// and more.
 /// </summary>
 public class SquirrelController : DefenderController<SquirrelController.SquirrelState>
 {
@@ -83,7 +87,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     /// Returns the Squirrel's target if it has one. 
     /// </summary>
     /// <returns>the Squirrel's target; null if it doesn't have one.</returns>
-    private ITargetable GetTarget() { return NumTargets() == 1 ? GetTargets()[0] : null; }
+    private PlaceableObject GetTarget() { return NumTargets() == 1 ? GetTargets()[0] : null; }
 
     //--------------------BEGIN STATE LOGIC----------------------//
 
@@ -121,6 +125,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
                 SetState(SquirrelState.IDLE);
                 break;
             case SquirrelState.IDLE:
+                if (GetTarget() == null || !GetTarget().Targetable()) break;
                 if (GetSquirrel().DistanceToTarget(GetTarget())
                     <= GetSquirrel().GetAttackRange() &&
                     GetSquirrel().GetAttackCooldown() <= 0) SetState(SquirrelState.ATTACK);
@@ -169,21 +174,22 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         if (GetState() != SquirrelState.ATTACK) return;
 
         // Animation Logic.
-        GetSquirrel().SetAnimationDuration(GetSquirrel().ATTACK_ANIMATION_DURATION);
+
+        GetSquirrel().FaceTarget(GetTarget());
+
+        float duration = Mathf.Min(GetSquirrel().ATTACK_ANIMATION_DURATION,
+            GetSquirrel().GetAttackCooldownCap());
+        GetSquirrel().SetAnimationDuration(duration);
         Sprite[] attackTrack = DefenderFactory.GetAttackTrack(
             GetSquirrel().TYPE,
             GetSquirrel().GetDirection());
         GetSquirrel().SetAnimationTrack(attackTrack);
-        if (GetAnimationState() != SquirrelState.ATTACK) GetSquirrel().SetAnimationTrack(attackTrack);
-        else GetSquirrel().SetAnimationTrack(attackTrack, GetSquirrel().CurrentFrame);
         SetAnimationState(SquirrelState.ATTACK);
-
-        // Step the animation.
-        StepAnimation();
         GetSquirrel().SetSprite(GetSquirrel().GetSpriteAtCurrentFrame());
+        StepAnimation();
 
-        GetSquirrel().FaceTarget(GetTarget());
         if (!CanAttack()) return;
+
 
         // Make an Acorn and an AcornController.
         GameObject acornPrefab = ProjectileFactory.GetProjectilePrefab(Projectile.ProjectileType.ACORN);
