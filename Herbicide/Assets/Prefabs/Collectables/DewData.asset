@@ -12,5 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00325b4e6c64440a7b66643def5bb094, type: 3}
   m_Name: DewData
   m_EditorClassIdentifier: 
+  modelPrefab: {fileID: 7255375230871180526, guid: 268bcc35a02fd48119a5e3cb9ae357e3, type: 3}
+  modelType: 5
+  boatAnimationNorth: []
+  boatAnimationEast: []
+  boatAnimationSouth: []
+  boatAnimationWest: []
   collectablePrefab: {fileID: 7255375230871180526, guid: 268bcc35a02fd48119a5e3cb9ae357e3, type: 3}
   collectableType: 1

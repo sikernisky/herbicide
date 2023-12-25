@@ -12,6 +12,7 @@ public class GrassTile : Tile
     /// Name of this GrassTile.
     /// </summary>
     public override string NAME => "GrassTile";
+
     /// <summary>
     /// Type of this GrassTile.
     /// </summary>
@@ -26,6 +27,11 @@ public class GrassTile : Tile
     /// Grass Tiles are walkable.
     /// </summary>
     public override bool WALKABLE => true;
+
+    /// <summary>
+    /// ModelType of this GrassTile.
+    /// </summary>
+    public override ModelType TYPE => ModelType.GRASS_TILE;
 
 
     /// <summary>

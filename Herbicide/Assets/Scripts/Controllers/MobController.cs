@@ -24,6 +24,11 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     private List<PlaceableObject> targets;
 
     /// <summary>
+    /// The list of targets the Mob is holding.
+    /// </summary>
+    private List<PlaceableObject> targetsHolding;
+
+    /// <summary>
     /// The color strength, from 0-1, of the damage flash animation.
     /// </summary>
     private const float FLASH_INTENSITY = .4f;
@@ -38,6 +43,11 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// The maximum number of targets the controller can have at once.
     /// </summary>
     protected abstract int MAX_TARGETS { get; }
+
+    /// <summary>
+    /// The number of targets this Enemy is allowed to pick up at once.
+    /// </summary>
+    protected virtual int HOLDING_LIMIT => 1;
 
     /// <summary>
     /// The Mob's state.
@@ -69,10 +79,9 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     {
         Assert.IsNotNull(mob, "Mob cannot be null.");
         targets = new List<PlaceableObject>();
+        targetsHolding = new List<PlaceableObject>();
         SpawnMob();
         NUM_MOBS++;
-
-
     }
 
     /// <summary>
@@ -92,9 +101,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     protected virtual void UpdateMob()
     {
         if (!ValidModel()) return;
-        List<PlaceableObject> filteredTargets = FilterTargets(GetAllTargetableObjects());
-        CleanTargets(filteredTargets);
-        ElectTarget(filteredTargets);
+        UpdateTargets(GetAllTargetableObjects());
         GetMob().AdjustAttackCooldown(-Time.deltaTime);
     }
 
@@ -118,74 +125,59 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     protected Mob GetMob() { return GetModel() as Mob; }
 
     /// <summary>
-    /// Returns a list of this MobController's current targets. Mobs interperet
+    /// Returns a copy of the list of this MobController's current targets. Mobs interperet
     /// targets differently; for example, a Squirrel will attack its target,
     /// but some other Mob might heal its target.
     /// </summary>
     /// <returns>this MobController's target.</returns>
-    protected List<PlaceableObject> GetTargets() { return targets; }
+    protected List<PlaceableObject> GetTargets() { return new List<PlaceableObject>(targets); }
 
     /// <summary>
-    /// Sets this MobController's target. Make sure to use
-    /// ElectTarget() so that the right target for this Mob
-    /// is selected.
+    /// Clears the Mob's list of targets.
+    /// </summary>
+    private void ClearTargets() { targets.Clear(); }
+
+    /// <summary>
+    /// Adds a PlaceableObject to this Mob's list of targets.
     /// </summary>
     /// <param name="targetable">The target to add.</param>
-    protected void AddTarget(PlaceableObject targetable)
+    private void AddTarget(PlaceableObject targetable)
     {
         Assert.IsNotNull(targetable, "Target cannot be null.");
         Assert.IsFalse(NumTargets() >= MAX_TARGETS, GetMob() +
             " already has " + NumTargets() + " targets.");
+        Assert.IsTrue(CanTarget(targetable), "Not a valid target.");
+
         targets.Add(targetable);
     }
 
     /// <summary>
-    /// Removes one of this MobController's targets.
+    /// Runs through all targetable Placeable Objects and adds each one
+    /// this Mob can target to its targets list.
     /// </summary>
-    /// <param name="targetable">The target to remove.</param>
-    protected void RemoveTarget(PlaceableObject targetable)
+    /// <param name="allTargets">All targetable Models.</param>
+    private void UpdateTargets(List<PlaceableObject> allTargets)
     {
-        Assert.IsNotNull(targetable, "Target cannot be null.");
-        Assert.IsTrue(targets.Contains(targetable), "Does not contain target " + targetable);
-        targets.Remove(targetable);
-    }
+        Assert.IsNotNull(allTargets, "List of targets is null.");
 
-    /// <summary>
-    /// Sets this MobController's targets to be a filtered list of PlaceableObjects.
-    /// </summary>
-    /// <param name="filteredTargetables">a list of PlaceableObjects that this EnemyController
-    /// is allowed to set as its target. /// </param>
-    protected virtual void ElectTarget(List<PlaceableObject> filteredTargetables)
-    {
-        if (filteredTargetables == null) return;
-        if (!ValidModel()) return;
-
-        //Debug.Log(NumTargets());
-
-        //Add as many targets as possible.
-        foreach (PlaceableObject filteredTarget in filteredTargetables)
+        ClearTargets();
+        foreach (PlaceableObject targetable in allTargets)
         {
-            if (NumTargets() < MAX_TARGETS)
+            if (CanTarget(targetable) && NumTargets() < MAX_TARGETS)
             {
-                AddTarget(filteredTarget);
+                AddTarget(targetable);
             }
         }
     }
 
     /// <summary>
-    /// Runs through the list of the Mob's current targets and removes
-    /// those that no longer meet the standards of being a target.
+    /// Returns true if the Mob is allowed to target a PlaceableObject passed
+    /// into this method.
     /// </summary>
-    /// <param name="filteredTargets">The most up to date list of
-    /// valid targets in the scene.</param>
-    protected virtual void CleanTargets(List<PlaceableObject> filteredTargets)
-    {
-        if (filteredTargets == null) return;
-
-        List<PlaceableObject> targetsToRemove = new List<PlaceableObject>();
-        GetTargets().RemoveAll(t => t == null || System.Object.Equals(t, null));
-        GetTargets().RemoveAll(t => !filteredTargets.Contains(t));
-    }
+    /// <param name="target">A potential target.</param>
+    /// <returns>true if the Mob is allowed to target a PlaceableObject; otherwise,
+    /// false.</returns>
+    protected abstract bool CanTarget(PlaceableObject target);
 
     /// <summary>
     /// Returns the current number of targets the Mob has
@@ -194,16 +186,6 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// <returns>the current number of targets the Mob has
     /// elected.</returns>
     protected int NumTargets() { return targets.Count; }
-
-    /// <summary>
-    /// Parses the list of all PlaceableObjects in the scene such that it
-    /// only contains PlaceableObjects that this MobController's Mob is allowed
-    /// to target. /// 
-    /// </summary>
-    /// <param name="targetables">the list of all PlaceableObjects in the scene</param>
-    /// <returns>a list containing PlaceableObjects that this MobController's Mob is allowed
-    /// to target</returns>
-    protected abstract List<PlaceableObject> FilterTargets(List<PlaceableObject> targetables);
 
     /// <summary>
     /// Animates this Controller's model's damage flash effect if it is
@@ -266,6 +248,65 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
         }
 
         return new Vector3(closestPosition.x, closestPosition.y, 1);
+    }
+
+    /// <summary>
+    /// Returns true if the Mob can hold some PlaceableObject.
+    /// </summary>
+    /// <returns>true if the Mob can hold the PlaceableObject; otherwise,
+    /// false. </returns>
+    /// <param name="target">The target to check. </param> 
+    protected virtual bool CanHoldTarget(PlaceableObject target)
+    {
+        Assert.IsNotNull(target, "Target is null.");
+
+        if (!GetTargets().Contains(target)) return false; // Need to target before holding
+        if (NumTargetsHolding() >= HOLDING_LIMIT) return false;
+        if (target.PickedUp()) return false;
+
+        return true;
+    }
+
+    /// <summary>
+    /// Adds a target to the list of targets the Mob is holding.
+    /// </summary>
+    /// <param name="target">The target to hold. </param> 
+    protected void HoldTarget(PlaceableObject target)
+    {
+        Assert.IsNotNull(targetsHolding, "List of holding targets is null.");
+        Assert.IsTrue(CanHoldTarget(target), "Need to check holding validity.");
+
+        targetsHolding.Add(target);
+        target.PickUp(GetMob().GetTransform(), GetMob().HOLDER_OFFSET);
+    }
+
+    /// <summary>
+    /// Returns the number of targets the Mob is currently holding.
+    /// </summary>
+    /// <returns>the number of targets the Mob is currently holding.</returns>
+    protected int NumTargetsHolding()
+    {
+        Assert.IsNotNull(targetsHolding, "List of holding targets is null.");
+
+        return targetsHolding.Count;
+    }
+
+    /// <summary>
+    /// Returns a copy of the list of targets the Mob is currently holding.
+    /// </summary>
+    /// <returns>a copy of the list of targets the Mob is currently holding.</returns>
+    protected List<PlaceableObject> GetHeldTargets()
+    {
+        return new List<PlaceableObject>(targetsHolding);
+    }
+
+    /// <summary>
+    /// Returns true if the Mob is holding some target.
+    /// </summary>
+    /// <returns>true if the Mob is holding the target; otherwise, false.</returns>
+    protected bool IsHoldingTarget(PlaceableObject target)
+    {
+        return targetsHolding.Contains(target);
     }
 
     //--------------------BEGIN STATE LOGIC----------------------//

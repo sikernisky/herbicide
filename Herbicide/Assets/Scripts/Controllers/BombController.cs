@@ -97,7 +97,7 @@ public class BombController : ProjectileController<BombController.BombState>
         // splatterCopy.SetActive(true);
 
         Vector2Int tilePos = new Vector2Int(GetBomb().GetX(), GetBomb().GetY());
-        GameObject bombSplatPrefab = HazardFactory.GetHazardPrefab(Hazard.HazardType.BOMB_SPLAT);
+        GameObject bombSplatPrefab = HazardFactory.GetHazardPrefab(ModelType.BOMB_SPLAT);
         Assert.IsNotNull(bombSplatPrefab);
         BombSplat bombSplatComp = bombSplatPrefab.GetComponent<BombSplat>();
         Assert.IsNotNull(bombSplatComp);

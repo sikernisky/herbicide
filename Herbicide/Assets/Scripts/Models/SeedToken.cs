@@ -13,9 +13,9 @@ public class SeedToken : Currency
     public override string NAME => "Seed Token";
 
     /// <summary>
-    /// CollectableType of a SeedToken.
+    /// ModelType of a SeedToken.
     /// </summary>
-    public override CollectableType TYPE => CollectableType.SEED_TOKEN;
+    public override ModelType TYPE => ModelType.SEED_TOKEN;
 
     /// <summary>
     /// Returns the Sprite component that represents this SeedToken in
@@ -23,7 +23,7 @@ public class SeedToken : Currency
     /// </summary>
     /// <returns>the Sprite component that represents this SeedToken in
     /// the Inventory.</returns>
-    public override Sprite GetInventorySprite()
+    public override Sprite GetBoatSprite()
     {
         throw new System.NotImplementedException();
     }

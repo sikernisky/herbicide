@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 /// <summary>
 /// Represents the place where Enemies bring a nexus too.
@@ -8,9 +9,9 @@ using UnityEngine;
 public class NexusHole : Structure
 {
     /// <summary>
-    /// StructureType of a NexusHole.
+    /// Type of a NexusHole.
     /// </summary>
-    public override StructureType TYPE => StructureType.NEXUS_HOLE;
+    public override ModelType TYPE => ModelType.NEXUS_HOLE;
 
     /// <summary>
     /// Starting attack range of a NexusHole.
@@ -97,13 +98,23 @@ public class NexusHole : Structure
     /// </summary>
     public override bool OCCUPIER => false;
 
+    /// <summary>
+    /// All Nexii in this NexusHole.
+    /// </summary>
+    private List<Nexus> occupants = new List<Nexus>();
+
+    /// <summary>
+    /// Maximum number of Nexii that can be in this NexusHole.
+    /// </summary>
+    protected virtual int MAX_OCCUPANTS => 1;
+
 
     /// <summary>
     /// Returns the Sprite that represents this NexusHole in the inventory.
     /// </summary>
     /// <returns> the Sprite that represents this NexusHole in the inventory.
     /// </returns>
-    public override Sprite GetInventorySprite() { return null; }
+    public override Sprite GetBoatSprite() { return null; }
 
     /// <summary>
     /// Returns the Sprite that represents this NexusHole when placing.
@@ -125,4 +136,31 @@ public class NexusHole : Structure
     /// Sets the 2D Collider properties of this NexusHole.
     /// </summary>
     public override void SetColliderProperties() { return; }
+
+    /// <summary>
+    /// Returns true if no more Nexii can fit in this NexusHole.
+    /// </summary>
+    /// <returns>true if this NexusHole has reached capacity;
+    /// otherwise, false. </returns>
+    public bool Filled() { return occupants.Count >= MAX_OCCUPANTS; }
+
+    /// <summary>
+    /// Puts a Nexus in this NexusHole.
+    /// </summary>
+    /// <param name="nexus">The Nexus to fill with.</param>
+    public void Fill(Nexus nexus)
+    {
+        Assert.IsFalse(Filled(), "You need to check if this NexusHole is filled.");
+        occupants.Add(nexus);
+    }
+
+    /// <summary>
+    /// Removes a Nexus from this NexusHole.
+    /// </summary>
+    /// <param name="nexus">The Nexus to remove.</param>
+    public void RemoveNexus(Nexus nexus)
+    {
+        if (!occupants.Contains(nexus)) return;
+        occupants.Remove(nexus);
+    }
 }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -280,7 +281,6 @@ public abstract class Tile : Model, ISurface
         if (candidate == null || neighbors == null) return false;
         if (Floored()) return GetFlooring().CanPlace(candidate, neighbors);
 
-        if (candidate == null || neighbors == null) return false;
         if (candidate as Squirrel != null) return false;
         if (candidate as Tree != null) return false;
         if (Occupied()) return false;
@@ -654,7 +654,7 @@ public abstract class Tile : Model, ISurface
     /// </summary>
     /// <returns>the Sprite component that represents this Tile in
     /// the Inventory.</returns>
-    public override Sprite GetInventorySprite()
+    public override Sprite GetBoatSprite()
     {
         throw new System.NotImplementedException();
     }

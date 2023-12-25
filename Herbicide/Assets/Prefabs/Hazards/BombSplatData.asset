@@ -12,5 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e21aea33d4e1d421ca0005fb8f530a83, type: 3}
   m_Name: BombSplatData
   m_EditorClassIdentifier: 
-  hazardPrefab: {fileID: 2992541229926802311, guid: 2cce9f80cc1cf4b9098c0725488cde7d, type: 3}
-  hazardType: 0
+  modelPrefab: {fileID: 2992541229926802311, guid: 2cce9f80cc1cf4b9098c0725488cde7d, type: 3}
+  modelType: 4
+  boatAnimationNorth: []
+  boatAnimationEast: []
+  boatAnimationSouth: []
+  boatAnimationWest: []

@@ -16,7 +16,7 @@ public class BombSplat : SlowZone
     /// <summary>
     /// Type of the BombSplat Hazard.
     /// </summary>
-    public override HazardType TYPE => HazardType.BOMB_SPLAT;
+    public override ModelType TYPE => ModelType.BOMB_SPLAT;
 
     /// <summary>
     /// Starting health of a BombSplat.
@@ -40,7 +40,7 @@ public class BombSplat : SlowZone
     /// </summary>
     /// <returns>the Sprite that represents a BombSplat in
     /// the inventory.</returns>
-    public override Sprite GetInventorySprite() { throw new System.NotImplementedException(); }
+    public override Sprite GetBoatSprite() { throw new System.NotImplementedException(); }
 
     /// <summary>
     /// Returns the Sprite that represents a BombSplat when
@@ -58,7 +58,7 @@ public class BombSplat : SlowZone
     /// on the TileGrid. </returns>
     public override GameObject MakePlaceableObject()
     {
-        return Instantiate(HazardFactory.GetHazardPrefab(HazardType.BOMB_SPLAT));
+        return Instantiate(HazardFactory.GetHazardPrefab(ModelType.BOMB_SPLAT));
     }
 
     /// <summary>

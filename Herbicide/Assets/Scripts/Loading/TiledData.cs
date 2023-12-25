@@ -130,17 +130,17 @@ public class TiledData
     }
 
     /// <summary>
-    /// Returns a list of LayerData objects that represent Placeable objects.
+    /// Returns a list of LayerData objects that represent object layers.
     /// </summary>
-    /// <returns>a list of placable object LayerData objects.</returns>
-    public List<LayerData> GetPlaceableLayers()
+    /// <returns> a list of LayerData objects that represent object layers.</returns>
+    public List<LayerData> GetObjectLayers()
     {
-        List<LayerData> placeableLayers = new List<LayerData>();
+        List<LayerData> objectLayers = new List<LayerData>();
         foreach (LayerData ld in layers)
         {
-            if (ld.IsPlaceableLayer() && !placeableLayers.Contains(ld)) placeableLayers.Add(ld);
+            if (ld.IsObjectLayer() && !objectLayers.Contains(ld)) objectLayers.Add(ld);
         }
-        return placeableLayers;
+        return objectLayers;
     }
 
     /// <summary>

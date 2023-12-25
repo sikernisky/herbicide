@@ -138,30 +138,7 @@
                 {
                  "gid":20,
                  "height":16,
-                 "id":301,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"enemyName",
-                         "type":"string",
-                         "value":"Kudzu"
-                        }, 
-                        {
-                         "name":"spawnTime",
-                         "type":"string",
-                         "value":"5"
-                        }],
-                 "rotation":0,
-                 "type":"Enemy",
-                 "visible":true,
-                 "width":16,
-                 "x":272,
-                 "y":112
-                }, 
-                {
-                 "gid":20,
-                 "height":16,
-                 "id":313,
+                 "id":315,
                  "name":"",
                  "properties":[
                         {
@@ -178,36 +155,13 @@
                  "type":"Enemy",
                  "visible":true,
                  "width":16,
-                 "x":288,
-                 "y":112
-                }, 
-                {
-                 "gid":20,
-                 "height":16,
-                 "id":314,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"enemyName",
-                         "type":"string",
-                         "value":"Kudzu"
-                        }, 
-                        {
-                         "name":"spawnTime",
-                         "type":"string",
-                         "value":"15"
-                        }],
-                 "rotation":0,
-                 "type":"Enemy",
-                 "visible":true,
-                 "width":16,
-                 "x":288,
+                 "x":272,
                  "y":128
                 }, 
                 {
                  "gid":20,
                  "height":16,
-                 "id":315,
+                 "id":316,
                  "name":"",
                  "properties":[
                         {
@@ -218,13 +172,59 @@
                         {
                          "name":"spawnTime",
                          "type":"string",
-                         "value":"10"
+                         "value":"9"
                         }],
                  "rotation":0,
                  "type":"Enemy",
                  "visible":true,
                  "width":16,
                  "x":272,
+                 "y":112
+                }, 
+                {
+                 "gid":20,
+                 "height":16,
+                 "id":317,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"enemyName",
+                         "type":"string",
+                         "value":"Kudzu"
+                        }, 
+                        {
+                         "name":"spawnTime",
+                         "type":"string",
+                         "value":"16"
+                        }],
+                 "rotation":0,
+                 "type":"Enemy",
+                 "visible":true,
+                 "width":16,
+                 "x":288,
+                 "y":112
+                }, 
+                {
+                 "gid":20,
+                 "height":16,
+                 "id":318,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"enemyName",
+                         "type":"string",
+                         "value":"Kudzu"
+                        }, 
+                        {
+                         "name":"spawnTime",
+                         "type":"string",
+                         "value":"24"
+                        }],
+                 "rotation":0,
+                 "type":"Enemy",
+                 "visible":true,
+                 "width":16,
+                 "x":288,
                  "y":128
                 }],
          "opacity":1,
@@ -400,9 +400,45 @@
          "visible":true,
          "x":0,
          "y":0
+        }, 
+        {
+         "class":"MarkerLayer",
+         "draworder":"topdown",
+         "id":14,
+         "name":"Markers",
+         "objects":[
+                {
+                 "gid":48,
+                 "height":16,
+                 "id":319,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"markerName",
+                         "type":"string",
+                         "value":"shopStart"
+                        }],
+                 "rotation":0,
+                 "type":"Marker",
+                 "visible":true,
+                 "width":16,
+                 "x":0,
+                 "y":176
+                }],
+         "opacity":1,
+         "properties":[
+                {
+                 "name":"layerClass",
+                 "type":"string",
+                 "value":"MarkerLayer"
+                }],
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextlayerid":14,
- "nextobjectid":316,
+ "nextlayerid":15,
+ "nextobjectid":320,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.1",
@@ -431,6 +467,10 @@
         {
          "firstgid":44,
          "source":"..\/..\/Tiled\/Tilesets\/Placeables.tsx"
+        }, 
+        {
+         "firstgid":48,
+         "source":"..\/..\/Tiled\/Tilesets\/Markers.tsx"
         }],
  "tilewidth":16,
  "type":"map",

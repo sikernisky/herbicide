@@ -221,7 +221,8 @@ public abstract class Flooring : Model, ISurface
     }
 
     /// <summary>
-    /// Removes the PlaceableObject from this Flooring.
+    /// Removes the PlaceableObject from this Flooring. This does not
+    /// destroy the occupant; that is the responsibility of its controller. 
     /// </summary>
     /// <param name="neighbors">This Flooring's neighbors.</param>
     public virtual void Remove(ISurface[] neighbors)
@@ -419,7 +420,7 @@ public abstract class Flooring : Model, ISurface
     /// </summary>
     /// <returns>the Sprite component that represents this Flooring in
     /// the Inventory.</returns>
-    public override Sprite GetInventorySprite()
+    public override Sprite GetBoatSprite()
     {
         throw new System.NotImplementedException();
     }

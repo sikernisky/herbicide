@@ -12,8 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcfc6a25ac6474835b7d1c94b33a6868, type: 3}
   m_Name: ButterflyData
   m_EditorClassIdentifier: 
-  defenderPrefab: {fileID: 2896626616884615408, guid: 7351ef4cb8dda412e9273c76b60ec0a5, type: 3}
-  defenderType: 1
+  modelPrefab: {fileID: 2896626616884615408, guid: 7351ef4cb8dda412e9273c76b60ec0a5, type: 3}
+  modelType: 3
+  boatAnimationNorth: []
+  boatAnimationEast: []
+  boatAnimationSouth: []
+  boatAnimationWest: []
   movementAnimationNorth:
   - {fileID: 1526075591, guid: 3a7746be9ceb44488aea023bdf168867, type: 3}
   - {fileID: -488403046, guid: 3a7746be9ceb44488aea023bdf168867, type: 3}

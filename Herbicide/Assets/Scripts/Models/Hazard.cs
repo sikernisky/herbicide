@@ -15,11 +15,6 @@ public abstract class Hazard : Mob
     public abstract float LIFESPAN { get; }
 
     /// <summary>
-    /// Type of this Hazard.
-    /// </summary>
-    public abstract HazardType TYPE { get; }
-
-    /// <summary>
     /// How long this Hazard has been active
     /// </summary>
     private float age;

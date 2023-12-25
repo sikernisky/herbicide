@@ -37,13 +37,13 @@ public class StructureFactory : MonoBehaviour
     /// <summary>
     /// Returns the GameObject prefab that represents a Structure.
     /// </summary>
-    /// <param name="structureType">the type of Structure</param>
+    /// <param name="type">the type of Model</param>
     /// <returns>the GameObject prefab that represents a Structure</returns>
-    public static GameObject GetStructurePrefab(Structure.StructureType structureType)
+    public static GameObject GetStructurePrefab(ModelType type)
     {
         StructureScriptable data = instance.structureScriptables.Find(
-            x => x.GetStructureType() == structureType);
-        GameObject prefabToClone = data.GetPrefab();
+            x => x.GetModelType() == type);
+        GameObject prefabToClone = data.GetModelPrefab();
         Assert.IsNotNull(prefabToClone);
         return prefabToClone;
     }
@@ -55,11 +55,11 @@ public class StructureFactory : MonoBehaviour
     /// <returns>the GameObject prefab that represents a Structure</returns>
     public static GameObject GetStructurePrefab(string structureName)
     {
-        if (structureName.ToLower() == "nexus") return GetStructurePrefab(Structure.StructureType.NEXUS);
-        else if (structureName.ToLower() == "nexushole") return GetStructurePrefab(Structure.StructureType.NEXUS_HOLE);
+        if (structureName.ToLower() == "nexus") return GetStructurePrefab(ModelType.NEXUS);
+        else if (structureName.ToLower() == "nexushole") return GetStructurePrefab(ModelType.NEXUS_HOLE);
 
         // Backup
-        return GetStructurePrefab(Structure.StructureType.NEXUS);
+        return GetStructurePrefab(ModelType.NEXUS);
     }
 
 

@@ -37,8 +37,22 @@ public class CameraController : MonoBehaviour
     /// Finds and sets the CameraController singleton for the main menu. Also finds and sets
     /// the CameraController's camera.
     /// </summary>
-    /// <param name="levelController">The LevelController singleton.</param>
+    /// <param name="mainMenuController">The LevelController singleton.</param>
     public static void SetSingleton(MainMenuController mainMenuController)
+    {
+        CameraController[] cameraControllers = FindObjectsOfType<CameraController>();
+        Assert.IsNotNull(cameraControllers, "Array of CameraControllers is null.");
+        Assert.AreEqual(1, cameraControllers.Length);
+        instance = cameraControllers[0];
+        instance.cam = Camera.main;
+    }
+
+    /// <summary>
+    /// Finds and sets the CameraController singleton for the skill menu. Also finds and sets
+    /// the CameraController's camera.
+    /// </summary>
+    /// <param name="skillMenuController">The LevelController singleton.</param>
+    public static void SetSingleton(SkillMenuController skillMenuController)
     {
         CameraController[] cameraControllers = FindObjectsOfType<CameraController>();
         Assert.IsNotNull(cameraControllers, "Array of CameraControllers is null.");

@@ -7,7 +7,7 @@ using UnityEngine.Assertions;
 /// <summary>
 /// Manages assets for Tree components.
 /// </summary>
-public class TreeFactory : MonoBehaviour
+public class TreeFactory : ModelFactory
 {
     /// <summary>
     /// Reference to the TreeFactory singleton.
@@ -46,7 +46,7 @@ public class TreeFactory : MonoBehaviour
     /// Finds and sets the TreeFactory singleton.
     /// </summary>
     /// <param name="levelController">The LevelController singleton.</param>
-    public static void SetSingleton(LevelController levelController)
+    public new static void SetSingleton(LevelController levelController)
     {
         if (levelController == null) return;
         if (instance != null) return;
@@ -62,7 +62,7 @@ public class TreeFactory : MonoBehaviour
     /// </summary>
     /// <param name="type">the type of Tree</param>
     /// <returns>the Sprite component that represents a Tree in the inventory</returns>
-    public static Sprite GetTreeInventorySprite(Tree.TreeType type)
+    public static Sprite GetTreeInventorySprite(ModelType type)
     {
         int index = (int)type;
         if (index < 0 || index >= instance.inventorySprites.Length) return null;
@@ -75,7 +75,7 @@ public class TreeFactory : MonoBehaviour
     /// </summary>
     /// <param name="type">the type of Tree</param>
     /// <returns>the Sprite component that represents a placed Tree</returns>
-    public static Sprite GetTreePlacedSprite(Tree.TreeType type)
+    public static Sprite GetTreePlacedSprite(ModelType type)
     {
         int index = (int)type;
         if (index < 0 || index >= instance.placedSprites.Length) return null;
@@ -88,7 +88,7 @@ public class TreeFactory : MonoBehaviour
     /// </summary>
     /// <param name="type">the type of Tree</param>
     /// <returns>the GameObject prefab that represents a placed Tree</returns>
-    public static GameObject GetTreePrefab(Tree.TreeType type)
+    public static GameObject GetTreePrefab(ModelType type)
     {
         int index = (int)type;
         if (index < 0 || index >= instance.prefabs.Length) return null;

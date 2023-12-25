@@ -64,7 +64,7 @@ public class SynergyController : MonoBehaviour
     /// <summary>
     /// Finds and sets the SynergyController singleton.
     /// </summary>
-    /// <param name="levelController">The SynergyController singleton.</param>
+    /// <param name="levelController">The LevelController singleton.</param>
     public static void SetSingleton(LevelController levelController)
     {
         if (levelController == null) return;

@@ -45,6 +45,11 @@ public class ControllerController : MonoBehaviour
     private List<ModelController> structureControllers;
 
     /// <summary>
+    /// List of active ShopBoatControllers.
+    /// </summary>
+    private List<ModelController> boatControllers;
+
+    /// <summary>
     /// Reference to the ControllerController singleton.
     /// </summary>
     private static ControllerController instance;
@@ -77,135 +82,83 @@ public class ControllerController : MonoBehaviour
         instance.hazardControllers = new List<ModelController>();
         instance.collectableControllers = new List<ModelController>();
         instance.structureControllers = new List<ModelController>();
-    }
-
-
-
-    /// <summary>
-    /// Creates a DefenderController for a Defender of a given type. Adds it to
-    /// its respective list of controllers that the ControllerController
-    /// updates each frame.
-    /// </summary>
-    /// <param name="defender">The Defender that needs a Controller.</param>
-    public static void MakeDefenderController(Defender defender)
-    {
-        if (defender == null) return;
-
-        switch (defender.TYPE)
-        {
-            case Defender.DefenderType.SQUIRREL:
-                Assert.IsNotNull(defender as Squirrel);
-                SquirrelController sc = new SquirrelController(defender as Squirrel);
-                instance.defenderControllers.Add(sc);
-                break;
-            case Defender.DefenderType.BUTTERFLY:
-                Assert.IsNotNull(defender as Butterfly);
-                ButterflyController bc = new ButterflyController(defender as Butterfly);
-                instance.defenderControllers.Add(bc);
-                break;
-            default:
-                throw new System.Exception("Defender " + defender.NAME + " not supported.");
-        }
+        instance.boatControllers = new List<ModelController>();
     }
 
     /// <summary>
-    /// Creates an EnemyController for an Enemy of a given type. Adds it to
-    /// its respective list of controllers that the ControllerController
-    /// updates each frame.
+    /// Makes a Controller of the given ModelType and adds it to the list
+    /// of active controllers that are updated and tracked. 
     /// </summary>
-    /// <param name="enemy">The Enemy that needs a controller.</param>
-    /// <param name="spawnTime">When the Enemy should spawn in the level. </param>
-    /// <param name="spawnCoords">Where this Enemy should spawn.</param>
-    public static void MakeEnemyController(Enemy enemy, float spawnTime, Vector2 spawnCoords)
+    /// <param name="modelType">The Model that needs a ModelController.</param>
+    public static void MakeController(Model model)
     {
-        if (enemy == null) return;
-
-        switch (enemy.TYPE)
+        switch (model.TYPE)
         {
-            case Enemy.EnemyType.KUDZU:
-                Kudzu kudzu = enemy as Kudzu;
-                Assert.IsNotNull(kudzu, "Kudzu is null.");
-                KudzuController kc = new KudzuController(kudzu, spawnTime, spawnCoords);
-                instance.enemyControllers.Add(kc);
+            case ModelType.ACORN:
                 break;
-            default:
-                throw new System.Exception("Enemy " + enemy.NAME + " not supported.");
-        }
-    }
-
-    /// <summary>
-    /// Creates a TreeController for a Tree of a given type. Adds it to
-    /// its respective list of controllers that the ControllerController
-    /// updates each frame.
-    /// </summary>
-    /// <param name="tree">The tree that needs a Controller.</param>
-    public static void MakeTreeController(Tree tree)
-    {
-        if (tree == null) return;
-
-        switch (tree.TYPE)
-        {
-            case Tree.TreeType.BASIC:
-                BasicTree basicTree = tree as BasicTree;
+            case ModelType.BASIC_TREE:
+                BasicTree basicTree = model as BasicTree;
                 Assert.IsNotNull(basicTree, "BasicTree is null");
                 BasicTreeController btc = new BasicTreeController(basicTree);
                 instance.treeControllers.Add(btc);
                 break;
-            default:
-                throw new System.Exception("Tree " + tree.NAME + " not supported.");
-        }
-    }
-
-    /// <summary>
-    /// Creates a HazardController for a Hazard of a given type. Adds it to
-    /// its respective list of controllers that the ControllerController
-    /// updates each frame.
-    /// </summary>
-    /// <param name="hazard">The Hazard that needs a controller.</param>
-    public static void MakeHazardController(Hazard hazard)
-    {
-        if (hazard == null) return;
-        switch (hazard.TYPE)
-        {
-            case Hazard.HazardType.BOMB_SPLAT:
-                BombSplat bombSplat = hazard as BombSplat;
+            case ModelType.BOMB:
+                break;
+            case ModelType.BUTTERFLY:
+                Butterfly butterfly = model as Butterfly;
+                Assert.IsNotNull(butterfly);
+                ButterflyController bc = new ButterflyController(butterfly);
+                instance.defenderControllers.Add(bc);
+                break;
+            case ModelType.BOMB_SPLAT:
+                BombSplat bombSplat = model as BombSplat;
                 Assert.IsNotNull(bombSplat, "BombSplat is null.");
                 SlowZoneController szc = new SlowZoneController(bombSplat);
                 instance.hazardControllers.Add(szc);
                 break;
-            default:
-                throw new System.Exception("Hazard " + hazard.NAME + " not supported.");
-        }
-    }
-
-    /// <summary>
-    /// Creates a StructureController for a Structure of a given type. Adds it to
-    /// its respective list of controllers that the ControllerController
-    /// updates each frame.
-    /// </summary>
-    /// <param name="structure">The Structure that needs a controller.</param>
-    public static void MakeStructureController(Structure structure)
-    {
-        if (structure == null) return;
-
-        switch (structure.TYPE)
-        {
-            case Structure.StructureType.NEXUS:
-                Nexus nexus = structure as Nexus;
+            case ModelType.DEW:
+                break;
+            case ModelType.GRASS_TILE:
+                break;
+            case ModelType.KUDZU:
+                Kudzu kudzu = model as Kudzu;
+                Assert.IsNotNull(kudzu, "Kudzu is null.");
+                KudzuController kc = new KudzuController(kudzu);
+                instance.enemyControllers.Add(kc);
+                break;
+            case ModelType.NEXUS:
+                Nexus nexus = model as Nexus;
                 Assert.IsNotNull(nexus, "Nexus is null.");
                 NexusController nxc = new NexusController(nexus);
                 instance.structureControllers.Add(nxc);
                 break;
-            case Structure.StructureType.NEXUS_HOLE:
-                NexusHole nexusHole = structure as NexusHole;
+            case ModelType.NEXUS_HOLE:
+                NexusHole nexusHole = model as NexusHole;
                 Assert.IsNotNull(nexusHole, "NexusHole is null.");
                 NexusHoleController nhc = new NexusHoleController(nexusHole);
                 instance.structureControllers.Add(nhc);
                 break;
-            default:
-                throw new System.Exception("Structure " + structure.NAME + " not supported.");
+            case ModelType.SEED_TOKEN:
+                break;
+            case ModelType.SHOP_BOAT:
+                ShopBoat shopBoat = model as ShopBoat;
+                Assert.IsNotNull(shopBoat);
+                ShopBoatController sbc = new ShopBoatController(shopBoat);
+                instance.structureControllers.Add(sbc);
+                break;
+            case ModelType.SHORE_TILE:
+                break;
+            case ModelType.SOIL_FLOORING:
+                break;
+            case ModelType.SQUIRREL:
+                Squirrel squirrel = model as Squirrel;
+                Assert.IsNotNull(squirrel);
+                SquirrelController sc = new SquirrelController(squirrel as Squirrel);
+                instance.defenderControllers.Add(sc);
+                break;
+            case ModelType.WATER_TILE:
+                break;
         }
-
     }
 
     /// <summary>
@@ -284,6 +237,7 @@ public class ControllerController : MonoBehaviour
         hazardControllers.RemoveAll(hc => hc.ShouldRemoveController());
         collectableControllers.RemoveAll(cc => cc.ShouldRemoveController());
         structureControllers.RemoveAll(sc => sc.ShouldRemoveController());
+        boatControllers.RemoveAll(bc => bc.ShouldRemoveController());
     }
 
     /// <summary>
@@ -299,6 +253,7 @@ public class ControllerController : MonoBehaviour
         hazardControllers.ForEach(hc => hc.InformOfGameState(gameState));
         collectableControllers.ForEach(cc => cc.InformOfGameState(gameState));
         structureControllers.ForEach(sc => sc.InformOfGameState(gameState));
+        boatControllers.ForEach(bc => bc.InformOfGameState(gameState));
     }
 
     /// <summary>
@@ -382,6 +337,9 @@ public class ControllerController : MonoBehaviour
 
         // Update StructureControllers
         instance.structureControllers.ForEach(sc => sc.UpdateModel());
+
+        // Update BoatControllers
+        instance.boatControllers.ForEach(bc => bc.UpdateModel());
     }
 
     /// <summary>

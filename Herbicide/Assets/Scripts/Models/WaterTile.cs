@@ -18,6 +18,11 @@ public class WaterTile : Tile
     public override bool WALKABLE => false;
 
     /// <summary>
+    /// ModelType of a Water Tile.
+    /// </summary>
+    public override ModelType TYPE => ModelType.WATER_TILE;
+
+    /// <summary>
     /// Type of a WaterTile.
     /// </summary>
     protected override TileType type => TileType.WATER;

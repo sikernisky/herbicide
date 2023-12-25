@@ -11,10 +11,6 @@ using System.Linq;
 /// </summary>
 public abstract class Enemy : Mob
 {
-    /// <summary>
-    /// Type of this Enemy.
-    /// </summary>
-    public abstract EnemyType TYPE { get; }
 
     /// <summary>
     /// The chance, between 0-1, that this Enemy drops

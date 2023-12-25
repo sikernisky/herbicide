@@ -283,7 +283,7 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
         GetButterfly().SetSprite(GetButterfly().GetSpriteAtCurrentFrame());
 
         if (!CanAttack()) return;
-        GameObject bombPrefab = ProjectileFactory.GetProjectilePrefab(Projectile.ProjectileType.BOMB);
+        GameObject bombPrefab = ProjectileFactory.GetProjectilePrefab(ModelType.BOMB);
         Assert.IsNotNull(bombPrefab);
         GameObject clonedBomb = GameObject.Instantiate(bombPrefab);
         Assert.IsNotNull(clonedBomb);

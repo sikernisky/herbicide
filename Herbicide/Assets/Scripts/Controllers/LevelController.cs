@@ -52,7 +52,8 @@ public class LevelController : MonoBehaviour
     /// (2) Parse all JSON data<br></br>
     /// (3) Spawns the TileGrid.<br></br>
     /// (4) Populates the EnemyManager.<br></br>
-    /// (5) Loads the Inventory.
+    /// (5) Loads the Shop.<br></br>
+    /// (6) Loads the Synergies.
     /// </summary>
     void Start()
     {
@@ -76,8 +77,9 @@ public class LevelController : MonoBehaviour
         List<LayerData> enemyLayers = tiledData.GetEnemyLayers();
         EnemyManager.PopulateWithEnemies(enemyLayers, tiledData.GetMapHeight());
 
-        //(5) Load the Inventory
-        InventoryController.LoadEntireInventory(items);
+        //(5) Load the Shop 
+        InventoryController.LoadEntireInventory(items); // DELETE ME WHEN SHOP DONE!
+        ShopManager.LoadShop();
 
         //(6) Load the Synergies (TODO: Remove this static HashSet with dynamic one)
         HashSet<SynergyController.Synergy> synergies = new HashSet<SynergyController.Synergy>();
@@ -120,6 +122,8 @@ public class LevelController : MonoBehaviour
 
         //(7) Update Inventory.
         InventoryController.UpdateSlots(EconomyController.GetBalance());
+        Vector3 shopSpawnPos = TileGrid.GetShopOrigin();
+        ShopManager.UpdateShop(shopSpawnPos);
 
         //(8) Update TileGrid.
         TileGrid.UpdateTiles();
@@ -146,6 +150,7 @@ public class LevelController : MonoBehaviour
         ControllerController.SetSingleton(instance);
         EconomyController.SetSingleton(instance);
         CanvasController.SetSingleton(instance);
+        ShopManager.SetSingleton(instance);
         SoundController.SetSingleton(instance);
         SynergyController.SetSingleton(instance);
     }
@@ -160,6 +165,7 @@ public class LevelController : MonoBehaviour
         EnemyFactory.SetSingleton(instance);
         FlooringFactory.SetSingleton(instance);
         HazardFactory.SetSingleton(instance);
+        ModelFactory.SetSingleton(instance);
         ProjectileFactory.SetSingleton(instance);
         StructureFactory.SetSingleton(instance);
         TileFactory.SetSingleton(instance);

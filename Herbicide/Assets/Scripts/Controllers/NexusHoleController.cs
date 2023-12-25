@@ -34,17 +34,18 @@ public class NexusHoleController : StructureController<NexusHoleController.Nexus
     /// <param name="nexusHole">The NexusHole to assign.</param>
     public NexusHoleController(NexusHole nexusHole) : base(nexusHole) { }
 
+
     /// <summary>
-    /// Filters the PlaceableObjects that the NexusHole can target. NexusHoles can target
-    /// nothing, so this returns an empty list.
+    /// Returns true if the NexusHole can target the PlaceableObject passed
+    /// into this method.
     /// </summary>
-    /// <param name="targetables">All targetables in the scene.</param>
-    /// <returns>An empty list (the NexusHole can target nothing).</returns>
-    protected override List<PlaceableObject> FilterTargets(List<PlaceableObject> targetables)
+    /// <param name="target">The Placeable object to check for targetability.</param>
+    /// <returns></returns>
+    protected override bool CanTarget(PlaceableObject target)
     {
-        Assert.IsNotNull(targetables, "List of targets is null.");
-        return new List<PlaceableObject>();
+        return false;
     }
+
 
     /// <summary>
     /// Returns true if the NexusHole should be removed.

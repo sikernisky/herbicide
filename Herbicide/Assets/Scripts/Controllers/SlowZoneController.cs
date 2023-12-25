@@ -70,34 +70,6 @@ public class SlowZoneController : HazardController<SlowZoneController.SlowZoneSt
     }
 
     /// <summary>
-    /// Parses the list of all ITargetables in the scene such that it
-    /// only contains ITargetables that this SlowZoneController's SlowZone is allowed
-    /// to target. <br></br><br></br>
-    /// 
-    /// The SlowZone is allowed to target Enemies.
-    /// </summary>
-    /// <param name="targetables">the list of all ITargetables in the scene</param>
-    /// <returns>a list containing SlowZone ITargetables that this SlowZoneController's 
-    /// SlowZone can reach. </returns>
-    protected override List<PlaceableObject> FilterTargets(List<PlaceableObject> targetables)
-    {
-        Assert.IsNotNull(targetables, "List of targets is null.");
-        List<PlaceableObject> filteredTargets = new List<PlaceableObject>();
-        targetables.RemoveAll(t => t == null);
-        foreach (PlaceableObject target in targetables)
-        {
-            Enemy targetAsEnemy = target as Enemy;
-            if (targetAsEnemy == null) continue; // Don't add non-Enemies
-            if (slowedTargets.Contains(target)) continue; // Don't add already slowed Enemies
-            float distanceToTarget = GetSlowZone().DistanceToTarget(targetAsEnemy);
-            if (distanceToTarget > GetSlowZone().GetChaseRange()) continue;
-            if (!targetAsEnemy.Targetable()) continue;
-            filteredTargets.Add(targetAsEnemy);
-        }
-        return filteredTargets;
-    }
-
-    /// <summary>
     /// Handles a collision between the SlowZone and some other
     /// Collider2D.
     /// </summary>

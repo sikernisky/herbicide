@@ -31,6 +31,11 @@ public abstract class Model : MonoBehaviour
     public abstract string NAME { get; }
 
     /// <summary>
+    /// Type of this Model.
+    /// </summary>
+    public abstract ModelType TYPE { get; }
+
+    /// <summary>
     /// This Model's active animation track.
     /// </summary>
     public Sprite[] CurrentAnimationTrack { get; private set; }
@@ -92,6 +97,23 @@ public abstract class Model : MonoBehaviour
     /// </summary>
     /// <value></value>
     public virtual Vector2Int SIZE => new Vector2Int(1, 1);
+
+    /// <summary>
+    /// The Transform of the Model that picked this Model up; null if
+    /// it is not picked up.
+    /// </summary>
+    private Transform holder;
+
+    /// <summary>
+    /// The HOLDER_OFFSET of the model that picked this Model up.
+    /// </summary>
+    private Vector2 holdingOffset;
+
+    /// <summary>
+    /// The offset of this Model's held objects. 
+    /// </summary>
+    public virtual Vector2 HOLDER_OFFSET => new Vector2(0, 0);
+
 
 
 
@@ -375,12 +397,12 @@ public abstract class Model : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns the Sprite component that represents this Model in
-    /// the Inventory.
+    /// Returns the Sprite component that represents this Model on
+    /// a ShopBoat.
     /// </summary>
-    /// <returns>the Sprite component that represents this Model in
-    /// the Inventory.</returns>
-    public abstract Sprite GetInventorySprite();
+    /// <returns>the Sprite component that represents this Model on a
+    /// ShopBoat.</returns>
+    public abstract Sprite GetBoatSprite();
 
     /// <summary>
     /// Returns a Sprite that represents this Model when it is
@@ -403,5 +425,45 @@ public abstract class Model : MonoBehaviour
         if (layer == SortingLayer.DEFENDERS) modelRenderer.sortingLayerName = "Defenders";
         if (layer == SortingLayer.PROJECTILES) modelRenderer.sortingLayerName = "Projectiles";
         if (layer == SortingLayer.DROPPED_ITEMS) modelRenderer.sortingLayerName = "DroppedItems";
+    }
+
+    /// <summary>
+    /// Informs this Model that it has been picked up.
+    /// </summary>
+    /// <param name="holder">The transform of the Model that picked it up.</param>
+    /// <param name="holdingOffset">The holder offset of the Model that picked it up.</param>
+    ///
+    public void PickUp(Transform holder, Vector3 holdingOffset)
+    {
+        Assert.IsNull(this.holder, "Already picked up.");
+        this.holder = holder;
+        this.holdingOffset = holdingOffset;
+        SetSortingLayer(SortingLayer.DROPPED_ITEMS);
+    }
+
+    /// <summary>
+    /// Informs this Model that it not picked up anymore.
+    /// </summary>
+    public void Drop()
+    {
+        Assert.IsNotNull(holder, "Not picked up.");
+        holder = null;
+        SetSortingLayer(SortingLayer.DEFENDERS);
+    }
+
+    /// <summary>
+    /// Returns true if this Model is picked up.
+    /// </summary>
+    /// <returns> true if this Model is picked up; otherwise, false.</returns>
+    public bool PickedUp() { return holder != null; }
+
+    /// <summary>
+    /// Returns the position of this Model when held. This is the position of
+    /// the Model holding it + the Model holding it's HOLDER_OFFSET.
+    /// </summary>
+    /// <returns>the HOLDER_OFFSET of the Model that picked this Model up.</returns>
+    public Vector2 GetHeldPosition()
+    {
+        return holder.position + new Vector3(holdingOffset.x, holdingOffset.y, 1);
     }
 }

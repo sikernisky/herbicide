@@ -110,6 +110,19 @@ public class LayerData
     }
 
     /// <summary>
+    /// Returns a list of all ObjectData objects within this LayerData whose
+    /// type is a Marker.
+    /// </summary>
+    /// <returns>a list of all Marker ObjectData objects within this LayerData.
+    /// </returns>
+    public List<ObjectData> GetMarkerObjectData()
+    {
+        List<ObjectData> markerObjects = new List<ObjectData>();
+        GetObjectData().ForEach(o => { if (o.IsMarker()) markerObjects.Add(o); });
+        return markerObjects;
+    }
+
+    /// <summary>
     /// Returns a copy of the list of integers representing this layer's 
     /// tile data.
     /// </summary>

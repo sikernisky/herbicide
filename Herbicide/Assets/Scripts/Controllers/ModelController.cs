@@ -84,11 +84,14 @@ public abstract class ModelController
     /// </summary>
     public virtual void UpdateModel()
     {
-        GetModel().UpdateEffects();
         if (ShouldRemoveModel()) DestroyAndRemoveModel();
+        if (!ValidModel()) return;
+
+        GetModel().UpdateEffects();
         UpdateTilePositions();
         CheckModelClickUp();
         UpdateSynergies();
+        if (GetModel().PickedUp()) GetModel().SetWorldPosition(GetModel().GetHeldPosition());
     }
 
     /// <summary>

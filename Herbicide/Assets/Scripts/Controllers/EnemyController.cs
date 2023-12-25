@@ -21,6 +21,17 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     private static int NUM_ENEMIES;
 
 
+
+    /// <summary>
+    /// true if this Enemy has picked up as many targets as it is allowed to;
+    /// otherwise, false. /// 
+    /// </summary>
+    private bool handsFull;
+
+
+
+
+
     /// <summary>
     /// Initializes this EnemyController with the Enemy it controls.
     /// </summary>
@@ -49,6 +60,8 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
         RectifyEnemySortingOrder();
         UpdateEnemyHealthState();
         UpdateEnemyCollider();
+        // Debug.Log("\n");
+        // GetTargets().ForEach(target => Debug.Log("target: " + target + ", id: " + target.GetInstanceID()));
     }
 
     /// <summary>
@@ -109,43 +122,29 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     }
 
     /// <summary>
-    /// Parses the list of all PlaceableObjects in the scene such that it
-    /// only contains PlaceableObjects that this EnemyController's Enemy is allowed
-    /// to target. <br></br><br></br>
-    /// 
-    /// The Enemy is allowed to target Defenders and player-sided PlaceableObjects.
+    /// Returns true if the Enemy can target the PlaceableObject passed
+    /// into this method.
     /// </summary>
-    /// <param name="targetables">the list of all PlaceableObjects in the scene</param>
-    /// <returns>a list containing Enemy PlaceableObjects that this EnemyController's Enemy can
-    /// reach./// </returns>
-    protected override List<PlaceableObject> FilterTargets(List<PlaceableObject> targetables)
+    /// <param name="target">The Placeable object to check for targetability.</param>
+    /// <returns></returns>
+    protected override bool CanTarget(PlaceableObject target)
     {
-        if (!GetEnemy().Spawned()) return null;
+        Nexus nexusTarget = target as Nexus;
+        NexusHole nexusHoleTarget = target as NexusHole;
 
-        Assert.IsNotNull(targetables, "List of targets is null.");
-        List<PlaceableObject> filteredTargets = new List<PlaceableObject>();
+        if (target == null) return false;
+        if (nexusTarget == null && nexusHoleTarget == null) return false;
+        if (!target.Targetable()) return false;
 
-        foreach (PlaceableObject potentialTarget in targetables)
-        {
-            if (!potentialTarget.Targetable()) continue;
-            Nexus nexusTarget = potentialTarget as Nexus;
-            if (nexusTarget == null) continue;
-            if (nexusTarget.PickedUp()) continue;
-            if (nexusTarget.CashedIn()) continue;
-            bool reachable = false;
-            foreach (Vector2Int pos in potentialTarget.GetExpandedTileCoordinates())
-            {
-                if (TileGrid.CanReach(GetEnemy().GetPosition(), new Vector3(pos.x, pos.y, 1)))
-                {
-                    reachable = true;
-                    break;
-                }
-            }
-            if (!reachable) continue;
+        // Nexus logic.
+        if (nexusTarget != null && nexusTarget.PickedUp()) return false;
+        if (nexusTarget != null && nexusTarget.CashedIn()) return false;
+        if (nexusTarget != null && NumTargetsHolding() == HOLDING_LIMIT) return false;
 
-            filteredTargets.Add(potentialTarget);
-        }
-        return filteredTargets;
+        // NexusHole logic.
+        if (nexusHoleTarget != null && nexusHoleTarget.Filled()) return false;
+
+        return true;
     }
 
     /// <summary>
@@ -167,4 +166,5 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
             acorn.SetCollided(GetEnemy());
         }
     }
+
 }

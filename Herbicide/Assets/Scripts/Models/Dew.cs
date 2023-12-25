@@ -25,7 +25,7 @@ public class Dew : Currency
     /// <summary>
     /// Type of a Dew.
     /// </summary>
-    public override CollectableType TYPE => CollectableType.DEW;
+    public override ModelType TYPE => ModelType.DEW;
 
     /// <summary>
     /// Name of a Dew.

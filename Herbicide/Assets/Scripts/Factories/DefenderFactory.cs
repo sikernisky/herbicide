@@ -6,12 +6,8 @@ using UnityEngine.Assertions;
 /// <summary>
 /// Manages assets for Defenders.
 /// </summary>
-public class DefenderFactory : MonoBehaviour
+public class DefenderFactory : ModelFactory
 {
-    /// Enum Indexes:
-    /// 
-    /// 0 --> SQUIRREL
-    /// 1 --> BUTTERFLY
 
     /// <summary>
     /// Reference to the DefenderFactory singleton.
@@ -44,7 +40,7 @@ public class DefenderFactory : MonoBehaviour
     /// Finds and sets the DefenderFactory singleton.
     /// </summary>
     /// <param name="levelController">The LevelController singleton.</param>
-    public static void SetSingleton(LevelController levelController)
+    public new static void SetSingleton(LevelController levelController)
     {
         if (levelController == null) return;
         if (instance != null) return;
@@ -56,11 +52,11 @@ public class DefenderFactory : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns the Sprite component that represents a Defender in the inventory.
+    /// Returns the Sprite component that represents a Model in the inventory.
     /// </summary>
     /// <param name="type">the type of Defender</param>
     /// <returns>the Sprite component that represents a Defender in the inventory</returns>
-    public static Sprite GetDefenderInventorySprite(Defender.DefenderType type)
+    public static Sprite GetDefenderInventorySprite(ModelType type)
     {
         int index = (int)type;
         if (index < 0 || index >= instance.inventorySprites.Length) return null;
@@ -68,12 +64,13 @@ public class DefenderFactory : MonoBehaviour
         return instance.inventorySprites[index];
     }
 
+
     /// <summary>
-    /// Returns the Sprite component that represents a placed Defender.
+    /// Returns the Sprite component that represents a placed Model.
     /// </summary>
-    /// <param name="type">the type of Defender</param>
+    /// <param name="type">the type of Model</param>
     /// <returns>the Sprite component that represents a placed Defender</returns>
-    public static Sprite GetDefenderPlacedSprite(Defender.DefenderType type)
+    public static Sprite GetDefenderPlacedSprite(ModelType type)
     {
         int index = (int)type;
         if (index < 0 || index >= instance.placedSprites.Length) return null;
@@ -81,32 +78,19 @@ public class DefenderFactory : MonoBehaviour
         return instance.placedSprites[index];
     }
 
-    /// <summary>
-    /// Returns the GameObject prefab that represents a placed Defender.
-    /// </summary>
-    /// <param name="defenderType">the type of Defender</param>
-    /// <returns>the GameObject prefab that represents a placed Defender</returns>
-    public static GameObject GetDefenderPrefab(Defender.DefenderType defenderType)
-    {
-        DefenderScriptable data = instance.defenderScriptables.Find(
-            x => x.GetDefenderType() == defenderType);
-        GameObject prefabToClone = data.GetPrefab();
-        Assert.IsNotNull(prefabToClone);
-        return prefabToClone;
-    }
 
     /// <summary>
     /// Returns an attack animation track for a given Defender type.
     /// </summary>
-    /// <param name="type">The Defender type.</param>
+    /// <param name="type">The Model type.</param>
     /// <param name="direction">The direction of the Defender.</param>
     /// <returns>The attack animation track as a Sprite array or null 
     /// if the defender type does not support an attack animation.</returns>
-    public static Sprite[] GetAttackTrack(Defender.DefenderType type, Direction direction)
+    public static Sprite[] GetAttackTrack(ModelType type, Direction direction)
     {
 
         DefenderScriptable data = instance.defenderScriptables.Find(
-            x => x.GetDefenderType() == type);
+            x => x.GetModelType() == type);
 
         if (data != null) return data.GetAttackAnimation(direction);
 
@@ -114,17 +98,17 @@ public class DefenderFactory : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns a movement animation track for a given Defender type.
+    /// Returns a movement animation track for a given Model type.
     /// </summary>
-    /// <param name="type">The Defender type.</param>
+    /// <param name="type">The Model type.</param>
     /// <param name="direction">The direction of the Defender.</param>
     /// <returns>The movement animation track as a Sprite array or null 
     /// if the defender type does not support a movement animation.</returns>
-    public static Sprite[] GetMovementTrack(Defender.DefenderType type, Direction direction)
+    public static Sprite[] GetMovementTrack(ModelType type, Direction direction)
     {
 
         DefenderScriptable data = instance.defenderScriptables.Find(
-            x => x.GetDefenderType() == type);
+            x => x.GetModelType() == type);
 
         if (data != null) return data.GetMovementAnimation(direction);
         Debug.Log(data == null);
@@ -133,16 +117,17 @@ public class DefenderFactory : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns an idle animation track for a given Defender type.
+    /// Returns an idle animation track for a given Model type.
     /// </summary>
-    /// <param name="type">The Defender type.</param>
+    /// <param name="type">The Model type.</param>
     /// <param name="direction">The direction of the Defender.</param>
     /// <returns>The idle animation track as a Sprite array or null 
     /// if the enemy type is not found.</returns>
-    public static Sprite[] GetIdleTrack(Defender.DefenderType type, Direction direction)
+    public static Sprite[] GetIdleTrack(ModelType type, Direction direction)
     {
 
-        DefenderScriptable data = instance.defenderScriptables.Find(x => x.GetDefenderType() == type);
+        DefenderScriptable data = instance.defenderScriptables.
+            Find(x => x.GetModelType() == type);
 
         if (data != null) return data.GetIdleAnimation(direction);
 

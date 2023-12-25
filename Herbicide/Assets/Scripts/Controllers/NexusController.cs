@@ -43,15 +43,14 @@ public class NexusController : StructureController<NexusController.NexusState>
     }
 
     /// <summary>
-    /// Filters the PlaceableObjects that the Nexus can target. Nexii can target
-    /// nothing, so this returns an empty list.
+    /// Returns true if the Nexus can target the PlaceableObject passed
+    /// into this method.
     /// </summary>
-    /// <param name="targetables">All targetables in the scene.</param>
-    /// <returns>An empty list (the Nexus can target nothing).</returns>
-    protected override List<PlaceableObject> FilterTargets(List<PlaceableObject> targetables)
+    /// <param name="target">The Placeable object to check for targetability.</param>
+    /// <returns></returns>
+    protected override bool CanTarget(PlaceableObject target)
     {
-        Assert.IsNotNull(targetables, "List of targets is null.");
-        return new List<PlaceableObject>();
+        return false;
     }
 
     /// <summary>
@@ -132,7 +131,5 @@ public class NexusController : StructureController<NexusController.NexusState>
         if (GetState() != NexusState.PICKED_UP) return;
         if (!ValidModel()) return;
         if (!GetNexus().PickedUp()) return;
-
-        GetNexus().SetWorldPosition(GetNexus().GetHolderPosition());
     }
 }

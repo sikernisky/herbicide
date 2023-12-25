@@ -20,7 +20,7 @@ public class BasicTree : Tree
     /// <summary>
     /// Type of a BasicTree.
     /// </summary>
-    public override TreeType TYPE => TreeType.BASIC;
+    public override ModelType TYPE => ModelType.BASIC_TREE;
 
     /// <summary>
     /// Starting health of a BasicTree.

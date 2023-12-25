@@ -12,8 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23ac50ba4986a48b3a79850a2c1ac921, type: 3}
   m_Name: KudzuData
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 7290264091372080636, guid: 5fcaa2ef01e0846eaac9cf5396b7d367, type: 3}
-  enemyType: 0
+  modelPrefab: {fileID: 7290264091372080636, guid: 5fcaa2ef01e0846eaac9cf5396b7d367, type: 3}
+  modelType: 7
+  boatAnimationNorth: []
+  boatAnimationEast: []
+  boatAnimationSouth: []
+  boatAnimationWest: []
   healthyMovementAnimationNorth:
   - {fileID: 791066126, guid: 91ce725d2b5884571bccf2472bf7b663, type: 3}
   - {fileID: 1011349185, guid: 91ce725d2b5884571bccf2472bf7b663, type: 3}

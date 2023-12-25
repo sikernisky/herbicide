@@ -58,7 +58,7 @@ public class EnemyManager : MonoBehaviour
         //Instantiate Enemy objects NOW so they're ready to go at runtime.
         foreach (ObjectData obToSpawn in instance.enemyData)
         {
-            GameObject spawnedEnemy = EnemyFactory.GetEnemyPrefab(obToSpawn.GetEnemyName());
+            GameObject spawnedEnemy = ModelFactory.GetModelPrefab(obToSpawn.GetEnemyName());
             Assert.IsNotNull(spawnedEnemy);
             GameObject clonedEnemy = Instantiate(spawnedEnemy);
             Enemy clonedEnemyComp = clonedEnemy.GetComponent<Enemy>();
@@ -72,7 +72,7 @@ public class EnemyManager : MonoBehaviour
 
             clonedEnemyComp.SetSpawnTime(spawnTime);
             clonedEnemyComp.SetSpawnWorldPosition(spawnWorldPos);
-            ControllerController.MakeEnemyController(clonedEnemyComp, spawnTime, spawnWorldPos);
+            ControllerController.MakeController(clonedEnemyComp);
         }
 
         instance.populated = true;

@@ -70,31 +70,18 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     private Defender GetDefender() { return GetMob() as Defender; }
 
     /// <summary>
-    /// Parses the list of all PlaceableObjects in the scene such that it
-    /// only contains PlaceableObjects that this DefenderController's Defender is allowed
-    /// to target. <br></br><br></br>
-    /// 
-    /// The Defender is allowed to target Enemy Mobs within its attack range.
+    /// Returns true if the Defender can target the PlaceableObject passed
+    /// into this method.
     /// </summary>
-    /// <param name="targetables">the list of all PlaceableObjects in the scene</param>
-    /// <returns>a list containing Enemy PlaceableObjects that this DefenderController's Defender can
-    /// reach./// </returns>
-    protected override List<PlaceableObject> FilterTargets(List<PlaceableObject> targetables)
+    /// <param name="target">The Placeable object to check for targetability.</param>
+    /// <returns></returns>
+    protected override bool CanTarget(PlaceableObject target)
     {
-        Assert.IsNotNull(targetables, "List of targets is null.");
-        List<PlaceableObject> filteredTargets = new List<PlaceableObject>();
-        targetables.RemoveAll(t => t == null);
-        foreach (PlaceableObject target in targetables)
-        {
-            Enemy targetAsEnemy = target as Enemy;
-            if (targetAsEnemy == null) continue;
-            if (!targetAsEnemy.Spawned()) continue;
-            float distanceToTarget = GetDefender().DistanceToTarget(targetAsEnemy);
-            if (distanceToTarget > GetDefender().GetChaseRange()) continue;
-            if (!targetAsEnemy.Targetable()) continue;
-            filteredTargets.Add(targetAsEnemy);
-        }
-        return filteredTargets;
+        if (target == null) return false;
+        if (target as Enemy == null) return false;
+        if (!target.Targetable()) return false;
+
+        return true;
     }
 
     /// <summary>

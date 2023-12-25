@@ -14,6 +14,11 @@ public class SoilFlooring : Flooring
     public override string NAME => "SoilFlooring";
 
     /// <summary>
+    /// Type of a SoilFlooring.
+    /// </summary>
+    public override ModelType TYPE => ModelType.SOIL_FLOORING;
+
+    /// <summary>
     /// Flooring type of this SoilFlooring
     /// </summary>
     protected override FlooringType type => FlooringType.SOIL;

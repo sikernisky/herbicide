@@ -21,17 +21,17 @@ public class Kudzu : Enemy
     /// <summary>
     /// Type of a Kudzu.
     /// </summary>
-    public override EnemyType TYPE => EnemyType.KUDZU;
+    public override ModelType TYPE => ModelType.KUDZU;
 
     /// <summary>
     /// The cooldown between each hop. 
     /// </summary>
-    public float HOP_COOLDOWN => .25f;
+    public float HOP_COOLDOWN => 3f;
 
     /// <summary>
     /// Base health of a Kudzu.
     /// </summary>
-    public override int BASE_HEALTH => 150;
+    public override int BASE_HEALTH => 100;
 
     /// <summary>
     /// Upper bound of a Kudzu's health. 
@@ -98,7 +98,7 @@ public class Kudzu : Enemy
     /// How many seconds a Kudzu's move animation lasts,
     /// from start to finish. 
     /// </summary>
-    public float MOVE_ANIMATION_DURATION => HOP_COOLDOWN;
+    public float MOVE_ANIMATION_DURATION => .4f;
 
     /// <summary>
     /// How many seconds a Kudzu's attack animation lasts,
@@ -115,7 +115,7 @@ public class Kudzu : Enemy
     /// <summary>
     /// Starting movement speed of a Kudzu.
     /// </summary>
-    public override float BASE_MOVEMENT_SPEED => 6f;
+    public override float BASE_MOVEMENT_SPEED => 4f;
 
     /// <summary>
     /// Maximum movement speed of a Kudzu.
@@ -126,6 +126,11 @@ public class Kudzu : Enemy
     /// Minumum movement speed of a Kudzu.
     /// </summary>
     public override float MIN_MOVEMENT_SPEED => 0f;
+
+    /// <summary>
+    /// The offset of the Model held by this Kudzu.
+    /// </summary>
+    public override Vector2 HOLDER_OFFSET => new Vector2(0, .25f);
 
     /// <summary>
     /// How many seconds remain before this Kudzu can hop.
@@ -166,7 +171,7 @@ public class Kudzu : Enemy
     /// </summary>
     /// <returns>the sprite that represents this Kudzu in the
     /// inventory.</returns>
-    public override Sprite GetInventorySprite() { throw new System.NotImplementedException(); }
+    public override Sprite GetBoatSprite() { throw new System.NotImplementedException(); }
 
     /// <summary>
     /// Returns the sprite that represents this Kudzu when placing from the

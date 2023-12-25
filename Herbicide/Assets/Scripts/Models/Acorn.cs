@@ -8,9 +8,9 @@ using UnityEngine;
 public class Acorn : Projectile
 {
     /// <summary>
-    /// ProjectileType of an Acorn.
+    /// ModelType of an Acorn.
     /// </summary>
-    public override ProjectileType TYPE => ProjectileType.ACORN;
+    public override ModelType TYPE => ModelType.ACORN;
 
     /// <summary>
     /// Starting speed of an Acorn.

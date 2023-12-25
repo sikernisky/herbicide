@@ -37,39 +37,10 @@ public abstract class TreeController<T> : MobController<T> where T : Enum
     public TreeController(Tree tree) : base(tree) { NUM_TREES++; }
 
     /// <summary>
-    /// Updates the Tree controlled by this TreeController.
-    /// </summary>
-    /// <param name="targets">A complete list of ITargetables in the scene.</param>
-    protected override void UpdateMob()
-    {
-        if (!ValidModel()) return;
-        if (GetGameState() != GameState.ONGOING) return;
-        UpdateStateFSM();
-        ElectTarget(FilterTargets(GetAllTargetableObjects()));
-    }
-
-    /// <summary>
     /// Returns this TreeController's Tree model.
     /// </summary>
     /// <returns>this TreeController's Tree model.</returns>
     protected Tree GetTree() { return GetModel() as Tree; }
-
-    /// <summary>
-    /// Parses the list of all PlaceableObjects in the scene such that it
-    /// only contains PlaceableObjects that this TreeController's Tree is allowed
-    /// to target. <br></br><br></br>
-    /// 
-    /// The Tree is allowed to NOTHING. Subcontrollers can override this if
-    /// there is some weird Tree that can./// 
-    /// </summary>
-    /// <param name="targetables">the list of all PlaceableObjects in the scene</param>
-    /// <returns>a list containing Enemy PlaceableObjects that this TreeController's Tree can
-    /// reach./// </returns>
-    protected override List<PlaceableObject> FilterTargets(List<PlaceableObject> targetables)
-    {
-        Assert.IsNotNull(targetables, "List of targets is null.");
-        return new List<PlaceableObject>(); //Empty -- no targets.
-    }
 
     /// <summary>
     /// Returns true if this controller's Tree should be destoyed and
@@ -81,6 +52,17 @@ public abstract class TreeController<T> : MobController<T> where T : Enum
     {
         if (GetTree().GetHealth() <= 0) return true;
 
+        return false;
+    }
+
+    /// <summary>
+    /// Returns true if the Defender can target the PlaceableObject passed
+    /// into this method.
+    /// </summary>
+    /// <param name="target">The Placeable object to check for targetability.</param>
+    /// <returns></returns>
+    protected override bool CanTarget(PlaceableObject target)
+    {
         return false;
     }
 

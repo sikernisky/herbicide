@@ -70,9 +70,9 @@ public class MainMenuController : MonoBehaviour
             " SetSingleton()");
 
         CameraController.SetSingleton(instance);
+        CanvasController.SetSingleton(instance);
         InputController.SetSingleton(instance);
         SceneController.SetSingleton(instance);
-        CanvasController.SetSingleton(instance);
         SoundController.SetSingleton(instance);
     }
 

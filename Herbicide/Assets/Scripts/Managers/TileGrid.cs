@@ -6,6 +6,7 @@ using UnityEngine.Assertions;
 using System;
 using UnityEngine.UIElements;
 using System.IO.Compression;
+using UnityEditor.Timeline;
 
 
 /// <summary>
@@ -112,6 +113,16 @@ public class TileGrid : MonoBehaviour
     /// </summary>
     private bool debugOn;
 
+    /// <summary>
+    /// Tiles that host NexusHoles.
+    /// </summary>
+    private Dictionary<Tile, NexusHole> nexusHoleHosts;
+
+    /// <summary>
+    /// The (X,Y) coordinates where the shop starts spawning things.
+    /// </summary>
+    private Vector3 shopSpawnPos;
+
 
     /// <summary>
     /// Main update loop for the TileGrid; updates its Tiles.
@@ -208,6 +219,7 @@ public class TileGrid : MonoBehaviour
         instance.grassTiles = new HashSet<Tile>();
         instance.enemyLocations = new Dictionary<Enemy, Tile>();
         instance.edgeTiles = new HashSet<Tile>();
+        instance.nexusHoleHosts = new Dictionary<Tile, NexusHole>();
     }
 
     /// <summary>
@@ -242,7 +254,7 @@ public class TileGrid : MonoBehaviour
         data.GetGrassLayers().ForEach(l => SpawnLayer(l, layerWidth, layerHeight));
         data.GetShoreLayers().ForEach(l => SpawnLayer(l, layerWidth, layerHeight));
         data.GetSoilLayers().ForEach(l => SpawnLayer(l, layerWidth, layerHeight));
-        data.GetPlaceableLayers().ForEach(l => SpawnStructureLayer(l, data.GetMapHeight()));
+        data.GetObjectLayers().ForEach(l => SpawnObjectLayer(l, data.GetMapHeight()));
 
         // For pathfinding, give tiles their neighbors
         instance.SetNeighbors(layerWidth, layerHeight);
@@ -296,29 +308,72 @@ public class TileGrid : MonoBehaviour
     }
 
     /// <summary>
-    /// Spawns a layer of Placeable objects from a LayerData object.
+    /// Spawns a layer of Objects from a LayerData object.
     /// </summary>
     /// <param name="layer">The LayerData object to spawn.</param>
     /// <param name="mapHeight">The height of the LayerData layer.</param>
-    private static void SpawnStructureLayer(LayerData layer, int mapHeight)
+    private static void SpawnObjectLayer(LayerData layer, int mapHeight)
     {
+        Assert.IsNotNull(layer, "LayerData `layer` is null");
         Assert.IsTrue(layer.IsObjectLayer(), "Cannot spawn tile layers.");
-        Assert.IsTrue(layer.IsPlaceableLayer(), "Layer does not hold Placeable objects.");
-        Assert.IsFalse(layer.IsEnemyLayer(), "Cannot spawn Enemy object layers.");
 
-
-        List<ObjectData> placeableObjects = new List<ObjectData>();
-        placeableObjects.AddRange(layer.GetStructureObjectData());
-
-        foreach (ObjectData obToSpawn in placeableObjects)
+        string layerName = layer.GetLayerName();
+        if (layerName.ToLower() == "enemies") return;
+        switch (layerName.ToLower())
         {
-            GameObject spawnedStructure = StructureFactory.GetStructurePrefab(obToSpawn.GetStructureName());
-            Assert.IsNotNull(spawnedStructure);
-            Structure structure = spawnedStructure.GetComponent<Structure>();
-            Tile targetTile = instance.TileExistsAt(obToSpawn.GetSpawnCoordinates(mapHeight).x, obToSpawn.GetSpawnCoordinates(mapHeight).y);
-            PlaceOnTile(targetTile, structure);
+            case "structures":
+                List<ObjectData> placeableObjects = new List<ObjectData>();
+                placeableObjects.AddRange(layer.GetStructureObjectData());
+
+                foreach (ObjectData obToSpawn in placeableObjects)
+                {
+                    GameObject spawnedStructure = StructureFactory.GetStructurePrefab(obToSpawn.GetStructureName());
+                    Assert.IsNotNull(spawnedStructure);
+                    Structure structure = spawnedStructure.GetComponent<Structure>();
+                    Tile targetTile = instance.TileExistsAt(obToSpawn.GetSpawnCoordinates(mapHeight).x, obToSpawn.GetSpawnCoordinates(mapHeight).y);
+                    PlaceOnTile(targetTile, structure);
+                }
+                break;
+            case "markers":
+                List<ObjectData> markers = new List<ObjectData>();
+                markers.AddRange(layer.GetMarkerObjectData());
+                foreach (ObjectData markToSpawn in markers)
+                {
+                    if (markToSpawn.GetMarkerName().ToLower() == "shopstart")
+                    {
+                        int x = markToSpawn.GetSpawnCoordinates(mapHeight).x;
+                        int y = markToSpawn.GetSpawnCoordinates(mapHeight).y;
+                        instance.shopSpawnPos = new Vector3(x, y, 1);
+                    }
+                }
+                break;
         }
     }
+
+    // /// <summary>
+    // /// Spawns a layer of Placeable objects from a LayerData object.
+    // /// </summary>
+    // /// <param name="layer">The LayerData object to spawn.</param>
+    // /// <param name="mapHeight">The height of the LayerData layer.</param>
+    // private static void SpawnStructureLayer(LayerData layer, int mapHeight)
+    // {
+    //     Assert.IsTrue(layer.IsObjectLayer(), "Cannot spawn tile layers.");
+    //     Assert.IsTrue(layer.IsPlaceableLayer(), "Layer does not hold Placeable objects.");
+    //     Assert.IsFalse(layer.IsEnemyLayer(), "Cannot spawn Enemy object layers.");
+
+
+    //     List<ObjectData> placeableObjects = new List<ObjectData>();
+    //     placeableObjects.AddRange(layer.GetStructureObjectData());
+
+    //     foreach (ObjectData obToSpawn in placeableObjects)
+    //     {
+    //         GameObject spawnedStructure = StructureFactory.GetStructurePrefab(obToSpawn.GetStructureName());
+    //         Assert.IsNotNull(spawnedStructure);
+    //         Structure structure = spawnedStructure.GetComponent<Structure>();
+    //         Tile targetTile = instance.TileExistsAt(obToSpawn.GetSpawnCoordinates(mapHeight).x, obToSpawn.GetSpawnCoordinates(mapHeight).y);
+    //         PlaceOnTile(targetTile, structure);
+    //     }
+    // }
 
     /// <summary>
     /// Finds all first Global Tile IDs from all tilesets used in this TileGrid
@@ -459,8 +514,8 @@ public class TileGrid : MonoBehaviour
                 if (FloorTile(tileToFloor, Flooring.FlooringType.SOIL) && autoGenerateTrees)
                 {
                     //Place trees on Floored tiles.
-                    Tree tree = TreeFactory.GetTreePrefab(
-                        Tree.TreeType.BASIC).GetComponent<Tree>();
+                    Tree tree = ModelFactory.GetModelPrefab(
+                        ModelType.BASIC_TREE).GetComponent<Tree>();
                     if (tree == null) break;
                     PlaceOnTile(tileToFloor, tree);
                 }
@@ -552,6 +607,13 @@ public class TileGrid : MonoBehaviour
         if (t.GetTileType() == Tile.TileType.GRASS) grassTiles.Add(t);
     }
 
+    /// <summary>
+    /// Returns the position where the shop should begin spawning
+    /// objects.
+    /// </summary>
+    /// <returns>the position coordinates where the shop should begin spawning
+    /// objects.</returns>
+    public static Vector3 GetShopOrigin() { return instance.shopSpawnPos; }
 
     /// <summary>
     /// Returns the Tile-coordinates of the center-most tile in the TileGrid.
@@ -844,20 +906,36 @@ public class TileGrid : MonoBehaviour
             Assert.IsNotNull(candidate);
 
             Defender placedDefender = prefabClone.GetComponent<Defender>();
-            if (placedDefender != null) ControllerController.MakeDefenderController(placedDefender);
+            if (placedDefender != null) ControllerController.MakeController(placedDefender);
 
             Hazard placedSlowZone = prefabClone.GetComponent<Hazard>();
-            if (placedSlowZone != null) ControllerController.MakeHazardController(placedSlowZone);
+            if (placedSlowZone != null) ControllerController.MakeController(placedSlowZone);
 
             Structure placedStructure = prefabClone.GetComponent<Structure>();
-            if (placedStructure != null) ControllerController.MakeStructureController(placedStructure);
+            if (placedStructure != null) ControllerController.MakeController(placedStructure);
 
             Tree placedTree = prefabClone.GetComponent<Tree>();
-            if (placedTree != null) ControllerController.MakeTreeController(placedTree);
+            if (placedTree != null) ControllerController.MakeController(placedTree);
         }
 
         // Place the candidate.
         target.Place(candidate, instance.GetNeighbors(target));
+        NexusHole nexusHoleCandidate = candidate as NexusHole;
+        if (candidate as NexusHole != null) instance.nexusHoleHosts.Add(target, nexusHoleCandidate);
+
+        // Cash in stuff.
+        Nexus nexusCandidate = candidate as Nexus;
+        if (nexusCandidate != null)
+        {
+            if (instance.nexusHoleHosts.ContainsKey(target))
+            {
+                NexusHole hole = instance.nexusHoleHosts[target];
+                Assert.IsFalse(nexusCandidate.CashedIn(), "Already cashed in.");
+                Assert.IsNotNull(hole, "Nexus Hole is null.");
+                if (!hole.Filled()) hole.Fill(nexusCandidate);
+                nexusCandidate.CashIn();
+            }
+        }
 
         // If the candidate is bigger than 1x1, set its expanded tiles to Occupied.
         if (!candidate.OCCUPIER) return true;

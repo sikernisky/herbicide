@@ -83,6 +83,17 @@ public class ObjectData
     }
 
     /// <summary>
+    /// Returns true if this ObjectData is a deserialized marker.
+    /// </summary>
+    /// <returns>true if this ObjectData is a deserialized marker;
+    /// otherwise, false.</returns>
+    public bool IsMarker()
+    {
+        Assert.IsNotNull(type, "This ObjectData's `type` field is null.");
+        return type.ToLower() == "marker";
+    }
+
+    /// <summary>
     /// Returns the name of this Enemy ObjectData.
     /// </summary>
     /// <returns>the name of this Enemy ObjectData.</returns>
@@ -105,6 +116,17 @@ public class ObjectData
     }
 
     /// <summary>
+    /// Returns the name of this Structure ObjectData.
+    /// </summary>
+    /// <returns>the name of this Structure ObjectData.</returns>
+    public string GetMarkerName()
+    {
+        Assert.IsTrue(IsMarker(), "This ObjectData is not a Marker.");
+        if (objectName == null) FindObjectName();
+        return objectName;
+    }
+
+    /// <summary>
     /// Searches through this ObjectData's custom properties to find the
     /// name of this object. Sets it.
     /// </summary>
@@ -115,7 +137,9 @@ public class ObjectData
         foreach (PropertiesData pd in properties)
         {
             if (pd.GetPropertyName().ToLower() == "enemyname" ||
-                pd.GetPropertyName().ToLower() == "structurename")
+                pd.GetPropertyName().ToLower() == "structurename" ||
+                pd.GetPropertyName().ToLower() == "markername"
+                )
             {
                 objectName = pd.GetPropertyValue();
                 return;

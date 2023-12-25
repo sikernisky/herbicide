@@ -44,7 +44,7 @@ public class Squirrel : Defender
     /// <summary>
     /// Amount of attack cooldown this Squirrel starts with.
     /// </summary>
-    public override float BASE_ATTACK_COOLDOWN => .75f;
+    public override float BASE_ATTACK_COOLDOWN => 2f;
 
     /// <summary>
     /// Most amount of attack cooldown this Squirrel can have.
@@ -112,7 +112,7 @@ public class Squirrel : Defender
     /// <summary>
     /// Type of a Squirrel
     /// </summary>
-    public override DefenderType TYPE => DefenderType.SQUIRREL;
+    public override ModelType TYPE => ModelType.SQUIRREL;
 
     /// <summary>
     /// Class of a Squirrel

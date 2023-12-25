@@ -11,7 +11,7 @@ public class Nexus : Structure
     /// <summary>
     /// The StructureType of a Nexus.
     /// </summary>
-    public override StructureType TYPE => StructureType.NEXUS;
+    public override ModelType TYPE => ModelType.NEXUS;
 
     /// <summary>
     /// Cost to place a Nexus.
@@ -104,17 +104,6 @@ public class Nexus : Structure
     public override float MIN_MOVEMENT_SPEED => 0f;
 
     /// <summary>
-    /// The Transform of the Model that picked this Nexus up; null if
-    /// it is not picked up.
-    /// </summary>
-    private Transform holder;
-
-    /// <summary>
-    /// The offset of the holder Transform's position.
-    /// </summary>
-    private Vector3 holderOffset;
-
-    /// <summary>
     /// true if this Nexus was brought to the target position.
     /// </summary>
     private bool cashedIn;
@@ -133,7 +122,7 @@ public class Nexus : Structure
     /// </summary>
     /// <returns>the Sprite that represents this Nexus in the inventory.
     /// </returns>
-    public override Sprite GetInventorySprite() { return null; }
+    public override Sprite GetBoatSprite() { return null; }
 
     /// <summary>
     /// Returns the Sprite that represents this Nexus when placing.
@@ -153,34 +142,6 @@ public class Nexus : Structure
     /// </summary>
     public override void SetColliderProperties() { return; }
 
-    /// <summary>
-    /// Informs this Nexus that it has been picked up.
-    /// </summary>
-    /// <param name="holder">The transform of the Model that picked it up.</param>
-    /// <param name="offset">The amount to add to the transform's position.</param>
-    public void PickUp(Transform holder, Vector3 offset)
-    {
-        Assert.IsNull(this.holder, "Already picked up.");
-        this.holder = holder;
-        holderOffset = offset;
-        SetSortingLayer(SortingLayer.DROPPED_ITEMS);
-    }
-
-    /// <summary>
-    /// Informs this Nexus that it not picked up anymore.
-    /// </summary>
-    public void Drop()
-    {
-        Assert.IsNotNull(holder, "Not picked up.");
-        holder = null;
-        SetSortingLayer(SortingLayer.DEFENDERS);
-    }
-
-    /// <summary>
-    /// Returns true if this Nexus is picked up.
-    /// </summary>
-    /// <returns> true if this Nexus is picked up; otherwise, false.</returns>
-    public bool PickedUp() { return holder != null; }
 
     /// <summary>
     /// Returns true if this Nexus was brought to the target spot (usually a 
@@ -194,11 +155,4 @@ public class Nexus : Structure
     /// Informs this Nexus that it was brought to the target spot.
     /// </summary>
     public void CashIn() { cashedIn = true; }
-
-    /// <summary>
-    /// Returns the position of the Transform holding this Nexus.
-    /// </summary>
-    /// <returns>the position of the Transform holding this Nexus; null if nothing is
-    /// holding this Nexus./// </returns>
-    public Vector3 GetHolderPosition() { return holder.position + holderOffset; }
 }

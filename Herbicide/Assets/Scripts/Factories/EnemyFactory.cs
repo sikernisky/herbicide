@@ -43,9 +43,9 @@ public class EnemyFactory : MonoBehaviour
     /// <param name="direction">The direction of the enemy.</param>
     /// <returns>The movement animation track as a Sprite array or
     ///  null if the enemy type is not found.</returns>
-    public static Sprite[] GetMovementTrack(Enemy.EnemyType type, Enemy.EnemyHealthState state, Direction direction)
+    public static Sprite[] GetMovementTrack(ModelType type, Enemy.EnemyHealthState state, Direction direction)
     {
-        EnemyScriptable data = instance.enemyScriptables.Find(x => x.GetEnemyType() == type);
+        EnemyScriptable data = instance.enemyScriptables.Find(x => x.GetModelType() == type);
 
         if (data != null)
         {
@@ -71,9 +71,9 @@ public class EnemyFactory : MonoBehaviour
     /// <param name="direction">The direction of the enemy.</param>
     /// <returns>The attack animation track as a Sprite array or null 
     /// if the enemy type is not found.</returns>
-    public static Sprite[] GetAttackTrack(Enemy.EnemyType type, Enemy.EnemyHealthState state, Direction direction)
+    public static Sprite[] GetAttackTrack(ModelType type, Enemy.EnemyHealthState state, Direction direction)
     {
-        EnemyScriptable data = instance.enemyScriptables.Find(x => x.GetEnemyType() == type);
+        EnemyScriptable data = instance.enemyScriptables.Find(x => x.GetModelType() == type);
 
         if (data != null)
         {
@@ -89,53 +89,5 @@ public class EnemyFactory : MonoBehaviour
         }
 
         return null;
-    }
-
-    /// <summary>
-    /// Returns an attack animation track for a given enemy type and health state.
-    /// </summary>
-    /// <param name="type">The enemy type.</param>
-    /// <param name="state">The enemy health state.</param>
-    /// <param name="direction">The direction of the enemy.</param>
-    /// <returns>The attack animation track as a Sprite array or null 
-    /// if the enemy type is not found.</returns>
-    public static Sprite[] GetIdleTrack(Enemy.EnemyType type, Enemy.EnemyHealthState state, Direction direction)
-    {
-        EnemyScriptable data = instance.enemyScriptables.Find(x => x.GetEnemyType() == type);
-
-        if (data != null)
-        {
-            switch (state)
-            {
-                case Enemy.EnemyHealthState.HEALTHY:
-                    return data.GetHealthyIdleAnimation(direction);
-                case Enemy.EnemyHealthState.DAMAGED:
-                    return data.GetDamagedIdleAnimation(direction);
-                case Enemy.EnemyHealthState.CRITICAL:
-                    return data.GetCriticalIdleAnimation(direction);
-            }
-        }
-
-        return null;
-    }
-
-    /// <summary>
-    /// Returns the prefab GameObject of a given Enemy type. Does not instantiate anything --
-    /// it is important to do so with the returned component outside of this method.
-    /// </summary>
-    /// <param name="enemyType">The type of Enemy to get.</param>
-    /// <returns>an Enemy component of the given type. </returns>
-    public static GameObject GetEnemyPrefab(string enemyType)
-    {
-        Assert.IsNotNull(enemyType, "enemyType is null.");
-
-        Enemy.EnemyType type;
-        if (enemyType.ToLower() == "kudzu") type = Enemy.EnemyType.KUDZU;
-        else type = Enemy.EnemyType.KUDZU;
-
-        EnemyScriptable data = instance.enemyScriptables.Find(x => x.GetEnemyType() == type);
-        GameObject prefabToClone = data.GetPrefab();
-        Assert.IsNotNull(prefabToClone);
-        return prefabToClone;
     }
 }

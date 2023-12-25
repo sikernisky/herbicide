@@ -38,11 +38,11 @@ public class HazardFactory : MonoBehaviour
     /// </summary>
     /// <param name="hazardType">the type of Hazard</param>
     /// <returns>the GameObject prefab that represents a Hazard</returns>
-    public static GameObject GetHazardPrefab(Hazard.HazardType hazardType)
+    public static GameObject GetHazardPrefab(ModelType hazardType)
     {
         HazardScriptable data = instance.hazardScriptables.Find(
-            x => x.GetProjectileType() == hazardType);
-        GameObject prefabToClone = data.GetPrefab();
+            x => x.GetModelType() == hazardType);
+        GameObject prefabToClone = data.GetModelPrefab();
         Assert.IsNotNull(prefabToClone);
         return prefabToClone;
     }

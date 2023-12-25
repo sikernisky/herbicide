@@ -7,7 +7,7 @@ using UnityEngine.Assertions;
 /// Stores data for Collectables.
 /// </summary>
 [CreateAssetMenu(fileName = "CollectableScriptable", menuName = "Collectable Scriptable", order = 0)]
-public class CollectableScriptable : ScriptableObject
+public class CollectableScriptable : ModelScriptable
 {
     /// <summary>
     /// This Collectable's prefab.

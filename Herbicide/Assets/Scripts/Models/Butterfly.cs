@@ -120,7 +120,7 @@ public class Butterfly : Defender
     /// <summary>
     /// Type of a Butterfly
     /// </summary>
-    public override DefenderType TYPE => DefenderType.BUTTERFLY;
+    public override ModelType TYPE => ModelType.BUTTERFLY;
 
     /// <summary>
     /// Class of a Butterfly

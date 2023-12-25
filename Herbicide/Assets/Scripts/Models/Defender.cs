@@ -10,23 +10,9 @@ using UnityEngine.Assertions;
 public abstract class Defender : Mob
 {
     /// <summary>
-    /// Type of this Defender.
-    /// </summary>
-    public abstract DefenderType TYPE { get; }
-
-    /// <summary>
     /// Class of this Defender.
     /// </summary>
     public abstract DefenderClass CLASS { get; }
-
-    /// <summary>
-    /// Type of this Defender.
-    /// </summary>
-    public enum DefenderType
-    {
-        SQUIRREL,
-        BUTTERFLY
-    }
 
     /// <summary>
     /// Class of this Defender.
@@ -46,7 +32,7 @@ public abstract class Defender : Mob
     /// </summary>
     /// <returns> a Sprite component that represents this Defender
     /// in an InventorySlot.</returns>
-    public override Sprite GetInventorySprite() { return DefenderFactory.GetDefenderInventorySprite(TYPE); }
+    public override Sprite GetBoatSprite() { return DefenderFactory.GetDefenderInventorySprite(TYPE); }
 
     /// <summary>
     /// Returns a Sprite component that represents this Defender
@@ -62,7 +48,7 @@ public abstract class Defender : Mob
     /// </summary>
     /// <returns>a Defender GameObject that can be placed on the
     /// TileGrid.</returns>
-    public override GameObject MakePlaceableObject() { return Instantiate(DefenderFactory.GetDefenderPrefab(TYPE)); }
+    public override GameObject MakePlaceableObject() { return Instantiate(ModelFactory.GetModelPrefab(TYPE)); }
 
     /// <summary>
     /// Returns a GameObject that holds a SpriteRenderer component with

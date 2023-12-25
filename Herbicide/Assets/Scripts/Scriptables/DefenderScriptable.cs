@@ -7,19 +7,8 @@ using UnityEngine.Assertions;
 /// Stores data for Defenders.
 /// </summary>
 [CreateAssetMenu(fileName = "DefenderScriptable", menuName = "Defender Scriptable", order = 0)]
-public class DefenderScriptable : ScriptableObject
+public class DefenderScriptable : ModelScriptable
 {
-    /// <summary>
-    /// This Defender's prefab.
-    /// </summary>
-    public GameObject defenderPrefab;
-
-    /// <summary>
-    /// Type of the Defender.
-    /// </summary>
-    [SerializeField]
-    private Defender.DefenderType defenderType;
-
     /// <summary>
     /// Movement animation when this Defender is facing north.
     /// </summary>
@@ -93,13 +82,6 @@ public class DefenderScriptable : ScriptableObject
     private Sprite[] idleAnimationWest;
 
 
-    /// <summary>
-    /// Returns the DefenderType that this DefenderScriptable is storing.
-    /// </summary>
-    /// <returns>the DefenderAnimation that this DefenderScriptable is storing.
-    /// </returns>
-    public Defender.DefenderType GetDefenderType() => defenderType;
-
     /// Returns a copy of an attack animation array for a given direction.
     /// </summary>
     /// <param name="direction">The direction of the attack animation</param>
@@ -161,15 +143,5 @@ public class DefenderScriptable : ScriptableObject
             default:
                 return null;
         }
-    }
-
-    /// <summary>
-    /// Returns the prefab that represents this Defender.
-    /// </summary>
-    /// <returns>the prefab that represents this Defender.</returns>
-    public GameObject GetPrefab()
-    {
-        Assert.IsNotNull(defenderPrefab.GetComponent<Defender>(), "Prefab has no defender component.");
-        return defenderPrefab;
     }
 }

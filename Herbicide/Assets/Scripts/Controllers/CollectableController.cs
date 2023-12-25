@@ -87,7 +87,7 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
     /// otherwise, false. </returns>
     protected override bool ShouldRemoveModel()
     {
-        if (GetCollectable().PickedUp()) return true;
+        if (GetCollectable().Collected()) return true;
         return false;
     }
 

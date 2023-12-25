@@ -53,6 +53,7 @@ public class SceneController : MonoBehaviour
     /// <summary>
     /// Finds and sets the SceneController singleton in the Main Menu.
     /// </summary>
+    /// <param name="mainMenuController">The MainMenuController reference.</param>
     public static void SetSingleton(MainMenuController mainMenuController)
     {
         Assert.IsNotNull(mainMenuController, "MainMenuController is null.");
@@ -65,9 +66,25 @@ public class SceneController : MonoBehaviour
     }
 
     /// <summary>
-    /// Finds and sets the SceneController singleton in a level.
+    /// Finds and sets the SceneController singleton in the Main Menu.
     /// </summary>
+    /// <param name="levelController">The LevelController reference.</param>
     public static void SetSingleton(LevelController levelController)
+    {
+        Assert.IsNotNull(levelController, "LevelController is null.");
+
+        SceneController[] sceneControllers = FindObjectsOfType<SceneController>();
+        Assert.IsNotNull(sceneControllers, "Array of InputControllers is null.");
+        Assert.AreEqual(1, sceneControllers.Length);
+        instance = sceneControllers[0];
+        timeElapsed = 0;
+    }
+
+    /// <summary>
+    /// Finds and sets the SceneController singleton in the Main Menu.
+    /// </summary>
+    /// <param name="levelController">The LevelController reference.</param>
+    public static void SetSingleton(SkillMenuController levelController)
     {
         Assert.IsNotNull(levelController, "LevelController is null.");
 

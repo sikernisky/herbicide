@@ -7,20 +7,8 @@ using UnityEngine.Assertions;
 /// Stores data for Enemies.
 /// </summary>
 [CreateAssetMenu(fileName = "EnemyScriptable", menuName = "Enemy Scriptable", order = 0)]
-public class EnemyScriptable : ScriptableObject
+public class EnemyScriptable : ModelScriptable
 {
-    /// <summary>
-    /// Prefab of this Enemy.
-    /// </summary>
-    [SerializeField]
-    private GameObject enemyPrefab;
-
-    /// <summary>
-    /// Type of the Enemy to animate.
-    /// </summary>
-    [SerializeField]
-    private Enemy.EnemyType enemyType;
-
     /// <summary>
     /// Movement animation when this Enemy is healthy.
     /// </summary>
@@ -239,13 +227,6 @@ public class EnemyScriptable : ScriptableObject
     private Sprite[] criticalIdleAnimationWest;
 
     /// <summary>
-    /// Returns the EnemyType that this EnemyAnimation is storing.
-    /// </summary>
-    /// <returns>the EnemyType that this EnemyAnimation is storing.
-    /// </returns>
-    public Enemy.EnemyType GetEnemyType() => enemyType;
-
-    /// <summary>
     /// Returns a copy of a healthy movement animation array for a 
     /// given direction.
     /// </summary>
@@ -446,15 +427,5 @@ public class EnemyScriptable : ScriptableObject
             default:
                 return null;
         }
-    }
-
-    /// <summary>
-    /// Returns the prefab that represents this Enemy.
-    /// </summary>
-    /// <returns>the prefab that represents this Enemy.</returns>
-    public GameObject GetPrefab()
-    {
-        Assert.IsNotNull(enemyPrefab.GetComponent<Enemy>(), "Prefab has no enemy component.");
-        return enemyPrefab;
     }
 }

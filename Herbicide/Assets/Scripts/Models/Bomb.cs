@@ -10,7 +10,7 @@ public class Bomb : Projectile
     /// <summary>
     /// ProjectileType of a Bomb.
     /// </summary>
-    public override ProjectileType TYPE => ProjectileType.BOMB;
+    public override ModelType TYPE => ModelType.BOMB;
 
     /// <summary>
     /// Starting speed of a Bomb.

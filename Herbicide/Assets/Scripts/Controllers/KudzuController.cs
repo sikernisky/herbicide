@@ -65,21 +65,13 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     /// </summary>
     private float hopCooldownCounter;
 
-    /// <summary>
-    /// true if this Kudzu picked up its target; otherwise, false.
-    /// </summary>
-    private bool holdingTarget;
-
 
     /// <summary>
     /// Makes a new KudzuController.
     /// </summary>
     /// <param name="kudzu">The Kudzu Enemy. </param>
-    /// <param name="spawnTime">The time at which the Kudzu Enemy spawns. </param>
-    /// <param name="spawnCoords">The (X, Y) coordinates where the Kudzu spawns. </param>
     /// <returns>The created KudzuController.</returns>
-    public KudzuController(Kudzu kudzu, float spawnTime, Vector2 spawnCoords)
-    : base(kudzu) { NUM_KUDZUS++; }
+    public KudzuController(Kudzu kudzu) : base(kudzu) { NUM_KUDZUS++; }
 
     /// <summary>
     /// Updates the Kudzu controlled by this KudzuController.
@@ -113,28 +105,23 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     /// </summary>
     protected override void OnDestroyModel()
     {
-        //Drop the Nexus if holding it.
-        if (!holdingTarget) return;
-        Nexus nexusTarget = GetTarget() as Nexus;
-        if (nexusTarget == null) return;
-        nexusTarget.Drop();
-        nexusTarget.CashIn();
-        int xCoord = TileGrid.PositionToCoordinate(nexusTarget.GetPosition().x);
-        int yCoord = TileGrid.PositionToCoordinate(nexusTarget.GetPosition().y);
-        TileGrid.PlaceOnTile(new Vector2Int(xCoord, yCoord), nexusTarget, true);
-        holdingTarget = false;
+
+        foreach (PlaceableObject heldTarget in GetHeldTargets())
+        {
+            // Drop all held Nexii.
+            Nexus nexusTarget = heldTarget as Nexus;
+            if (nexusTarget != null)
+            {
+                nexusTarget.Drop();
+                int xCoord = TileGrid.PositionToCoordinate(nexusTarget.GetPosition().x);
+                int yCoord = TileGrid.PositionToCoordinate(nexusTarget.GetPosition().y);
+                TileGrid.PlaceOnTile(new Vector2Int(xCoord, yCoord), nexusTarget, true);
+            }
+        }
     }
 
-    /// <summary>
-    /// Removes any targets from the Kudzu's target list that are no longer
-    /// valid.
-    /// </summary>
-    /// <param name="filteredTargets">The valid list of targets.</param>
-    protected override void CleanTargets(List<PlaceableObject> filteredTargets)
-    {
-        if (GetTarget() != null && holdingTarget) return;
-        base.CleanTargets(filteredTargets);
-    }
+
+
 
     //--------------------BEGIN STATE LOGIC----------------------//
 
@@ -184,7 +171,6 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
                 break;
             case KudzuState.IDLE:
                 if (GetTarget() == null || !GetTarget().Targetable()) break;
-                if (holdingTarget && GetKudzu().GetPosition() == GetKudzu().GetSpawnPos()) break;
                 else if (GetKudzu().DistanceToTarget(GetTarget()) <= GetKudzu().GetChaseRange())
                     SetState(KudzuState.CHASE);
                 break;
@@ -199,14 +185,14 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
             case KudzuState.ATTACK:
                 if (GetTarget() == null) break;
                 if (GetAnimationCounter() > 0) break;
-                if (holdingTarget) SetState(KudzuState.ESCAPE);
+                if (NumTargetsHolding() == HOLDING_LIMIT) SetState(KudzuState.ESCAPE);
                 else if (GetKudzu().GetAttackCooldown() > 0) SetState(KudzuState.CHASE);
                 else if (GetKudzu().DistanceToTarget(GetTarget()) > GetKudzu().GetAttackRange())
                     SetState(KudzuState.CHASE);
                 break;
             case KudzuState.ESCAPE:
                 if (GetNextMovePos() != null && GetNextMovePos() != GetKudzu().GetPosition()) break;
-                if (!holdingTarget) SetState(KudzuState.CHASE);
+                if (NumTargetsHolding() == 0) SetState(KudzuState.CHASE);
                 else if (GetKudzu().GetPosition() == GetKudzu().GetSpawnPos()) SetState(KudzuState.EXIT);
                 break;
             case KudzuState.EXIT:
@@ -292,8 +278,6 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         if (GetState() != KudzuState.ATTACK) return;
         if (GetTarget() == null || !GetTarget().Targetable()) return;
 
-        Nexus nexusTarget = GetTarget() as Nexus;
-
         //Animation Logic.
         GetKudzu().SetAnimationDuration(GetKudzu().ATTACK_ANIMATION_DURATION);
         Sprite[] attackTrack = EnemyFactory.GetAttackTrack(
@@ -312,17 +296,9 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         if (!CanAttack()) return;
         GetKudzu().FaceTarget(GetTarget());
 
-        if (nexusTarget != null)
-        {
-            if (nexusTarget.PickedUp()) return;
-            Vector3 offset = new Vector3(0f, .25f, 1f);
-            nexusTarget.PickUp(GetKudzu().transform, offset);
-            holdingTarget = true;
-        }
-        else
-        {
-            GetTarget().AdjustHealth(-GetKudzu().BONK_DAMAGE);
-        }
+        if (CanHoldTarget(GetTarget())) HoldTarget(GetTarget()); // Hold.
+        else GetTarget().AdjustHealth(-GetKudzu().BONK_DAMAGE); // Bonk.
+
         GetKudzu().ResetAttackCooldown();
     }
 
@@ -365,7 +341,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
 
         // We reached our move target, so we need a new one.
         if (GetNextMovePos() != null && GetKudzu().GetPosition() != GetNextMovePos()) return;
-        SetNextMovePos(TileGrid.NextTilePosTowardsGoal(GetKudzu().GetPosition(), GetKudzu().GetSpawnPos()));
+        SetNextMovePos(TileGrid.NextTilePosTowardsGoal(GetKudzu().GetPosition(), GetTarget().GetPosition()));
         hopCooldownCounter = GetKudzu().HOP_COOLDOWN;
     }
 
@@ -377,8 +353,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         if (GetState() != KudzuState.EXIT) return;
 
         GetKudzu().SetEscaped();
-        Nexus nexusTarget = GetTarget() as Nexus;
-        Assert.IsNotNull(nexusTarget, "You need a nexus target to exit.");
+        Assert.IsTrue(NumTargetsHolding() > 0, "You need to hold targets to exit.");
     }
 
     /// <summary>

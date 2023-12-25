@@ -12,8 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcfc6a25ac6474835b7d1c94b33a6868, type: 3}
   m_Name: SquirrelData
   m_EditorClassIdentifier: 
-  defenderPrefab: {fileID: 2896626616884615408, guid: 7ffe22d2f864c433cb6da24359a7d202, type: 3}
-  defenderType: 0
+  modelPrefab: {fileID: 2896626616884615408, guid: 7ffe22d2f864c433cb6da24359a7d202, type: 3}
+  modelType: 14
+  boatAnimationNorth: []
+  boatAnimationEast: []
+  boatAnimationSouth: []
+  boatAnimationWest: []
   movementAnimationNorth: []
   movementAnimationEast: []
   movementAnimationSouth: []

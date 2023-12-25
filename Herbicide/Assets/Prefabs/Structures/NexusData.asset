@@ -12,5 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b14742ae5811748ba8ff675a006e224c, type: 3}
   m_Name: NexusData
   m_EditorClassIdentifier: 
+  modelPrefab: {fileID: 6282400553356308575, guid: c53906b1cb2c24264beda486006834ab, type: 3}
+  modelType: 8
+  boatAnimationNorth: []
+  boatAnimationEast: []
+  boatAnimationSouth: []
+  boatAnimationWest: []
   structurePrefab: {fileID: 6282400553356308575, guid: c53906b1cb2c24264beda486006834ab, type: 3}
-  structureType: 0

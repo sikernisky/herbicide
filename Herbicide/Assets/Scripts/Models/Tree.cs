@@ -9,11 +9,6 @@ using UnityEngine.Assertions;
 public abstract class Tree : Mob, ISurface
 {
     /// <summary>
-    /// Type of this Tree.
-    /// </summary>
-    public abstract TreeType TYPE { get; }
-
-    /// <summary>
     /// How far to push a hosted Defender horizontally
     /// </summary>
     public virtual float DEFENDER_OFFSET_X => 0f;
@@ -64,20 +59,12 @@ public abstract class Tree : Mob, ISurface
     public override bool OCCUPIER => true;
 
     /// <summary>
-    /// Represents a type of Tree.
-    /// </summary>
-    public enum TreeType
-    {
-        BASIC
-    }
-
-    /// <summary>
     /// Returns a Sprite component that represents this Tree in an 
     /// Inventoryslot.
     /// </summary>
     /// <returns>a Sprite component that represents this Tree in an 
     /// Inventoryslot.</returns>
-    public override Sprite GetInventorySprite() { return TreeFactory.GetTreeInventorySprite(TYPE); }
+    public override Sprite GetBoatSprite() { return TreeFactory.GetTreeInventorySprite(TYPE); }
 
     /// <summary>
     /// Returns a Sprite component that represents this Tree in an 

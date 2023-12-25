@@ -86,10 +86,27 @@ public class InputController : MonoBehaviour
     /// Finds and sets the InputController singleton for the MainMenu. Also instantiates the
     /// InputController's temporary objects.
     /// </summary>
-    /// <param name="levelController">The LevelController singleton.</param>
+    /// <param name="mainMenuController">The LevelController singleton.</param>
     public static void SetSingleton(MainMenuController mainMenuController)
     {
         if (mainMenuController == null) return;
+        if (instance != null) return;
+
+        InputController[] inputControllers = FindObjectsOfType<InputController>();
+        Assert.IsNotNull(inputControllers, "Array of InputControllers is null.");
+        Assert.AreEqual(1, inputControllers.Length);
+        instance = inputControllers[0];
+        instance.MakeTempObjects();
+    }
+
+    /// <summary>
+    /// Finds and sets the InputController singleton for the SkillMenu. Also instantiates the
+    /// InputController's temporary objects.
+    /// </summary>
+    /// <param name="skillMenuController">The LevelController singleton.</param>
+    public static void SetSingleton(SkillMenuController skillMenuController)
+    {
+        if (skillMenuController == null) return;
         if (instance != null) return;
 
         InputController[] inputControllers = FindObjectsOfType<InputController>();

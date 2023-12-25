@@ -192,7 +192,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
 
 
         // Make an Acorn and an AcornController.
-        GameObject acornPrefab = ProjectileFactory.GetProjectilePrefab(Projectile.ProjectileType.ACORN);
+        GameObject acornPrefab = ProjectileFactory.GetProjectilePrefab(ModelType.ACORN);
         Assert.IsNotNull(acornPrefab);
         GameObject clonedAcorn = GameObject.Instantiate(acornPrefab);
         Assert.IsNotNull(clonedAcorn);

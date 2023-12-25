@@ -16,9 +16,4 @@ public abstract class Structure : Mob
         NEXUS,
         NEXUS_HOLE,
     }
-
-    /// <summary>
-    /// Type of this Structure.
-    /// </summary>
-    public abstract StructureType TYPE { get; }
 }

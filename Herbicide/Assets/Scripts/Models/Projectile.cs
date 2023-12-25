@@ -9,11 +9,6 @@ using UnityEngine.Assertions;
 /// </summary>
 public abstract class Projectile : Model
 {
-    /// <summary>
-    /// Type of this Projectile.
-    /// </summary>
-    public abstract ProjectileType TYPE { get; }
-
     //--------------------STATS---------------------//
 
     /// <summary>
@@ -254,7 +249,7 @@ public abstract class Projectile : Model
     /// </summary>
     /// <returns>the Sprite component that represents this Projectile in
     /// the Inventory.</returns>
-    public override Sprite GetInventorySprite()
+    public override Sprite GetBoatSprite()
     {
         throw new System.NotImplementedException();
     }

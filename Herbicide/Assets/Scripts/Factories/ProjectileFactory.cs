@@ -39,10 +39,10 @@ public class ProjectileFactory : MonoBehaviour
     /// </summary>
     /// <param name="projectileType">The type of Projectile.</param>
     /// <returns>the movement track for a given Projectile type.</returns>
-    public static Sprite[] GetMovementTrack(Projectile.ProjectileType projectileType)
+    public static Sprite[] GetMovementTrack(ModelType projectileType)
     {
         ProjectileScriptable data = instance.projectileScriptables.Find(
-            x => x.GetProjectileType() == projectileType);
+            x => x.GetModelType() == projectileType);
         Sprite[] track = data.GetMovementAnimation();
         Assert.IsNotNull(track);
         return track;
@@ -53,11 +53,11 @@ public class ProjectileFactory : MonoBehaviour
     /// </summary>
     /// <param name="projectileType">the type of Projectile</param>
     /// <returns>the GameObject prefab that represents a Projectile</returns>
-    public static GameObject GetProjectilePrefab(Projectile.ProjectileType projectileType)
+    public static GameObject GetProjectilePrefab(ModelType projectileType)
     {
         ProjectileScriptable data = instance.projectileScriptables.Find(
-            x => x.GetProjectileType() == projectileType);
-        GameObject prefabToClone = data.GetPrefab();
+            x => x.GetModelType() == projectileType);
+        GameObject prefabToClone = data.GetModelPrefab();
         Assert.IsNotNull(prefabToClone);
         return prefabToClone;
     }

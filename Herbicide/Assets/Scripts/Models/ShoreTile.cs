@@ -24,24 +24,7 @@ public class ShoreTile : EdgeTile
     public override bool WALKABLE => false;
 
     /// <summary>
-    /// Returns the Sprite component that represents this SeedToken in
-    /// the Inventory.
+    /// Model type of a ShoreTile.
     /// </summary>
-    /// <returns>the Sprite component that represents this SeedToken in
-    /// the Inventory.</returns>
-    public override Sprite GetInventorySprite()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    /// <summary>
-    /// Returns a Sprite that represents this SeedToken when it is
-    /// being placed.
-    /// </summary>
-    /// <returns> a Sprite that represents this SeedToken when it is
-    /// being placed.</returns>
-    public override Sprite GetPlacementSprite()
-    {
-        throw new System.NotImplementedException();
-    }
+    public override ModelType TYPE => ModelType.SHORE_TILE;
 }

@@ -118,10 +118,38 @@ public class CanvasController : MonoBehaviour
     /// <summary>
     /// Finds and sets the CanvasController singleton for the MainMenu.
     /// </summary>
-    /// <param name="levelController">The LevelController singleton.</param>
+    /// <param name="mainMenuController">The MainMenuController singleton.</param>
     public static void SetSingleton(MainMenuController mainMenuController)
     {
         if (mainMenuController == null) return;
+        if (instance != null) return;
+
+        CanvasController[] canvasControllers = FindObjectsOfType<CanvasController>();
+        Assert.IsNotNull(canvasControllers, "Array of InputControllers is null.");
+        Assert.AreEqual(1, canvasControllers.Length);
+        instance = canvasControllers[0];
+        Assert.IsNotNull(instance.fader);
+        Assert.IsNotNull(instance.gameCanvas);
+
+        instance.fader.gameObject.SetActive(true);
+        instance.fader.transform.SetParent(instance.gameCanvas.transform);
+        RectTransform faderTransform = instance.fader.GetComponent<RectTransform>();
+        faderTransform.localScale = new Vector3(1, 1, 1);
+        faderTransform.anchorMin = new Vector2(0, 0);
+        faderTransform.anchorMax = new Vector2(1, 1);
+        faderTransform.offsetMin = new Vector2(0, 0);
+        faderTransform.offsetMax = new Vector2(0, 0);
+        PlayFaderOut();
+    }
+
+
+    /// <summary>
+    /// Finds and sets the CanvasController singleton for the SkillMenu.
+    /// </summary>
+    /// <param name="skillMenuController">The SkillMenuController singleton.</param>
+    public static void SetSingleton(SkillMenuController skillMenuController)
+    {
+        if (skillMenuController == null) return;
         if (instance != null) return;
 
         CanvasController[] canvasControllers = FindObjectsOfType<CanvasController>();
