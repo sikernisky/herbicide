@@ -124,7 +124,7 @@ public class BasicTreeController : TreeController<BasicTreeController.BasicTreeS
     /// </summary>
     protected override void DropResources()
     {
-        GameObject dewPrefab = CollectableFactory.GetCollectablePrefab(Collectable.CollectableType.DEW);
+        GameObject dewPrefab = DewFactory.GetDewPrefab();
         GameObject clonedDew = GameObject.Instantiate(dewPrefab);
         Assert.IsNotNull(clonedDew);
         Dew dewComp = clonedDew.GetComponent<Dew>();

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Data structure to hold information about a Model's spawn
+/// Data structure to hold information about a PlaceableObject's spawn
 /// rate in the shop (customizable in the Unity Editor, per level).
 /// </summary>
 [System.Serializable]
@@ -14,17 +14,17 @@ public class ShopModel
     /// The prefab for this ShopModel.
     /// </summary>
     [SerializeField]
-    private Model prefab;
+    private PlaceableObject prefab;
 
     /// <summary>
-    /// The percent chance the Model has to be on the next spawned
+    /// The percent chance the PlaceableObject has to be on the next spawned
     /// ShopBoat.
     /// </summary>
     [SerializeField]
     private float spawnRate;
 
     /// <summary>
-    /// Returns the percent chance the Model has to be on the next
+    /// Returns the percent chance the PlaceableObject has to be on the next
     /// spawned ShopBoat, in [0, 1].
     /// </summary>
     /// <returns></returns>
@@ -35,8 +35,8 @@ public class ShopModel
     }
 
     /// <summary>
-    /// Returns this ShopModel's model prefab.
+    /// Returns this ShopModel's PlaceableObject prefab.
     /// </summary>
-    /// <returns>this ShopModel's model prefab.</returns>
-    public Model GetModelPrefab() { return prefab; }
+    /// <returns>this ShopModel's PlaceableObject prefab.</returns>
+    public PlaceableObject GetPlaceablePrefab() { return prefab; }
 }

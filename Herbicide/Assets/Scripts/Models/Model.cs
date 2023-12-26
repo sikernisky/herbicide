@@ -397,22 +397,6 @@ public abstract class Model : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns the Sprite component that represents this Model on
-    /// a ShopBoat.
-    /// </summary>
-    /// <returns>the Sprite component that represents this Model on a
-    /// ShopBoat.</returns>
-    public abstract Sprite GetBoatSprite();
-
-    /// <summary>
-    /// Returns a Sprite that represents this Model when it is
-    /// being placed.
-    /// </summary>
-    /// <returns> a Sprite that represents this Model when it is
-    /// being placed.</returns>
-    public abstract Sprite GetPlacementSprite();
-
-    /// <summary>
     /// Sets this Model's sorting layer.
     /// </summary>
     /// <param name="layer">The layer to set to.</param>
@@ -466,4 +450,27 @@ public abstract class Model : MonoBehaviour
     {
         return holder.position + new Vector3(holdingOffset.x, holdingOffset.y, 1);
     }
+
+    /// <summary>
+    /// Returns the GameObject that represents this Model on the grid.
+    /// </summary>
+    /// <returns>the GameObject that represents this Model on the grid.
+    /// </returns>
+    public abstract GameObject Copy();
+
+    /// <summary>
+    /// Returns the Sprite track that represents this Model on
+    /// a ShopBoat.
+    /// </summary>
+    /// <returns>the Sprite that that represents this Model on a
+    /// ShopBoat.</returns>
+    public abstract Sprite[] GetBoatTrack();
+
+    /// <summary>
+    /// Returns a Sprite that represents this Model when it is
+    /// being placed.
+    /// </summary>
+    /// <returns> a Sprite that represents this Model when it is
+    /// being placed.</returns>
+    public abstract Sprite[] GetPlacementTrack();
 }

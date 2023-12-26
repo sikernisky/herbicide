@@ -51,7 +51,7 @@ MonoBehaviour:
   modelRenderer: {fileID: -1765827098730683309}
   modelCollider: {fileID: -6469603054457330480}
   signPrice: {fileID: 4103759660966795354}
-  itemRenderer: {fileID: 4391246642865259571}
+  riderRenderer: {fileID: 4391246642865259571}
 --- !u!61 &-6469603054457330480
 BoxCollider2D:
   m_ObjectHideFlags: 0

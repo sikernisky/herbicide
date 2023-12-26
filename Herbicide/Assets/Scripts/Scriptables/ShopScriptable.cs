@@ -6,7 +6,7 @@ using UnityEngine;
 /// Stores data for the shop of a specific level.
 /// </summary>
 [CreateAssetMenu(fileName = "ShopScriptable", menuName = "Shop Scriptable", order = 0)]
-public class ShopScriptable : ModelScriptable
+public class ShopScriptable : ScriptableObject
 {
     /// <summary>
     /// The Models that can spawn in this Shop and their

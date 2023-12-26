@@ -58,56 +58,6 @@ public abstract class Tree : Mob, ISurface
     /// </summary>
     public override bool OCCUPIER => true;
 
-    /// <summary>
-    /// Returns a Sprite component that represents this Tree in an 
-    /// Inventoryslot.
-    /// </summary>
-    /// <returns>a Sprite component that represents this Tree in an 
-    /// Inventoryslot.</returns>
-    public override Sprite GetBoatSprite() { return TreeFactory.GetTreeInventorySprite(TYPE); }
-
-    /// <summary>
-    /// Returns a Sprite component that represents this Tree in an 
-    /// Inventoryslot.
-    /// </summary>
-    /// <returns>a Sprite component that represents this Tree in an 
-    /// Inventoryslot.</returns>
-    public override Sprite GetPlacementSprite() { return TreeFactory.GetTreePlacedSprite(TYPE); }
-
-    /// <summary>
-    /// Returns a Tree GameObject that can be placed on the grid.
-    /// </summary>
-    /// <returns>a Tree GameObject that can be placed on the grid.</returns>
-    public override GameObject MakePlaceableObject() { return Instantiate(TreeFactory.GetTreePrefab(TYPE)); }
-
-    /// <summary>
-    /// Returns a GameObject that holds a SpriteRenderer component with
-    /// this Tree's placed Sprite. No other components are
-    /// copied. 
-    /// </summary>
-    /// <returns>A GameObject with a SpriteRenderer component. </returns>
-    public override GameObject MakeHollowObject()
-    {
-        GameObject hollowCopy = new GameObject("Hollow " + name);
-        SpriteRenderer hollowRenderer = hollowCopy.AddComponent<SpriteRenderer>();
-        hollowRenderer.sprite = TreeFactory.GetTreePlacedSprite(TYPE);
-
-        hollowCopy.transform.position = transform.position;
-        hollowCopy.transform.localScale = transform.localScale;
-
-        return hollowCopy;
-    }
-
-    /// <summary>
-    /// Called when this Tree is placed.
-    /// </summary>
-    /// <param name="neighbors">The PlaceableObjects surrounding this Tree.</param>
-    public override void OnPlace()
-    {
-        base.OnPlace();
-        SetSortingOrder(10000 - (int)transform.position.y * 100);
-        SetSprite(TreeFactory.GetTreePlacedSprite(TYPE));
-    }
 
     /// <summary>
     /// Resets this Tree's stats to their starting values.

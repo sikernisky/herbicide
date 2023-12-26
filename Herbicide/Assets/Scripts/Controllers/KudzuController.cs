@@ -211,12 +211,11 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
 
         //Set up the animation
         GetKudzu().SetAnimationDuration(GetKudzu().MOVE_ANIMATION_DURATION);
-        Sprite[] chaseTrack = EnemyFactory.GetMovementTrack(
-            GetKudzu().TYPE,
-            GetKudzu().GetHealthState(),
-            GetKudzu().GetDirection());
-        if (GetAnimationState() != KudzuState.IDLE) GetKudzu().SetAnimationTrack(chaseTrack);
-        else GetKudzu().SetAnimationTrack(chaseTrack, GetKudzu().CurrentFrame);
+        Enemy.EnemyHealthState healthState = GetKudzu().GetHealthState();
+        Direction direction = GetKudzu().GetDirection();
+        Sprite[] idleTrack = KudzuFactory.GetIdleTrack(direction, healthState);
+        if (GetAnimationState() != KudzuState.IDLE) GetKudzu().SetAnimationTrack(idleTrack);
+        else GetKudzu().SetAnimationTrack(idleTrack, GetKudzu().CurrentFrame);
         SetAnimationState(KudzuState.IDLE);
         GetKudzu().FaceDirection(Direction.SOUTH);
 
@@ -235,10 +234,9 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
 
         // Set up the animation.
         GetKudzu().SetAnimationDuration(GetKudzu().MOVE_ANIMATION_DURATION);
-        Sprite[] chaseTrack = EnemyFactory.GetMovementTrack(
-            GetKudzu().TYPE,
-            GetKudzu().GetHealthState(),
-            GetKudzu().GetDirection());
+        Enemy.EnemyHealthState healthState = GetKudzu().GetHealthState();
+        Direction direction = GetKudzu().GetDirection();
+        Sprite[] chaseTrack = KudzuFactory.GetMovementTrack(direction, healthState);
         if (GetAnimationState() != KudzuState.CHASE) GetKudzu().SetAnimationTrack(chaseTrack);
         else GetKudzu().SetAnimationTrack(chaseTrack, GetKudzu().CurrentFrame);
         SetAnimationState(KudzuState.CHASE);
@@ -280,10 +278,9 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
 
         //Animation Logic.
         GetKudzu().SetAnimationDuration(GetKudzu().ATTACK_ANIMATION_DURATION);
-        Sprite[] attackTrack = EnemyFactory.GetAttackTrack(
-            GetKudzu().TYPE,
-            GetKudzu().GetHealthState(),
-            GetKudzu().GetDirection());
+        Enemy.EnemyHealthState healthState = GetKudzu().GetHealthState();
+        Direction direction = GetKudzu().GetDirection();
+        Sprite[] attackTrack = KudzuFactory.GetAttackTrack(direction, healthState);
         if (GetAnimationState() != KudzuState.ATTACK) GetKudzu().SetAnimationTrack(attackTrack);
         else GetKudzu().SetAnimationTrack(attackTrack, GetKudzu().CurrentFrame);
         SetAnimationState(KudzuState.ATTACK);
@@ -311,10 +308,9 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
 
         // Set up the animation.
         GetKudzu().SetAnimationDuration(GetKudzu().MOVE_ANIMATION_DURATION);
-        Sprite[] escapeTrack = EnemyFactory.GetMovementTrack(
-            GetKudzu().TYPE,
-            GetKudzu().GetHealthState(),
-            GetKudzu().GetDirection());
+        Enemy.EnemyHealthState healthState = GetKudzu().GetHealthState();
+        Direction direction = GetKudzu().GetDirection();
+        Sprite[] escapeTrack = KudzuFactory.GetMovementTrack(direction, healthState);
         if (GetAnimationState() != KudzuState.ESCAPE) GetKudzu().SetAnimationTrack(escapeTrack);
         else GetKudzu().SetAnimationTrack(escapeTrack, GetKudzu().CurrentFrame);
         SetAnimationState(KudzuState.ESCAPE);

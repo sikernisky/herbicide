@@ -26,40 +26,27 @@ public abstract class Defender : Mob
     }
 
 
-    /// <summary>
-    /// Returns a Sprite component that represents this Defender
-    /// in an InventorySlot.
-    /// </summary>
-    /// <returns> a Sprite component that represents this Defender
-    /// in an InventorySlot.</returns>
-    public override Sprite GetBoatSprite() { return DefenderFactory.GetDefenderInventorySprite(TYPE); }
+    // /// <summary>
+    // /// Returns a Sprite component that represents this Defender
+    // /// in an InventorySlot.
+    // /// </summary>
+    // /// <returns> a Sprite component that represents this Defender
+    // /// in an InventorySlot.</returns>
+    // public override Sprite GetBoatSprite() { return DefenderFactory.GetDefenderInventorySprite(TYPE); }
 
-    /// <summary>
-    /// Returns a Sprite component that represents this Defender
-    /// when it is placing.
-    /// </summary>
-    /// <returns> a Sprite component that represents this Defender
-    /// when it is placing.</returns>
-    public override Sprite GetPlacementSprite() { return DefenderFactory.GetDefenderPlacedSprite(TYPE); }
+    // /// <summary>
+    // /// Returns a Sprite component that represents this Defender
+    // /// when it is placing.
+    // /// </summary>
+    // /// <returns> a Sprite component that represents this Defender
+    // /// when it is placing.</returns>
+    // public override Sprite GetPlacementSprite() { return DefenderFactory.GetDefenderPlacedSprite(TYPE); }
 
-    /// <summary>
-    /// Returns a Defender GameObject that can be placed on the
-    /// TileGrid.
-    /// </summary>
-    /// <returns>a Defender GameObject that can be placed on the
-    /// TileGrid.</returns>
-    public override GameObject MakePlaceableObject() { return Instantiate(ModelFactory.GetModelPrefab(TYPE)); }
-
-    /// <summary>
-    /// Returns a GameObject that holds a SpriteRenderer component with
-    /// this Defender's placed Sprite. No other components are
-    /// copied. 
-    /// </summary>
-    /// <returns>A GameObject with a SpriteRenderer component. </returns>
-    public override GameObject MakeHollowObject()
-    {
-        GameObject baseResult = base.MakeHollowObject();
-        baseResult.GetComponent<SpriteRenderer>().sprite = DefenderFactory.GetDefenderPlacedSprite(TYPE);
-        return baseResult;
-    }
+    // /// <summary>
+    // /// Returns a Defender GameObject that can be placed on the
+    // /// TileGrid.
+    // /// </summary>
+    // /// <returns>a Defender GameObject that can be placed on the
+    // /// TileGrid.</returns>
+    // public override GameObject MakePlaceableObject() { return Instantiate(ModelFactory.GetModelPrefab(TYPE)); }
 }

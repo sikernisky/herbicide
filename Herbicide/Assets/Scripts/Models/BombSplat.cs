@@ -40,7 +40,7 @@ public class BombSplat : SlowZone
     /// </summary>
     /// <returns>the Sprite that represents a BombSplat in
     /// the inventory.</returns>
-    public override Sprite GetBoatSprite() { throw new System.NotImplementedException(); }
+    public override Sprite[] GetBoatTrack() { return BombSplatFactory.GetBoatTrack(); }
 
     /// <summary>
     /// Returns the Sprite that represents a BombSplat when
@@ -48,7 +48,7 @@ public class BombSplat : SlowZone
     /// </summary>
     /// <returns>the Sprite that represents a BombSplat when 
     /// placing from the Inventory.</returns>
-    public override Sprite GetPlacementSprite() { throw new System.NotImplementedException(); }
+    public override Sprite[] GetPlacementTrack() { return BombSplatFactory.GetPlacementTrack(); }
 
     /// <summary>
     /// Returns a BombSplat GameObject that can be placed
@@ -56,9 +56,9 @@ public class BombSplat : SlowZone
     /// </summary>
     /// <returns>a BombSplat GameObject that can be placed
     /// on the TileGrid. </returns>
-    public override GameObject MakePlaceableObject()
+    public override GameObject Copy()
     {
-        return Instantiate(HazardFactory.GetHazardPrefab(ModelType.BOMB_SPLAT));
+        return Instantiate(BombSplatFactory.GetBombSplatPrefab());
     }
 
     /// <summary>

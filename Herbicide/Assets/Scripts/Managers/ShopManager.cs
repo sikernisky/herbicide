@@ -80,6 +80,7 @@ public class ShopManager : MonoBehaviour
             // Spawn a boat.
 
             Model rolledRider = instance.RollRider();
+            Assert.IsNotNull(rolledRider);
 
             Assert.IsNotNull(instance.boatPrefab, "Boat prefab is null.");
             GameObject clonedShopBoat = Instantiate(instance.boatPrefab);
@@ -109,7 +110,7 @@ public class ShopManager : MonoBehaviour
             cumulativeProbability += shopModel.GetSpawnRate();
             if (randomPoint <= cumulativeProbability)
             {
-                return shopModel.GetModelPrefab();
+                return shopModel.GetPlaceablePrefab();
             }
         }
 

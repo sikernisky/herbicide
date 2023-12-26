@@ -166,25 +166,21 @@ public class Kudzu : Enemy
     }
 
     /// <summary>
-    /// Returns the sprite that represents this Kudzu in the
-    /// Inventory.
+    /// Returns the sprite that represents this Kudzu on boat.
     /// </summary>
-    /// <returns>the sprite that represents this Kudzu in the
-    /// inventory.</returns>
-    public override Sprite GetBoatSprite() { throw new System.NotImplementedException(); }
+    /// <returns>the sprite that represents this Kudzu on a boat.</returns>
+    public override Sprite[] GetBoatTrack() { return KudzuFactory.GetBoatTrack(); }
 
     /// <summary>
-    /// Returns the sprite that represents this Kudzu when placing from the
-    /// the Inventory.
+    /// Returns the sprite that represents this Kudzu when placing.
     /// </summary>
-    /// <returns>the sprite that represents this Kudzu when placing from the
-    /// inventory.</returns>
-    public override Sprite GetPlacementSprite() { throw new System.NotImplementedException(); }
+    /// <returns>the sprite that represents this Kudzu when placing.</returns>
+    public override Sprite[] GetPlacementTrack() { return KudzuFactory.GetPlacementTrack(); }
 
     /// <summary>
     /// Returns the GameObject that represents this Kudzu on the grid.
     /// </summary>
     /// <returns>the GameObject that represents this Kudzu on the grid.
     /// </returns>
-    public override GameObject MakePlaceableObject() { throw new System.NotImplementedException(); }
+    public override GameObject Copy() { return Instantiate(KudzuFactory.GetKudzuPrefab()); }
 }

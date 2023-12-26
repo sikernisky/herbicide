@@ -123,7 +123,7 @@ public class ShopBoat : Mob
     {
         Assert.IsNotNull(rider);
         this.rider = rider;
-        riderRenderer.sprite = rider.GetBoatSprite();
+        riderRenderer.sprite = rider.GetBoatTrack()[0];
     }
 
     /// <summary>
@@ -142,7 +142,7 @@ public class ShopBoat : Mob
     /// </summary>
     /// <returns>the Sprite that represents the ShopBoat on a
     /// ShopBoat.</returns>
-    public override Sprite GetBoatSprite() { return null; }
+    public override Sprite[] GetBoatTrack() { return ShopBoatFactory.GetBoatTrack(); }
 
     /// <summary>
     /// Returns the Sprite that represents the ShopBoat when
@@ -150,13 +150,16 @@ public class ShopBoat : Mob
     /// </summary>
     /// <returns>the Sprite that represents the ShopBoat when
     /// placing.</returns>
-    public override Sprite GetPlacementSprite() { return null; }
+    public override Sprite[] GetPlacementTrack() { return ShopBoatFactory.GetPlacementTrack(); }
 
     /// <summary>
     /// Returns an instantiated GameObject of this ShopBoat.
     /// </summary>
     /// <returns>an instantiated GameObject of this ShopBoat.</returns>
-    public override GameObject MakePlaceableObject() { return null; }
+    public override GameObject Copy()
+    {
+        return Instantiate(ShopBoatFactory.GetShopBoatPrefab());
+    }
 
     /// <summary>
     /// Sets the properties of the ShopBoat's 2D Collider component.

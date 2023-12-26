@@ -156,20 +156,23 @@ public class LevelController : MonoBehaviour
     }
 
     /// <summary>
-    /// Instantiates all Factories.
+    /// Sets up all Factories.
     private void MakeFactories()
     {
-        CollectableFactory.SetSingleton(instance);
-        DefenderFactory.SetSingleton(instance);
+        AcornFactory.SetSingleton(instance);
+        BasicTreeFactory.SetSingleton(instance);
+        BombFactory.SetSingleton(instance);
+        BombSplatFactory.SetSingleton(instance);
+        ButterflyFactory.SetSingleton(instance);
+        DewFactory.SetSingleton(instance);
         EdgeFactory.SetSingleton(instance);
-        EnemyFactory.SetSingleton(instance);
         FlooringFactory.SetSingleton(instance);
-        HazardFactory.SetSingleton(instance);
-        ModelFactory.SetSingleton(instance);
-        ProjectileFactory.SetSingleton(instance);
-        StructureFactory.SetSingleton(instance);
+        KudzuFactory.SetSingleton(instance);
+        NexusFactory.SetSingleton(instance);
+        NexusHoleFactory.SetSingleton(instance);
+        ShopBoatFactory.SetSingleton(instance);
+        SquirrelFactory.SetSingleton(instance);
         TileFactory.SetSingleton(instance);
-        TreeFactory.SetSingleton(instance);
     }
 
     /// <summary>

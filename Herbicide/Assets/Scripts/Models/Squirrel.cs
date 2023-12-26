@@ -131,4 +131,29 @@ public class Squirrel : Defender
     /// </summary>
     /// <returns>this Squirrel's current chase & attack range.</returns>
     public override float GetChaseRange() { return GetAttackRange(); }
+
+    /// <summary>
+    /// Returns an instantiated GameObject with a Squirrel component attached.
+    /// </summary>
+    /// <returns>an instantiated GameObject with a Squirrel component
+    ///  attached.</returns>
+    public override GameObject Copy()
+    {
+        return Instantiate(SquirrelFactory.GetSquirrelPrefab());
+    }
+
+    /// <summary>
+    /// Returns the animation track that represents this Squirrel on a boat.
+    /// </summary>
+    /// <returns>the animation track that represents this Squirrel on a boat.
+    /// </returns>
+    public override Sprite[] GetBoatTrack() { return SquirrelFactory.GetBoatTrack(); }
+
+    /// <summary>
+    /// Returns the animation track that represents this Squirrel when placing.
+    /// </summary>
+    /// <returns>the animation track that represents this Squirrel when placing.
+    /// </returns>
+    public override Sprite[] GetPlacementTrack() { return SquirrelFactory.GetPlacementTrack(); }
 }
+

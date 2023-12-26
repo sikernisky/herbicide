@@ -8,7 +8,6 @@ using UnityEngine;
 /// </summary>
 public abstract class Collectable : Model
 {
-
     /// <summary>
     /// Seconds to complete a bob cycle.
     /// </summary>
@@ -55,28 +54,6 @@ public abstract class Collectable : Model
     /// <returns>true if the player picked up this Collectable;
     /// otherwise, false.</returns>
     public bool Collected() { return collected; }
-
-    /// <summary>
-    /// Returns the Sprite component that represents this Collectable in
-    /// the Inventory.
-    /// </summary>
-    /// <returns>the Sprite component that represents this Collectable in
-    /// the Inventory.</returns>
-    public override Sprite GetBoatSprite()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    /// <summary>
-    /// Returns a Sprite that represents this Collectable when it is
-    /// being placed.
-    /// </summary>
-    /// <returns> a Sprite that represents this Collectable when it is
-    /// being placed.</returns>
-    public override Sprite GetPlacementSprite()
-    {
-        throw new System.NotImplementedException();
-    }
 
     /// <summary>
     /// Returns this Collectable's drift-up curve.

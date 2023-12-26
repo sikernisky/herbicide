@@ -68,13 +68,6 @@ public abstract class PlaceableObject : Model
     public Vector3 GetPlacementScale() { return PLACEMENT_SCALE; }
 
     /// <summary>
-    /// Returns the GameObject that represents this PlaceableObject on the grid.
-    /// </summary>
-    /// <returns>the GameObject that represents this PlaceableObject on the grid.
-    /// </returns>
-    public abstract GameObject MakePlaceableObject();
-
-    /// <summary>
     /// Returns a GameObject that holds a SpriteRenderer component with
     /// this PlaceableObject's placed Sprite. No other components are
     /// copied. 

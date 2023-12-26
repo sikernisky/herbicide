@@ -57,4 +57,28 @@ public class Acorn : Projectile
     /// from start to finish. 
     /// </summary>
     public override float MOVE_ANIMATION_DURATION => 0f;
+
+
+    /// <summary>
+    /// Returns the GameObject that represents this Acorn on the grid.
+    /// </summary>
+    /// <returns>the GameObject that represents this Acorn on the grid.
+    /// </returns>
+    public override GameObject Copy() { return Instantiate(AcornFactory.GetAcornPrefab()); }
+
+    /// <summary>
+    /// Returns the Sprite track that represents this Acorn on
+    /// a ShopBoat.
+    /// </summary>
+    /// <returns>the Sprite that that represents this Acorn on a
+    /// ShopBoat.</returns>
+    public override Sprite[] GetBoatTrack() { return AcornFactory.GetBoatTrack(); }
+
+    /// <summary>
+    /// Returns a Sprite that represents this Acorn when it is
+    /// being placed.
+    /// </summary>
+    /// <returns> a Sprite that represents this Acorn when it is
+    /// being placed.</returns>
+    public override Sprite[] GetPlacementTrack() { return AcornFactory.GetPlacementTrack(); }
 }

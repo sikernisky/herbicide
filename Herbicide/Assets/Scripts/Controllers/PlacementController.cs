@@ -105,7 +105,7 @@ public class PlacementController : MonoBehaviour
         if (Placing()) return;
 
         instance.dummy.SetActive(true);
-        instance.dummyImage.sprite = slot.GetOccupant().GetPlacementSprite();
+        instance.dummyImage.sprite = slot.GetOccupant().GetPlacementTrack()[0]; // TODO: Animation
         instance.dummyImage.color = PLACE_COLOR;
         instance.placingSlot = slot;
     }

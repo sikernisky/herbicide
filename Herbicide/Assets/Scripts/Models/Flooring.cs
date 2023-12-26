@@ -415,14 +415,24 @@ public abstract class Flooring : Model, ISurface
     public override void SetColliderProperties() { return; }
 
     /// <summary>
-    /// Returns the Sprite component that represents this Flooring in
-    /// the Inventory.
+    /// Returns the GameObject that represents this Flooring on the grid.
     /// </summary>
-    /// <returns>the Sprite component that represents this Flooring in
-    /// the Inventory.</returns>
-    public override Sprite GetBoatSprite()
+    /// <returns>the GameObject that represents this Flooring on the grid.
+    /// </returns>
+    public override GameObject Copy()
     {
-        throw new System.NotImplementedException();
+        throw new System.NotSupportedException("Tile placing not supported.");
+    }
+
+    /// <summary>
+    /// Returns the Sprite track that represents this Flooring on
+    /// a ShopBoat.
+    /// </summary>
+    /// <returns>the Sprite that that represents this Flooring on a
+    /// ShopBoat.</returns>
+    public override Sprite[] GetBoatTrack()
+    {
+        throw new System.NotSupportedException("Tile placing not supported.");
     }
 
     /// <summary>
@@ -431,8 +441,8 @@ public abstract class Flooring : Model, ISurface
     /// </summary>
     /// <returns> a Sprite that represents this Flooring when it is
     /// being placed.</returns>
-    public override Sprite GetPlacementSprite()
+    public override Sprite[] GetPlacementTrack()
     {
-        throw new System.NotImplementedException();
+        throw new System.NotSupportedException("Tile placing not supported.");
     }
 }

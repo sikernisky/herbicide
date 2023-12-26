@@ -71,8 +71,7 @@ public class BombController : ProjectileController<BombController.BombState>
         if (GetState() != BombState.MOVING) return;
 
         GetBomb().SetAnimationDuration(GetBomb().MOVE_ANIMATION_DURATION);
-        Sprite[] movingTrack = ProjectileFactory.GetMovementTrack(
-            GetBomb().TYPE);
+        Sprite[] movingTrack = BombFactory.GetMidAirMovementTrack();
         if (GetAnimationState() != BombState.MOVING) GetBomb().SetAnimationTrack(movingTrack);
         else GetBomb().SetAnimationTrack(movingTrack, GetBomb().CurrentFrame);
         SetAnimationState(BombState.MOVING);
@@ -97,7 +96,7 @@ public class BombController : ProjectileController<BombController.BombState>
         // splatterCopy.SetActive(true);
 
         Vector2Int tilePos = new Vector2Int(GetBomb().GetX(), GetBomb().GetY());
-        GameObject bombSplatPrefab = HazardFactory.GetHazardPrefab(ModelType.BOMB_SPLAT);
+        GameObject bombSplatPrefab = BombFactory.GetBombPrefab();
         Assert.IsNotNull(bombSplatPrefab);
         BombSplat bombSplatComp = bombSplatPrefab.GetComponent<BombSplat>();
         Assert.IsNotNull(bombSplatComp);

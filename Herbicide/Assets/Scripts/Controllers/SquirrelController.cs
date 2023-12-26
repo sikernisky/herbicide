@@ -150,10 +150,8 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         if (!ValidModel()) return;
         if (GetState() != SquirrelState.IDLE) return;
 
-        GetSquirrel().SetAnimationDuration(GetSquirrel().IDLE_ANIMATION_DURATION);
-        Sprite[] idleTrack = DefenderFactory.GetIdleTrack(
-            GetSquirrel().TYPE,
-            GetSquirrel().GetDirection());
+        Direction direction = GetSquirrel().GetDirection();
+        Sprite[] idleTrack = SquirrelFactory.GetIdleTrack(direction);
         GetSquirrel().SetAnimationTrack(idleTrack);
         if (GetAnimationState() != SquirrelState.IDLE) GetSquirrel().SetAnimationTrack(idleTrack);
         else GetSquirrel().SetAnimationTrack(idleTrack, GetSquirrel().CurrentFrame);
@@ -180,9 +178,8 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         float duration = Mathf.Min(GetSquirrel().ATTACK_ANIMATION_DURATION,
             GetSquirrel().GetAttackCooldownCap());
         GetSquirrel().SetAnimationDuration(duration);
-        Sprite[] attackTrack = DefenderFactory.GetAttackTrack(
-            GetSquirrel().TYPE,
-            GetSquirrel().GetDirection());
+        Direction direction = GetSquirrel().GetDirection();
+        Sprite[] attackTrack = SquirrelFactory.GetAttackTrack(direction);
         GetSquirrel().SetAnimationTrack(attackTrack);
         SetAnimationState(SquirrelState.ATTACK);
         GetSquirrel().SetSprite(GetSquirrel().GetSpriteAtCurrentFrame());
@@ -190,9 +187,8 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
 
         if (!CanAttack()) return;
 
-
         // Make an Acorn and an AcornController.
-        GameObject acornPrefab = ProjectileFactory.GetProjectilePrefab(ModelType.ACORN);
+        GameObject acornPrefab = AcornFactory.GetAcornPrefab();
         Assert.IsNotNull(acornPrefab);
         GameObject clonedAcorn = GameObject.Instantiate(acornPrefab);
         Assert.IsNotNull(clonedAcorn);

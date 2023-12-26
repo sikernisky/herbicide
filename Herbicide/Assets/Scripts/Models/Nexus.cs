@@ -118,24 +118,24 @@ public class Nexus : Structure
     public override bool Dead() { return GetHealth() <= 0; }
 
     /// <summary>
-    /// Returns the Sprite that represents this Nexus in the inventory.
+    /// Returns the Sprite that represents this Nexus on a boat.
     /// </summary>
-    /// <returns>the Sprite that represents this Nexus in the inventory.
+    /// <returns>the Sprite that represents this Nexus on a boat.
     /// </returns>
-    public override Sprite GetBoatSprite() { return null; }
+    public override Sprite[] GetBoatTrack() { return null; }
 
     /// <summary>
     /// Returns the Sprite that represents this Nexus when placing.
     /// </summary>
     /// <returns>the Sprite that represents this Nexus when placing.
     /// </returns>
-    public override Sprite GetPlacementSprite() { return null; }
+    public override Sprite[] GetPlacementTrack() { return null; }
 
     /// <summary>
     /// Returns a GameObject representing this Nexus on the TileGrid.
     /// </summary>
     /// <returns>a GameObject representing this Nexus on the TileGrid.</returns>
-    public override GameObject MakePlaceableObject() { return Instantiate(StructureFactory.GetStructurePrefab(TYPE)); }
+    public override GameObject Copy() { return Instantiate(NexusFactory.GetNexusPrefab()); }
 
     /// <summary>
     /// Sets this Nexus' 2D collider properties.

@@ -58,7 +58,7 @@ public class EnemyManager : MonoBehaviour
         //Instantiate Enemy objects NOW so they're ready to go at runtime.
         foreach (ObjectData obToSpawn in instance.enemyData)
         {
-            GameObject spawnedEnemy = ModelFactory.GetModelPrefab(obToSpawn.GetEnemyName());
+            GameObject spawnedEnemy = instance.GetEnemyPrefabFromString(obToSpawn.GetEnemyName());
             Assert.IsNotNull(spawnedEnemy);
             GameObject clonedEnemy = Instantiate(spawnedEnemy);
             Enemy clonedEnemyComp = clonedEnemy.GetComponent<Enemy>();
@@ -135,5 +135,28 @@ public class EnemyManager : MonoBehaviour
         Assert.IsNotNull(enemyManagers, "Array of InputControllers is null.");
         Assert.AreEqual(1, enemyManagers.Length);
         instance = enemyManagers[0];
+    }
+
+    /// <summary>
+    /// Returns a GameObject with an Enemy component attached that matches
+    /// the string passed into this method. If the string does not match
+    /// an Enemy type, throws an Exception.
+    /// </summary>
+    /// <param name="enemyName">The name of the Enemy.</param>
+    /// <returns>A GameObject with an Enemy component that matches the string
+    /// passed into this method.</returns>
+    private GameObject GetEnemyPrefabFromString(string enemyName)
+    {
+        Assert.IsNotNull(enemyName);
+
+        switch (enemyName.ToLower())
+        {
+            case "kudzu":
+                return KudzuFactory.GetKudzuPrefab();
+            default:
+                break;
+        }
+
+        throw new System.NotSupportedException(enemyName + " not supported.");
     }
 }

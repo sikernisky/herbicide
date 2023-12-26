@@ -56,4 +56,28 @@ public class Bomb : Projectile
     /// from start to finish. 
     /// </summary>
     public override float MOVE_ANIMATION_DURATION => .5f;
+
+
+    /// <summary>
+    /// Returns the GameObject that represents this Bomb on the grid.
+    /// </summary>
+    /// <returns>the GameObject that represents this Bomb on the grid.
+    /// </returns>
+    public override GameObject Copy() { return Instantiate(BombFactory.GetBombPrefab()); }
+
+    /// <summary>
+    /// Returns the Sprite track that represents this Bomb on
+    /// a ShopBoat.
+    /// </summary>
+    /// <returns>the Sprite that that represents this Bomb on a
+    /// ShopBoat.</returns>
+    public override Sprite[] GetBoatTrack() { return BombFactory.GetBoatTrack(); }
+
+    /// <summary>
+    /// Returns a Sprite that represents this Bomb when it is
+    /// being placed.
+    /// </summary>
+    /// <returns> a Sprite that represents this Bomb when it is
+    /// being placed.</returns>
+    public override Sprite[] GetPlacementTrack() { return BombFactory.GetPlacementTrack(); }
 }

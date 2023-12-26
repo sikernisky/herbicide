@@ -139,4 +139,25 @@ public class Butterfly : Defender
     /// Sets this Butterfly's 2D Collider's properties.
     /// </summary>
     public override void SetColliderProperties() { return; }
+
+    /// <summary>
+    /// Returns an instantiated copy of the Butterfly Model.
+    /// </summary>
+    /// <returns> an instantiated copy of the Butterfly Model.</returns>
+    public override GameObject Copy()
+    {
+        return Instantiate(ButterflyFactory.GetButterflyPrefab());
+    }
+
+    /// <summary>
+    /// Returns the Sprite that represents this Butterfly when on a boat.
+    /// </summary>
+    /// <returns>the Sprite that represents this Butterfly when on a boat.</returns>
+    public override Sprite[] GetBoatTrack() { return ButterflyFactory.GetBoatTrack(); }
+
+    /// <summary>
+    /// Returns the Sprite that represents this Butterfly when placing.
+    /// </summary>
+    /// <returns>the Sprite that represents this Butterfly when placing.</returns>
+    public override Sprite[] GetPlacementTrack() { return ButterflyFactory.GetPlacementTrack(); }
 }

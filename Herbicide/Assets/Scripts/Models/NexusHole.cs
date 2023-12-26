@@ -110,26 +110,26 @@ public class NexusHole : Structure
 
 
     /// <summary>
-    /// Returns the Sprite that represents this NexusHole in the inventory.
+    /// Returns the Sprite that represents this NexusHole on a boat.
     /// </summary>
-    /// <returns> the Sprite that represents this NexusHole in the inventory.
+    /// <returns> the Sprite that represents this NexusHole on a boat.
     /// </returns>
-    public override Sprite GetBoatSprite() { return null; }
+    public override Sprite[] GetBoatTrack() { return NexusHoleFactory.GetBoatTrack(); }
 
     /// <summary>
     /// Returns the Sprite that represents this NexusHole when placing.
     /// </summary>
     /// <returns> the Sprite that represents this NexusHole when placing.
     /// </returns>
-    public override Sprite GetPlacementSprite() { return null; }
+    public override Sprite[] GetPlacementTrack() { return NexusHoleFactory.GetPlacementTrack(); }
 
     /// <summary>
     /// Returns an instantiated copy of this NexusHole.
     /// </summary>
     /// <returns>an instantiated copy of this NexusHole.</returns>
-    public override GameObject MakePlaceableObject()
+    public override GameObject Copy()
     {
-        return Instantiate(StructureFactory.GetStructurePrefab(TYPE));
+        return Instantiate(NexusHoleFactory.GetNexusHolePrefab());
     }
 
     /// <summary>

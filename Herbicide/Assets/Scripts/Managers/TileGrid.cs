@@ -327,7 +327,7 @@ public class TileGrid : MonoBehaviour
 
                 foreach (ObjectData obToSpawn in placeableObjects)
                 {
-                    GameObject spawnedStructure = StructureFactory.GetStructurePrefab(obToSpawn.GetStructureName());
+                    GameObject spawnedStructure = instance.GetStructurePrefabFromString(obToSpawn.GetStructureName());
                     Assert.IsNotNull(spawnedStructure);
                     Structure structure = spawnedStructure.GetComponent<Structure>();
                     Tile targetTile = instance.TileExistsAt(obToSpawn.GetSpawnCoordinates(mapHeight).x, obToSpawn.GetSpawnCoordinates(mapHeight).y);
@@ -350,30 +350,6 @@ public class TileGrid : MonoBehaviour
         }
     }
 
-    // /// <summary>
-    // /// Spawns a layer of Placeable objects from a LayerData object.
-    // /// </summary>
-    // /// <param name="layer">The LayerData object to spawn.</param>
-    // /// <param name="mapHeight">The height of the LayerData layer.</param>
-    // private static void SpawnStructureLayer(LayerData layer, int mapHeight)
-    // {
-    //     Assert.IsTrue(layer.IsObjectLayer(), "Cannot spawn tile layers.");
-    //     Assert.IsTrue(layer.IsPlaceableLayer(), "Layer does not hold Placeable objects.");
-    //     Assert.IsFalse(layer.IsEnemyLayer(), "Cannot spawn Enemy object layers.");
-
-
-    //     List<ObjectData> placeableObjects = new List<ObjectData>();
-    //     placeableObjects.AddRange(layer.GetStructureObjectData());
-
-    //     foreach (ObjectData obToSpawn in placeableObjects)
-    //     {
-    //         GameObject spawnedStructure = StructureFactory.GetStructurePrefab(obToSpawn.GetStructureName());
-    //         Assert.IsNotNull(spawnedStructure);
-    //         Structure structure = spawnedStructure.GetComponent<Structure>();
-    //         Tile targetTile = instance.TileExistsAt(obToSpawn.GetSpawnCoordinates(mapHeight).x, obToSpawn.GetSpawnCoordinates(mapHeight).y);
-    //         PlaceOnTile(targetTile, structure);
-    //     }
-    // }
 
     /// <summary>
     /// Finds all first Global Tile IDs from all tilesets used in this TileGrid
@@ -514,8 +490,7 @@ public class TileGrid : MonoBehaviour
                 if (FloorTile(tileToFloor, Flooring.FlooringType.SOIL) && autoGenerateTrees)
                 {
                     //Place trees on Floored tiles.
-                    Tree tree = ModelFactory.GetModelPrefab(
-                        ModelType.BASIC_TREE).GetComponent<Tree>();
+                    Tree tree = BasicTreeFactory.GetBasicTreePrefab().GetComponent<Tree>();
                     if (tree == null) break;
                     PlaceOnTile(tileToFloor, tree);
                 }
@@ -568,6 +543,31 @@ public class TileGrid : MonoBehaviour
         }
         if (closestTile == null) return Vector2Int.zero;
         return new Vector2Int(closestTile.GetX(), closestTile.GetY());
+    }
+
+    /// <summary>
+    /// Returns a GameObject with an Structure component attached that matches
+    /// the string passed into this method. If the string does not match
+    /// a Structure type, throws an Exception.
+    /// </summary>
+    /// <param name="structureName">The name of the Structure.</param>
+    /// <returns>A GameObject with a Structure component that matches the string
+    /// passed into this method.</returns>
+    private GameObject GetStructurePrefabFromString(string structureName)
+    {
+        Assert.IsNotNull(structureName);
+
+        switch (structureName.ToLower())
+        {
+            case "nexus":
+                return NexusFactory.GetNexusPrefab();
+            case "nexushole":
+                return NexusHoleFactory.GetNexusHolePrefab();
+            default:
+                break;
+        }
+
+        throw new System.NotSupportedException(structureName + " not supported.");
     }
 
     /// <summary>
@@ -900,7 +900,7 @@ public class TileGrid : MonoBehaviour
         // We can place.
         if (!existing)
         {
-            GameObject prefabClone = candidate.MakePlaceableObject();
+            GameObject prefabClone = candidate.Copy();
             Assert.IsNotNull(prefabClone);
             candidate = prefabClone.GetComponent<PlaceableObject>();
             Assert.IsNotNull(candidate);

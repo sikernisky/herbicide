@@ -182,9 +182,7 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
         if (GetState() != ButterflyState.IDLE) return;
 
         GetButterfly().SetAnimationDuration(GetButterfly().IDLE_ANIMATION_DURATION);
-        Sprite[] idleTrack = DefenderFactory.GetMovementTrack(
-            GetButterfly().TYPE,
-            Direction.NORTH); //NORTH animation supported.
+        Sprite[] idleTrack = ButterflyFactory.GetIdleTrack();
         GetButterfly().SetAnimationTrack(idleTrack);
         if (GetAnimationState() != ButterflyState.IDLE) GetButterfly().SetAnimationTrack(idleTrack);
         else GetButterfly().SetAnimationTrack(idleTrack, GetButterfly().CurrentFrame);
@@ -205,9 +203,7 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
 
         //Set up the animation
         GetButterfly().SetAnimationDuration(GetButterfly().MOVE_ANIMATION_DURATION);
-        Sprite[] chaseTrack = DefenderFactory.GetMovementTrack(
-            GetButterfly().TYPE,
-            Direction.NORTH); //NORTH animation supported.
+        Sprite[] chaseTrack = ButterflyFactory.GetMovementTrack();
         if (GetAnimationState() != ButterflyState.CHASE) GetButterfly().SetAnimationTrack(chaseTrack);
         else GetButterfly().SetAnimationTrack(chaseTrack, GetButterfly().CurrentFrame);
         SetAnimationState(ButterflyState.CHASE);
@@ -236,9 +232,7 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
 
         //Set up the animation
         GetButterfly().SetAnimationDuration(GetButterfly().MOVE_ANIMATION_DURATION);
-        Sprite[] backupTrack = DefenderFactory.GetMovementTrack(
-            GetButterfly().TYPE,
-            Direction.NORTH); //NORTH animation supported.
+        Sprite[] backupTrack = ButterflyFactory.GetMovementTrack();
         if (GetAnimationState() != ButterflyState.BACKUP) GetButterfly().SetAnimationTrack(backupTrack);
         else GetButterfly().SetAnimationTrack(backupTrack, GetButterfly().CurrentFrame);
         SetAnimationState(ButterflyState.BACKUP);
@@ -271,9 +265,7 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
 
         //Set up the animation
         GetButterfly().SetAnimationDuration(GetButterfly().ATTACK_ANIMATION_DURATION);
-        Sprite[] attackTrack = DefenderFactory.GetAttackTrack(
-            GetButterfly().TYPE,
-            Direction.NORTH); //NORTH animation supported.
+        Sprite[] attackTrack = ButterflyFactory.GetAttackTrack();
         if (GetAnimationState() != ButterflyState.ATTACK) GetButterfly().SetAnimationTrack(attackTrack);
         else GetButterfly().SetAnimationTrack(attackTrack, GetButterfly().CurrentFrame);
         SetAnimationState(ButterflyState.ATTACK);
@@ -283,7 +275,7 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
         GetButterfly().SetSprite(GetButterfly().GetSpriteAtCurrentFrame());
 
         if (!CanAttack()) return;
-        GameObject bombPrefab = ProjectileFactory.GetProjectilePrefab(ModelType.BOMB);
+        GameObject bombPrefab = BombFactory.GetBombPrefab();
         Assert.IsNotNull(bombPrefab);
         GameObject clonedBomb = GameObject.Instantiate(bombPrefab);
         Assert.IsNotNull(clonedBomb);
