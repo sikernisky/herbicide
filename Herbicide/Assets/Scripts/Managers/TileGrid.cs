@@ -41,12 +41,6 @@ public class TileGrid : MonoBehaviour
     private List<GameObject> flooringPrefabs;
 
     /// <summary>
-    /// True if Trees should spawn on Floorings when Tiles spawn.
-    /// </summary>
-    [SerializeField]
-    private bool autoGenerateTrees;
-
-    /// <summary>
     /// true if the TileGrid spawned its Tiles
     /// </summary>
     private bool generated;
@@ -85,6 +79,16 @@ public class TileGrid : MonoBehaviour
     /// Tiles in the TileGrid, mapped to by their coordinates
     /// </summary>
     private Dictionary<Vector2Int, Tile> tileMap;
+
+    /// <summary>
+    /// Tiles in the TileGrid.
+    /// </summary>
+    private List<Tile> tiles;
+
+    /// <summary>
+    /// All Floorings in this TileGrid.
+    /// </summary>
+    private HashSet<Flooring> floorings;
 
     /// <summary>
     /// All GrassTiles in this TileGrid.
@@ -216,6 +220,7 @@ public class TileGrid : MonoBehaviour
 
         //Initialize tile map. Set the center.
         instance.tileMap = new Dictionary<Vector2Int, Tile>();
+        instance.tiles = new List<Tile>();
         instance.grassTiles = new HashSet<Tile>();
         instance.enemyLocations = new Dictionary<Enemy, Tile>();
         instance.edgeTiles = new HashSet<Tile>();
@@ -253,7 +258,6 @@ public class TileGrid : MonoBehaviour
         data.GetWaterLayers().ForEach(l => SpawnLayer(l, layerWidth, layerHeight));
         data.GetGrassLayers().ForEach(l => SpawnLayer(l, layerWidth, layerHeight));
         data.GetShoreLayers().ForEach(l => SpawnLayer(l, layerWidth, layerHeight));
-        data.GetSoilLayers().ForEach(l => SpawnLayer(l, layerWidth, layerHeight));
         data.GetObjectLayers().ForEach(l => SpawnObjectLayer(l, data.GetMapHeight()));
 
         // For pathfinding, give tiles their neighbors
@@ -280,7 +284,7 @@ public class TileGrid : MonoBehaviour
         Assert.IsFalse(layer.IsPlaceableLayer(), "Use SpawnPlaceableLayer().");
 
 
-        if (layer.IsTileLayer() || layer.IsFlooringLayer() || layer.IsEdgeLayer())
+        if (layer.IsTileLayer() || layer.IsEdgeLayer())
         {
             int currRow = layerHeight - 1;
             int currCol = 0;
@@ -293,7 +297,6 @@ public class TileGrid : MonoBehaviour
                     coords.Set(currCol, currRow);
                     int localId = instance.FindLocalTileId(tileInt);
                     if (layer.IsTileLayer()) instance.MakeTile(layerName, coords, localId);
-                    else if (layer.IsFlooringLayer()) instance.MakeFlooring(layerName, coords);
                     else if (layer.IsEdgeLayer()) instance.MakeEdge(layerName, coords, localId);
                 }
 
@@ -322,21 +325,23 @@ public class TileGrid : MonoBehaviour
         switch (layerName.ToLower())
         {
             case "structures":
-                List<ObjectData> placeableObjects = new List<ObjectData>();
-                placeableObjects.AddRange(layer.GetStructureObjectData());
+                List<ObjectData> structures = new List<ObjectData>();
+                structures.AddRange(layer.GetStructureObjectData());
 
-                foreach (ObjectData obToSpawn in placeableObjects)
+                foreach (ObjectData obToSpawn in structures)
                 {
                     GameObject spawnedStructure = instance.GetStructurePrefabFromString(obToSpawn.GetStructureName());
                     Assert.IsNotNull(spawnedStructure);
-                    Structure structure = spawnedStructure.GetComponent<Structure>();
+                    Mob mob = spawnedStructure.GetComponent<Mob>();
+                    mob.SetSpawnPos(new Vector3(obToSpawn.GetSpawnCoordinates(mapHeight).x, obToSpawn.GetSpawnCoordinates(mapHeight).y, 1));
                     Tile targetTile = instance.TileExistsAt(obToSpawn.GetSpawnCoordinates(mapHeight).x, obToSpawn.GetSpawnCoordinates(mapHeight).y);
-                    PlaceOnTile(targetTile, structure);
+                    PlaceOnTile(targetTile, mob);
                 }
                 break;
             case "markers":
                 List<ObjectData> markers = new List<ObjectData>();
                 markers.AddRange(layer.GetMarkerObjectData());
+                Dictionary<Vector2Int, string> enemySpawnMarkers = new Dictionary<Vector2Int, string>();
                 foreach (ObjectData markToSpawn in markers)
                 {
                     if (markToSpawn.GetMarkerName().ToLower() == "shopstart")
@@ -345,6 +350,31 @@ public class TileGrid : MonoBehaviour
                         int y = markToSpawn.GetSpawnCoordinates(mapHeight).y;
                         instance.shopSpawnPos = new Vector3(x, y, 1);
                     }
+                    if (markToSpawn.GetMarkerName().ToLower() == "enemyspawn")
+                    {
+                        int x = markToSpawn.GetSpawnCoordinates(mapHeight).x;
+                        int y = markToSpawn.GetSpawnCoordinates(mapHeight).y;
+                        string unparsedData = markToSpawn.GetEnemySpawnData();
+                        enemySpawnMarkers.Add(new Vector2Int(x, y), unparsedData);
+                        // ENEMY SPAWN LOGIC HERE.
+                    }
+                }
+                EnemyManager.PopulateWithEnemies(enemySpawnMarkers, mapHeight);
+                break;
+            case "flooring":
+                List<ObjectData> floorings = new List<ObjectData>();
+                floorings.AddRange(layer.GetFlooringObjectData());
+                foreach (ObjectData obToSpawn in floorings)
+                {
+                    GameObject spawnedFlooring = instance.GetFlooringPrefabFromString(obToSpawn.GetFlooringName());
+                    Assert.IsNotNull(spawnedFlooring);
+                    Flooring flooring = spawnedFlooring.GetComponent<Flooring>();
+                    Assert.IsNotNull(flooring);
+                    int flooringX = obToSpawn.GetSpawnCoordinates(mapHeight).x;
+                    int flooringY = obToSpawn.GetSpawnCoordinates(mapHeight).y;
+                    Tile tileOn = instance.TileExistsAt(flooringX, flooringY);
+                    Assert.IsNotNull(tileOn);
+                    FloorTile(tileOn, flooring);
                 }
                 break;
         }
@@ -471,36 +501,6 @@ public class TileGrid : MonoBehaviour
     }
 
     /// <summary>
-    /// Creates a Flooring of a certain type and adds it to the collection
-    /// of Flooring in this TileGrid.
-    /// </summary>
-    /// <param name="type">The Flooring's type, in string form.</param>
-    /// <param name="coords">The (X, Y) coordinates at which to make the Flooring.</param>
-    private void MakeFlooring(string type, Vector2Int coords)
-    {
-        Tile tileToFloor = TileExistsAt(coords.x, coords.y);
-        if (tileToFloor == null) return;
-
-        float xWorldPos = CoordinateToPosition(coords.x);
-        float yWorldPos = CoordinateToPosition(coords.y);
-
-        switch (type.ToLower())
-        {
-            case "soil":
-                if (FloorTile(tileToFloor, Flooring.FlooringType.SOIL) && autoGenerateTrees)
-                {
-                    //Place trees on Floored tiles.
-                    Tree tree = BasicTreeFactory.GetBasicTreePrefab().GetComponent<Tree>();
-                    if (tree == null) break;
-                    PlaceOnTile(tileToFloor, tree);
-                }
-                break;
-            default:
-                throw new System.Exception("Reached default case in MakeFlooring().");
-        }
-    }
-
-    /// <summary>
     /// Assigns all Tiles and Edges in this TileGrid their adjacent
     /// neighbors.
     /// </summary>
@@ -563,11 +563,36 @@ public class TileGrid : MonoBehaviour
                 return NexusFactory.GetNexusPrefab();
             case "nexushole":
                 return NexusHoleFactory.GetNexusHolePrefab();
+            case "basictree":
+                return BasicTreeFactory.GetBasicTreePrefab();
             default:
                 break;
         }
 
         throw new System.NotSupportedException(structureName + " not supported.");
+    }
+
+    /// <summary>
+    /// Returns a GameObject with an Flooring component attached that matches
+    /// the string passed into this method. If the string does not match
+    /// a Flooring type, throws an Exception.
+    /// </summary>
+    /// <param name="flooringName">The name of the Flooring.</param>
+    /// <returns>A GameObject with a Flooring component that matches the string
+    /// passed into this method.</returns>
+    private GameObject GetFlooringPrefabFromString(string flooringName)
+    {
+        Assert.IsNotNull(flooringName);
+
+        switch (flooringName.ToLower())
+        {
+            case "soilflooring":
+                return FlooringFactory.GetSoilFlooringPrefab();
+            default:
+                break;
+        }
+
+        throw new System.NotSupportedException(flooringName + " not supported.");
     }
 
     /// <summary>
@@ -586,7 +611,7 @@ public class TileGrid : MonoBehaviour
         Transform tileTransform = tile.transform;
         tile.name = type.ToString();
         tileTransform.position = new Vector3(xPos, yPos, 1);
-        tileTransform.localScale = Vector2.one * TILE_SIZE;
+        tileTransform.localScale = Vector2.one * TILE_SIZE * 1.0001f; // This multiplier prevents tiny gaps
         tileTransform.SetParent(instance.transform);
 
         return tile;
@@ -604,6 +629,7 @@ public class TileGrid : MonoBehaviour
         Assert.IsNull(TileExistsAt(t.GetX(), t.GetY()));
         Vector2Int key = new Vector2Int(t.GetX(), t.GetY());
         tileMap.Add(key, t);
+        tiles.Add(t);
         if (t.GetTileType() == Tile.TileType.GRASS) grassTiles.Add(t);
     }
 
@@ -665,7 +691,7 @@ public class TileGrid : MonoBehaviour
         if (tile == null) return;
 
         //Tile was clicked down. Put click logic here.
-        if (tile.Occupied()) Debug.Log("yes");
+        //if (tile.Occupied()) Debug.Log("yes");
     }
 
     /// <summary>
@@ -705,13 +731,46 @@ public class TileGrid : MonoBehaviour
         Tile tile = InputController.TileHovered();
         if (tile == null) return;
 
-        //Tile was hovered over. Put hover logic here.
+        // Tile was hovered over. Put hover logic here.
         if (PlacementController.Placing())
         {
+            // Ghost place
             Model placingSlottable = PlacementController.GetObjectPlacing();
             PlaceableObject placingPlaceable = placingSlottable as PlaceableObject;
-            if (tile.GhostPlace(placingPlaceable)) PlacementController.StartGhostPlacing(tile);
+            if (tile.GhostPlace(placingPlaceable))
+            {
+                PlacementController.StartGhostPlacing(tile);
+
+                // Show attack range if Mob
+                Mob mob = placingSlottable as Mob;
+                if (mob != null)
+                {
+                    int ar = Mathf.FloorToInt(mob.BASE_ATTACK_RANGE);
+                    if (ar == float.MaxValue || ar <= 0) return;
+                    int mobX = tile.GetX();
+                    int mobY = tile.GetY();
+
+                    for (int x = mobX - ar; x <= mobX + ar; x++)
+                    {
+                        for (int y = mobY - ar; y <= mobY + ar; y++)
+                        {
+                            Tile rangeTile = TileExistsAt(x, y);
+                            if (rangeTile == null) continue;
+
+                            // Calculate the distance from the mob to this tile
+                            float distance = Mathf.Sqrt(Mathf.Pow(x - mobX, 2) + Mathf.Pow(y - mobY, 2));
+
+                            // Check if the tile is within the circular attack range
+                            if (distance <= ar && rangeTile.WALKABLE)
+                            {
+                                rangeTile.SetHighlighterColor(new Color32(50, 255, 0, 150));
+                            }
+                        }
+                    }
+                }
+            }
         }
+
     }
 
     /// <summary>
@@ -725,6 +784,30 @@ public class TileGrid : MonoBehaviour
 
         //Tile was dehovered, put logic below
         PlacementController.StopGhostPlacing();
+
+        UnhighlightTiles();
+    }
+
+    /// <summary>
+    /// Sets every Tile's highlighter layer to be white and invisible.
+    /// </summary>
+    private void UnhighlightTiles()
+    {
+        foreach (KeyValuePair<Vector2Int, Tile> kvp in instance.tileMap)
+        {
+            Tile t = kvp.Value;
+            if (t == null) continue;
+            t.SetHighlighterColor(new Color32(255, 255, 255, 0));
+        }
+    }
+
+    /// <summary>
+    /// Returns a read-only list of all Tiles in the TileGrid.
+    /// </summary>
+    /// <returns>a read-only list of all Tiles in the TileGrid.</returns>
+    public static IReadOnlyList<Tile> GetAllTiles()
+    {
+        return instance.tiles.AsReadOnly();
     }
 
     /// <summary>
@@ -897,6 +980,8 @@ public class TileGrid : MonoBehaviour
             }
         }
 
+        instance.UnhighlightTiles();
+
         // We can place.
         if (!existing)
         {
@@ -922,20 +1007,6 @@ public class TileGrid : MonoBehaviour
         target.Place(candidate, instance.GetNeighbors(target));
         NexusHole nexusHoleCandidate = candidate as NexusHole;
         if (candidate as NexusHole != null) instance.nexusHoleHosts.Add(target, nexusHoleCandidate);
-
-        // Cash in stuff.
-        Nexus nexusCandidate = candidate as Nexus;
-        if (nexusCandidate != null)
-        {
-            if (instance.nexusHoleHosts.ContainsKey(target))
-            {
-                NexusHole hole = instance.nexusHoleHosts[target];
-                Assert.IsFalse(nexusCandidate.CashedIn(), "Already cashed in.");
-                Assert.IsNotNull(hole, "Nexus Hole is null.");
-                if (!hole.Filled()) hole.Fill(nexusCandidate);
-                nexusCandidate.CashIn();
-            }
-        }
 
         // If the candidate is bigger than 1x1, set its expanded tiles to Occupied.
         if (!candidate.OCCUPIER) return true;
@@ -988,26 +1059,49 @@ public class TileGrid : MonoBehaviour
     /// Returns true if the flooring of a Floorable on this Tile will be
     /// successful. If so, floors it. Otherwise, does nothing and returns false.
     /// </summary>
-    /// <param name="candidate">The Floorable to floor.</param>
+    /// <param name="candidate">The Flooring to floor with.</param>
     /// <param name="target">The Tile to place on.</param>
     /// <returns>true if the Floorable was floored; otherwise, false.</returns>
-    public static bool FloorTile(Tile target, Flooring.FlooringType candidate)
+    public static bool FloorTile(Tile target, Flooring candidate)
     {
         if (target == null) return false;
 
-        if (target.Floor(instance.FlooringTypeToPrefab(candidate),
-            instance.GetNeighbors(target)))
+        if (target.CanFloor(candidate, instance.GetNeighbors(target)))
         {
-            //The floor was successful, so update neighbors of the target.
+            //Copy prefab.
+            GameObject copy = candidate.Copy();
+            candidate = copy.GetComponent<Flooring>();
+            Assert.IsNotNull(candidate);
+
+            // Flooring 
+            target.Floor(candidate, instance.GetNeighbors(target));
             foreach (ISurface surface in target.GetSurfaceNeighbors())
             {
                 Tile neighbor = surface as Tile;
                 if (neighbor == null) continue;
                 neighbor.UpdateSurfaceNeighbors(instance.GetNeighbors(neighbor));
             }
+
+            // Give Flooring a controller
+            ControllerController.MakeController(candidate);
             return true;
         }
         return false;
+    }
+
+    /// <summary>
+    /// Returns true if the flooring of a Floorable on this Tile will be
+    /// successful. If so, floors it. Otherwise, does nothing and returns false.
+    /// </summary>
+    /// <param name="candidate">The Flooring to floor with.</param>
+    /// <param name="targetCoords">The coordinates of the Tile to place on.</param>
+    /// <returns>true if the Floorable was floored; otherwise, false.</returns>
+    public static bool FloorTile(Vector2Int targetCoords, Flooring candidate)
+    {
+        int xCoord = PositionToCoordinate(targetCoords.x);
+        int yCoord = PositionToCoordinate(targetCoords.y);
+        Tile tile = instance.TileExistsAt(xCoord, yCoord);
+        return FloorTile(tile, candidate);
     }
 
     /// <summary>
@@ -1025,7 +1119,6 @@ public class TileGrid : MonoBehaviour
         Tile t = instance.TileExistsAt(coordX, coordY);
         return t != null;
     }
-
 
     /// <summary>
     /// Returns true if some world coordinates lie within the range of a Tile
@@ -1046,6 +1139,41 @@ public class TileGrid : MonoBehaviour
 
         //TODO: Eventually, incorporate Enemy checking.
         return t.WALKABLE;
+    }
+
+    /// <summary>
+    /// Returns true if some world coordinates represent the position
+    /// of a NexusHole.
+    /// </summary>
+    /// <param name="worldCoords">the coordinates to check.</param>
+    /// <returns>true if some world coordinates represent the position
+    /// of a NexusHole; otherwise, false. /// .</returns>
+    public static bool IsNexusHole(Vector2 worldCoords)
+    {
+        if (!OnTile(worldCoords)) return false;
+
+        int coordX = PositionToCoordinate(worldCoords.x);
+        int coordY = PositionToCoordinate(worldCoords.y);
+        Tile t = instance.TileExistsAt(coordX, coordY);
+        Assert.IsNotNull(t);
+
+        return instance.nexusHoleHosts.ContainsKey(t);
+    }
+
+    /// <summary>
+    /// Returns true if some world coordinates represent the position
+    /// of a NexusHole.
+    /// </summary>
+    /// <param name="worldCoords">the coordinates to check.</param>
+    /// <returns>true if some world coordinates represent the position
+    /// of a NexusHole; otherwise, false. /// .</returns>
+    public static bool IsNexusHole(Vector3? worldCoords)
+    {
+        Assert.IsTrue(worldCoords.HasValue);
+        Vector2 convertedCoords = new Vector2();
+        convertedCoords.x = worldCoords.Value.x;
+        convertedCoords.y = worldCoords.Value.y;
+        return IsNexusHole(convertedCoords);
     }
 
     /// <summary>
@@ -1139,6 +1267,12 @@ public class TileGrid : MonoBehaviour
         {
             Tile current = openList.OrderBy(tile => fScore[tile]).First();
 
+            if (current == goalTile)
+            {
+                startTile.SetColor(Color.white);
+                return new Vector3(goalTile.GetX(), goalTile.GetY(), 1);
+            }
+
             foreach (Tile neighbor in instance.GetNeighbors(current))
             {
                 if (neighbor == goalTile)
@@ -1188,8 +1322,75 @@ public class TileGrid : MonoBehaviour
 
         //Debug.Log("No path found.");
 
-        //No path found, so we return the starting position.
-        return startPos;
+        //No path found, so we return the lowest position possible.
+        return new Vector3(float.MinValue, float.MinValue, float.MinValue);
+    }
+
+    /// <summary>
+    /// Returns the length of the shortest path from a starting Tile to a goal Tile
+    /// using the A* pathfinding algorithm. If no path exists, returns -1.
+    /// Manhattan distance is used as the heuristic function.
+    /// </summary>
+    /// <param name="cache">The PathfindingCache making this call.</param>
+    /// <param name="startPos">The starting position of the path.</param>
+    /// <param name="goalPos">The ending position of the path.</param>
+    /// <returns>The length of the path or -1 if no path exists.</returns>
+    public static int PathLengthTowardsGoal(PathfindingCache cache, Vector3 startPos, Vector3 goalPos)
+    {
+        // From given positions, find the corresponding Tiles.
+        int xStartCoord = PositionToCoordinate(startPos.x);
+        int yStartCoord = PositionToCoordinate(startPos.y);
+        int xGoalCoord = PositionToCoordinate(goalPos.x);
+        int yGoalCoord = PositionToCoordinate(goalPos.y);
+        Tile startTile = instance.TileExistsAt(xStartCoord, yStartCoord);
+        Tile goalTile = instance.TileExistsAt(xGoalCoord, yGoalCoord);
+
+        if (startTile == null || goalTile == null) return -1;
+
+        // Initialize data structures.
+        List<Tile> openList = new List<Tile> { startTile };
+        HashSet<Tile> closedList = new HashSet<Tile>();
+        Dictionary<Tile, Tile> cameFrom = new Dictionary<Tile, Tile>();
+        Dictionary<Tile, float> gScore = new Dictionary<Tile, float> { { startTile, 0 } };
+        Dictionary<Tile, float> fScore = new Dictionary<Tile, float> { { startTile, instance.ManhattanDistance(startTile, goalTile) } };
+
+        // Iterative A* Algorithm.
+        while (openList.Count > 0)
+        {
+            Tile current = openList.OrderBy(tile => fScore[tile]).First();
+
+            if (current == goalTile)
+            {
+                List<Tile> path = instance.ReconstructPath(cameFrom, current);
+                return path.Count; // Return the length of the path
+            }
+
+            openList.Remove(current);
+            closedList.Add(current);
+
+            foreach (Tile neighbor in instance.GetNeighbors(current))
+            {
+                if (closedList.Contains(neighbor)) continue;
+
+                float tentativeGScore = gScore[current] + 1;
+
+                if (!openList.Contains(neighbor))
+                {
+                    openList.Add(neighbor);
+                }
+                else if (tentativeGScore >= gScore[neighbor])
+                {
+                    continue;
+                }
+
+                cameFrom[neighbor] = current;
+                gScore[neighbor] = tentativeGScore;
+                fScore[neighbor] = gScore[neighbor] + instance.ManhattanDistance(neighbor, goalTile);
+            }
+        }
+
+        // No path found, return -1.
+        return -1;
     }
 
     /// <summary>
@@ -1237,13 +1438,16 @@ public class TileGrid : MonoBehaviour
     /// <summary>
     /// Returns true if a path exists from one position to another.
     /// </summary>
+    /// <param name="cache">The PathfindingCache making this call.</param>
     /// <param name="startPos">The starting position.</param>
     /// <param name="goalPos">The ending position.</param>
     /// <returns>true if a path exists from start to goal; otherwise,
     /// false. </returns>
-    public static bool CanReach(Vector3 startPos, Vector3 goalPos)
+    public static bool CanReach(PathfindingCache cache, Vector3 startPos, Vector3 goalPos)
     {
-        return NextTilePosTowardsGoal(startPos, goalPos) != startPos;
+        Assert.IsNotNull(cache);
+        Vector3 minVector = new Vector3(float.MinValue, float.MinValue, float.MinValue);
+        return NextTilePosTowardsGoal(startPos, goalPos) != minVector;
     }
     //----------------------END PATHFINDING------------------------//
 }

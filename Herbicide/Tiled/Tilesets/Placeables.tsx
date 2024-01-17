@@ -11,4 +11,9 @@
    <property name="structureName" value="NexusHole"/>
   </properties>
  </tile>
+ <tile id="2" type="Structure">
+  <properties>
+   <property name="structureName" value="BasicTree"/>
+  </properties>
+ </tile>
 </tileset>

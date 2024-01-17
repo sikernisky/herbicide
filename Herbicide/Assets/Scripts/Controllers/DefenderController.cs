@@ -13,10 +13,6 @@ using UnityEngine.Assertions;
 /// <typeparam name="T">Enum to represent state of the Defender.</typeparam>
 public abstract class DefenderController<T> : MobController<T> where T : Enum
 {
-    /// <summary>
-    /// Total number of DefenderControllers created during this level so far.
-    /// </summary>
-    private static int NUM_DEFENDERS;
 
     /// <summary>
     /// The TripleThreat Synergy applied to the Defender.
@@ -24,11 +20,18 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     private TripleThreat tripleThreat;
 
     /// <summary>
+    /// true if the Squirrel executed one call of its Spawn state;
+    /// otherwise, false.
+    /// </summary>
+    private bool spawnStateDone;
+
+
+    /// <summary>
     /// Makes a new DefenderController for a Defender.
     /// </summary>
     /// <param name="defender">The Defender controlled by this
     ///  DefenderController.</param>
-    public DefenderController(Defender defender) : base(defender) { NUM_DEFENDERS++; }
+    public DefenderController(Defender defender) : base(defender) { }
 
     /// <summary>
     /// Updates the Defender controlled by this DefenderController.
@@ -70,16 +73,21 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     private Defender GetDefender() { return GetMob() as Defender; }
 
     /// <summary>
-    /// Returns true if the Defender can target the PlaceableObject passed
+    /// Returns true if the Defender can target the Model passed
     /// into this method.
     /// </summary>
-    /// <param name="target">The Placeable object to check for targetability.</param>
+    /// <param name="target">The Model object to check for targetability.</param>
     /// <returns></returns>
-    protected override bool CanTarget(PlaceableObject target)
+    protected override bool CanTarget(Model target)
     {
+        Enemy enemyTarget = target as Enemy;
+
         if (target == null) return false;
-        if (target as Enemy == null) return false;
-        if (!target.Targetable()) return false;
+        if (enemyTarget == null) return false;
+        if (!enemyTarget.Spawned()) return false;
+        if (!enemyTarget.Targetable()) return false;
+        if (GetDefender().DistanceToTargetFromTree(enemyTarget) >
+            GetDefender().GetAttackRange()) return false;
 
         return true;
     }
@@ -96,6 +104,23 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
 
         return false;
     }
+
+    /// <summary>
+    /// Performs logic for this Defender's SPAWN state.
+    /// </summary>
+    protected virtual void ExecuteSpawnState()
+    {
+        spawnStateDone = true;
+    }
+
+    /// <summary>
+    /// Returns true if the SpawnState has completed one execution.
+    /// </summary>
+    /// <returns>true if the SpawnState has completed one execution;
+    /// otherwise, false. </returns>
+    protected bool SpawnStateDone() { return spawnStateDone; }
+
+
 }
 
 

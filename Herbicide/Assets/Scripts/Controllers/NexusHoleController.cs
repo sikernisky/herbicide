@@ -36,12 +36,12 @@ public class NexusHoleController : StructureController<NexusHoleController.Nexus
 
 
     /// <summary>
-    /// Returns true if the NexusHole can target the PlaceableObject passed
+    /// Returns true if the NexusHole can target the Model passed
     /// into this method.
     /// </summary>
     /// <param name="target">The Placeable object to check for targetability.</param>
-    /// <returns></returns>
-    protected override bool CanTarget(PlaceableObject target)
+    /// <returns>true if the NexusHole can target the Model; otherwise, false. </returns>
+    protected override bool CanTarget(Model target)
     {
         return false;
     }

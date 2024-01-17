@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using TMPro;
+using System;
 
 /// <summary>
 /// Handles economy and currency related events.
@@ -42,6 +43,12 @@ public class EconomyController : MonoBehaviour
     private static int currentMoney;
 
     /// <summary>
+    /// Starting money for this level. (TODO: Data-Driven Design)
+    /// </summary>
+    [SerializeField]
+    private int startingMoney;
+
+    /// <summary>
     /// Finds and sets the EconomyController singleton.
     /// </summary>
     /// <param name="levelController">The LevelController singleton.</param>
@@ -55,6 +62,7 @@ public class EconomyController : MonoBehaviour
         Assert.AreEqual(1, economyControllers.Length);
         instance = economyControllers[0];
         instance.activeCurrency = new HashSet<Currency>();
+        currentMoney = instance.startingMoney;
     }
 
     /// <summary>
@@ -104,6 +112,16 @@ public class EconomyController : MonoBehaviour
     {
         Assert.IsNotNull(currency, "Currency is null.");
         Deposit(currency.GetValue());
+    }
+
+    /// <summary>
+    /// Removes some amount of money from the player's balance.
+    ///</summary>
+    /// <param name="amount">The amount of money to remove. </param>
+    public static void Withdraw(int amount)
+    {
+        Assert.IsTrue(amount >= 0);
+        currentMoney = Math.Clamp(currentMoney - amount, 0, int.MaxValue);
     }
 
     /// <summary>

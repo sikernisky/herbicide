@@ -56,15 +56,12 @@ public abstract class TreeController<T> : MobController<T> where T : Enum
     }
 
     /// <summary>
-    /// Returns true if the Defender can target the PlaceableObject passed
+    /// Returns true if the Defender can target the Model passed
     /// into this method.
     /// </summary>
-    /// <param name="target">The Placeable object to check for targetability.</param>
-    /// <returns></returns>
-    protected override bool CanTarget(PlaceableObject target)
-    {
-        return false;
-    }
+    /// <param name="target">The Model to check for targetability.</param>
+    /// <returns>true if the Tree can target the Model; otherwise, false. </returns>
+    protected override bool CanTarget(Model target) { return false; }
 
     /// <summary>
     /// Different Trees output different resources; outputs the
@@ -72,6 +69,9 @@ public abstract class TreeController<T> : MobController<T> where T : Enum
     /// </summary>
     protected void EmitResources()
     {
+        if (!ValidModel()) return;
+        if (GetTree().GetResourceDropRate() <= 0f) return;
+
         resourceDropInterval = 1f / GetTree().GetResourceDropRate();
         timeSinceLastDrop += Time.deltaTime;
         if (timeSinceLastDrop >= resourceDropInterval)
@@ -79,6 +79,19 @@ public abstract class TreeController<T> : MobController<T> where T : Enum
             DropResources();
             timeSinceLastDrop = 0;
         }
+    }
+
+    /// <summary>
+    /// Updates the Model's sorting order so that it appears behind Models
+    /// before it and before Models behind it.
+    /// </summary>
+    protected override void FixSortingOrder()
+    {
+        if (!ValidModel()) return;
+
+        int layer = -Mathf.FloorToInt(GetModel().GetPosition().y);
+        if (GetTree().Occupied()) layer -= 1;
+        GetModel().SetSortingOrder(layer);
     }
 
     /// <summary>

@@ -106,7 +106,7 @@ public class NexusHole : Structure
     /// <summary>
     /// Maximum number of Nexii that can be in this NexusHole.
     /// </summary>
-    protected virtual int MAX_OCCUPANTS => 1;
+    protected virtual int MAX_OCCUPANTS => int.MaxValue;
 
 
     /// <summary>
@@ -162,5 +162,23 @@ public class NexusHole : Structure
     {
         if (!occupants.Contains(nexus)) return;
         occupants.Remove(nexus);
+    }
+
+    /// <summary>
+    /// Returns the position that some sprite should be relative
+    /// to this NexusHole such that it looks like it is at the
+    /// bottom of the NexusHole
+    /// </summary>
+    /// <param name="occupant">The sprite to calculate.</param>
+    /// <returns>the position that some sprite should be relative
+    /// to this NexusHole such that it looks like it is at the
+    /// bottom of the NexusHole.</returns>
+    public Vector3 BottomOfHolePosition(Sprite occupant)
+    {
+        Assert.IsNotNull(occupant);
+
+        Vector3 nexusHolePos = GetPosition();
+        nexusHolePos.y -= occupant.bounds.size.y;
+        return nexusHolePos;
     }
 }

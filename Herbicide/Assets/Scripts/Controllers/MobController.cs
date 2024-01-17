@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -21,12 +22,12 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// The list of current targets. Mobs will interperet a "target"
     /// in their own way.  
     /// </summary>
-    private List<PlaceableObject> targets;
+    private List<Model> targets;
 
     /// <summary>
     /// The list of targets the Mob is holding.
     /// </summary>
-    private List<PlaceableObject> targetsHolding;
+    private List<Model> targetsHolding;
 
     /// <summary>
     /// The color strength, from 0-1, of the damage flash animation.
@@ -70,6 +71,41 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// </summary>
     private Vector3? nextMovePos;
 
+    /// <summary>
+    /// The Mob's pathfinding cache.
+    /// </summary>
+    private PathfindingCache pathfindingCache;
+
+    /// <summary>
+    /// The number of occupying Models during the previous frame.
+    /// </summary>
+    private int blockingObjectsLastFrame;
+
+    /// <summary>
+    /// Where the Mob is parabolically moving towards.
+    /// </summary>
+    public Vector3 parabolaTarget;
+
+    /// <summary>
+    /// The height of the Mob's parabolic movement.
+    /// </summary>
+    public float arcHeight = 0.5f;
+
+    /// <summary>
+    /// The starting position of the parabolic move.
+    /// </summary>
+    Vector3 parabolaStartPos;
+
+    /// <summary>
+    /// The choppiness of the paraoblic movement.
+    /// </summary>
+    float parabolaScale;
+
+    /// <summary>
+    /// How far along the current parabolic move is.
+    /// </summary>
+    float parabolaProgress;
+
 
     /// <summary>
     /// Makes a new MobController for a Mob.
@@ -78,8 +114,8 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     public MobController(Mob mob) : base(mob)
     {
         Assert.IsNotNull(mob, "Mob cannot be null.");
-        targets = new List<PlaceableObject>();
-        targetsHolding = new List<PlaceableObject>();
+        targets = new List<Model>();
+        targetsHolding = new List<Model>();
         SpawnMob();
         NUM_MOBS++;
     }
@@ -101,8 +137,10 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     protected virtual void UpdateMob()
     {
         if (!ValidModel()) return;
-        UpdateTargets(GetAllTargetableObjects());
+        UpdateTargets(GetAllModels(), TileGrid.GetAllTiles());
         GetMob().AdjustAttackCooldown(-Time.deltaTime);
+        if (GetPathfindingCache() == null) SetPathfindingCache();
+        ValidatePathfindingCache();
     }
 
     /// <summary>
@@ -130,7 +168,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// but some other Mob might heal its target.
     /// </summary>
     /// <returns>this MobController's target.</returns>
-    protected List<PlaceableObject> GetTargets() { return new List<PlaceableObject>(targets); }
+    protected List<Model> GetTargets() { return new List<Model>(targets); }
 
     /// <summary>
     /// Clears the Mob's list of targets.
@@ -138,10 +176,10 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     private void ClearTargets() { targets.Clear(); }
 
     /// <summary>
-    /// Adds a PlaceableObject to this Mob's list of targets.
+    /// Adds a Model to this Mob's list of targets.
     /// </summary>
     /// <param name="targetable">The target to add.</param>
-    private void AddTarget(PlaceableObject targetable)
+    private void AddTarget(Model targetable)
     {
         Assert.IsNotNull(targetable, "Target cannot be null.");
         Assert.IsFalse(NumTargets() >= MAX_TARGETS, GetMob() +
@@ -152,16 +190,25 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     }
 
     /// <summary>
-    /// Runs through all targetable Placeable Objects and adds each one
+    /// Runs through all targetable Models and adds each one
     /// this Mob can target to its targets list.
     /// </summary>
-    /// <param name="allTargets">All targetable Models.</param>
-    private void UpdateTargets(List<PlaceableObject> allTargets)
+    /// <param name="nonTiles">All targetable Models that are not Tiles..</param>
+    /// <param name="tiles">All targetable Models that are Tiles.</param>
+    private void UpdateTargets(IReadOnlyList<Model> nonTiles, IReadOnlyList<Model> tiles)
     {
-        Assert.IsNotNull(allTargets, "List of targets is null.");
+        Assert.IsNotNull(nonTiles, "List of targets is null.");
 
         ClearTargets();
-        foreach (PlaceableObject targetable in allTargets)
+        foreach (Model targetable in nonTiles)
+        {
+            if (CanTarget(targetable) && NumTargets() < MAX_TARGETS)
+            {
+                AddTarget(targetable);
+            }
+        }
+
+        foreach (Model targetable in tiles)
         {
             if (CanTarget(targetable) && NumTargets() < MAX_TARGETS)
             {
@@ -171,13 +218,13 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     }
 
     /// <summary>
-    /// Returns true if the Mob is allowed to target a PlaceableObject passed
+    /// Returns true if the Mob is allowed to target a Model passed
     /// into this method.
     /// </summary>
     /// <param name="target">A potential target.</param>
-    /// <returns>true if the Mob is allowed to target a PlaceableObject; otherwise,
+    /// <returns>true if the Mob is allowed to target a Model; otherwise,
     /// false.</returns>
-    protected abstract bool CanTarget(PlaceableObject target);
+    protected abstract bool CanTarget(Model target);
 
     /// <summary>
     /// Returns the current number of targets the Mob has
@@ -238,8 +285,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
             {
                 float distance = Vector2Int.Distance(thisCoord, targetCoord);
                 Vector3 convertedThis = new Vector3(thisCoord.x, thisCoord.y, 1);
-                Vector3 convertedTarg = new Vector3(targetCoord.x, targetCoord.y, 1);
-                if (distance < minDistance && TileGrid.CanReach(convertedThis, convertedTarg))
+                if (distance < minDistance && GetPathfindingCache().IsReachable(target))
                 {
                     minDistance = distance;
                     closestPosition = targetCoord;
@@ -260,9 +306,13 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     {
         Assert.IsNotNull(target, "Target is null.");
 
+        Nexus nexusTarget = target as Nexus;
+
+        if (!target.HOLDABLE) return false;
         if (!GetTargets().Contains(target)) return false; // Need to target before holding
         if (NumTargetsHolding() >= HOLDING_LIMIT) return false;
         if (target.PickedUp()) return false;
+        if (nexusTarget.CashedIn()) return false;
 
         return true;
     }
@@ -295,10 +345,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// Returns a copy of the list of targets the Mob is currently holding.
     /// </summary>
     /// <returns>a copy of the list of targets the Mob is currently holding.</returns>
-    protected List<PlaceableObject> GetHeldTargets()
-    {
-        return new List<PlaceableObject>(targetsHolding);
-    }
+    protected List<Model> GetHeldTargets() { return new List<Model>(targetsHolding); }
 
     /// <summary>
     /// Returns true if the Mob is holding some target.
@@ -309,6 +356,37 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
         return targetsHolding.Contains(target);
     }
 
+    /// <summary>
+    /// Returns the MobController's PathfindingCache reference.
+    /// </summary>
+    /// <returns>the MobController's PathfindingCache reference.</returns>
+    protected PathfindingCache GetPathfindingCache() { return pathfindingCache; }
+
+    /// <summary>
+    /// Sets this MobController's pathfinding cache.
+    /// </summary>
+    protected virtual void SetPathfindingCache() { pathfindingCache = new PathfindingCache(GetMob()); }
+
+    /// <summary>
+    /// Checks if the terrain has changed since the last frame. If so, wipes the
+    /// Mob's pathfinding cache.
+    /// </summary>
+    private void ValidatePathfindingCache()
+    {
+        if (GetPathfindingCache() == null) return;
+        int numBlockers = 0;
+        foreach (Model model in GetAllModels())
+        {
+            PlaceableObject placeableObjectModel = model as PlaceableObject;
+            if (placeableObjectModel != null && placeableObjectModel.OCCUPIER) numBlockers++;
+        }
+        if (numBlockers != blockingObjectsLastFrame)
+        {
+            GetPathfindingCache().ClearCache();
+            blockingObjectsLastFrame = numBlockers;
+        }
+    }
+
     //--------------------BEGIN STATE LOGIC----------------------//
 
     /// <summary>
@@ -316,7 +394,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// what its Mob should do and what it is doing, and it is essential
     /// for the FSM logic. 
     /// </summary>
-    /// <param name="state"></param>
+    /// <param name="state">The State to set.</param>
     public void SetState(T state) { this.state = state; }
 
     /// <summary>
@@ -373,10 +451,117 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     protected Vector3? GetNextMovePos() { return nextMovePos; }
 
     /// <summary>
+    /// Moves the Mob towards the next movement position in a linear manner.
+    /// </summary>
+    /// <param name="speed">How fast to move towards the movement target.</param>
+    protected void MoveLinearlyTowardsMovePos(float speed)
+    {
+        if (GetNextMovePos() != null)
+        {
+            Vector3 adjusted = new Vector3(GetNextMovePos().Value.x, GetNextMovePos().Value.y, 1);
+            float step = speed * Time.deltaTime;
+            step = Mathf.Clamp(step, 0f, step);
+            Vector3 newPosition = Vector3.MoveTowards(GetMob().GetPosition(), adjusted, step);
+            if (GetMob().GetPosition() != adjusted) GetMob().FaceTarget(adjusted);
+            GetMob().SetWorldPosition(newPosition);
+        }
+    }
+
+    /// <summary>
+    /// Moves the Mob towards the next movement position in manner such that it
+    /// looks like it is falling into a hole.
+    /// </summary>
+    /// <param name="speed">How fast to move towards the movement target.</param>
+    /// <param name="acceleration">How fast to accelerate towards the movement target.</param>
+
+    protected void FallIntoMovePos(float speed, float acceleration)
+    {
+        if (GetNextMovePos() != null)
+        {
+            Vector3 adjusted = new Vector3(nextMovePos.Value.x, nextMovePos.Value.y, 1);
+            float distance = Vector3.Distance(GetMob().GetPosition(), adjusted);
+
+            float fallSpeed = speed + acceleration * distance;
+            float step = fallSpeed * Time.deltaTime;
+            step = Mathf.Clamp(step, 0f, step);
+
+            Vector3 newPosition = Vector3.MoveTowards(GetMob().GetPosition(), adjusted, step);
+            if (GetMob().GetPosition() != adjusted) GetMob().FaceTarget(adjusted);
+            GetMob().SetWorldPosition(newPosition);
+
+            float scaleStep = 3.5f * Time.deltaTime;
+            Vector3 newScale = Vector3.Lerp(GetMob().transform.localScale, Vector3.zero, scaleStep);
+            GetMob().transform.localScale = newScale;
+        }
+    }
+
+    /// <summary>
+    /// Moves the Mob towards the next movement position in manner such that it
+    /// looks like it popping out of a hole.
+    /// </summary>
+    /// <param name="speed">How fast to move towards the movement target.</param>
+    /// <param name="startPosition">Where the mob is popping from.</param>
+    protected void PopOutOfMovePos(float speed, Vector3 startPosition)
+    {
+        if (GetNextMovePos() != null)
+        {
+            Vector3 adjusted = new Vector3(GetNextMovePos().Value.x, GetNextMovePos().Value.y, 1);
+            float step = speed * Time.deltaTime;
+            step = Mathf.Clamp(step, 0f, step);
+
+            Vector3 newPosition = Vector3.MoveTowards(GetMob().GetPosition(), adjusted, step);
+            if (GetMob().GetPosition() != adjusted) GetMob().FaceTarget(adjusted);
+            GetMob().SetWorldPosition(newPosition);
+
+            // Calculate the scaling factor based on the distance to the target position
+            float distanceToTarget = Vector3.Distance(GetMob().GetPosition(), adjusted);
+            float totalDistance = Vector3.Distance(startPosition, adjusted);
+            float scaleFraction = 1 - distanceToTarget / totalDistance;
+
+            // Ensure scaleFraction is within the bounds of 0 and 1
+            scaleFraction = Mathf.Clamp01(scaleFraction);
+
+            // Calculate the new scale
+            Vector3 newScale = Vector3.Lerp(new Vector3(0.1f, 0.1f, 0.1f), Vector3.one, scaleFraction);
+            GetMob().transform.localScale = newScale;
+        }
+    }
+
+    /// <summary>
+    /// Moves the Mob towards the next movement position in a parabolic manner.
+    /// </summary>
+    protected void MoveParabolicallyTowardsMovePos()
+    {
+        parabolaTarget = new Vector3(GetNextMovePos().Value.x, GetNextMovePos().Value.y, 1);
+        if (GetMob().GetPosition() != parabolaTarget)
+        {
+            //reset
+
+        }
+
+        parabolaProgress = Mathf.Min(parabolaProgress + Time.deltaTime * parabolaScale, 1.0f);
+        float parabola = 1.0f - 4.0f * (parabolaProgress - 0.5f) * (parabolaProgress - 0.5f);
+        Vector3 nextPos = Vector3.Lerp(parabolaStartPos, parabolaTarget, parabolaProgress);
+        nextPos.y += parabola * arcHeight;
+        if (GetMob().GetPosition() != nextPos) GetMob().FaceTarget(nextPos);
+        GetMob().SetWorldPosition(nextPos);
+    }
+
+    /// <summary>
     /// Sets where the Mob should move next.
     /// </summary>
     /// <param name="nextPos">where the Mob should move next.</param>
-    protected virtual void SetNextMovePos(Vector3? nextPos) { nextMovePos = nextPos; }
+    protected virtual void SetNextMovePos(Vector3? nextPos)
+    {
+        nextMovePos = nextPos;
+
+        // Reset parabolic stats.
+        parabolaProgress = 0;
+        parabolaTarget = new Vector3(nextMovePos.Value.x, nextMovePos.Value.y, 1);
+        parabolaStartPos = GetMob().GetPosition(); // TEMP
+        parabolaScale = GetMob().GetMovementSpeed() /
+            Vector3.Distance(GetMob().GetPosition(), parabolaTarget); // TEMP
+    }
 
     /// <summary>
     /// Brings this Controller's Mob into life by calling its OnSpawn()
@@ -386,5 +571,8 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     {
         GetMob().RefreshRenderer();
         GetMob().OnSpawn();
+        GetMob().gameObject.SetActive(true);
+        GetMob().SubscribeToCollision(HandleCollision);
     }
+
 }

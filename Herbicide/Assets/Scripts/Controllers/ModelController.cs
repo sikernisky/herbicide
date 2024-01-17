@@ -33,10 +33,16 @@ public abstract class ModelController
     private static List<Model> ALL_MODELS = new List<Model>();
 
     /// <summary>
-    /// All controllers this ModelController has not yet passed
+    /// All ModelControllers this ModelController has not yet passed
     /// to the ControllerController.
     /// </summary>
-    private List<ModelController> volatileControllers = new List<ModelController>();
+    private List<ModelController> volatileModelControllers = new List<ModelController>();
+
+    /// <summary>
+    /// All EmanationControllers this ModelController has not yet passed
+    /// to the ControllerController.
+    /// </summary>
+    private List<EmanationController> volatileEmanationControllers = new List<EmanationController>();
 
     /// <summary>
     /// true if this Model will be destroyed at the end of the frame;
@@ -44,6 +50,15 @@ public abstract class ModelController
     /// </summary>
     private bool scheduledForDestruction;
 
+    /// <summary>
+    /// Number of active Models of each ModelType.
+    /// </summary>
+    private ModelCounts counts;
+
+    /// <summary>
+    /// true if this Model dropped its death loot; otherwise, false.
+    /// </summary>
+    private bool droppedDeathLoot;
 
 
     /// <summary>
@@ -89,9 +104,10 @@ public abstract class ModelController
 
         GetModel().UpdateEffects();
         UpdateTilePositions();
-        CheckModelClickUp();
-        UpdateSynergies();
+        ModelClickedUp();
+        //UpdateSynergies();
         if (GetModel().PickedUp()) GetModel().SetWorldPosition(GetModel().GetHeldPosition());
+        FixSortingOrder();
     }
 
     /// <summary>
@@ -138,10 +154,40 @@ public abstract class ModelController
     {
         if (GetModel() == null || System.Object.Equals(null, GetModel())) return;
 
+        // Put stuff that needs extricating/an extra frame on death here.
+        DropDeathLoot();
+
+        if (NeedsExtricating()) return;
+
+        // Put stuff that does not need extricating on death here.
         OnDestroyModel();
+
         ALL_MODELS.Remove(GetModel());
         DestroyModel();
         model = null;
+    }
+
+    /// <summary>
+    /// Drops loot from this Mob when it dies. 
+    /// </summary>
+    protected virtual void DropDeathLoot() { droppedDeathLoot = true; }
+
+    /// <summary>
+    /// Returns true if this Model dropped its death loot.
+    /// </summary>
+    /// <returns>true if this Model dropped its death loot; otherwise,
+    /// false. </returns>
+    protected bool DroppedDeathLoot() { return droppedDeathLoot; }
+
+    /// <summary>
+    /// Updates the Model's sorting order so that it appears behind Models
+    /// before it and before Models behind it.
+    /// </summary>
+    protected virtual void FixSortingOrder()
+    {
+        if (!ValidModel()) return;
+
+        GetModel().SetSortingOrder(-Mathf.FloorToInt(GetModel().GetPosition().y));
     }
 
     /// <summary>
@@ -183,12 +229,39 @@ public abstract class ModelController
     /// </summary>
     /// <returns>a list of ModelControllers that this ModelController has
     /// created but not yet passed to the ControllerController.</returns>
-    public List<ModelController> ExtricateControllers()
+    public List<ModelController> ExtricateModelControllers()
     {
         List<ModelController> copied =
-            new List<ModelController>(volatileControllers);
-        volatileControllers.Clear();
+            new List<ModelController>(volatileModelControllers);
+        volatileModelControllers.Clear();
         return copied;
+    }
+
+    /// <summary>
+    /// Returns a new list of EmanationContrllers that this ModelController has
+    /// created but not yet passed to the ControllerController. Then, wipes
+    /// the original list.
+    /// </summary>
+    /// <returns>a list of EmanationContrllers that this ModelController has
+    /// created but not yet passed to the ControllerController.</returns>
+    public List<EmanationController> ExtricateEmanationControllers()
+    {
+        List<EmanationController> copied =
+            new List<EmanationController>(volatileEmanationControllers);
+        volatileEmanationControllers.Clear();
+        return copied;
+    }
+
+    /// <summary>
+    /// Returns true if this ModelController has Controllers that the
+    /// ControllerController should collect.
+    /// </summary>
+    /// <returns>true if this ModelController has Controllers that the
+    /// ControllerController should collect; otherwise, false. </returns>
+    public bool NeedsExtricating()
+    {
+        return volatileModelControllers.Count > 0 ||
+        volatileEmanationControllers.Count > 0;
     }
 
     /// <summary>
@@ -196,10 +269,21 @@ public abstract class ModelController
     /// need to be extricated by the ControllerController.
     /// </summary>
     /// <param name="modelController">The ModelController to add.</param>
-    protected void AddController(ModelController modelController)
+    protected void AddModelControllerForExtrication(ModelController modelController)
     {
-        Assert.IsNotNull(modelController, "ProjectileController is null.");
-        volatileControllers.Add(modelController);
+        Assert.IsNotNull(modelController, "ModelController is null.");
+        volatileModelControllers.Add(modelController);
+    }
+
+    /// <summary>
+    /// Adds an EmanationController to the list of EmanationControllers that
+    /// need to be extricated by the ControllerController.
+    /// </summary>
+    /// <param name="modelController">The EmanationController to add.</param>
+    protected void AddEmanationControllerForExtrication(EmanationController emanationController)
+    {
+        Assert.IsNotNull(emanationController, "EmanationController is null.");
+        volatileEmanationControllers.Add(emanationController);
     }
 
     /// <summary>
@@ -208,6 +292,19 @@ public abstract class ModelController
     /// </summary>
     /// <param name="other">the other collider.</param>
     protected abstract void HandleCollision(Collider2D other);
+
+    /// <summary>
+    /// Informs this ModelController of the number of active Models of
+    /// each type.
+    /// </summary>
+    /// <param name="counts">The number of active Models of each ModelType.</param>
+    public void InformOfModelCounts(ModelCounts counts) { this.counts = counts; }
+
+    /// <summary>
+    /// Returns the number of active Models of each type.
+    /// </summary>
+    /// <returns>The number of active Models of each type.</returns>
+    protected ModelCounts GetModelCounts() { return counts; }
 
     /// <summary>
     /// Informs this ModelController of the most recent GameState so
@@ -249,36 +346,26 @@ public abstract class ModelController
         float stepTime = GetModel().CurrentAnimationDuration / GetModel().NumFrames();
         if (GetAnimationCounter() - stepTime > 0)
         {
-
             GetModel().NextFrame();
             ResetAnimationCounter();
         }
     }
 
     /// <summary>
-    /// Returns a list of all Models that are also PlaceableObjects
-    /// (all of them). 
+    /// Returns a list of all active Models.
     /// </summary>
-    /// <returns>a list of all PlaceableObjects in the scene.</returns>
-    public static List<PlaceableObject> GetAllTargetableObjects()
-    {
-        List<PlaceableObject> allTargetables = new List<PlaceableObject>();
-        foreach (Model model in ALL_MODELS)
-        {
-            PlaceableObject targetable = model as PlaceableObject;
-            if (targetable != null) allTargetables.Add(targetable);
-        }
-        return allTargetables;
-    }
+    /// <returns>a list of all Models in the scene.</returns>
+    public static IReadOnlyList<Model> GetAllModels() { return ALL_MODELS.AsReadOnly(); }
 
     /// <summary>
     /// Checks if the player clicked on this Model.
     /// </summary>
-    private void CheckModelClickUp()
+    protected bool ModelClickedUp()
     {
-        if (clicked) return;
-        if (!ValidModel()) return;
-        if (InputController.ModelClickedUp(GetModel())) clicked = true;
+        if (!ValidModel()) return false;
+        bool clickedUp = InputController.ModelClickedUp(GetModel());
+        clicked = false ? clickedUp : true;
+        return clickedUp;
     }
 
     /// <summary>
@@ -287,7 +374,7 @@ public abstract class ModelController
     /// </summary>
     /// <returns>true if the player has clicked on this Model since the
     /// scene began; otherwise, false.</returns>
-    protected bool ClickedOn() { return clicked; }
+    protected bool ClickedOnSinceSceneBegan() { return clicked; }
 
     /// <summary>
     /// Schedules this Model for destruction and destroys it at the
@@ -295,7 +382,7 @@ public abstract class ModelController
     /// </summary>
     public void DestroyModel()
     {
-        if (scheduledForDestruction) return;
+        if (ScheduledForDestruction()) return;
         scheduledForDestruction = true;
         GameObject.Destroy(GetModel().gameObject);
     }
@@ -304,4 +391,11 @@ public abstract class ModelController
     /// Performs logic right before this Model is destroyed.
     /// </summary>
     protected virtual void OnDestroyModel() { return; }
+
+    /// <summary>
+    /// Returns true if this Model is scheduled for destruction.
+    /// </summary>
+    /// <returns>true if this Model is scheduled for destruction;
+    /// otherwise, false.</returns>
+    protected bool ScheduledForDestruction() { return scheduledForDestruction; }
 }

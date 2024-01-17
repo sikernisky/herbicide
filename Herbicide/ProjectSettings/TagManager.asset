@@ -41,21 +41,30 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: BaseTile
+  - name: basetile
     uniqueID: 1001279129
     locked: 0
-  - name: Flooring
+  - name: flooring
     uniqueID: 3697966197
     locked: 0
-  - name: Trees
-    uniqueID: 1393009571
+  - name: hazards
+    uniqueID: 4243080667
     locked: 0
-  - name: Defenders
+  - name: groundmobs
     uniqueID: 677989163
     locked: 0
-  - name: Projectiles
+  - name: pickedupitems
+    uniqueID: 2101308647
+    locked: 0
+  - name: airmobs
+    uniqueID: 352602409
+    locked: 0
+  - name: projectiles
     uniqueID: 2853114793
     locked: 0
-  - name: DroppedItems
+  - name: collectables
     uniqueID: 294954647
+    locked: 0
+  - name: emanations
+    uniqueID: 1992083023
     locked: 0

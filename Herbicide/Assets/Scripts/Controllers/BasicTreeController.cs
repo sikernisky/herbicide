@@ -135,6 +135,6 @@ public class BasicTreeController : TreeController<BasicTreeController.BasicTreeS
             1
         );
         DewController dewController = new DewController(dewComp, dropPosition);
-        AddController(dewController);
+        AddModelControllerForExtrication(dewController);
     }
 }

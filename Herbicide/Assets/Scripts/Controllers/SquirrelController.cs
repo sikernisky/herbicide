@@ -48,6 +48,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     private float attackAnimationCounter;
 
 
+
     /// <summary>
     /// Makes a new SquirrelController.
     /// </summary>
@@ -66,6 +67,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         base.UpdateMob();
         if (!ValidModel()) return;
 
+        ExecuteSpawnState();
         ExecuteIdleState();
         ExecuteAttackState();
     }
@@ -87,7 +89,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     /// Returns the Squirrel's target if it has one. 
     /// </summary>
     /// <returns>the Squirrel's target; null if it doesn't have one.</returns>
-    private PlaceableObject GetTarget() { return NumTargets() == 1 ? GetTargets()[0] : null; }
+    private Enemy GetTarget() { return NumTargets() == 1 ? GetTargets()[0] as Enemy : null; }
 
     //--------------------BEGIN STATE LOGIC----------------------//
 
@@ -119,14 +121,16 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
             return;
         }
 
+
+
         switch (GetState())
         {
             case SquirrelState.SPAWN:
-                SetState(SquirrelState.IDLE);
+                if (SpawnStateDone()) SetState(SquirrelState.IDLE);
                 break;
             case SquirrelState.IDLE:
                 if (GetTarget() == null || !GetTarget().Targetable()) break;
-                if (GetSquirrel().DistanceToTarget(GetTarget())
+                if (GetSquirrel().DistanceToTargetFromTree(GetTarget())
                     <= GetSquirrel().GetAttackRange() &&
                     GetSquirrel().GetAttackCooldown() <= 0) SetState(SquirrelState.ATTACK);
                 break;
@@ -143,6 +147,18 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     }
 
     /// <summary>
+    /// Runs logic relevant to the Squirrel's spawn state.
+    /// </summary>
+    protected override void ExecuteSpawnState()
+    {
+        if (!ValidModel()) return;
+        if (GetState() != SquirrelState.SPAWN) return;
+
+        GetSquirrel().FaceDirection(Direction.SOUTH);
+        base.ExecuteSpawnState();
+    }
+
+    /// <summary>
     /// Runs logic relevant to the Squirrel's idle state.
     /// </summary>
     protected virtual void ExecuteIdleState()
@@ -150,6 +166,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         if (!ValidModel()) return;
         if (GetState() != SquirrelState.IDLE) return;
 
+        if (GetTarget() != null) GetSquirrel().FaceTarget(GetTarget());
         Direction direction = GetSquirrel().GetDirection();
         Sprite[] idleTrack = SquirrelFactory.GetIdleTrack(direction);
         GetSquirrel().SetAnimationTrack(idleTrack);
@@ -195,7 +212,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         Acorn clonedAcornComp = clonedAcorn.GetComponent<Acorn>();
         Vector3 targetPosition = GetTarget().GetAttackPosition();
         AcornController acornController = new AcornController(clonedAcornComp, GetSquirrel().GetPosition(), targetPosition);
-        AddController(acornController);
+        AddModelControllerForExtrication(acornController);
 
         // Reset attack animation.
         GetSquirrel().ResetAttackCooldown();
@@ -246,6 +263,4 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         if (state == SquirrelState.IDLE) idleAnimationCounter = 0;
         else if (state == SquirrelState.ATTACK) attackAnimationCounter = 0;
     }
-
-    //---------------------END STATE LOGIC-----------------------//
 }

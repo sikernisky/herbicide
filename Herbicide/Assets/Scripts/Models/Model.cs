@@ -11,19 +11,11 @@ using System.Linq;
 /// </summary>
 public abstract class Model : MonoBehaviour
 {
+
     /// <summary>
-    /// Different sorting layers a Model can take on.
+    /// How much currency is required to buy this Model.
     /// </summary>
-    public enum SortingLayer
-    {
-        DEFAULT,
-        BASE_TILE,
-        FLOORING,
-        TREES,
-        DEFENDERS,
-        PROJECTILES,
-        DROPPED_ITEMS
-    }
+    public virtual int COST => 1;
 
     /// <summary>
     /// Name of this Model.
@@ -34,6 +26,11 @@ public abstract class Model : MonoBehaviour
     /// Type of this Model.
     /// </summary>
     public abstract ModelType TYPE { get; }
+
+    /// <summary>
+    /// true if Mobs can hold this Model; otherwise, false.
+    /// </summary>
+    public virtual bool HOLDABLE => false;
 
     /// <summary>
     /// This Model's active animation track.
@@ -117,6 +114,7 @@ public abstract class Model : MonoBehaviour
 
 
 
+
     /// <summary>
     /// Sets this Model's SpriteRenderer to its most up-to date
     /// (attached) component.
@@ -149,10 +147,7 @@ public abstract class Model : MonoBehaviour
     /// Sets this Model's SpriteRenderer component's sorting
     /// order (order in layer).
     /// </summary>
-    public void SetSortingOrder(int layer)
-    {
-        if (layer >= 0) modelRenderer.sortingOrder = layer;
-    }
+    public void SetSortingOrder(int layer) { modelRenderer.sortingOrder = layer; }
 
     /// <summary>
     /// Returns this Model's sorting order.
@@ -237,12 +232,11 @@ public abstract class Model : MonoBehaviour
         expandedCoordinates.Add(new Vector2Int(x, y));
     }
 
-
     /// <summary>
     /// Returns a copy of the HashSet of this Model's expanded Tile coordinates.
     /// </summary>
     /// <returns>a copy of the HashSet of this Model's expanded Tile coordinates.</returns>
-    public HashSet<Vector2Int> GetExpandedTileCoordinates()
+    public virtual HashSet<Vector2Int> GetExpandedTileCoordinates()
     {
         if (expandedCoordinates == null) return new HashSet<Vector2Int>();
         return new HashSet<Vector2Int>(expandedCoordinates);
@@ -261,7 +255,11 @@ public abstract class Model : MonoBehaviour
     /// Sets the world position of this Model.
     /// </summary>
     /// <param name="pos">the position to set.</param>
-    public void SetWorldPosition(Vector3 pos) { transform.position = pos; }
+    public void SetWorldPosition(Vector3 pos)
+    {
+        pos.z = 1;
+        transform.position = pos;
+    }
 
     /// <summary>
     /// Returns the world position of this Model.
@@ -292,6 +290,14 @@ public abstract class Model : MonoBehaviour
     /// </summary>
     /// <returns>this Model's Transform component.</returns>
     public Transform GetTransform() { return transform; }
+
+    /// <summary>
+    /// Returns the position of where attacks directed at this PlaceableObject
+    /// should go.
+    /// </summary>
+    /// <returns>the position of where attacks directed at this PlaceableObject
+    /// should go.</returns>
+    public virtual Vector3 GetAttackPosition() { return GetPosition(); }
 
     /// <summary>
     /// Rotates this Model such that it faces a given direction.
@@ -400,15 +406,20 @@ public abstract class Model : MonoBehaviour
     /// Sets this Model's sorting layer.
     /// </summary>
     /// <param name="layer">The layer to set to.</param>
-    public void SetSortingLayer(SortingLayer layer)
+    public void SetSortingLayer(SortingLayers layer)
     {
-        if (layer == SortingLayer.DEFAULT) modelRenderer.sortingLayerName = "Default";
-        if (layer == SortingLayer.BASE_TILE) modelRenderer.sortingLayerName = "BaseTile";
-        if (layer == SortingLayer.FLOORING) modelRenderer.sortingLayerName = "Flooring";
-        if (layer == SortingLayer.TREES) modelRenderer.sortingLayerName = "Trees";
-        if (layer == SortingLayer.DEFENDERS) modelRenderer.sortingLayerName = "Defenders";
-        if (layer == SortingLayer.PROJECTILES) modelRenderer.sortingLayerName = "Projectiles";
-        if (layer == SortingLayer.DROPPED_ITEMS) modelRenderer.sortingLayerName = "DroppedItems";
+        modelRenderer.sortingLayerName = layer.ToString().ToLower();
+    }
+
+    /// <summary>
+    /// Returns this Model's sorting layer.
+    /// </summary>
+    /// <returns>This Model's sorting layer. </returns>
+    public SortingLayers GetSortingLayer()
+    {
+        string currentLayerName = modelRenderer.sortingLayerName.ToLower();
+        if (Enum.TryParse<SortingLayers>(currentLayerName, true, out SortingLayers result)) return result;
+        else return default;
     }
 
     /// <summary>
@@ -422,7 +433,7 @@ public abstract class Model : MonoBehaviour
         Assert.IsNull(this.holder, "Already picked up.");
         this.holder = holder;
         this.holdingOffset = holdingOffset;
-        SetSortingLayer(SortingLayer.DROPPED_ITEMS);
+        SetSortingLayer(SortingLayers.PICKEDUPITEMS);
     }
 
     /// <summary>
@@ -432,7 +443,7 @@ public abstract class Model : MonoBehaviour
     {
         Assert.IsNotNull(holder, "Not picked up.");
         holder = null;
-        SetSortingLayer(SortingLayer.DEFENDERS);
+        SetSortingLayer(SortingLayers.GROUNDMOBS);
     }
 
     /// <summary>
@@ -473,4 +484,13 @@ public abstract class Model : MonoBehaviour
     /// <returns> a Sprite that represents this Model when it is
     /// being placed.</returns>
     public abstract Sprite[] GetPlacementTrack();
+
+    /// <summary>
+    /// Returns the (X, Y) dimensions of this Model's placement track.
+    /// </summary>
+    /// <returns>the (X, Y) dimensions of this Model's placement track.</returns>
+    public virtual Vector2Int GetPlacementTrackDimensions()
+    {
+        return new Vector2Int(16, 16);
+    }
 }

@@ -19,6 +19,11 @@ public abstract class Collectable : Model
     public virtual float BOB_HEIGHT => .15f;
 
     /// <summary>
+    /// How fast this Collectable moves towards the cursor.
+    /// </summary>
+    public virtual float HOME_SPEED => 12f;
+
+    /// <summary>
     /// true if the player collected this Collectable; false otherwise
     /// </summary>
     private bool collected;
@@ -28,6 +33,12 @@ public abstract class Collectable : Model
     /// </summary>
     [SerializeField]
     private AnimationCurve driftUpCurve;
+
+    /// <summary>
+    /// The AnimationCurve this Collectable follows when homing towards the mouse.
+    /// </summary>
+    [SerializeField]
+    private AnimationCurve homingCurve;
 
     /// <summary>
     /// Types of Collectables.
@@ -60,5 +71,11 @@ public abstract class Collectable : Model
     /// </summary>
     /// <returns>this Collectable's drift-up curve.</returns>
     public AnimationCurve GetDriftUpCurve() { return driftUpCurve; }
+
+    /// <summary>
+    /// Returns this Collectable's homing curve.
+    /// </summary>
+    /// <returns>this Collectable's homing curve.</returns>
+    public AnimationCurve GetHomingCurve() { return homingCurve; }
 
 }

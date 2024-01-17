@@ -24,7 +24,8 @@ public class NexusController : StructureController<NexusController.NexusState>
     {
         SPAWN,
         IDLE,
-        PICKED_UP
+        PICKED_UP,
+        CASHED_IN
     }
 
     /// <summary>
@@ -43,21 +44,19 @@ public class NexusController : StructureController<NexusController.NexusState>
     }
 
     /// <summary>
-    /// Returns true if the Nexus can target the PlaceableObject passed
+    /// Returns true if the Nexus can target the Model passed
     /// into this method.
     /// </summary>
-    /// <param name="target">The Placeable object to check for targetability.</param>
-    /// <returns></returns>
-    protected override bool CanTarget(PlaceableObject target)
-    {
-        return false;
-    }
+    /// <param name="target">The Model to check for targetability.</param>
+    /// <returns>true if the Nexus can target the Model passed
+    /// into this method; otherwise, false.</returns>
+    protected override bool CanTarget(Model target) { return false; }
 
     /// <summary>
     /// Returns true if the Nexus should be removed.
     /// </summary>
     /// <returns>true if the Nexus should be removed; otherwise, false.</returns>
-    protected override bool ShouldRemoveModel() { return GetNexus().Dead(); }
+    protected override bool ShouldRemoveModel() { return GetNexus().CashedIn(); }
 
     /// <summary>
     /// Returns the Nexus model.
@@ -89,6 +88,7 @@ public class NexusController : StructureController<NexusController.NexusState>
     /// </summary>
     public override void ResetAnimationCounter() { throw new System.NotImplementedException(); }
 
+
     //--------------------- STATE LOGIC-----------------------//
 
     /// <summary>
@@ -98,6 +98,8 @@ public class NexusController : StructureController<NexusController.NexusState>
     /// </summary>
     public override void UpdateStateFSM()
     {
+        if (!ValidModel()) return;
+
         switch (GetState())
         {
             case NexusState.SPAWN:
@@ -107,7 +109,10 @@ public class NexusController : StructureController<NexusController.NexusState>
                 if (GetNexus().PickedUp()) SetState(NexusState.PICKED_UP);
                 break;
             case NexusState.PICKED_UP:
-                if (!GetNexus().PickedUp()) SetState(NexusState.IDLE);
+                if (!GetNexus().PickedUp() && !GetNexus().CashedIn()) SetState(NexusState.IDLE);
+                if (GetNexus().CashedIn()) SetState(NexusState.CASHED_IN);
+                break;
+            case NexusState.CASHED_IN:
                 break;
         }
     }

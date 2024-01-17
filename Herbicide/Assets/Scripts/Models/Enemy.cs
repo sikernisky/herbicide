@@ -11,17 +11,11 @@ using System.Linq;
 /// </summary>
 public abstract class Enemy : Mob
 {
-
     /// <summary>
     /// The chance, between 0-1, that this Enemy drops
     /// its loot upon death. 
     /// </summary>
     public abstract float LOOT_DROP_CHANCE { get; }
-
-    /// <summary>
-    /// The world position where this Enemy spawns.
-    /// </summary>
-    private Vector3 spawnPosition;
 
     /// <summary>
     /// The time at which this Enemy spawns.
@@ -34,9 +28,19 @@ public abstract class Enemy : Mob
     private EnemyHealthState healthState;
 
     /// <summary>
-    /// true if the Enemy escaped; otherwise, false.
+    /// true if the Enemy exited; otherwise, false.
     /// </summary>
-    private bool escaped;
+    private bool exited;
+
+    /// <summary>
+    /// true if the Enemy is exiting; otherwise, false.
+    /// </summary>
+    private bool exiting;
+
+    /// <summary>
+    /// The position of the structure the Enemy is using to exit.
+    /// </summary>
+    private Vector3 exitPos;
 
     /// <summary>
     /// Type of this Enemy.
@@ -55,11 +59,6 @@ public abstract class Enemy : Mob
         DAMAGED,
         CRITICAL
     }
-
-    /// <summary>
-    /// Resets this Enemy's position to be its spawn position.
-    /// </summary>
-    private void ResetPosition() { transform.position = spawnPosition; }
 
     /// <summary>
     /// Called when this Enemy appears on the TileGrid and is assigned
@@ -108,25 +107,44 @@ public abstract class Enemy : Mob
     public float GetSpawnTime() { return spawnTime; }
 
     /// <summary>
-    /// Sets the (X, Y) world coordinates where this Enemy spawns in the level.
+    /// Returns true if this Enemy exited.
     /// </summary>
-    /// <param name="coords">the (X, Y) coordinates.</param>
-    public void SetSpawnWorldPosition(Vector3 position) { spawnPosition = position; }
+    /// <returns>true if this Enemy exited; otherwise, false. </returns>
+    public bool Exited() { return exited; }
 
     /// <summary>
-    /// Returns the (X, Y) world position where this Enemy spawns in the level.
+    /// Sets this Enemy as exited.
     /// </summary>
-    /// <returns>the (X, Y) world position where this Enemy spawns.</returns>
-    public Vector3 GetSpawnWorldPosition() { return spawnPosition; }
+    public void SetExited()
+    {
+        exiting = false;
+        exited = true;
+    }
 
     /// <summary>
-    /// Returns true if this Enemy escaped.
+    /// Sets the Enemy as exiting, but not yet exited.
     /// </summary>
-    /// <returns>true if this Enemy escaped; otherwise, false. </returns>
-    public bool Escaped() { return escaped; }
+    /// <param name="exitPos">The position of the structure the
+    /// Enemy is using to exit. /// </param>
+    public void SetExiting(Vector3 exitPos)
+    {
+        exited = false;
+        exiting = true;
+        this.exitPos = exitPos;
+    }
 
     /// <summary>
-    /// Sets this Enemy as escaped.
+    /// Returns true if this Enemy is exiting.
     /// </summary>
-    public void SetEscaped() { escaped = true; }
+    /// <returns>true if this Enemy is exiting; otherwise, false. </returns>
+    public bool IsExiting() { return exiting; }
+
+    /// <summary>
+    /// Returns the position of the structure the Enemy is
+    /// using to exit.
+    /// </summary>
+    /// <returns>the position of the structure the Enemy is
+    /// using to exit.</returns>
+    public Vector3 GetExitPos() { return exitPos; }
 }
+

@@ -56,4 +56,11 @@ public class SoilFlooring : Flooring
         if (!hasEast && hasWest && !hasSouth && hasNorth) return 14;
         return 15; // has no neighbors
     }
+
+    /// <summary>
+    /// Returns the GameObject that represents this SoilFlooring on the grid.
+    /// </summary>
+    /// <returns>the GameObject that represents this SoilFlooring on the grid.
+    /// </returns>
+    public override GameObject Copy() { return Instantiate(FlooringFactory.GetSoilFlooringPrefab()); }
 }

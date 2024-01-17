@@ -23,9 +23,9 @@ public class ShopBoatController : MobController<ShopBoatController.ShopBoatState
     }
 
     /// <summary>
-    /// The rider the ShopBoat is selling.
+    /// The animation counter for when the boat is moving.
     /// </summary>
-    private Model rider;
+    private float cruiseAnimationCounter;
 
     /// <summary>
     /// Main update loop for the ShopBoat.
@@ -34,6 +34,7 @@ public class ShopBoatController : MobController<ShopBoatController.ShopBoatState
     {
         base.UpdateMob();
         ExecuteCruiseFullState();
+        ExecuteCruiseEmptyState();
     }
 
     /// <summary>
@@ -72,7 +73,12 @@ public class ShopBoatController : MobController<ShopBoatController.ShopBoatState
     /// </summary>
     /// <returns>true if the ShopBoat should be removed; otherwise,
     /// false. </returns>
-    protected override bool ShouldRemoveModel() { return GetBoat().Dead(); }
+    protected override bool ShouldRemoveModel()
+    {
+        if (GetBoat().Dead()) return true;
+
+        return false;
+    }
 
     //--------------------STATE LOGIC----------------------//
 
@@ -103,6 +109,7 @@ public class ShopBoatController : MobController<ShopBoatController.ShopBoatState
                 SetState(ShopBoatState.CRUISE_FULL);
                 break;
             case ShopBoatState.CRUISE_FULL:
+                if (GetBoat().Purchased()) SetState(ShopBoatState.CRUISE_EMPTY);
                 break;
             case ShopBoatState.CRUISE_EMPTY:
                 break;
@@ -117,45 +124,113 @@ public class ShopBoatController : MobController<ShopBoatController.ShopBoatState
         if (GetState() != ShopBoatState.CRUISE_FULL) return;
         if (!ValidModel()) return;
 
-        // For now, just go right.
-        ShopBoat shopBoat = GetBoat();
-        float boatSpeed = shopBoat.GetMovementSpeed();
-        float deltaTime = Time.deltaTime;
-        Vector3 newPosition = shopBoat.GetPosition();
-        newPosition.x += boatSpeed * deltaTime; // Move to the right
-        shopBoat.SetWorldPosition(newPosition);
+        GetBoat().SetAnimationDuration(GetBoat().MOVE_ANIMATION_DURATION);
+        Sprite[] cruiseTrack = ShopBoatFactory.GetMovementTrack();
+        if (GetAnimationState() != ShopBoatState.CRUISE_FULL) GetBoat().SetAnimationTrack(cruiseTrack);
+        else GetBoat().SetAnimationTrack(cruiseTrack, GetBoat().CurrentFrame);
+        SetAnimationState(ShopBoatState.CRUISE_FULL);
+
+        StepAnimation();
+        GetBoat().SetSprite(GetBoat().GetSpriteAtCurrentFrame());
+
+        WaveMove();
+
+        // Enough money to buy, start placing.
+        if (ModelClickedUp() && EconomyController.GetBalance() >= GetBoat().GetRiderPrice()
+            && GetGameState() == GameState.ONGOING)
+        {
+            GetBoat().BuyRider();
+            EconomyController.Withdraw(GetBoat().GetRiderPrice());
+
+            if (PlacementController.Placing()) return;
+
+            //Start the placement event
+            Model occupant = GetBoat().GetRider();
+            if (occupant == null) return;
+            PlacementController.StartPlacingObject(occupant);
+        }
+        GetBoat().UpdateSignPrice();
+    }
+
+    /// <summary>
+    /// Runs logic for the ShopBoat's CruiseEmpty state.
+    /// </summary>
+    protected virtual void ExecuteCruiseEmptyState()
+    {
+        if (GetState() != ShopBoatState.CRUISE_EMPTY) return;
+        if (!ValidModel()) return;
+
+        StepAnimation();
+        GetBoat().SetSprite(GetBoat().GetSpriteAtCurrentFrame());
+
+        WaveMove();
     }
 
     //--------------------END STATE LOGIC----------------------//
 
+    /// <summary>
+    /// Moves the shopboat model to its destination in a wave-like
+    /// motion.
+    /// </summary>
+    private void WaveMove()
+    {
+        ShopBoat shopBoat = GetBoat();
+        float boatSpeed = shopBoat.GetMovementSpeed();
+        float deltaTime = Time.deltaTime;
+
+        Vector3 newPosition = shopBoat.GetPosition();
+
+        // Move to the right for now.
+        newPosition.x += boatSpeed * deltaTime;
+
+        // Waves
+        float waveAmplitude = .002f; // Height
+        float waveFrequency = 2.0f; // Speed
+        newPosition.y += waveAmplitude * Mathf.Sin(Time.time * waveFrequency);
+
+        shopBoat.SetWorldPosition(newPosition);
+    }
 
     /// <summary>
-    /// Returns true if the ShopBoat can target the PlaceableObject passed
+    /// Returns true if the ShopBoat can target the Model passed
     /// into this method.
     /// </summary>
-    /// <param name="target">The target to check.</param>
-    /// <returns>true if the ShopBoat can target the PlaceableObject; otherwise,
+    /// <param name="target">The Model to check.</param>
+    /// <returns>true if the ShopBoat can target the Model; otherwise,
     /// false.</returns>
-    protected override bool CanTarget(PlaceableObject target)
-    {
-        return false;
-    }
+    protected override bool CanTarget(Model target) { return false; }
 
     /// <summary>
     /// Adds one chunk of Time.deltaTime to the animation
     /// counter that tracks the current state.
     /// </summary>
-    public override void AgeAnimationCounter() { return; }
+    public override void AgeAnimationCounter()
+    {
+        ShopBoatState state = GetState();
+        if (state == ShopBoatState.CRUISE_FULL) cruiseAnimationCounter += Time.deltaTime;
+        else if (state == ShopBoatState.CRUISE_EMPTY) cruiseAnimationCounter += Time.deltaTime;
+    }
 
     /// <summary>
     /// Returns the animation counter for the current state.
     /// </summary>
     /// <returns>the animation counter for the current state.</returns>
-    public override float GetAnimationCounter() { return default; }
+    public override float GetAnimationCounter()
+    {
+        ShopBoatState state = GetState();
+        if (state == ShopBoatState.CRUISE_FULL) return cruiseAnimationCounter;
+        else if (state == ShopBoatState.CRUISE_EMPTY) return cruiseAnimationCounter;
+        else throw new System.Exception("State " + state + " has no counter.");
+    }
 
     /// <summary>
     /// Sets the animation counter for the current state to 0.
     /// </summary>
-    public override void ResetAnimationCounter() { return; }
+    public override void ResetAnimationCounter()
+    {
+        ShopBoatState state = GetState();
+        if (state == ShopBoatState.CRUISE_FULL) cruiseAnimationCounter = 0;
+        else if (state == ShopBoatState.CRUISE_EMPTY) cruiseAnimationCounter = 0;
+    }
 
 }

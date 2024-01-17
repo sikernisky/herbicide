@@ -63,7 +63,7 @@ public class ShopBoat : Mob
     /// <summary>
     /// Starting movement speed of a ShopBoat.
     /// </summary>
-    public override float BASE_MOVEMENT_SPEED => 1f;
+    public override float BASE_MOVEMENT_SPEED => .8f;
 
     /// <summary>
     /// Maximum movement speed of a ShopBoat.
@@ -97,6 +97,12 @@ public class ShopBoat : Mob
     public override int MIN_HEALTH => int.MinValue;
 
     /// <summary>
+    /// How many seconds a ShopBoat's move animation lasts,
+    /// from start to finish. 
+    /// </summary>
+    public float MOVE_ANIMATION_DURATION => 1.5f;
+
+    /// <summary>
     /// The text component on the ShopBoat's sign that displays the
     /// rider's price.
     /// </summary>
@@ -113,6 +119,12 @@ public class ShopBoat : Mob
     /// The Model riding this ShopBoat.
     /// </summary>
     private Model rider;
+
+    /// <summary>
+    /// true if the player bought the rider Model on this ShopBoat;
+    /// otherwise, false.
+    /// </summary>
+    private bool purchased;
 
 
     /// <summary>
@@ -165,4 +177,33 @@ public class ShopBoat : Mob
     /// Sets the properties of the ShopBoat's 2D Collider component.
     /// </summary>
     public override void SetColliderProperties() { return; }
+
+    /// <summary>
+    /// Sets the sign's text to display the price of the current rider.
+    /// </summary>
+    public void UpdateSignPrice() { signPrice.text = GetRider().COST.ToString(); }
+
+    /// <summary>
+    /// Returns the amount of currency it costs to buy the current rider.
+    /// </summary>
+    /// <returns>the amount of currency it costs to buy the current rider.
+    /// </returns>
+    public int GetRiderPrice() { return GetRider().COST; }
+
+    /// <summary>
+    /// Buys the Rider on this ShopBoat.
+    /// /// </summary>
+    public void BuyRider()
+    {
+        Assert.IsFalse(purchased, "Already purchased.");
+        purchased = true;
+        riderRenderer.color = new Color32(0, 0, 0, 0);
+    }
+
+    /// <summary>
+    /// Returns true if the Rider has been bought.
+    /// </summary>
+    /// <returns>true if the Rider has been bought; otherwise,
+    /// false./// </returns>
+    public bool Purchased() { return purchased; }
 }

@@ -83,14 +83,14 @@ public class SquirrelFactory : MonoBehaviour
     /// <summary>
     /// Finds and sets the SquirrelFactory singleton.
     /// </summary>
-    /// <param name="levelController">The SquirrelFactory singleton.</param>
+    /// <param name="levelController">The LevelController singleton.</param>
     public static void SetSingleton(LevelController levelController)
     {
         if (levelController == null) return;
         if (instance != null) return;
 
         SquirrelFactory[] squirrelFactories = FindObjectsOfType<SquirrelFactory>();
-        Assert.IsNotNull(squirrelFactories, "Array of TileFactories is null.");
+        Assert.IsNotNull(squirrelFactories, "Array of SquirrelFactories is null.");
         Assert.AreEqual(1, squirrelFactories.Length);
         instance = squirrelFactories[0];
     }
@@ -155,9 +155,9 @@ public class SquirrelFactory : MonoBehaviour
     public static Sprite[] GetPlacementTrack() { return instance.placementTrack; }
 
     /// <summary>
-    /// Returns the animation track that represents this ShopBoat on a boat. 
+    /// Returns the animation track that represents this Squirrel on a boat. 
     /// </summary>
-    /// <returns>the animation track that represents this ShopBoat on a boat. 
+    /// <returns>the animation track that represents this Squirrel on a boat. 
     /// </returns>
     public static Sprite[] GetBoatTrack() { return instance.boatTrack; }
 }

@@ -6,4 +6,10 @@
    <property name="markerName" value="shopStart"/>
   </properties>
  </tile>
+ <tile id="1" type="Marker">
+  <properties>
+   <property name="enemySpawnData" value=""/>
+   <property name="markerName" value="enemySpawn"/>
+  </properties>
+ </tile>
 </tileset>

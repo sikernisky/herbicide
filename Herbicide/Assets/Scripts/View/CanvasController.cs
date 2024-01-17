@@ -147,7 +147,7 @@ public class CanvasController : MonoBehaviour
     /// Finds and sets the CanvasController singleton for the SkillMenu.
     /// </summary>
     /// <param name="skillMenuController">The SkillMenuController singleton.</param>
-    public static void SetSingleton(SkillMenuController skillMenuController)
+    public static void SetSingleton(CollectionMenuController skillMenuController)
     {
         if (skillMenuController == null) return;
         if (instance != null) return;
@@ -174,7 +174,7 @@ public class CanvasController : MonoBehaviour
     /// Main update loop for the CanvasController.
     /// </summary>
     /// <param name="fps">current game FPS.</param>
-    public static void UpdateCanvas(int fps)
+    public static void UpdateCanvas(float fps)
     {
         instance.UpdateFader();
 

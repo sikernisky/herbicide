@@ -24,7 +24,7 @@ public class SkillTreeManager : MonoBehaviour
     /// Finds and sets the SkillTreeManager singleton for the SkillMenu.
     /// </summary>
     /// <param name="skillMenuController">The SkillMenuController singleton.</param>
-    public static void SetSingleton(SkillMenuController skillMenuController)
+    public static void SetSingleton(CollectionMenuController skillMenuController)
     {
         if (skillMenuController == null) return;
         if (instance != null) return;

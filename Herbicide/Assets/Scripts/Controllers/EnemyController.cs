@@ -21,29 +21,11 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     private static int NUM_ENEMIES;
 
 
-
-    /// <summary>
-    /// true if this Enemy has picked up as many targets as it is allowed to;
-    /// otherwise, false. /// 
-    /// </summary>
-    private bool handsFull;
-
-
-
-
-
     /// <summary>
     /// Initializes this EnemyController with the Enemy it controls.
     /// </summary>
     /// <param name="enemy">the enemy this EnemyController controls.</param>
-    public EnemyController(Enemy enemy) : base(enemy)
-    {
-        //Safety checks
-        Assert.IsNotNull(enemy);
-
-        //SetState(Mob.MobState.INACTIVE);
-        NUM_ENEMIES++;
-    }
+    public EnemyController(Enemy enemy) : base(enemy) { NUM_ENEMIES++; }
 
     /// <summary>
     /// Updates the Enemy controlled by this EnemyController.
@@ -57,11 +39,8 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
         if (!GetEnemy().Spawned()) SpawnMob();
         if (!GetEnemy().Spawned()) return;
 
-        RectifyEnemySortingOrder();
         UpdateEnemyHealthState();
         UpdateEnemyCollider();
-        // Debug.Log("\n");
-        // GetTargets().ForEach(target => Debug.Log("target: " + target + ", id: " + target.GetInstanceID()));
     }
 
     /// <summary>
@@ -71,9 +50,8 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     protected override void SpawnMob()
     {
         if (!GetEnemy().ReadyToSpawn()) return;
-        GetEnemy().gameObject.SetActive(true);
-        GetEnemy().SubscribeToCollision(HandleCollision);
-        GetEnemy().SetWorldPosition(GetEnemy().GetSpawnWorldPosition());
+        SetPathfindingCache();
+        GetMob().SetWorldPosition(NexusHoleSpawnPos(GetMob().GetSpawnPos()));
         base.SpawnMob();
     }
 
@@ -95,16 +73,6 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     private void UpdateEnemyCollider() { GetEnemy().SetColliderProperties(); }
 
     /// <summary>
-    /// Updates the Enemy controlled by this EnemyController's sorting order so that
-    /// it is in line with its current tile Y position and does not display behind
-    /// sprites that are higher up on the TileGrid.
-    /// </summary>
-    private void RectifyEnemySortingOrder()
-    {
-        GetEnemy().SetSortingOrder(10000 - (int)(GetEnemy().GetPosition().y * 100));
-    }
-
-    /// <summary>
     /// Returns true if this controller's Enemy should be destoyed and
     /// set to null.
     /// </summary>
@@ -116,36 +84,11 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
 
         if (!TileGrid.OnWalkableTile(GetEnemy().GetPosition())) return true;
         else if (GetEnemy().Dead()) return true;
-        else if (GetEnemy().Escaped()) return true;
+        else if (GetEnemy().Exited()) return true;
 
         return false;
     }
 
-    /// <summary>
-    /// Returns true if the Enemy can target the PlaceableObject passed
-    /// into this method.
-    /// </summary>
-    /// <param name="target">The Placeable object to check for targetability.</param>
-    /// <returns></returns>
-    protected override bool CanTarget(PlaceableObject target)
-    {
-        Nexus nexusTarget = target as Nexus;
-        NexusHole nexusHoleTarget = target as NexusHole;
-
-        if (target == null) return false;
-        if (nexusTarget == null && nexusHoleTarget == null) return false;
-        if (!target.Targetable()) return false;
-
-        // Nexus logic.
-        if (nexusTarget != null && nexusTarget.PickedUp()) return false;
-        if (nexusTarget != null && nexusTarget.CashedIn()) return false;
-        if (nexusTarget != null && NumTargetsHolding() == HOLDING_LIMIT) return false;
-
-        // NexusHole logic.
-        if (nexusHoleTarget != null && nexusHoleTarget.Filled()) return false;
-
-        return true;
-    }
 
     /// <summary>
     /// Handles all collisions between this controller's Enemy
@@ -159,7 +102,7 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
         Acorn acorn = other.gameObject.GetComponent<Acorn>();
         BombSplat bombSplat = other.gameObject.GetComponent<BombSplat>();
 
-        if (acorn != null)
+        if (acorn != null && acorn.GetVictim() == null)
         {
             SoundController.PlaySoundEffect("kudzuHit");
             GetEnemy().AdjustHealth(-acorn.GetDamage());
@@ -167,4 +110,39 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
         }
     }
 
+    /// <summary>
+    /// Performs logic right before the Enemy is destroyed.
+    /// </summary>
+    protected override void OnDestroyModel()
+    {
+        if (ScheduledForDestruction()) return;
+
+        // Drop held targets.
+        foreach (PlaceableObject heldTarget in GetHeldTargets())
+        {
+            Nexus nexusTarget = heldTarget as Nexus;
+            if (nexusTarget != null)
+            {
+                if (GetEnemy().Exited()) nexusTarget.CashIn();
+                else
+                {
+                    nexusTarget.Drop();
+                    TileGrid.PlaceOnTile(new Vector2Int(GetEnemy().GetX(), GetEnemy().GetY()), nexusTarget, true);
+                }
+            }
+        }
+
+        base.OnDestroyModel();
+    }
+
+    /// <summary>
+    /// Returns the spawn position of the Enemy when in a NexusHole.
+    /// </summary>
+    /// <param name="originalSpawnPos">The position of the NexusHole it is
+    /// spawning from.</param>
+    /// <returns> the spawn position of the Enemy when in a NexusHole.</returns>
+    protected virtual Vector3 NexusHoleSpawnPos(Vector3 originalSpawnPos)
+    {
+        return originalSpawnPos;
+    }
 }

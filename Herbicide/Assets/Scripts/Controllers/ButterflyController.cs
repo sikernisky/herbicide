@@ -98,7 +98,7 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
     /// Returns the Butterfly's target if it has one. 
     /// </summary>
     /// <returns>the Butterfly's target; null if it doesn't have one.</returns>
-    private PlaceableObject GetTarget() { return NumTargets() == 1 ? GetTargets()[0] : null; }
+    private Enemy GetTarget() { return NumTargets() == 1 ? GetTargets()[0] as Enemy : null; }
 
     //--------------------BEGIN STATE LOGIC----------------------//
 
@@ -283,7 +283,7 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
         Vector3 targetPosition = GetTarget().GetAttackPosition();
         BombController bombController =
             new BombController(clonedBombComp, GetButterfly().GetPosition(), targetPosition);
-        AddController(bombController);
+        AddModelControllerForExtrication(bombController);
 
         GetButterfly().ResetAttackCooldown();
     }

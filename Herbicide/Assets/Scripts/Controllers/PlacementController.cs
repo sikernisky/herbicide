@@ -33,12 +33,6 @@ public class PlacementController : MonoBehaviour
     private Image dummyImage;
 
     /// <summary>
-    /// The InventorySlot that an ISlottable is being placed from; null
-    /// if no placement event is active. 
-    /// </summary>
-    private InventorySlot placingSlot;
-
-    /// <summary>
     /// The Tile on which the player is ghost placing; null if they aren't.
     /// </summary>
     private Tile ghostSubject;
@@ -47,6 +41,16 @@ public class PlacementController : MonoBehaviour
     /// The current GameState.
     /// </summary>
     private GameState gameState;
+
+    /// <summary>
+    /// true if there is an active placement event; otherwise, false.
+    /// </summary>
+    private bool placing;
+
+    /// <summary>
+    /// the Model the player is placing. 
+    /// </summary>
+    private Model subject;
 
 
     /// <summary>
@@ -81,7 +85,7 @@ public class PlacementController : MonoBehaviour
 
         if (instance.gameState == GameState.ONGOING)
         {
-            if (Placing()) instance.GlueSubjectToMouse();
+            instance.GlueSubjectToMouse();
             if (didEscape)
             {
                 if (Placing()) StopPlacingObject(false);
@@ -98,16 +102,20 @@ public class PlacementController : MonoBehaviour
     /// <summary>
     /// Starts a placement event.
     /// </summary>
-    /// <param name="slot">the InventorySlot to place from. </param>
-    public static void StartPlacingObject(InventorySlot slot)
+    public static void StartPlacingObject(Model m)
     {
-        if (slot == null) return;
         if (Placing()) return;
+        if (m == null) return;
+
+        Vector2Int placementDimensions = m.GetPlacementTrackDimensions();
+        Vector3 placementDimensionsConv = new Vector3(placementDimensions.x, placementDimensions.y, 1);
 
         instance.dummy.SetActive(true);
-        instance.dummyImage.sprite = slot.GetOccupant().GetPlacementTrack()[0]; // TODO: Animation
+        instance.dummyImage.sprite = m.GetPlacementTrack()[0]; // TODO: Animation
         instance.dummyImage.color = PLACE_COLOR;
-        instance.placingSlot = slot;
+        instance.dummyImage.rectTransform.sizeDelta = placementDimensionsConv;
+        instance.placing = true;
+        instance.subject = m;
     }
 
     /// <summary>
@@ -118,13 +126,11 @@ public class PlacementController : MonoBehaviour
     public static void StopPlacingObject(bool wasPlaced)
     {
         if (!Placing()) return;
-        if (!instance.placingSlot.CanUse()) return;
 
-        if (wasPlaced) instance.placingSlot.Use();
         instance.dummy.SetActive(false);
         instance.dummyImage.sprite = null;
         instance.dummyImage.color = Color.white;
-        instance.placingSlot = null;
+        instance.placing = false;
     }
 
     /// <summary>
@@ -135,7 +141,7 @@ public class PlacementController : MonoBehaviour
     /// is being placed.</returns>
     public static Model GetObjectPlacing()
     {
-        return instance.placingSlot.GetOccupant();
+        return instance.subject;
     }
 
     /// <summary>
@@ -144,7 +150,7 @@ public class PlacementController : MonoBehaviour
     /// <returns>true if there is an item being placed; otherwise, false.</returns>
     public static bool Placing()
     {
-        return instance.placingSlot != null;
+        return instance.placing;
     }
 
     /// <summary>
@@ -163,9 +169,7 @@ public class PlacementController : MonoBehaviour
     /// </summary>
     private void GlueSubjectToMouse()
     {
-        if (!Placing()) return;
-
-        dummy.transform.position = InputController.GetMousePosition();
+        dummy.transform.position = InputController.GetUIMousePosition();
     }
 
     /// <summary>
@@ -178,11 +182,11 @@ public class PlacementController : MonoBehaviour
         if (subject == null) return;
 
         instance.dummyImage.color = new Color(
-                        instance.dummyImage.color.r,
-                        instance.dummyImage.color.g,
-                        instance.dummyImage.color.b,
-                        0
-                    );
+                instance.dummyImage.color.r,
+                instance.dummyImage.color.g,
+                instance.dummyImage.color.b,
+                0
+            );
 
         instance.ghostSubject = subject;
     }
@@ -198,13 +202,7 @@ public class PlacementController : MonoBehaviour
         Assert.IsNotNull(instance.ghostSubject);
         Assert.IsNotNull(instance.dummyImage);
 
-        instance.dummyImage.color = new Color(
-                        instance.dummyImage.color.r,
-                        instance.dummyImage.color.g,
-                        instance.dummyImage.color.b,
-                        255
-                        );
-
+        instance.dummyImage.color = PLACE_COLOR;
         instance.ghostSubject.GhostRemove();
         instance.ghostSubject = null;
     }

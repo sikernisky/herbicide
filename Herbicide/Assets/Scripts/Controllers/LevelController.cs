@@ -15,19 +15,6 @@ using UnityEngine.UI;
 public class LevelController : MonoBehaviour
 {
     /// <summary>
-    /// Items to load the InventoryController with. This is a temporary
-    /// field and should be replaced when SelectMode is implemented.
-    /// </summary>
-    [SerializeField]
-    private PlaceableObject[] items;
-
-    /// <summary>
-    /// How long the level waits before spawning enemies.
-    /// </summary>
-    [SerializeField]
-    private float enemySpawnDelay;
-
-    /// <summary>
     /// Reference to the LevelController singleton.
     /// </summary>
     private LevelController instance;
@@ -44,6 +31,7 @@ public class LevelController : MonoBehaviour
 
 
 
+
     /// <summary>
     /// Sets up the level: <br></br>
     /// 
@@ -51,9 +39,8 @@ public class LevelController : MonoBehaviour
     /// (1) Instantiates all factories and singletons.<br></br>
     /// (2) Parse all JSON data<br></br>
     /// (3) Spawns the TileGrid.<br></br>
-    /// (4) Populates the EnemyManager.<br></br>
-    /// (5) Loads the Shop.<br></br>
-    /// (6) Loads the Synergies.
+    /// (4) Loads the Shop.<br></br>
+    /// (5) Loads the Synergies.
     /// </summary>
     void Start()
     {
@@ -73,18 +60,16 @@ public class LevelController : MonoBehaviour
         Vector2 cameraPos = TileGrid.SpawnGrid(instance, tiledData);
         CameraController.MoveCamera(cameraPos);
 
-        //(4) Populate the EnemyManager
-        List<LayerData> enemyLayers = tiledData.GetEnemyLayers();
-        EnemyManager.PopulateWithEnemies(enemyLayers, tiledData.GetMapHeight());
+        //(4) Load the Shop 
+        Vector3 shopSpawnPos = TileGrid.GetShopOrigin();
+        ShopManager.LoadShop(shopSpawnPos);
 
-        //(5) Load the Shop 
-        InventoryController.LoadEntireInventory(items); // DELETE ME WHEN SHOP DONE!
-        ShopManager.LoadShop();
+        //(5) Load the Synergies (TODO: Remove this static HashSet with dynamic one)
+        //HashSet<SynergyController.Synergy> synergies = new HashSet<SynergyController.Synergy>();
+        //synergies.Add(SynergyController.Synergy.TRIPLE_THREAT);
+        //SynergyController.LoadAllSynergies(synergies);
 
-        //(6) Load the Synergies (TODO: Remove this static HashSet with dynamic one)
-        HashSet<SynergyController.Synergy> synergies = new HashSet<SynergyController.Synergy>();
-        synergies.Add(SynergyController.Synergy.TRIPLE_THREAT);
-        SynergyController.LoadAllSynergies(synergies);
+
     }
 
     /// <summary>
@@ -112,7 +97,7 @@ public class LevelController : MonoBehaviour
         CheckInputEvents();
 
         //(4) Update SynergyController.
-        SynergyController.UpdateSynergyController(ModelController.GetAllTargetableObjects());
+        //SynergyController.UpdateSynergyController(ModelController.GetAllTargetableObjects());
 
         //(5) Update Controllers.
         ControllerController.UpdateAllControllers();
@@ -120,10 +105,8 @@ public class LevelController : MonoBehaviour
         //(6) Update the Economy.
         EconomyController.UpdateEconomy();
 
-        //(7) Update Inventory.
-        InventoryController.UpdateSlots(EconomyController.GetBalance());
-        Vector3 shopSpawnPos = TileGrid.GetShopOrigin();
-        ShopManager.UpdateShop(shopSpawnPos);
+        //(7) Update Shop.
+        ShopManager.UpdateShop();
 
         //(8) Update TileGrid.
         TileGrid.UpdateTiles();
@@ -145,14 +128,13 @@ public class LevelController : MonoBehaviour
         CameraController.SetSingleton(instance);
         InputController.SetSingleton(instance);
         PlacementController.SetSingleton(instance);
-        InventoryController.SetSingleton(instance);
         EnemyManager.SetSingleton(instance);
         ControllerController.SetSingleton(instance);
         EconomyController.SetSingleton(instance);
         CanvasController.SetSingleton(instance);
         ShopManager.SetSingleton(instance);
         SoundController.SetSingleton(instance);
-        SynergyController.SetSingleton(instance);
+        //SynergyController.SetSingleton(instance);
     }
 
     /// <summary>
@@ -161,12 +143,16 @@ public class LevelController : MonoBehaviour
     {
         AcornFactory.SetSingleton(instance);
         BasicTreeFactory.SetSingleton(instance);
+        BasicTreeSeedFactory.SetSingleton(instance);
+        BearFactory.SetSingleton(instance);
         BombFactory.SetSingleton(instance);
         BombSplatFactory.SetSingleton(instance);
         ButterflyFactory.SetSingleton(instance);
         DewFactory.SetSingleton(instance);
         EdgeFactory.SetSingleton(instance);
+        EmanationFactory.SetSingleton(instance);
         FlooringFactory.SetSingleton(instance);
+        HedgehogFactory.SetSingleton(instance);
         KudzuFactory.SetSingleton(instance);
         NexusFactory.SetSingleton(instance);
         NexusHoleFactory.SetSingleton(instance);
@@ -197,32 +183,28 @@ public class LevelController : MonoBehaviour
     /// <return>The most updated GameState.</return>
     private GameState DetermineGameState()
     {
-        int activeTrees = ControllerController.NumActiveTrees();
         int activeEnemies = ControllerController.NumActiveEnemies();
-        int activeNexii = ControllerController.NumActiveNexii();
+        bool nexusHolesFilled = ControllerController.AllHolesFilled();
         int enemiesRemaining = EnemyManager.EnemiesRemaining(SceneController.GetTimeElapsed());
         bool enemiesPresent = (enemiesRemaining > 0 || activeEnemies > 0);
 
-        //Win condition: All enemies dead, at least one Tree alive.
-        if (!enemiesPresent && activeNexii > 0) currentGameState = GameState.WIN;
+        //Win condition: All enemies dead, at least one NexusHole not filled..
+        if (!enemiesPresent && !nexusHolesFilled) currentGameState = GameState.WIN;
 
-        //Lose condition: All trees dead, at least one Enemy alive.
-        else if (enemiesPresent && activeNexii == 0) currentGameState = GameState.LOSE;
+        //Lose condition: All holes filled.
+        else if (nexusHolesFilled) currentGameState = GameState.LOSE;
 
-        //Tie condition: All trees and enemies dead. 
-        else if (!enemiesPresent && activeNexii == 0) currentGameState = GameState.TIE;
-
-        //Ongoing condition: At least one tree and enemy alive.
-        else if (enemiesPresent && activeNexii > 0) currentGameState = GameState.ONGOING;
+        //Ongoing condition: At least one nexus hole not filled and at least one Enemy alive.
+        else if (enemiesPresent && !nexusHolesFilled) currentGameState = GameState.ONGOING;
 
         //Something went wrong.
         else currentGameState = GameState.INVALID;
 
         //Inform Controllers.
-        InventoryController.InformOfGameState(currentGameState);
         ControllerController.InformOfGameState(currentGameState);
         CanvasController.InformOfGameState(currentGameState);
         PlacementController.InformOfGameState(currentGameState);
+        ShopManager.InformOfGameState(currentGameState);
 
         return currentGameState;
     }
@@ -253,4 +235,6 @@ public class LevelController : MonoBehaviour
             EconomyController.CheckCurrencyPickup();
         }
     }
+
+
 }

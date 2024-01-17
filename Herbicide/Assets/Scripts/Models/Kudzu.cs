@@ -26,7 +26,7 @@ public class Kudzu : Enemy
     /// <summary>
     /// The cooldown between each hop. 
     /// </summary>
-    public float HOP_COOLDOWN => 3f;
+    public float HOP_COOLDOWN => 2.5f; //DEFAULT: 2.5f
 
     /// <summary>
     /// Base health of a Kudzu.

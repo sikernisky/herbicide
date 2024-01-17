@@ -4,6 +4,8 @@ using UnityEngine;
 using System;
 using System.Linq;
 using UnityEngine.Assertions;
+using System.Text.RegularExpressions;
+
 
 /// <summary>
 /// Manages what and how many Enemies spawn in a level. This
@@ -23,9 +25,9 @@ public class EnemyManager : MonoBehaviour
     private int numEnemiesSpawned;
 
     /// <summary>
-    /// The ObjectData of all Enemies to spawn.
+    /// Sorted spawn times of all Enemies this level.
     /// </summary>
-    private List<ObjectData> enemyData;
+    private List<float> spawnTimes;
 
     /// <summary>
     /// true if the EnemyManager has been populated.
@@ -34,66 +36,71 @@ public class EnemyManager : MonoBehaviour
 
 
     /// <summary>
-    /// Gives the EnemyManager instance all LayerData object layers that
-    /// hold enemy objects. These Enemy objects will be spawned throughout
-    /// the level.
+    /// Gives the EnemyManager a dictionary of Enemy spawn marker locations
+    /// and their unparsed spawn data. This method decodes the data and instantiates
+    /// Enemies to its specification.
     /// </summary>
     /// <param name="enemyLayers">All Enemy LayerData layers in the map.</param>
     /// <param name="mapHeight">The height, in tiles, of the map. </param>
-    public static void PopulateWithEnemies(List<LayerData> enemyLayers, int mapHeight)
+    public static void PopulateWithEnemies(Dictionary<Vector2Int, string> markers, int mapHeight)
     {
-        if (enemyLayers == null) return;
+        if (markers == null) return;
         Assert.IsFalse(Populated(), "Already populated.");
 
-        List<ObjectData> enemyObjects = new List<ObjectData>();
-        foreach (LayerData layer in enemyLayers)
+        // Parse the data.
+        foreach (KeyValuePair<Vector2Int, string> marker in markers)
         {
-            Assert.IsTrue(layer.IsEnemyLayer(), "Not an enemy layer.");
-            enemyObjects.AddRange(layer.GetEnemyObjectData());
+            Vector2Int spawnLocation = marker.Key;
+            string unparsedData = marker.Value;
+            List<(string, float)> parsedData = instance.ParseMarkerData(unparsedData);
+
+            foreach (var enemyData in parsedData)
+            {
+                string enemyName = enemyData.Item1;
+                GameObject spawnedEnemy = instance.GetEnemyPrefabFromString(enemyName);
+                Assert.IsNotNull(spawnedEnemy);
+                GameObject clonedEnemy = Instantiate(spawnedEnemy);
+                Enemy clonedEnemyComp = clonedEnemy.GetComponent<Enemy>();
+                clonedEnemyComp.gameObject.SetActive(false);
+                float spawnX = TileGrid.CoordinateToPosition(marker.Key.x);
+                float spawnY = TileGrid.CoordinateToPosition(marker.Key.y);
+                Vector3 spawnWorldPos = new Vector3(spawnX, spawnY, 1);
+                float spawnTime = enemyData.Item2;
+                instance.spawnTimes.Add(spawnTime);
+                clonedEnemyComp.SetSpawnTime(spawnTime);
+                clonedEnemyComp.SetSpawnPos(spawnWorldPos);
+                ControllerController.MakeController(clonedEnemyComp);
+            }
         }
 
-        enemyObjects.ForEach(e => Assert.IsTrue(e.IsEnemy()));
-        instance.enemyData = (enemyObjects.OrderBy(e => e.GetSpawnTime())).ToList();
-
-        //Instantiate Enemy objects NOW so they're ready to go at runtime.
-        foreach (ObjectData obToSpawn in instance.enemyData)
-        {
-            GameObject spawnedEnemy = instance.GetEnemyPrefabFromString(obToSpawn.GetEnemyName());
-            Assert.IsNotNull(spawnedEnemy);
-            GameObject clonedEnemy = Instantiate(spawnedEnemy);
-            Enemy clonedEnemyComp = clonedEnemy.GetComponent<Enemy>();
-            clonedEnemyComp.gameObject.SetActive(false);
-            Vector3 spawnWorldPos = new Vector3(
-                TileGrid.CoordinateToPosition(obToSpawn.GetSpawnCoordinates(mapHeight).x),
-                TileGrid.CoordinateToPosition(obToSpawn.GetSpawnCoordinates(mapHeight).y),
-                1
-            );
-            float spawnTime = obToSpawn.GetSpawnTime();
-
-            clonedEnemyComp.SetSpawnTime(spawnTime);
-            clonedEnemyComp.SetSpawnWorldPosition(spawnWorldPos);
-            ControllerController.MakeController(clonedEnemyComp);
-        }
-
+        instance.spawnTimes.Sort();
         instance.populated = true;
     }
 
     /// <summary>
-    /// Returns the number of Enemies spawned in the level so far.
+    /// Returns a list of tuples of Enemy names to their spawn times.
     /// </summary>
-    /// <returns>the number of Enemies spawned in the level so far.</returns>
-    /// <param name="dt">Current game time. </param>
-    public static int GetNumEnemiesSpawned(float dt)
+    /// <param name="input">A string of comma separated names followed
+    /// by their spawn times. </param>
+    /// <returns>a list of tuples of Enemy names to their spawn times.</returns>
+    private List<(string, float)> ParseMarkerData(string input)
     {
-        Assert.IsNotNull(instance.enemyData);
+        Assert.IsNotNull(input);
 
-        int enemiesSpawned = 0;
-        foreach (ObjectData enemyData in instance.enemyData)
+        string[] sliced = input.Split(',');
+        List<(string, float)> result = new List<(string, float)>();
+        string pattern = @"([a-zA-Z]+)(\d+(\.\d+)?)";
+
+        foreach (string item in sliced)
         {
-            Assert.IsTrue(enemyData.IsEnemy());
-            if (enemyData.GetSpawnTime() <= dt) enemiesSpawned++;
+            Match match = Regex.Match(item, pattern);
+            if (!match.Success) continue;
+            string letters = match.Groups[1].Value;
+            string numbers = match.Groups[2].Value;
+            result.Add((letters, float.Parse(numbers)));
         }
-        return enemiesSpawned;
+
+        return result;
     }
 
     /// <summary>
@@ -104,13 +111,12 @@ public class EnemyManager : MonoBehaviour
     /// <param name="dt">Current game time. </param>
     public static int EnemiesRemaining(float dt)
     {
-        Assert.IsNotNull(instance.enemyData);
+        Assert.IsNotNull(instance.spawnTimes);
 
         int enemiesToGo = 0;
-        foreach (ObjectData enemyData in instance.enemyData)
+        foreach (float spawnTime in instance.spawnTimes)
         {
-            Assert.IsTrue(enemyData.IsEnemy());
-            if (enemyData.GetSpawnTime() > dt) enemiesToGo++;
+            if (spawnTime > dt) enemiesToGo++;
         }
         return enemiesToGo;
     }
@@ -135,6 +141,7 @@ public class EnemyManager : MonoBehaviour
         Assert.IsNotNull(enemyManagers, "Array of InputControllers is null.");
         Assert.AreEqual(1, enemyManagers.Length);
         instance = enemyManagers[0];
+        instance.spawnTimes = new List<float>();
     }
 
     /// <summary>

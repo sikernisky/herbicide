@@ -34,6 +34,12 @@ public class ShopScriptable : ScriptableObject
     private float minSpawnGap;
 
     /// <summary>
+    /// Maximum number of boats that can spawn.
+    /// </summary>
+    [SerializeField]
+    private int maxSpawns;
+
+    /// <summary>
     /// Returns a copied, complete list of ShopModels that make up
     /// this level's shop.
     /// </summary>
@@ -53,4 +59,10 @@ public class ShopScriptable : ScriptableObject
     /// </summary>
     /// <returns>the minimum amount of time between two spawns.</returns>
     public float GetMinSpawnGap() { return minSpawnGap; }
+
+    /// <summary>
+    /// Returns the maximum number of items that can spawn in this shop.
+    /// </summary>
+    /// <returns>the maximum number of items that can spawn in this shop.</returns>
+    public int GetMaxSpawns() { return maxSpawns; }
 }

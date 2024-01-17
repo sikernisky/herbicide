@@ -51,16 +51,17 @@ public abstract class HazardController<T> : MobController<T> where T : Enum
     }
 
     /// <summary>
-    /// Returns true if the Hazard can target the PlaceableObject passed
+    /// Returns true if the Hazard can target the Model passed
     /// into this method.
     /// </summary>
-    /// <param name="target">The Placeable object to check for targetability.</param>
-    /// <returns></returns>
-    protected override bool CanTarget(PlaceableObject target)
+    /// <param name="target">The Modelto check for targetability.</param>
+    /// <returns>true if the Hazard can target the Model passed
+    /// into this method; otherwise, false. </returns>
+    protected override bool CanTarget(Model target)
     {
-        if (target == null) return false;
-        if (target as Mob == null) return false;
-        if (!target.Targetable()) return false;
+        Mob mobTarget = target as Mob;
+        if (mobTarget == null) return false;
+        if (!mobTarget.Targetable()) return false;
 
         return true;
     }

@@ -34,11 +34,33 @@ public class SceneController : MonoBehaviour
     private bool loadingScene;
 
     /// <summary>
+    /// Number of FPS frames.
+    /// </summary>
+    private int frameCount = 0;
+
+    /// <summary>
+    /// Time tracker for FPS.
+    /// </summary>
+    private float dt = 0.0f;
+
+    /// <summary>
+    /// How often to update FPS.
+    /// </summary>
+    private float updateRate = 10f;
+
+    /// <summary>
+    /// Current FPS.
+    /// </summary>
+    private float fps = 0.0f;
+
+
+    /// <summary>
     /// Main update loop for the SceneController.
     /// </summary>
     public static void UpdateScene()
     {
         timeElapsed += Time.deltaTime;
+        instance.UpdateFPS();
     }
 
     /// <summary>
@@ -84,7 +106,7 @@ public class SceneController : MonoBehaviour
     /// Finds and sets the SceneController singleton in the Main Menu.
     /// </summary>
     /// <param name="levelController">The LevelController reference.</param>
-    public static void SetSingleton(SkillMenuController levelController)
+    public static void SetSingleton(CollectionMenuController levelController)
     {
         Assert.IsNotNull(levelController, "LevelController is null.");
 
@@ -108,14 +130,23 @@ public class SceneController : MonoBehaviour
     /// Returns the current FPS.
     /// </summary>
     /// <returns>current game FPS.</returns>
-    public static int GetFPS()
+    private void UpdateFPS()
     {
-        float localTime = timeElapsed;
-        localTime += (Time.unscaledDeltaTime - localTime) * 0.1f;
-        float fps = 1.0f / localTime;
-        int roundedFps = Mathf.RoundToInt(fps);
-        return roundedFps;
+        instance.frameCount++;
+        instance.dt += Time.deltaTime;
+        if (dt > 1.0 / updateRate)
+        {
+            fps = frameCount / dt;
+            frameCount = 0;
+            dt -= 1.0f / updateRate;
+        }
     }
+
+    /// <summary>
+    /// Returns the current FPS.
+    /// </summary>
+    /// <returns>current game FPS.</returns>
+    public static float GetFPS() { return instance.fps; }
 
     /// <summary>
     /// [!!BUTTON EVENT!!]

@@ -16,6 +16,11 @@ public abstract class Tile : Model, ISurface
     private PlaceableObject occupant;
 
     /// <summary>
+    /// The NexusHole on this Tile; null if there is none.
+    /// </summary>
+    private NexusHole nexusHoleOccupant;
+
+    /// <summary>
     /// The ghost/preview of something that would place on this Tile.
     /// </summary>
     private GameObject ghostOccupant;
@@ -44,6 +49,14 @@ public abstract class Tile : Model, ISurface
     /// This Tile's Type.
     /// </summary>
     protected abstract TileType type { get; }
+
+    /// <summary>
+    /// The Sprite above the Tile that is invisible by default
+    /// but can highlight to show attack ranges and other 
+    /// information.
+    /// </summary>
+    [SerializeField]
+    private SpriteRenderer highlighter;
 
     /// <summary>
     /// Represents a Type of Tile.
@@ -98,6 +111,7 @@ public abstract class Tile : Model, ISurface
         if (defined) return;
 
         SetTileCoordinates(x, y);
+        AddExpandedTileCoordinate(x, y);
         name = type.ToString() + " (" + x + ", " + y + ")";
         defined = true;
     }
@@ -172,6 +186,24 @@ public abstract class Tile : Model, ISurface
     }
 
     /// <summary>
+    /// Returns true if this Tile can be Floored with some flooring prefab.
+    /// </summary>
+    /// <param name="flooring">The flooring prefab to check.</param>
+    /// <param name="neighbors">This Tile's neighbors.</param>
+    /// <returns>true if this Tile can be Floored with some flooring prefab;
+    /// otherwise, false. </returns>
+    public bool CanFloor(Flooring flooring, ISurface[] neighbors)
+    {
+        AssertDefined();
+        if (flooring == null || neighbors == null) return false;
+        if (flooring.GetComponent<Flooring>() == null) return false;
+        if (Floored()) return false;
+        if (HostsNexusHole()) return false;
+
+        return true;
+    }
+
+    /// <summary>
     /// Returns true if this Tile can be floored with a Flooring. If so,
     /// floors the Tile.
     /// </summary>
@@ -179,29 +211,20 @@ public abstract class Tile : Model, ISurface
     ///  with.</param>
     /// <returns>true if this Tile can be floored with a Flooring; otherwise,
     /// false.</returns>
-    public bool Floor(GameObject flooring, ISurface[] neighbors)
+    public void Floor(Flooring flooring, ISurface[] neighbors)
     {
         //Safety checks
         AssertDefined();
-        if (flooring == null || neighbors == null) return false;
-        if (flooring.GetComponent<Flooring>() == null) return false;
+        Assert.IsTrue(CanFloor(flooring, neighbors));
 
-        //Already floored
-        if (Floored()) return false;
-
-        //Update this Tile
         UpdateSurfaceNeighbors(neighbors);
 
-        //Make the new flooring
-        GameObject gob = Instantiate(flooring);
-        Flooring newFlooring = gob.GetComponent<Flooring>();
-        newFlooring.Define(GetX(), GetY(), GetTileType(), GetFlooringNeighbors());
-        newFlooring.transform.position = transform.position;
-        newFlooring.transform.localScale = transform.localScale;
-        newFlooring.transform.SetParent(transform);
-        this.flooring = newFlooring;
-
-        return true;
+        //Setup the new flooring on this Tile.
+        flooring.Define(GetX(), GetY(), GetTileType(), GetFlooringNeighbors());
+        flooring.transform.position = transform.position;
+        flooring.transform.localScale = transform.localScale;
+        flooring.transform.SetParent(transform);
+        this.flooring = flooring;
     }
 
     /// <summary>
@@ -253,10 +276,7 @@ public abstract class Tile : Model, ISurface
             return;
         }
 
-
-
         //3. Place on this Tile.
-
 
         SpriteRenderer prefabRenderer = candidate.GetComponent<SpriteRenderer>();
 
@@ -266,6 +286,9 @@ public abstract class Tile : Model, ISurface
         candidate.transform.SetParent(transform);
         candidate.OnPlace();
         if (candidate.OCCUPIER) SetOccupant(candidate);
+
+        NexusHole nexusHole = candidate as NexusHole;
+        if (nexusHole != null) nexusHoleOccupant = nexusHole;
     }
 
     /// <summary>
@@ -281,9 +304,16 @@ public abstract class Tile : Model, ISurface
         if (candidate == null || neighbors == null) return false;
         if (Floored()) return GetFlooring().CanPlace(candidate, neighbors);
 
-        if (candidate as Squirrel != null) return false;
-        if (candidate as Tree != null) return false;
+        ModelType candidateType = candidate.TYPE;
+        List<ModelType> acceptedTypes = new List<ModelType>()
+        {
+            ModelType.NEXUS,
+            ModelType.NEXUS_HOLE,
+            ModelType.SOIL_FLOORING
+        };
+
         if (Occupied()) return false;
+        if (!acceptedTypes.Contains(candidateType)) return false;
 
         return true;
     }
@@ -333,7 +363,11 @@ public abstract class Tile : Model, ISurface
         Assert.IsTrue(CanRemove(neighbors), "Need to check removal validity.");
 
         if (Floored()) GetFlooring().Remove(neighbors);
-        else occupant = null;
+        else
+        {
+            nexusHoleOccupant = null;
+            occupant = null;
+        }
     }
 
     /// <summary>
@@ -679,6 +713,19 @@ public abstract class Tile : Model, ISurface
     {
         throw new System.NotSupportedException("Tile placing not supported.");
     }
+
+    /// <summary>
+    /// Sets the color of this Tile's highlighter.
+    /// </summary>
+    /// <param name="color">The color to set to.</param>
+    public void SetHighlighterColor(Color32 color) { highlighter.color = color; }
+
+    /// <summary>
+    /// Returns true if there is a NexusHole on this Tile.
+    /// </summary>
+    /// <returns>true if there is a NexusHole on this Tile; otherwise,
+    /// false. </returns>
+    public bool HostsNexusHole() { return nexusHoleOccupant != null; }
 }
 
 

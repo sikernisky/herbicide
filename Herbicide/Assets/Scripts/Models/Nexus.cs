@@ -104,6 +104,11 @@ public class Nexus : Structure
     public override float MIN_MOVEMENT_SPEED => 0f;
 
     /// <summary>
+    /// A Nexus can be held.
+    /// </summary>
+    public override bool HOLDABLE => true;
+
+    /// <summary>
     /// true if this Nexus was brought to the target position.
     /// </summary>
     private bool cashedIn;
@@ -141,7 +146,6 @@ public class Nexus : Structure
     /// Sets this Nexus' 2D collider properties.
     /// </summary>
     public override void SetColliderProperties() { return; }
-
 
     /// <summary>
     /// Returns true if this Nexus was brought to the target spot (usually a 

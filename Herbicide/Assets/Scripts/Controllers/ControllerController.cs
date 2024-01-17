@@ -50,9 +50,19 @@ public class ControllerController : MonoBehaviour
     private List<ModelController> boatControllers;
 
     /// <summary>
+    /// List of active EmanationControllers.
+    /// </summary>
+    private List<EmanationController> emanationControllers;
+
+    /// <summary>
     /// Reference to the ControllerController singleton.
     /// </summary>
     private static ControllerController instance;
+
+    /// <summary>
+    /// Number of active Models of each ModelType.
+    /// </summary>
+    private ModelCounts counts;
 
     /// <summary>
     /// The most recent GameState.
@@ -83,6 +93,9 @@ public class ControllerController : MonoBehaviour
         instance.collectableControllers = new List<ModelController>();
         instance.structureControllers = new List<ModelController>();
         instance.boatControllers = new List<ModelController>();
+        instance.emanationControllers = new List<EmanationController>();
+
+        instance.counts = new ModelCounts();
     }
 
     /// <summary>
@@ -102,13 +115,19 @@ public class ControllerController : MonoBehaviour
                 BasicTreeController btc = new BasicTreeController(basicTree);
                 instance.treeControllers.Add(btc);
                 break;
+            case ModelType.BEAR:
+                Bear bear = model as Bear;
+                Assert.IsNotNull(bear);
+                BearController bc = new BearController(bear);
+                instance.defenderControllers.Add(bc);
+                break;
             case ModelType.BOMB:
                 break;
             case ModelType.BUTTERFLY:
                 Butterfly butterfly = model as Butterfly;
                 Assert.IsNotNull(butterfly);
-                ButterflyController bc = new ButterflyController(butterfly);
-                instance.defenderControllers.Add(bc);
+                ButterflyController bfc = new ButterflyController(butterfly);
+                instance.defenderControllers.Add(bfc);
                 break;
             case ModelType.BOMB_SPLAT:
                 BombSplat bombSplat = model as BombSplat;
@@ -119,6 +138,12 @@ public class ControllerController : MonoBehaviour
             case ModelType.DEW:
                 break;
             case ModelType.GRASS_TILE:
+                break;
+            case ModelType.HEDGEHOG:
+                Hedgehog hedgehog = model as Hedgehog;
+                Assert.IsNotNull(hedgehog);
+                HedgehogController hc = new HedgehogController(hedgehog);
+                instance.defenderControllers.Add(hc);
                 break;
             case ModelType.KUDZU:
                 Kudzu kudzu = model as Kudzu;
@@ -149,11 +174,15 @@ public class ControllerController : MonoBehaviour
             case ModelType.SHORE_TILE:
                 break;
             case ModelType.SOIL_FLOORING:
+                SoilFlooring soilFlooring = model as SoilFlooring;
+                Assert.IsNotNull(soilFlooring);
+                FlooringController sfc = new FlooringController(soilFlooring);
+                instance.structureControllers.Add(sfc);
                 break;
             case ModelType.SQUIRREL:
                 Squirrel squirrel = model as Squirrel;
                 Assert.IsNotNull(squirrel);
-                SquirrelController sc = new SquirrelController(squirrel as Squirrel);
+                SquirrelController sc = new SquirrelController(squirrel);
                 instance.defenderControllers.Add(sc);
                 break;
             case ModelType.WATER_TILE:
@@ -226,6 +255,23 @@ public class ControllerController : MonoBehaviour
     }
 
     /// <summary>
+    /// Returns true if all NexusHoles are filled.
+    /// </summary>
+    /// <returns>true if all NexusHoles are filled; otherwise,
+    /// false.</returns>
+    public static bool AllHolesFilled()
+    {
+        foreach (ModelController mc in instance.structureControllers)
+        {
+            NexusHole nexusHoleModel = mc.GetModel() as NexusHole;
+            if (nexusHoleModel == null || !mc.ValidModel()) continue;
+            if (!nexusHoleModel.Filled()) return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
     /// Attempts to remove any unused or defunct Controllers.
     /// </summary>
     private void TryRemoveControllers()
@@ -238,6 +284,7 @@ public class ControllerController : MonoBehaviour
         collectableControllers.RemoveAll(cc => cc.ShouldRemoveController());
         structureControllers.RemoveAll(sc => sc.ShouldRemoveController());
         boatControllers.RemoveAll(bc => bc.ShouldRemoveController());
+        emanationControllers.RemoveAll(emc => emc.ShouldRemoveController());
     }
 
     /// <summary>
@@ -270,13 +317,16 @@ public class ControllerController : MonoBehaviour
         List<ModelController> proControllers = new List<ModelController>();
         List<ModelController> hazControllers = new List<ModelController>();
         List<ModelController> colControllers = new List<ModelController>();
+        List<EmanationController> emControllers = new List<EmanationController>();
 
         foreach (ModelController controller in controllers)
         {
-            List<ModelController> extricatedControllers =
-                controller.ExtricateControllers();
+            if (!controller.NeedsExtricating()) continue;
 
-            foreach (ModelController extricatedController in extricatedControllers)
+            // First do ModelControllers
+            List<ModelController> extricatedModelControllers =
+                controller.ExtricateModelControllers();
+            foreach (ModelController extricatedController in extricatedModelControllers)
             {
                 if (extricatedController.GetModel() as Defender != null)
                     defControllers.Add(extricatedController);
@@ -291,6 +341,14 @@ public class ControllerController : MonoBehaviour
                 else if (extricatedController.GetModel() as Collectable != null)
                     colControllers.Add(extricatedController);
             }
+
+            // Then do Emanations
+            List<EmanationController> extricatedEmanationControllers =
+                controller.ExtricateEmanationControllers();
+            foreach (EmanationController extricatedController in extricatedEmanationControllers)
+            {
+                emControllers.Add(extricatedController);
+            }
         }
 
         defenderControllers.AddRange(defControllers);
@@ -299,6 +357,7 @@ public class ControllerController : MonoBehaviour
         hazardControllers.AddRange(hazControllers);
         projectileControllers.AddRange(proControllers);
         collectableControllers.AddRange(colControllers);
+        emanationControllers.AddRange(emControllers);
     }
 
     /// <summary>
@@ -310,6 +369,7 @@ public class ControllerController : MonoBehaviour
         // General updates
         instance.TryRemoveControllers();
         instance.InformControllersOfGameState();
+        instance.UpdateModelCounts();
 
         // Update EnemyControllers
         instance.AddCollectedControllers(instance.enemyControllers);
@@ -340,6 +400,9 @@ public class ControllerController : MonoBehaviour
 
         // Update BoatControllers
         instance.boatControllers.ForEach(bc => bc.UpdateModel());
+
+        // Update EmanationControllers
+        instance.emanationControllers.ForEach(emc => emc.UpdateEmanation());
     }
 
     /// <summary>
@@ -348,4 +411,78 @@ public class ControllerController : MonoBehaviour
     /// </summary>
     /// <param name="state">The most recent game state. </param>
     public static void InformOfGameState(GameState state) { instance.gameState = state; }
+
+    /// <summary>
+    /// Updates the number of active Models of each type.
+    /// </summary>
+    private void UpdateModelCounts()
+    {
+        counts.WipeCounts(instance);
+
+        // Find EnemyControllers
+        foreach (ModelController modelController in enemyControllers)
+        {
+            ModelType modelType = modelController.GetModel().TYPE;
+            counts.SetCount(instance, modelType, counts.GetCount(modelType) + 1);
+        }
+
+        // Find DefenderControllers
+        foreach (ModelController modelController in defenderControllers)
+        {
+            ModelType modelType = modelController.GetModel().TYPE;
+            counts.SetCount(instance, modelType, counts.GetCount(modelType) + 1);
+        }
+
+        // Find TreeControllers
+        foreach (ModelController modelController in treeControllers)
+        {
+            ModelType modelType = modelController.GetModel().TYPE;
+            counts.SetCount(instance, modelType, counts.GetCount(modelType) + 1);
+        }
+
+        // Find ProjectileControllers
+        foreach (ModelController modelController in enemyControllers)
+        {
+            ModelType modelType = modelController.GetModel().TYPE;
+            counts.SetCount(instance, modelType, counts.GetCount(modelType) + 1);
+        }
+
+        // Find HazardControllers
+        foreach (ModelController modelController in hazardControllers)
+        {
+            ModelType modelType = modelController.GetModel().TYPE;
+            counts.SetCount(instance, modelType, counts.GetCount(modelType) + 1);
+        }
+
+        // Find CollectableControllers
+        foreach (ModelController modelController in collectableControllers)
+        {
+            ModelType modelType = modelController.GetModel().TYPE;
+            counts.SetCount(instance, modelType, counts.GetCount(modelType) + 1);
+        }
+
+        // Find StructureControllers
+        foreach (ModelController modelController in structureControllers)
+        {
+            ModelType modelType = modelController.GetModel().TYPE;
+            counts.SetCount(instance, modelType, counts.GetCount(modelType) + 1);
+        }
+
+        // Find BoatControllers
+        foreach (ModelController modelController in boatControllers)
+        {
+            ModelType modelType = modelController.GetModel().TYPE;
+            counts.SetCount(instance, modelType, counts.GetCount(modelType) + 1);
+        }
+
+        // Update all
+        instance.enemyControllers.ForEach(c => c.InformOfModelCounts(counts));
+        instance.defenderControllers.ForEach(c => c.InformOfModelCounts(counts));
+        instance.treeControllers.ForEach(c => c.InformOfModelCounts(counts));
+        instance.projectileControllers.ForEach(c => c.InformOfModelCounts(counts));
+        instance.hazardControllers.ForEach(c => c.InformOfModelCounts(counts));
+        instance.collectableControllers.ForEach(c => c.InformOfModelCounts(counts));
+        instance.structureControllers.ForEach(c => c.InformOfModelCounts(counts));
+        instance.boatControllers.ForEach(c => c.InformOfModelCounts(counts));
+    }
 }

@@ -16,11 +16,6 @@ using System;
 public abstract class PlaceableObject : Model
 {
     /// <summary>
-    /// How much currency is required to place this PlaceableObject.
-    /// </summary>
-    public abstract int COST { get; }
-
-    /// <summary>
     /// Amount of health this PlaceableObject starts with.
     /// </summary>
     public abstract int BASE_HEALTH { get; }
@@ -84,11 +79,13 @@ public abstract class PlaceableObject : Model
     }
 
     /// <summary>
-    /// Returns the Euclidian distance from this PlaceableObject to another PlaceableObject.
+    /// Returns the Euclidian distance from this PlaceableObject to another Model.
     /// </summary>
-    /// <param name="target">The PlaceableObject from which to calculate distance.</param>
-    public float DistanceToTarget(PlaceableObject target)
+    /// <param name="target">The Model from which to calculate distance.</param>
+    public float DistanceToTarget(Model target)
     {
+        Assert.IsNotNull(target);
+
         float minDistance = float.MaxValue;
 
         foreach (var coord1 in GetExpandedTileCoordinates())
@@ -106,8 +103,6 @@ public abstract class PlaceableObject : Model
         return minDistance;
     }
 
-
-
     /// <summary>
     /// Returns true if this PlaceableObject is "Dead", which implementers
     /// define in their own way.
@@ -123,14 +118,6 @@ public abstract class PlaceableObject : Model
     /// <returns>true if something can target this PlaceableObject;
     /// otherwise, false</returns>
     public virtual bool Targetable() { return !Dead(); }
-
-    /// <summary>
-    /// Returns the position of where attacks directed at this PlaceableObject
-    /// should go.
-    /// </summary>
-    /// <returns>the position of where attacks directed at this PlaceableObject
-    /// should go.</returns>
-    public virtual Vector3 GetAttackPosition() { return GetPosition(); }
 
     /// <summary>
     /// Called when this PlaceableObject is placed.

@@ -342,6 +342,46 @@ public class KudzuFactory : MonoBehaviour
     }
 
     /// <summary>
+    /// Returns the animation track that represents the Kudzu when Spawning. The Kudzu's
+    /// Spawn animation is the same as its movement animation, so this calls the existing
+    /// get movement animation method.
+    /// </summary>
+    /// <returns>the animation track that represents the Kudzu when spawned.</returns>
+    /// <param name="d">The Enemy's Direction. </param>
+    /// <param name="s">The Enemy's HealthState. </param>
+    public static Sprite[] GetSpawnTrack(Direction d, Enemy.EnemyHealthState s)
+    {
+        return GetMovementTrack(d, s);
+    }
+
+    /// <summary>
+    /// Returns the animation track that represents the Kudzu when Escaping. The Kudzu's
+    /// Escape animation is the same as its movement animation, so this calls the existing
+    /// get movement animation method.
+    /// </summary>
+    /// <returns>the animation track that represents the Kudzu when escaping.</returns>
+    /// <param name="d">The Enemy's Direction. </param>
+    /// <param name="s">The Enemy's HealthState. </param>
+    public static Sprite[] GetEscapeTrack(Direction d, Enemy.EnemyHealthState s)
+    {
+        return GetMovementTrack(d, s);
+    }
+
+    /// <summary>
+    /// Returns the animation track that represents the Kudzu when Exiting. The Kudzu's
+    /// exiting animation is the same as its movement animation, so this calls the existing
+    /// get movement animation method.
+    /// </summary>
+    /// <returns>the animation track that represents the Kudzu when exiting.</returns>
+    /// <param name="d">The Enemy's Direction. </param>
+    /// <param name="s">The Enemy's HealthState. </param>
+    public static Sprite[] GetExitingTrack(Direction d, Enemy.EnemyHealthState s)
+    {
+        return GetMovementTrack(d, s);
+    }
+
+
+    /// <summary>
     /// Returns the animation track that represents this Kudzu when placing. 
     /// </summary>
     /// <returns>the animation track that represents this Kudzu when placing. 

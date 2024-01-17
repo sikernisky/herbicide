@@ -15,38 +15,47 @@ public abstract class Defender : Mob
     public abstract DefenderClass CLASS { get; }
 
     /// <summary>
+    /// The position of the tree on which this Defender sits.
+    /// </summary>
+    private Vector3 treePos;
+
+    /// <summary>
     /// Class of this Defender.
     /// </summary>
     public enum DefenderClass
     {
         TREBUCHET,
         MAULER,
-        PATHFINDER,
-        ANIMYST
+        COG,
+        ANIMYST,
+        WHISPERER
     }
 
+    /// <summary>
+    /// Gets the position of the tree on which this Defender sits.
+    /// </summary>
+    /// <param name="treePos">the position of the tree on which this Defender sits.
+    /// /// </param>
+    public void PassTreePosition(Vector3 treePos) { this.treePos = treePos; }
 
-    // /// <summary>
-    // /// Returns a Sprite component that represents this Defender
-    // /// in an InventorySlot.
-    // /// </summary>
-    // /// <returns> a Sprite component that represents this Defender
-    // /// in an InventorySlot.</returns>
-    // public override Sprite GetBoatSprite() { return DefenderFactory.GetDefenderInventorySprite(TYPE); }
+    /// <summary>
+    /// Returns the position of the tree on which this Defender sits.
+    /// </summary>
+    /// <returns>the position of the tree on which this Defender sits.</returns>
+    protected Vector3 GetTreePosition() { return treePos; }
 
-    // /// <summary>
-    // /// Returns a Sprite component that represents this Defender
-    // /// when it is placing.
-    // /// </summary>
-    // /// <returns> a Sprite component that represents this Defender
-    // /// when it is placing.</returns>
-    // public override Sprite GetPlacementSprite() { return DefenderFactory.GetDefenderPlacedSprite(TYPE); }
+    /// <summary>
+    /// Returns the Euclidian distance from this Defender to a Model
+    /// when this Defender is 1x1 and sits on a Tree.
+    /// </summary>
+    /// <param name="target">The Model from which to calculate distance.</param>
+    public float DistanceToTargetFromTree(Model target)
+    {
+        Assert.IsNotNull(target);
+        Assert.IsTrue(SIZE == new Vector2Int(1, 1));
 
-    // /// <summary>
-    // /// Returns a Defender GameObject that can be placed on the
-    // /// TileGrid.
-    // /// </summary>
-    // /// <returns>a Defender GameObject that can be placed on the
-    // /// TileGrid.</returns>
-    // public override GameObject MakePlaceableObject() { return Instantiate(ModelFactory.GetModelPrefab(TYPE)); }
+        float distance = Vector3.Distance(GetTreePosition(), target.GetPosition());
+
+        return distance;
+    }
 }

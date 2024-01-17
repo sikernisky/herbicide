@@ -92,9 +92,6 @@ public class BombController : ProjectileController<BombController.BombState>
         if (!ValidModel()) return;
         if (GetState() != BombState.COLLIDING) return;
 
-        // GameObject splatterCopy = GameObject.Instantiate(GetBomb().GetSplatter());
-        // splatterCopy.SetActive(true);
-
         Vector2Int tilePos = new Vector2Int(GetBomb().GetX(), GetBomb().GetY());
         GameObject bombSplatPrefab = BombFactory.GetBombPrefab();
         Assert.IsNotNull(bombSplatPrefab);
@@ -106,7 +103,7 @@ public class BombController : ProjectileController<BombController.BombState>
 
         }
 
-        ApplyHazard();
+        ApplyEffect();
     }
 
     /// <summary>
@@ -150,7 +147,7 @@ public class BombController : ProjectileController<BombController.BombState>
                 if (GetBomb().HasReachedTarget()) SetState(BombState.COLLIDING);
                 break;
             case BombState.COLLIDING:
-                if (AppliedHazard()) SetState(BombState.DEAD);
+                if (AppliedEffect()) SetState(BombState.DEAD);
                 break;
             case BombState.DEAD:
                 break;

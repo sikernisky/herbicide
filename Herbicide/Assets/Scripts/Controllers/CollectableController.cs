@@ -42,12 +42,51 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
     /// </summary>
     private bool driftedUp;
 
+    /// <summary>
+    /// true if the Collectable is performing a DriftUp lerp.
+    /// </summary>
     private bool isDriftingUp = false;
+
+    /// <summary>
+    /// When the drift started.
+    /// </summary>
     private float driftStartTime;
-    private float driftDuration = .5f; // Duration of the drift in seconds
+
+    /// <summary>
+    /// How many seconds the drift should last.
+    /// </summary>
+    private float driftDuration = .5f;
+
+    /// <summary>
+    /// How far the Collectable should drift upwards.
+    /// </summary>
     private float driftDistance;
+
+    /// <summary>
+    /// The starting scale of the collectable for the DriftUp lerp.
+    /// </summary>
     private Vector3 originalScale;
+
+    /// <summary>
+    /// The starting position of the collectable for the DriftUp lerp.
+    /// </summary>
     private Vector3 originalPosition;
+
+    /// <summary>
+    /// Cursor detection range.
+    /// </summary>
+    private float homingRange = 2f;
+
+    /// <summary>
+    /// Collection range.
+    /// </summary>
+    private float collectionRange = 0.2f;
+
+    /// <summary>
+    /// true if the Collectable got close enough to the cursor and should
+    /// complete its homing movement. 
+    /// </summary>
+    private bool isHoming;
 
 
     /// <summary>
@@ -97,6 +136,33 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
     /// <returns>this controller's Collectable model.</returns>
     protected Collectable GetCollectable() { return GetModel() as Collectable; }
 
+    /// <summary>
+    /// Returns true if the Collectable is within homing range of the cursor.
+    /// </summary>
+    /// <returns>true if the Collectable is within homing range of the cursor;
+    /// otherwise, false. /// </returns>
+    protected bool InHomingRange()
+    {
+        Vector3 mousePos = InputController.GetWorldMousePosition();
+        mousePos.z = 1;
+
+        return Vector3.Distance(mousePos, GetCollectable().GetPosition())
+            < homingRange;
+    }
+
+    /// <summary>
+    /// Returns true if the Collectable is within collection range of the cursor.
+    /// </summary>
+    /// <returns>true if the Collectable is within collection range of the cursor;
+    /// otherwise, false. /// </returns>
+    protected bool InCollectionRange()
+    {
+        Vector3 mousePos = InputController.GetWorldMousePosition();
+        mousePos.z = 1;
+
+        return Vector3.Distance(mousePos, GetCollectable().GetPosition())
+        < collectionRange;
+    }
 
 
     //----------------------STATE LOGIC--------------------------//
@@ -201,4 +267,25 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
     /// <returns>true if the Collectable fully drifted upwards;
     /// otherwise, false. </returns>
     protected bool DriftedUp() { return driftedUp; }
+
+    /// <summary>
+    /// Homes the collectable towards the cursor.
+    /// </summary>
+    protected virtual void MoveTowardsCursor()
+    {
+        if (!InHomingRange() && !isHoming) return;
+        isHoming = true;
+        float minSpeed = 4f;
+        Vector2 mousePos = InputController.GetWorldMousePosition();
+        float distanceToCursor = Vector2.Distance(GetCollectable().GetPosition(), mousePos);
+        float normalizedDistance = Mathf.Clamp01(distanceToCursor / homingRange);
+        float speedMultiplier = GetCollectable().GetHomingCurve().Evaluate(normalizedDistance);
+        float movementSpeed = Mathf.Lerp(minSpeed, GetCollectable().HOME_SPEED, speedMultiplier) * Time.deltaTime;
+        Vector2 currentPosition = GetCollectable().GetPosition();
+        if (currentPosition != mousePos)
+        {
+            Vector2 newPosition = Vector2.MoveTowards(currentPosition, mousePos, movementSpeed);
+            GetCollectable().SetWorldPosition(newPosition);
+        }
+    }
 }

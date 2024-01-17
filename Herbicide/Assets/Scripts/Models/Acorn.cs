@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Represents an Acorn projectile thrown by a Squirrel.
+/// Represents an Acorn projectile.
 /// </summary>
 public class Acorn : Projectile
 {
@@ -15,7 +15,7 @@ public class Acorn : Projectile
     /// <summary>
     /// Starting speed of an Acorn.
     /// </summary>
-    public override float BASE_SPEED => 9f;
+    public override float BASE_SPEED => 11f;
 
     /// <summary>
     /// Maximum speed of an Acorn.
@@ -30,7 +30,7 @@ public class Acorn : Projectile
     /// <summary>
     /// Starting damage of an Acorn.
     /// </summary>
-    public override int BASE_DAMAGE => 5;
+    public override int BASE_DAMAGE => 5; //default: 5
 
     /// <summary>
     /// Maximum damage of an Acorn.

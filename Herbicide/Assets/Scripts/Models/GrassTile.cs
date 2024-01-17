@@ -19,11 +19,6 @@ public class GrassTile : Tile
     protected override TileType type => Tile.TileType.GRASS;
 
     /// <summary>
-    /// true if this GrassTile is at the edge of the grid.
-    /// </summary>
-    private bool isEdge;
-
-    /// <summary>
     /// Grass Tiles are walkable.
     /// </summary>
     public override bool WALKABLE => true;
@@ -45,31 +40,5 @@ public class GrassTile : Tile
     {
         base.Define(x, y);
         SetSprite(TileFactory.GetTileSprite(type.ToString(), tileId));
-    }
-
-    /// <summary>
-    /// Marks this GrassTile as an edge Tile.
-    /// </summary>
-    public void MarkEdge()
-    {
-        isEdge = true;
-    }
-
-    /// <summary>
-    /// Unmarks this GrassTile as an edge Tile.
-    /// </summary>
-    public void UnmarkEdge()
-    {
-        isEdge = false;
-    }
-
-    /// <summary>
-    /// Returns true if this GrassTile lies on the edge of the TileGrid.
-    /// </summary>
-    /// <returns>true if this GrassTile is an edge Tile; otherwise, false.
-    /// </returns>
-    public bool IsEdgeTile()
-    {
-        return isEdge;
     }
 }

@@ -7,9 +7,9 @@
          "data":[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
             3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
             3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 0, 3, 0, 3, 0, 0, 0, 0, 0, 3, 0, 3, 0, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 0, 0, 0, 3, 0, 0, 0, 0, 0, 3, 0, 0, 0, 3, 3, 3, 3, 3, 3,
             3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3,
             3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3,
             3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3,
@@ -38,10 +38,10 @@
          "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 27, 24, 24, 24, 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 27, 24, 24, 31, 0, 0, 25, 0, 0, 0, 28, 0, 0, 27, 24, 24, 31, 0, 0, 0, 0,
-            0, 0, 0, 25, 0, 0, 35, 24, 24, 33, 0, 0, 0, 35, 24, 24, 33, 0, 0, 28, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 27, 24, 31, 0, 0, 0, 0, 0, 0, 0, 27, 24, 31, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 25, 0, 28, 0, 27, 24, 24, 24, 31, 0, 25, 0, 28, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 30, 29, 26, 0, 25, 0, 0, 0, 28, 0, 30, 29, 26, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 27, 24, 24, 24, 24, 24, 33, 0, 0, 0, 35, 24, 24, 24, 24, 24, 31, 0, 0, 0, 0,
             0, 0, 0, 25, 0, 0, 0, 0, 0, 0, 0, 40, 0, 0, 0, 0, 0, 0, 0, 28, 0, 0, 0, 0,
             0, 0, 0, 30, 29, 29, 29, 29, 29, 29, 29, 41, 29, 29, 29, 29, 29, 29, 29, 26, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -71,9 +71,9 @@
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 2, 1, 0, 0, 0, 0, 2, 1, 2, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 1, 2, 1, 2, 1, 2, 1, 0, 1, 2, 1, 2, 1, 2, 1, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -103,7 +103,7 @@
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -130,213 +130,13 @@
          "y":0
         }, 
         {
-         "class":"EnemyLayer",
-         "draworder":"topdown",
-         "id":7,
-         "name":"Enemies",
-         "objects":[
-                {
-                 "gid":20,
-                 "height":16,
-                 "id":315,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"enemyName",
-                         "type":"string",
-                         "value":"Kudzu"
-                        }, 
-                        {
-                         "name":"spawnTime",
-                         "type":"string",
-                         "value":"1"
-                        }],
-                 "rotation":0,
-                 "type":"Enemy",
-                 "visible":true,
-                 "width":16,
-                 "x":272,
-                 "y":128
-                }, 
-                {
-                 "gid":20,
-                 "height":16,
-                 "id":316,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"enemyName",
-                         "type":"string",
-                         "value":"Kudzu"
-                        }, 
-                        {
-                         "name":"spawnTime",
-                         "type":"string",
-                         "value":"9"
-                        }],
-                 "rotation":0,
-                 "type":"Enemy",
-                 "visible":true,
-                 "width":16,
-                 "x":272,
-                 "y":112
-                }, 
-                {
-                 "gid":20,
-                 "height":16,
-                 "id":317,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"enemyName",
-                         "type":"string",
-                         "value":"Kudzu"
-                        }, 
-                        {
-                         "name":"spawnTime",
-                         "type":"string",
-                         "value":"16"
-                        }],
-                 "rotation":0,
-                 "type":"Enemy",
-                 "visible":true,
-                 "width":16,
-                 "x":288,
-                 "y":112
-                }, 
-                {
-                 "gid":20,
-                 "height":16,
-                 "id":318,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"enemyName",
-                         "type":"string",
-                         "value":"Kudzu"
-                        }, 
-                        {
-                         "name":"spawnTime",
-                         "type":"string",
-                         "value":"24"
-                        }],
-                 "rotation":0,
-                 "type":"Enemy",
-                 "visible":true,
-                 "width":16,
-                 "x":288,
-                 "y":128
-                }],
-         "opacity":1,
-         "properties":[
-                {
-                 "name":"layerClass",
-                 "type":"string",
-                 "value":"EnemyLayer"
-                }],
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
          "class":"StructureLayer",
          "draworder":"topdown",
          "id":13,
          "name":"Structures",
          "objects":[
                 {
-                 "gid":44,
-                 "height":16,
-                 "id":293,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"Nexus"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":64,
-                 "y":128
-                }, 
-                {
-                 "gid":44,
-                 "height":16,
-                 "id":302,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"Nexus"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":64,
-                 "y":112
-                }, 
-                {
-                 "gid":44,
-                 "height":16,
-                 "id":303,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"Nexus"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":80,
-                 "y":112
-                }, 
-                {
-                 "gid":44,
-                 "height":16,
-                 "id":304,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"Nexus"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":80,
-                 "y":128
-                }, 
-                {
-                 "gid":45,
-                 "height":16,
-                 "id":309,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"NexusHole"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":288,
-                 "y":112
-                }, 
-                {
-                 "gid":45,
+                 "gid":49,
                  "height":16,
                  "id":310,
                  "name":"",
@@ -354,40 +154,22 @@
                  "y":128
                 }, 
                 {
-                 "gid":45,
+                 "gid":48,
                  "height":16,
-                 "id":311,
+                 "id":324,
                  "name":"",
                  "properties":[
                         {
                          "name":"structureName",
                          "type":"string",
-                         "value":"NexusHole"
+                         "value":"Nexus"
                         }],
                  "rotation":0,
                  "type":"Structure",
                  "visible":true,
                  "width":16,
-                 "x":272,
+                 "x":64,
                  "y":128
-                }, 
-                {
-                 "gid":45,
-                 "height":16,
-                 "id":312,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"NexusHole"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":272,
-                 "y":112
                 }],
          "opacity":1,
          "properties":[
@@ -408,7 +190,7 @@
          "name":"Markers",
          "objects":[
                 {
-                 "gid":48,
+                 "gid":52,
                  "height":16,
                  "id":319,
                  "name":"",
@@ -424,6 +206,29 @@
                  "width":16,
                  "x":0,
                  "y":176
+                }, 
+                {
+                 "gid":53,
+                 "height":16,
+                 "id":328,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"enemySpawnData",
+                         "type":"string",
+                         "value":"kudzu1,kudzu1.5"
+                        }, 
+                        {
+                         "name":"markerName",
+                         "type":"string",
+                         "value":"enemySpawn"
+                        }],
+                 "rotation":0,
+                 "type":"Marker",
+                 "visible":true,
+                 "width":16,
+                 "x":289,
+                 "y":128
                 }],
          "opacity":1,
          "properties":[
@@ -438,7 +243,7 @@
          "y":0
         }],
  "nextlayerid":15,
- "nextobjectid":320,
+ "nextobjectid":329,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.1",
@@ -465,11 +270,11 @@
          "source":"..\/..\/Tiled\/Tilesets\/Shore.tsx"
         }, 
         {
-         "firstgid":44,
+         "firstgid":48,
          "source":"..\/..\/Tiled\/Tilesets\/Placeables.tsx"
         }, 
         {
-         "firstgid":48,
+         "firstgid":52,
          "source":"..\/..\/Tiled\/Tilesets\/Markers.tsx"
         }],
  "tilewidth":16,

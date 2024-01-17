@@ -56,11 +56,11 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     private float parabolicStep;
 
     /// <summary>
-    /// true if the Projectile hit its target and deployed its Hazard;
-    /// otherwise, false. If the projectile does not apply a Hazard,
+    /// true if the Projectile hit its target and deployed its effect;
+    /// otherwise, false. If the projectile does not apply an effect,
     /// this is irrelevant.
     /// </summary>
-    private bool hazardApplied;
+    private bool effectApplied;
 
 
     /// <summary>
@@ -116,17 +116,17 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     protected Vector3 GetDestination() { return destination; }
 
     /// <summary>
-    /// Returns true if the projectile applied its Hazard.
+    /// Returns true if the projectile applied its effect.
     /// </summary>
-    /// <returns>true if the projectile applied its Hazard; otherwise,
+    /// <returns>true if the projectile applied its effect; otherwise,
     /// false.</returns>
-    protected virtual bool AppliedHazard() { return hazardApplied; }
+    protected virtual bool AppliedEffect() { return effectApplied; }
 
     /// <summary>
-    /// Informs the ProjectileController that it applied its Hazard, if
+    /// Informs the ProjectileController that it applied its effect, if
     /// it has one.
     /// </summary>
-    protected virtual void ApplyHazard() { hazardApplied = true; }
+    protected virtual void ApplyEffect() { effectApplied = true; }
 
     /// <summary>
     /// Returns true if this controller's Projectile should be destoyed and
@@ -231,8 +231,7 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     {
         if (GetProjectile() == null) return;
 
-        float totalTime = GetInitialTargetDistance() / GetProjectile().GetSpeed();
-        parabolicStep = Time.deltaTime / totalTime;
+        parabolicStep = Time.deltaTime / .5f;
         parabolicProgress = Mathf.Min(parabolicProgress + parabolicStep, 1f);
 
         float parabola = 1.0f - 4.0f * (parabolicProgress - 0.5f) * (parabolicProgress - 0.5f);
@@ -249,7 +248,11 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
         GetProjectile().SetWorldPosition(nextPos);
         GetProjectile().SetShadowPosition(nextShadowPos);
 
-        if (parabolicProgress == 1) GetProjectile().SetReachedTarget();
+        if (parabolicProgress == 1)
+        {
+            GetProjectile().SetWorldPosition(GetDestination());
+            GetProjectile().SetReachedTarget();
+        }
     }
 
     /// <summary>

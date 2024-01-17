@@ -21,7 +21,7 @@ public abstract class Tree : Mob, ISurface
     /// <summary>
     /// Starting number of Collectable Prefabs this Tree drops each second.
     /// </summary>
-    public virtual float BASE_RESOURCE_DROP_RATE => .05f;
+    public virtual float BASE_RESOURCE_DROP_RATE => 0f;
 
     /// <summary>
     /// Maximum number of Collectable Prefabs this Tree can drop each second.
@@ -107,7 +107,7 @@ public abstract class Tree : Mob, ISurface
 
         string placeName = defender.NAME.ToLower() + "Place";
         SoundController.PlaySoundEffect(placeName);
-        defender.SetSortingOrder(GetSortingOrder() + 1);
+        defender.PassTreePosition(GetPosition());
         candidate.transform.SetParent(transform);
         candidate.transform.localPosition =
             new Vector3(DEFENDER_OFFSET_X, DEFENDER_OFFSET_Y, 1);
@@ -125,10 +125,17 @@ public abstract class Tree : Mob, ISurface
     /// returns false. </returns>
     public bool CanPlace(PlaceableObject candidate, ISurface[] neighbors)
     {
+        ModelType candidateType = candidate.TYPE;
+        List<ModelType> acceptedTypes = new List<ModelType>()
+        {
+            ModelType.SQUIRREL,
+            ModelType.BEAR,
+            ModelType.HEDGEHOG
+        };
+
         if (candidate == null || neighbors == null) return false;
         if (Occupied()) return false;
-        if (candidate as Butterfly != null) return false;
-        if (candidate as Squirrel == null) return false;
+        if (!acceptedTypes.Contains(candidateType)) return false;
         return true;
     }
 
@@ -225,7 +232,7 @@ public abstract class Tree : Mob, ISurface
         SpriteRenderer hollowRenderer = hollowCopy.GetComponent<SpriteRenderer>();
         Assert.IsNotNull(hollowRenderer);
 
-        hollowRenderer.sortingLayerName = "Trees";
+        hollowRenderer.sortingLayerName = "collectables";
         hollowRenderer.sortingOrder = GetSortingOrder() + 1;
         hollowRenderer.color = new Color32(255, 255, 255, 200);
         hollowCopy.transform.SetParent(transform);

@@ -122,6 +122,20 @@ public class LayerData
         return markerObjects;
     }
 
+
+    /// <summary>
+    /// Returns a list of all ObjectData objects within this LayerData whose
+    /// type is a Flooring.
+    /// </summary>
+    /// <returns>a list of all Flooring ObjectData objects within this LayerData.
+    /// </returns>
+    public List<ObjectData> GetFlooringObjectData()
+    {
+        List<ObjectData> markerObjects = new List<ObjectData>();
+        GetObjectData().ForEach(o => { if (o.IsFlooring()) markerObjects.Add(o); });
+        return markerObjects;
+    }
+
     /// <summary>
     /// Returns a copy of the list of integers representing this layer's 
     /// tile data.
@@ -136,15 +150,6 @@ public class LayerData
         return new List<int>(data);
     }
 
-    /// <summary>
-    /// Returns true if this LayerData is a layer of Flooring.
-    /// </summary>
-    /// <returns>true if this layer holds Flooring; otherwise, false.</returns>
-    public bool IsFlooringLayer()
-    {
-        Assert.IsNotNull(GetLayerClass(), "This LayerData's `layerClass` is null.");
-        return GetLayerClass().ToLower() == "flooringlayer";
-    }
 
     /// <summary>
     /// Returns true if this LayerData is a layer of Tiles.

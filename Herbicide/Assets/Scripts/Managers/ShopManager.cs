@@ -17,6 +17,11 @@ public class ShopManager : MonoBehaviour
     private static ShopManager instance;
 
     /// <summary>
+    /// The most recent GameState.
+    /// </summary>
+    private static GameState gameState;
+
+    /// <summary>
     /// The ScriptableObject that stores the shop information for
     /// the current level.
     /// </summary>
@@ -48,6 +53,16 @@ public class ShopManager : MonoBehaviour
     /// </summary>
     private float nextSpawnGap;
 
+    /// <summary>
+    /// Number of boats spawned since the scene began.
+    /// </summary>
+    private int numSpawns;
+
+    /// <summary>
+    /// Where boats spawn.
+    /// </summary>
+    private Vector3 spawnPos;
+
 
     /// <summary>
     /// Finds and sets the ShopManager singleton.
@@ -68,11 +83,13 @@ public class ShopManager : MonoBehaviour
     /// <summary>
     /// Main update loop for the ShopManager.
     /// </summary>
-    /// <param name="spawnPos">Where ShopBoats spawn. </param>
-    public static void UpdateShop(Vector3 spawnPos)
+    public static void UpdateShop()
     {
+        if (gameState != GameState.ONGOING) return;
+
         instance.timeSinceLastSpawn += Time.deltaTime;
-        if (instance.timeSinceLastSpawn >= instance.nextSpawnGap)
+        if (instance.timeSinceLastSpawn >= instance.nextSpawnGap &&
+            instance.numSpawns < instance.shopScriptable.GetMaxSpawns())
         {
             instance.timeSinceLastSpawn = 0;
             instance.ResetSpawnGap();
@@ -86,9 +103,11 @@ public class ShopManager : MonoBehaviour
             GameObject clonedShopBoat = Instantiate(instance.boatPrefab);
             Assert.IsNotNull(clonedShopBoat);
             ShopBoat clonedShopBoatComp = clonedShopBoat.GetComponent<ShopBoat>();
-            clonedShopBoatComp.SetWorldPosition(spawnPos);
+            clonedShopBoatComp.SetWorldPosition(instance.spawnPos);
             clonedShopBoatComp.SetRider(rolledRider);
             ControllerController.MakeController(clonedShopBoatComp);
+
+            instance.numSpawns++;
         }
 
     }
@@ -123,12 +142,13 @@ public class ShopManager : MonoBehaviour
     /// Initializes the shop, gathering data about what Models should spawn
     /// and more.
     /// </summary>
-    public static void LoadShop()
+    /// <param name="spawnPos">Where boats spawn. </param> 
+    public static void LoadShop(Vector3 spawnPos)
     {
         Assert.IsNotNull(instance.shopScriptable, "Scriptable is null.");
 
+        instance.spawnPos = spawnPos;
         instance.shop = instance.shopScriptable.GetShop();
-        instance.ResetSpawnGap();
     }
 
     /// <summary>
@@ -144,4 +164,10 @@ public class ShopManager : MonoBehaviour
         Assert.IsTrue(maxSpawnGap >= minSpawnGap);
         nextSpawnGap = Random.Range(minSpawnGap, maxSpawnGap);
     }
+
+    /// <summary>
+    /// Informs the ShopManager of the most recent GameState.
+    /// </summary>
+    /// <param name="gameState">The most recent GameState.</param>
+    public static void InformOfGameState(GameState gameState) { ShopManager.gameState = gameState; }
 }

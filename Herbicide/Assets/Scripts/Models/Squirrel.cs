@@ -4,12 +4,10 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Represents a Squirrel Defender. It shoots acorns towards
-/// enemies. 
+/// Represents a Squirrel Defender.
 /// </summary>
 public class Squirrel : Defender
 {
-    //--------------------BEGIN STATS----------------------//
 
     /// <summary>
     /// Starting health of a Squirrel
@@ -29,7 +27,7 @@ public class Squirrel : Defender
     /// <summary>
     /// Starting attack range of a Squirrel
     /// </summary>
-    public override float BASE_ATTACK_RANGE => 100f;
+    public override float BASE_ATTACK_RANGE => 4f;
 
     /// <summary>
     /// Maximum attack range of a Squirrel
@@ -44,7 +42,7 @@ public class Squirrel : Defender
     /// <summary>
     /// Amount of attack cooldown this Squirrel starts with.
     /// </summary>
-    public override float BASE_ATTACK_COOLDOWN => 2f;
+    public override float BASE_ATTACK_COOLDOWN => 3f;
 
     /// <summary>
     /// Most amount of attack cooldown this Squirrel can have.
@@ -81,10 +79,6 @@ public class Squirrel : Defender
     /// </summary>
     public override float MIN_MOVEMENT_SPEED => 0f;
 
-    //---------------------END STATS-----------------------//
-
-    //------------------BEGIN ANIMATION--------------------//
-
     /// <summary>
     /// How many seconds a Squirrel's attack animation lasts,
     /// from start to finish. 
@@ -96,8 +90,6 @@ public class Squirrel : Defender
     /// from start to finish. 
     /// </summary>
     public float IDLE_ANIMATION_DURATION => Mathf.Clamp(GetAttackCooldown(), 0.0001f, float.MaxValue);
-
-    //--------------------END ANIMATION--------------------//
 
     /// <summary>
     /// Name of a Squirrel
@@ -155,5 +147,14 @@ public class Squirrel : Defender
     /// <returns>the animation track that represents this Squirrel when placing.
     /// </returns>
     public override Sprite[] GetPlacementTrack() { return SquirrelFactory.GetPlacementTrack(); }
+
+    /// <summary>
+    /// Returns the (X, Y) dimensions of the Bear's placement track.
+    /// </summary>
+    /// <returns>the (X, Y) dimensions of the Bear's placement track.</returns>
+    public override Vector2Int GetPlacementTrackDimensions()
+    {
+        return new Vector2Int(16, 20);
+    }
 }
 

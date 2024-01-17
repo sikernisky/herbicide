@@ -167,15 +167,15 @@ public class InventoryController : MonoBehaviour
     private void StartPlacingFromSlot(InventorySlot slot)
     {
         //Safety checks
-        if (PlacementController.Placing()) return;
-        if (slot == null) return;
-        if (!slot.Occupied()) return;
-        if (!slot.CanUse()) return;
+        // if (PlacementController.Placing()) return;
+        // if (slot == null) return;
+        // if (!slot.Occupied()) return;
+        // if (!slot.CanUse()) return;
 
-        //Start the placement event
-        Model occupant = slot.GetOccupant();
-        if (occupant == null) return;
-        PlacementController.StartPlacingObject(slot);
+        // //Start the placement event
+        // Model occupant = slot.GetOccupant();
+        // if (occupant == null) return;
+        // PlacementController.StartPlacingObject(slot);
     }
 
 

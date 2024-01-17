@@ -1,31 +1,64 @@
 {
-    "activeFile": "Tiled/Tilemaps/level0.tmx",
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "Tiled/Tilemaps/level1.tmx",
     "expandedProjectPaths": [
     ],
+    "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
         "Tiled/Tilemaps/level0.tmx": {
-            "scale": 3.9662,
+            "expandedObjectLayers": [
+                13,
+                14
+            ],
+            "scale": 1.98,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 264.35883213151124,
-                "y": 116.48429226967878
+                "x": 220.45454545454547,
+                "y": 73.73737373737376
+            }
+        },
+        "Tiled/Tilemaps/level1.json": {
+            "scale": 3.4,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 182.2058823529412,
+                "y": 110.58823529411765
+            }
+        },
+        "Tiled/Tilemaps/level1.tmx": {
+            "scale": 3.38,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 185.35502958579883,
+                "y": 95.85798816568048
             }
         },
         "Tiled/Tilesets/Enemies.tsx": {
             "scaleInDock": 4.1205,
-            "scaleInEditor": 4.07
+            "scaleInEditor": 5.87
         },
         "Tiled/Tilesets/Grass.tsx": {
             "scaleInDock": 3.96,
-            "scaleInEditor": 4.07
+            "scaleInEditor": 5.87
+        },
+        "Tiled/Tilesets/Markers.tsx": {
+            "scaleInDock": 5.6752,
+            "scaleInEditor": 5.87
+        },
+        "Tiled/Tilesets/Placeables.tsx": {
+            "scaleInDock": 4.6426,
+            "scaleInEditor": 5.87
         },
         "Tiled/Tilesets/Shore.tsx": {
             "scaleInDock": 3.4863,
-            "scaleInEditor": 4.07
+            "scaleInEditor": 5.87
         },
         "Tiled/Tilesets/Soil.tsx": {
             "scaleInDock": 3.96,
-            "scaleInEditor": 4.07
+            "scaleInEditor": 5.87
         },
         "Tiled/Tilesets/Water.tsx": {
             "scaleInDock": 3.96,
@@ -37,7 +70,7 @@
     "last.imagePath": "/Users/teddysiker/Desktop/Art/Herbicide/TileSets",
     "last.objectTypesPath": "/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Tiled/Objects/propertytypes.xml",
     "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
-    "map.lastUsedFormat": "tmx",
+    "map.lastUsedFormat": "json",
     "map.tileHeight": 16,
     "map.tileWidth": 16,
     "openFiles": [
@@ -45,16 +78,23 @@
         "Tiled/Tilemaps/level0.tmx",
         "Tiled/Tilesets/Enemies.tsx",
         "Tiled/Tilesets/Shore.tsx",
-        "Tiled/Tilesets/Grass.tsx"
+        "Tiled/Tilesets/Grass.tsx",
+        "Tiled/Tilesets/Markers.tsx",
+        "Tiled/Tilemaps/level1.tmx",
+        "Tiled/Tilesets/Placeables.tsx"
     ],
     "project": "HerbicideTiled.tiled-project",
     "property.type": "string",
     "recentFiles": [
-        "Tiled/Tilesets/Soil.tsx",
-        "Tiled/Tilesets/Grass.tsx",
-        "Tiled/Tilesets/Shore.tsx",
-        "Tiled/Tilesets/Enemies.tsx",
         "Tiled/Tilemaps/level0.tmx",
+        "Tiled/Tilemaps/level1.tmx",
+        "Tiled/Tilesets/Soil.tsx",
+        "Tiled/Tilesets/Enemies.tsx",
+        "Tiled/Tilesets/Shore.tsx",
+        "Tiled/Tilesets/Grass.tsx",
+        "Tiled/Tilesets/Markers.tsx",
+        "Tiled/Tilesets/Placeables.tsx",
+        "Tiled/Tilemaps/level1.json",
         "Tiled/Tilesets/Water.tsx"
     ],
     "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)",

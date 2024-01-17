@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5763169152674349035}
   - component: {fileID: 382661794519065154}
   - component: {fileID: 8058731185781404458}
+  - component: {fileID: 5288597070843850487}
   m_Layer: 7
   m_Name: SoilFlooring
   m_TagString: Untagged
@@ -26,8 +27,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2820041071631143976}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3, y: 3, z: 1}
-  m_LocalScale: {x: 1, y: 1, z: 0}
+  m_LocalPosition: {x: 13, y: 7, z: 1}
+  m_LocalScale: {x: 1.0001, y: 1.0001, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -74,7 +75,7 @@ SpriteRenderer:
   m_SortingLayerID: -597001099
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 158639252, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -82,7 +83,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &8058731185781404458
@@ -97,20 +98,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49378050da8cb41d09bc849e574c0e1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileSet:
-  - {fileID: 1596737732, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
-  - {fileID: -1190084512, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
-  - {fileID: 393414611, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
-  - {fileID: 662520374, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
-  - {fileID: 964121014, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
-  - {fileID: -1752238102, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
-  - {fileID: -2091271566, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
-  - {fileID: 1102480805, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
-  - {fileID: -486252252, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
-  - {fileID: -967746284, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
-  - {fileID: -1500955503, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
-  - {fileID: 36788838, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
-  - {fileID: 1705305801, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
-  - {fileID: -217855940, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
-  - {fileID: -856620271, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
-  - {fileID: 1917746013, guid: b11d32e2f1bc84797b4b9833e375e9e6, type: 3}
+  modelRenderer: {fileID: 382661794519065154}
+  modelCollider: {fileID: 5288597070843850487}
+--- !u!61 &5288597070843850487
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2820041071631143976}
+  m_Enabled: 0
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0

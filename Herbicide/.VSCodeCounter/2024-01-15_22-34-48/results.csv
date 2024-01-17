@@ -1,0 +1,173 @@
+"filename", "language", "XML", "JSON", "C#", "ShaderLab", "HLSL", "ApexLog", "TypeScript JSX", "HTML", "Ini", "comment", "blank", "total"
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assembly-CSharp.csproj", "XML", 935, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 937
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Levels/level0.json", "JSON", 0, 284, 0, 0, 0, 0, 0, 0, 0, 0, 0, 284
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Levels/level1.json", "JSON", 0, 359, 0, 0, 0, 0, 0, 0, 0, 0, 0, 359
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Levels/level_easy.json", "JSON", 0, 44, 0, 0, 0, 0, 0, 0, 0, 0, 0, 44
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Levels/level_hard.json", "JSON", 0, 148, 0, 0, 0, 0, 0, 0, 0, 0, 0, 148
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Levels/level_medium.json", "JSON", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/AcornController.cs", "C#", 0, 0, 49, 0, 0, 0, 0, 0, 0, 53, 16, 118
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/BasicTreeController.cs", "C#", 0, 0, 70, 0, 0, 0, 0, 0, 0, 52, 19, 141
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/BasicTreeSeedController.cs", "C#", 0, 0, 69, 0, 0, 0, 0, 0, 0, 57, 22, 148
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/BearController.cs", "C#", 0, 0, 135, 0, 0, 0, 0, 0, 0, 79, 34, 248
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/BombController.cs", "C#", 0, 0, 98, 0, 0, 0, 0, 0, 0, 68, 26, 192
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/ButterflyController.cs", "C#", 0, 0, 199, 0, 0, 0, 0, 0, 0, 102, 45, 346
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/CollectableController.cs", "C#", 0, 0, 114, 0, 0, 0, 0, 0, 0, 134, 44, 292
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/CollectionMenuController.cs", "C#", 0, 0, 63, 0, 0, 0, 0, 0, 0, 60, 20, 143
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/ControllerController.cs", "C#", 0, 0, 320, 0, 0, 0, 0, 0, 0, 115, 54, 489
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/DefenderController.cs", "C#", 0, 0, 50, 0, 0, 0, 0, 0, 0, 55, 22, 127
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/DewController.cs", "C#", 0, 0, 67, 0, 0, 0, 0, 0, 0, 57, 19, 143
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/EconomyController.cs", "C#", 0, 0, 52, 0, 0, 0, 0, 0, 0, 63, 18, 133
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/EmanationController.cs", "C#", 0, 0, 84, 0, 0, 0, 0, 0, 0, 97, 30, 211
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/EnemyController.cs", "C#", 0, 0, 73, 0, 0, 0, 0, 0, 0, 54, 22, 149
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/FlooringController.cs", "C#", 0, 0, 13, 0, 0, 0, 0, 0, 0, 27, 6, 46
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/HazardController.cs", "C#", 0, 0, 27, 0, 0, 0, 0, 0, 0, 33, 9, 69
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/HedgehogController.cs", "C#", 0, 0, 151, 0, 0, 0, 0, 0, 0, 93, 37, 281
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/InputController.cs", "C#", 0, 0, 210, 0, 0, 0, 0, 0, 0, 153, 64, 427
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/InventoryController.cs", "C#", 0, 0, 86, 0, 0, 0, 0, 0, 0, 80, 25, 191
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/JSONController.cs", "C#", 0, 0, 48, 0, 0, 0, 0, 0, 0, 38, 14, 100
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/KudzuController.cs", "C#", 0, 0, 439, 0, 0, 0, 0, 0, 0, 223, 113, 775
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/LevelController.cs", "C#", 0, 0, 113, 0, 0, 0, 0, 0, 0, 88, 40, 241
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/MainMenuController.cs", "C#", 0, 0, 56, 0, 0, 0, 0, 0, 0, 49, 15, 120
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/MobController.cs", "C#", 0, 0, 250, 0, 0, 0, 0, 0, 0, 248, 81, 579
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/ModelController.cs", "C#", 0, 0, 151, 0, 0, 0, 0, 0, 0, 196, 54, 401
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/NexusController.cs", "C#", 0, 0, 57, 0, 0, 0, 0, 0, 0, 66, 18, 141
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/NexusHoleController.cs", "C#", 0, 0, 42, 0, 0, 0, 0, 0, 0, 61, 18, 121
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/PlacementController.cs", "C#", 0, 0, 109, 0, 0, 0, 0, 0, 0, 79, 31, 219
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/ProjectileController.cs", "C#", 0, 0, 91, 0, 0, 0, 0, 0, 0, 145, 44, 280
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/ShopBoatController.cs", "C#", 0, 0, 113, 0, 0, 0, 0, 0, 0, 87, 36, 236
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/SkillSlotController.cs", "C#", 0, 0, 20, 0, 0, 0, 0, 0, 0, 18, 5, 43
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/SlowZoneController.cs", "C#", 0, 0, 82, 0, 0, 0, 0, 0, 0, 75, 24, 181
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/SoundController.cs", "C#", 0, 0, 56, 0, 0, 0, 0, 0, 0, 36, 14, 106
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/SquirrelController.cs", "C#", 0, 0, 142, 0, 0, 0, 0, 0, 0, 89, 36, 267
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/StructureController.cs", "C#", 0, 0, 8, 0, 0, 0, 0, 0, 0, 11, 2, 21
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/SynergyController.cs", "C#", 0, 0, 71, 0, 0, 0, 0, 0, 0, 55, 20, 146
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/TreeController.cs", "C#", 0, 0, 40, 0, 0, 0, 0, 0, 0, 46, 16, 102
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/DataStructures/Direction.cs", "C#", 0, 0, 7, 0, 0, 0, 0, 0, 0, 4, 2, 13
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/DataStructures/ModelCounts.cs", "C#", 0, 0, 23, 0, 0, 0, 0, 0, 0, 26, 6, 55
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/DataStructures/ModelType.cs", "C#", 0, 0, 26, 0, 0, 0, 0, 0, 0, 3, 2, 31
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/DataStructures/PathfindingCache.cs", "C#", 0, 0, 47, 0, 0, 0, 0, 0, 0, 44, 15, 106
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/DataStructures/ShopModel.cs", "C#", 0, 0, 18, 0, 0, 0, 0, 0, 0, 20, 5, 43
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/DataStructures/SortingLayers.cs", "C#", 0, 0, 16, 0, 0, 0, 0, 0, 0, 4, 3, 23
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Factories/AcornFactory.cs", "C#", 0, 0, 26, 0, 0, 0, 0, 0, 0, 35, 12, 73
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Factories/BasicTreeFactory.cs", "C#", 0, 0, 26, 0, 0, 0, 0, 0, 0, 35, 11, 72
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Factories/BasicTreeSeedFactory.cs", "C#", 0, 0, 26, 0, 0, 0, 0, 0, 0, 35, 11, 72
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Factories/BearFactory.cs", "C#", 0, 0, 75, 0, 0, 0, 0, 0, 0, 77, 26, 178
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Factories/BombFactory.cs", "C#", 0, 0, 29, 0, 0, 0, 0, 0, 0, 42, 13, 84
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Factories/BombSplatFactory.cs", "C#", 0, 0, 26, 0, 0, 0, 0, 0, 0, 35, 11, 72
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Factories/ButterflyFactory.cs", "C#", 0, 0, 35, 0, 0, 0, 0, 0, 0, 55, 17, 107
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Factories/DewFactory.cs", "C#", 0, 0, 26, 0, 0, 0, 0, 0, 0, 35, 11, 72
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Factories/EdgeFactory.cs", "C#", 0, 0, 30, 0, 0, 0, 0, 0, 0, 30, 10, 70
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Factories/EmanationFactory.cs", "C#", 0, 0, 41, 0, 0, 0, 0, 0, 0, 25, 10, 76
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Factories/FlooringFactory.cs", "C#", 0, 0, 33, 0, 0, 0, 0, 0, 0, 37, 12, 82
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Factories/HedgehogFactory.cs", "C#", 0, 0, 72, 0, 0, 0, 0, 0, 0, 69, 23, 164
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Factories/KudzuFactory.cs", "C#", 0, 0, 158, 0, 0, 0, 0, 0, 0, 184, 56, 398
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Factories/NexusFactory.cs", "C#", 0, 0, 25, 0, 0, 0, 0, 0, 0, 30, 11, 66
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Factories/NexusHoleFactory.cs", "C#", 0, 0, 26, 0, 0, 0, 0, 0, 0, 32, 11, 69
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Factories/ShopBoatFactory.cs", "C#", 0, 0, 29, 0, 0, 0, 0, 0, 0, 43, 13, 85
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Factories/SquirrelFactory.cs", "C#", 0, 0, 72, 0, 0, 0, 0, 0, 0, 69, 23, 164
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Factories/TileFactory.cs", "C#", 0, 0, 32, 0, 0, 0, 0, 0, 0, 32, 10, 74
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Interfaces/IStateTracker.cs", "C#", 0, 0, 13, 0, 0, 0, 0, 0, 0, 37, 7, 57
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Interfaces/ISurface.cs", "C#", 0, 0, 24, 0, 0, 0, 0, 0, 0, 106, 20, 150
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Loading/LayerData.cs", "C#", 0, 0, 92, 0, 0, 0, 0, 0, 0, 91, 25, 208
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Loading/ObjectData.cs", "C#", 0, 0, 124, 0, 0, 0, 0, 0, 0, 101, 31, 256
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Loading/PropertiesData.cs", "C#", 0, 0, 19, 0, 0, 0, 0, 0, 0, 18, 5, 42
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Loading/TiledData.cs", "C#", 0, 0, 78, 0, 0, 0, 0, 0, 0, 61, 15, 154
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Loading/TilesetData.cs", "C#", 0, 0, 27, 0, 0, 0, 0, 0, 0, 26, 7, 60
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Managers/EnemyManager.cs", "C#", 0, 0, 93, 0, 0, 0, 0, 0, 0, 54, 23, 170
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Managers/ShopManager.cs", "C#", 0, 0, 82, 0, 0, 0, 0, 0, 0, 64, 28, 174
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Managers/SkillTreeManager.cs", "C#", 0, 0, 31, 0, 0, 0, 0, 0, 0, 18, 9, 58
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Managers/TileGrid.cs", "C#", 0, 0, 799, 0, 0, 0, 0, 0, 0, 476, 178, 1453
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/Acorn.cs", "C#", 0, 0, 19, 0, 0, 0, 0, 0, 0, 51, 15, 85
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/AnimatedTile.cs", "C#", 0, 0, 31, 0, 0, 0, 0, 0, 0, 20, 8, 59
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/BasicTree.cs", "C#", 0, 0, 30, 0, 0, 0, 0, 0, 0, 72, 22, 124
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/BasicTreeSeed.cs", "C#", 0, 0, 19, 0, 0, 0, 0, 0, 0, 51, 15, 85
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/Bear.cs", "C#", 0, 0, 42, 0, 0, 0, 0, 0, 0, 83, 26, 151
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/Bomb.cs", "C#", 0, 0, 19, 0, 0, 0, 0, 0, 0, 51, 14, 84
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/BombSplat.cs", "C#", 0, 0, 18, 0, 0, 0, 0, 0, 0, 40, 11, 69
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/Butterfly.cs", "C#", 0, 0, 36, 0, 0, 0, 0, 0, 0, 96, 32, 164
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/Collectable.cs", "C#", 0, 0, 27, 0, 0, 0, 0, 0, 0, 42, 13, 82
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/Currency.cs", "C#", 0, 0, 16, 0, 0, 0, 0, 0, 0, 33, 11, 60
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/Defender.cs", "C#", 0, 0, 26, 0, 0, 0, 0, 0, 0, 27, 9, 62
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/Dew.cs", "C#", 0, 0, 14, 0, 0, 0, 0, 0, 0, 35, 10, 59
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/EdgeTile.cs", "C#", 0, 0, 11, 0, 0, 0, 0, 0, 0, 11, 3, 25
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/Effect.cs", "C#", 0, 0, 35, 0, 0, 0, 0, 0, 0, 62, 16, 113
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/Enemy.cs", "C#", 0, 0, 55, 0, 0, 0, 0, 0, 0, 75, 21, 151
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/Flooring.cs", "C#", 0, 0, 204, 0, 0, 0, 0, 0, 0, 179, 62, 445
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/GameState.cs", "C#", 0, 0, 10, 0, 0, 0, 0, 0, 0, 3, 1, 14
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/GrassTile.cs", "C#", 0, 0, 28, 0, 0, 0, 0, 0, 0, 37, 11, 76
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/Hazard.cs", "C#", 0, 0, 15, 0, 0, 0, 0, 0, 0, 26, 8, 49
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/Hedgehog.cs", "C#", 0, 0, 28, 0, 0, 0, 0, 0, 0, 74, 23, 125
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/InventorySlot.cs", "C#", 0, 0, 69, 0, 0, 0, 0, 0, 0, 67, 22, 158
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/Kudzu.cs", "C#", 0, 0, 47, 0, 0, 0, 0, 0, 0, 107, 33, 187
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/Mob.cs", "C#", 0, 0, 103, 0, 0, 0, 0, 0, 0, 161, 53, 317
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/Model.cs", "C#", 0, 0, 170, 0, 0, 0, 0, 0, 0, 255, 72, 497
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/Nexus.cs", "C#", 0, 0, 35, 0, 0, 0, 0, 0, 0, 98, 30, 163
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/NexusHole.cs", "C#", 0, 0, 52, 0, 0, 0, 0, 0, 0, 102, 31, 185
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/PlaceableObject.cs", "C#", 0, 0, 61, 0, 0, 0, 0, 0, 0, 94, 28, 183
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/Projectile.cs", "C#", 0, 0, 63, 0, 0, 0, 0, 0, 0, 143, 40, 246
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/ShopBoat.cs", "C#", 0, 0, 59, 0, 0, 0, 0, 0, 0, 116, 35, 210
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/ShoreTile.cs", "C#", 0, 0, 10, 0, 0, 0, 0, 0, 0, 16, 5, 31
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/SkillSlot.cs", "C#", 0, 0, 26, 0, 0, 0, 0, 0, 0, 33, 9, 68
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/SlowEffect.cs", "C#", 0, 0, 30, 0, 0, 0, 0, 0, 0, 26, 8, 64
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/SlowZone.cs", "C#", 0, 0, 19, 0, 0, 0, 0, 0, 0, 43, 14, 76
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/SoilFlooring.cs", "C#", 0, 0, 33, 0, 0, 0, 0, 0, 0, 26, 8, 67
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/Sound.cs", "C#", 0, 0, 25, 0, 0, 0, 0, 0, 0, 27, 7, 59
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/Squirrel.cs", "C#", 0, 0, 39, 0, 0, 0, 0, 0, 0, 92, 30, 161
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/Structure.cs", "C#", 0, 0, 11, 0, 0, 0, 0, 0, 0, 7, 2, 20
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/Synergy.cs", "C#", 0, 0, 31, 0, 0, 0, 0, 0, 0, 35, 11, 77
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/SynergySlot.cs", "C#", 0, 0, 39, 0, 0, 0, 0, 0, 0, 39, 18, 96
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/Tile.cs", "C#", 0, 0, 326, 0, 0, 0, 0, 0, 0, 304, 102, 732
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/Tree.cs", "C#", 0, 0, 134, 0, 0, 0, 0, 0, 0, 145, 45, 324
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/TripleThreat.cs", "C#", 0, 0, 46, 0, 0, 0, 0, 0, 0, 40, 15, 101
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/WaterTile.cs", "C#", 0, 0, 10, 0, 0, 0, 0, 0, 0, 15, 5, 30
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Scriptables/ShopScriptable.cs", "C#", 0, 0, 21, 0, 0, 0, 0, 0, 0, 38, 10, 69
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Scriptables/SkillSlotScriptable.cs", "C#", 0, 0, 23, 0, 0, 0, 0, 0, 0, 33, 10, 66
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/View/CameraController.cs", "C#", 0, 0, 52, 0, 0, 0, 0, 0, 0, 43, 11, 106
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/View/CanvasController.cs", "C#", 0, 0, 148, 0, 0, 0, 0, 0, 0, 91, 36, 275
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/View/SceneController.cs", "C#", 0, 0, 100, 0, 0, 0, 0, 0, 0, 80, 28, 208
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/TextMesh Pro/Shaders/TMP_Bitmap-Custom-Atlas.shader", "ShaderLab", 0, 0, 0, 109, 0, 0, 0, 0, 0, 2, 33, 144
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/TextMesh Pro/Shaders/TMP_Bitmap-Mobile.shader", "ShaderLab", 0, 0, 0, 112, 0, 0, 0, 0, 0, 3, 31, 146
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/TextMesh Pro/Shaders/TMP_Bitmap.shader", "ShaderLab", 0, 0, 0, 109, 0, 0, 0, 0, 0, 2, 33, 144
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/TextMesh Pro/Shaders/TMP_SDF Overlay.shader", "ShaderLab", 0, 0, 0, 243, 0, 0, 0, 0, 0, 4, 71, 318
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/TextMesh Pro/Shaders/TMP_SDF SSD.shader", "ShaderLab", 0, 0, 0, 241, 0, 0, 0, 0, 0, 4, 66, 311
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Masking.shader", "ShaderLab", 0, 0, 0, 188, 0, 0, 0, 0, 0, 10, 50, 248
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Overlay.shader", "ShaderLab", 0, 0, 0, 183, 0, 0, 0, 0, 0, 8, 50, 241
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile SSD.shader", "ShaderLab", 0, 0, 0, 82, 0, 0, 0, 0, 0, 4, 21, 107
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile.shader", "ShaderLab", 0, 0, 0, 183, 0, 0, 0, 0, 0, 8, 50, 241
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/TextMesh Pro/Shaders/TMP_SDF-Surface-Mobile.shader", "ShaderLab", 0, 0, 0, 103, 0, 0, 0, 0, 0, 8, 28, 139
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/TextMesh Pro/Shaders/TMP_SDF-Surface.shader", "ShaderLab", 0, 0, 0, 122, 0, 0, 0, 0, 0, 4, 33, 159
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/TextMesh Pro/Shaders/TMP_SDF.shader", "ShaderLab", 0, 0, 0, 243, 0, 0, 0, 0, 0, 4, 71, 318
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/TextMesh Pro/Shaders/TMP_Sprite.shader", "ShaderLab", 0, 0, 0, 97, 0, 0, 0, 0, 0, 0, 20, 117
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/TextMesh Pro/Shaders/TMPro.cginc", "HLSL", 0, 0, 0, 0, 63, 0, 0, 0, 0, 2, 20, 85
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/TextMesh Pro/Shaders/TMPro_Mobile.cginc", "HLSL", 0, 0, 0, 0, 122, 0, 0, 0, 0, 2, 34, 158
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/TextMesh Pro/Shaders/TMPro_Properties.cginc", "HLSL", 0, 0, 0, 0, 62, 0, 0, 0, 0, 10, 14, 86
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/TextMesh Pro/Shaders/TMPro_Surface.cginc", "HLSL", 0, 0, 0, 0, 76, 0, 0, 0, 0, 7, 19, 102
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/TextMesh Pro/Sprites/EmojiOne.json", "JSON", 0, 155, 0, 0, 0, 0, 0, 0, 0, 0, 2, 157
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/2.0/DefaultWsdlHelpGenerator.aspx", "HTML", 0, 0, 0, 0, 0, 0, 0, 1594, 0, 28, 280, 1902
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/4.0/DefaultWsdlHelpGenerator.aspx", "HTML", 0, 0, 0, 0, 0, 0, 0, 1594, 0, 28, 280, 1902
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/4.5/DefaultWsdlHelpGenerator.aspx", "HTML", 0, 0, 0, 0, 0, 0, 0, 1594, 0, 28, 280, 1902
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/browscap.ini", "Ini", 0, 0, 0, 0, 0, 0, 0, 0, 13255, 274, 3451, 16980
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Builds/HerbicideGameplayPrototype.app/Contents/MonoBleedingEdge/etc/mono/mconfig/config.xml", "XML", 525, 0, 0, 0, 0, 0, 0, 0, 0, 30, 62, 617
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/RuntimeInitializeOnLoads.json", "JSON", 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/ScriptingAssemblies.json", "JSON", 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Builds/HerbicideGameplayPrototype.app/Contents/Resources/Data/StreamingAssets/UnityServicesProjectConfiguration.json", "JSON", 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Logs/AssetImportWorker0.log", "ApexLog", 0, 0, 0, 0, 0, 1295, 0, 0, 0, 0, 23, 1318
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Logs/AssetImportWorker1.log", "ApexLog", 0, 0, 0, 0, 0, 1277, 0, 0, 0, 0, 23, 1300
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Logs/Packages-Update.log", "ApexLog", 0, 0, 0, 0, 0, 43, 0, 0, 0, 0, 4, 47
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Logs/shadercompiler-AssetImportWorker0.log", "ApexLog", 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 3, 7
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Logs/shadercompiler-UnityShaderCompiler0.log", "ApexLog", 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 4
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Packages/manifest.json", "JSON", 0, 43, 0, 0, 0, 0, 0, 0, 0, 0, 1, 44
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Packages/packages-lock.json", "JSON", 0, 466, 0, 0, 0, 0, 0, 0, 0, 0, 1, 467
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Tiled/Objects/propertytypes.xml", "XML", 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Tiled/Tilemaps/level0.tmx", "XML", 115, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 116
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Tiled/Tilemaps/level1.json", "JSON", 0, 268, 0, 0, 0, 0, 0, 0, 0, 0, 0, 268
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Tiled/Tilemaps/level1.tmx", "XML", 104, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 105
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Tiled/Tilesets/Enemies.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 1, 11
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Tiled/Tilesets/Grass.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 1, 5
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Tiled/Tilesets/Markers.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 15, 0, 0, 0, 1, 16
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Tiled/Tilesets/Placeables.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 19, 0, 0, 0, 1, 20
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Tiled/Tilesets/Shore.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 1, 10
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Tiled/Tilesets/Soil.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 84, 0, 0, 0, 1, 85
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Tiled/Tilesets/Water.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 1, 5
+"/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/out/linecount.json", "JSON", 0, 1285, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1285
+"Total", "-", 1681, 3055, 8589, 2015, 323, 2621, 145, 4782, 13255, 8910, 7903, 53279

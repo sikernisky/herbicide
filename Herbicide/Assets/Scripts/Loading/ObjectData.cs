@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -49,6 +50,11 @@ public class ObjectData
     private float spawnTime = -1;
 
     /// <summary>
+    /// The unparsed spawn data for an Enemy spawn point marker.
+    /// </summary>
+    private string enemySpawnData;
+
+    /// <summary>
     /// The name of this ObjectData. The Tiled2d mappings are:<br></br>
     /// 
     /// (1) Enemy: enemyName
@@ -93,6 +99,18 @@ public class ObjectData
         return type.ToLower() == "marker";
     }
 
+
+    /// <summary>
+    /// Returns true if this ObjectData is a deserialized flooring.
+    /// </summary>
+    /// <returns>true if this ObjectData is a deserialized flooring;
+    /// otherwise, false.</returns>
+    public bool IsFlooring()
+    {
+        Assert.IsNotNull(type, "This ObjectData's `type` field is null.");
+        return type.ToLower() == "flooring";
+    }
+
     /// <summary>
     /// Returns the name of this Enemy ObjectData.
     /// </summary>
@@ -127,6 +145,18 @@ public class ObjectData
     }
 
     /// <summary>
+    /// Returns the name of this Flooring ObjectData.
+    /// </summary>
+    /// <returns>the name of this Flooring ObjectData.</returns>
+    public string GetFlooringName()
+    {
+        Assert.IsTrue(IsFlooring(), "This ObjectData is not a Flooring.");
+        if (objectName == null) FindObjectName();
+        return objectName;
+    }
+
+
+    /// <summary>
     /// Searches through this ObjectData's custom properties to find the
     /// name of this object. Sets it.
     /// </summary>
@@ -138,7 +168,8 @@ public class ObjectData
         {
             if (pd.GetPropertyName().ToLower() == "enemyname" ||
                 pd.GetPropertyName().ToLower() == "structurename" ||
-                pd.GetPropertyName().ToLower() == "markername"
+                pd.GetPropertyName().ToLower() == "markername" ||
+                pd.GetPropertyName().ToLower() == "flooringname"
                 )
             {
                 objectName = pd.GetPropertyValue();
@@ -174,6 +205,36 @@ public class ObjectData
             if (pd.GetPropertyName().ToLower() == "spawntime")
             {
                 spawnTime = float.Parse(pd.GetPropertyValue());
+                return;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Returns the enemy spawn data of this ObjectData.
+    /// </summary>
+    /// <returns>the times and names of the enemies that should spawn.</returns>
+    public string GetEnemySpawnData()
+    {
+        Assert.IsTrue(IsMarker(), "This ObjectData has no spawn data property.");
+        if (enemySpawnData == null) FindSpawnData();
+        return enemySpawnData;
+    }
+
+    /// <summary>
+    /// Searches through this ObjectData's custom properties to find the enemy
+    /// spawn data property. Sets it.
+    /// </summary>
+    private void FindSpawnData()
+    {
+        Assert.IsTrue(IsMarker(), "This ObjectData has no spawn data property.");
+        if (enemySpawnData != null) return;
+
+        foreach (PropertiesData pd in properties)
+        {
+            if (pd.GetPropertyName().ToLower() == "enemyspawndata")
+            {
+                enemySpawnData = pd.GetPropertyValue();
                 return;
             }
         }

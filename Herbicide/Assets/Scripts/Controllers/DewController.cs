@@ -83,7 +83,7 @@ public class DewController : CollectableController<DewController.DewState>
                 SetState(DewState.BOBBING);
                 break;
             case DewState.BOBBING:
-                if (DriftedUp()) SetState(DewState.COLLECTING);
+                if (InHomingRange()) SetState(DewState.COLLECTING);
                 break;
             case DewState.COLLECTING:
                 break;
@@ -98,7 +98,8 @@ public class DewController : CollectableController<DewController.DewState>
         if (!ValidModel()) return;
         if (GetState() != DewState.BOBBING) return;
 
-        Drift(.5f);
+        BobUpAndDown();
+
     }
 
     /// <summary>
@@ -109,8 +110,16 @@ public class DewController : CollectableController<DewController.DewState>
         if (!ValidModel()) return;
         if (GetState() != DewState.COLLECTING) return;
 
-        EconomyController.CashIn(GetDew());
-        GetDew().OnCollect();
+        if (InCollectionRange())
+        {
+            EconomyController.CashIn(GetDew());
+            GetDew().OnCollect();
+        }
+        else
+        {
+            MoveTowardsCursor();
+
+        }
     }
 
     //-----------------------ANIM LOGIC----------------------//

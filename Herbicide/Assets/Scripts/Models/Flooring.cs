@@ -176,6 +176,8 @@ public abstract class Flooring : Model, ISurface
             }
         }
 
+        //2. If not occupied, check for placeables that can occupy Flooring w/o Trees.
+
         (candidate as Tree).UpdateSurfaceNeighbors(neighbors);
 
         SpriteRenderer prefabRenderer = candidate.GetComponent<SpriteRenderer>();
@@ -210,14 +212,17 @@ public abstract class Flooring : Model, ISurface
 
         if (candidate == null || neighbors == null) return false;
 
-        if (Occupied() && occupant as ISurface != null)
+        HashSet<ModelType> validPlacements = new HashSet<ModelType>(){
+            ModelType.BASIC_TREE
+        };
+
+        if (Occupied())
+        {
+            ISurface surfaceOccupant = occupant as ISurface;
+            if (surfaceOccupant == null) return false;
             return (occupant as ISurface).CanPlace(candidate, neighbors);
-        else if (Occupied()) return false;
-
-        if (candidate == null || neighbors == null) return false;
-        if (candidate as Squirrel != null) return false;
-
-        return true;
+        }
+        else return validPlacements.Contains(candidate.TYPE);
     }
 
     /// <summary>
@@ -271,10 +276,10 @@ public abstract class Flooring : Model, ISurface
     protected abstract int GetTilingIndex(ISurface[] neighbors);
 
     /// <summary>
-    /// Returns this Tile's TileType.
+    /// Returns this Flooring's FlooringType.
     /// </summary>
-    /// <returns>this Tile's TileType.</returns>
-    public FlooringType GetTileType()
+    /// <returns>this Flooring's FlooringType.</returns>
+    public FlooringType GetFlooringType()
     {
         AssertDefined();
         return type;
@@ -336,6 +341,7 @@ public abstract class Flooring : Model, ISurface
         SpriteRenderer hollowRenderer = hollowCopy.GetComponent<SpriteRenderer>();
         Assert.IsNotNull(hollowRenderer);
 
+        hollowRenderer.sortingLayerName = ghost.GetSortingLayer().ToString().ToLower();
         hollowRenderer.sortingOrder = GetY();
         hollowRenderer.color = new Color32(255, 255, 255, 200);
         hollowCopy.transform.position = transform.position;
@@ -413,16 +419,6 @@ public abstract class Flooring : Model, ISurface
     /// Sets the 2D Collider properties of this Tile.
     /// </summary>
     public override void SetColliderProperties() { return; }
-
-    /// <summary>
-    /// Returns the GameObject that represents this Flooring on the grid.
-    /// </summary>
-    /// <returns>the GameObject that represents this Flooring on the grid.
-    /// </returns>
-    public override GameObject Copy()
-    {
-        throw new System.NotSupportedException("Tile placing not supported.");
-    }
 
     /// <summary>
     /// Returns the Sprite track that represents this Flooring on

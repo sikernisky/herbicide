@@ -24,11 +24,6 @@ public class AcornController : ProjectileController<AcornController.AcornState>
         DEAD
     }
 
-    /// <summary>
-    /// Total number of Acorns created since the scene began.
-    /// </summary>
-    private static int NUM_ACORNS;
-
 
     /// <summary>
     /// Gives an Acorn an AcornController.
@@ -38,10 +33,7 @@ public class AcornController : ProjectileController<AcornController.AcornState>
     /// <param name="destination">Where the acorn should go.</param>
     public AcornController(Acorn acorn, Vector3 start, Vector3 destination) :
         base(acorn, start, destination)
-    {
-        Assert.IsNotNull(acorn, "Acorn cannot be null.");
-        NUM_ACORNS++;
-    }
+    { }
 
     //-----------------------STATE LOGIC------------------------//
 
@@ -55,6 +47,8 @@ public class AcornController : ProjectileController<AcornController.AcornState>
     /// </summary>
     public override void UpdateStateFSM()
     {
+        if (!ValidModel()) return;
+
         switch (GetState())
         {
             case AcornState.SPAWN:

@@ -31,6 +31,12 @@ public class ShopBoatFactory : MonoBehaviour
     [SerializeField]
     private Sprite[] boatTrack;
 
+    /// <summary>
+    /// Animation track when cruising.
+    /// </summary>
+    [SerializeField]
+    private Sprite[] movementTrack;
+
 
     /// <summary>
     /// Finds and sets the ShopBoatFactory singleton.
@@ -62,11 +68,17 @@ public class ShopBoatFactory : MonoBehaviour
     /// </returns>
     public static Sprite[] GetPlacementTrack() { return instance.placementTrack; }
 
-
     /// <summary>
     /// Returns the animation track that represents this ShopBoat on a boat. 
     /// </summary>
     /// <returns>the animation track that represents this ShopBoat on a boat. 
     /// </returns>
     public static Sprite[] GetBoatTrack() { return instance.boatTrack; }
+
+    /// <summary>
+    /// Returns the animation track that represents this ShopBoat when moving. 
+    /// </summary>
+    /// <returns>the animation track that represents this ShopBoat when moving. 
+    /// </returns>
+    public static Sprite[] GetMovementTrack() { return instance.movementTrack; }
 }

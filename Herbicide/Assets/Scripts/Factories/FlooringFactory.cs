@@ -27,6 +27,12 @@ public class FlooringFactory : MonoBehaviour
     [SerializeField]
     private Sprite[] soilFlooringSprites;
 
+    /// <summary>
+    /// Prefab for a Soil Flooring
+    /// </summary>
+    [SerializeField]
+    private GameObject soilFlooringPrefab;
+
 
     /// <summary>
     /// Finds and sets the FlooringFactory singleton.
@@ -67,4 +73,10 @@ public class FlooringFactory : MonoBehaviour
 
         return null;
     }
+
+    /// <summary>
+    /// Returns a non-instantiated SoilFlooring prefab. 
+    /// </summary>
+    /// <returns>a non-instantiated SoilFlooring prefab. </returns>
+    public static GameObject GetSoilFlooringPrefab() { return instance.soilFlooringPrefab; }
 }

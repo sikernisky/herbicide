@@ -52,7 +52,7 @@ public class CameraController : MonoBehaviour
     /// the CameraController's camera.
     /// </summary>
     /// <param name="skillMenuController">The LevelController singleton.</param>
-    public static void SetSingleton(SkillMenuController skillMenuController)
+    public static void SetSingleton(CollectionMenuController skillMenuController)
     {
         CameraController[] cameraControllers = FindObjectsOfType<CameraController>();
         Assert.IsNotNull(cameraControllers, "Array of CameraControllers is null.");

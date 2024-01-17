@@ -104,7 +104,7 @@ public class InputController : MonoBehaviour
     /// InputController's temporary objects.
     /// </summary>
     /// <param name="skillMenuController">The LevelController singleton.</param>
-    public static void SetSingleton(SkillMenuController skillMenuController)
+    public static void SetSingleton(CollectionMenuController skillMenuController)
     {
         if (skillMenuController == null) return;
         if (instance != null) return;
@@ -144,7 +144,7 @@ public class InputController : MonoBehaviour
     {
         instance.AssertTempObjectsMade();
 
-        instance.mousePosTemp = GetMousePosition();
+        instance.mousePosTemp = GetUIMousePosition();
         instance.worldPosTemp = CameraController.ScreenToWorldPoint(instance.mousePosTemp);
         instance.hitTemp = Physics2D.RaycastAll(instance.worldPosTemp, Vector2.zero);
 
@@ -170,7 +170,7 @@ public class InputController : MonoBehaviour
     {
         instance.AssertTempObjectsMade();
 
-        instance.mousePosTemp = GetMousePosition();
+        instance.mousePosTemp = GetUIMousePosition();
         instance.worldPosTemp = CameraController.ScreenToWorldPoint(instance.mousePosTemp);
         instance.hitTemp = Physics2D.RaycastAll(instance.worldPosTemp, Vector2.zero);
 
@@ -245,7 +245,7 @@ public class InputController : MonoBehaviour
     {
         AssertTempObjectsMade();
 
-        instance.mousePosTemp = GetMousePosition();
+        instance.mousePosTemp = GetUIMousePosition();
         instance.worldPosTemp = CameraController.ScreenToWorldPoint(instance.mousePosTemp);
         instance.hitTemp = Physics2D.RaycastAll(instance.worldPosTemp, Vector2.zero);
 
@@ -271,7 +271,7 @@ public class InputController : MonoBehaviour
     {
         AssertTempObjectsMade();
 
-        instance.mousePosTemp = GetMousePosition();
+        instance.mousePosTemp = GetUIMousePosition();
         instance.worldPosTemp = CameraController.ScreenToWorldPoint(instance.mousePosTemp);
         instance.hitTemp = Physics2D.RaycastAll(instance.worldPosTemp, Vector2.zero);
 
@@ -296,7 +296,7 @@ public class InputController : MonoBehaviour
         instance.AssertTempObjectsMade();
 
         instance.pointerEventData.Reset();
-        instance.pointerEventData.position = GetMousePosition();
+        instance.pointerEventData.position = GetUIMousePosition();
         instance.raycastResults.Clear();
         instance.graphicRayCaster.Raycast(instance.pointerEventData, instance.raycastResults);
 
@@ -330,7 +330,7 @@ public class InputController : MonoBehaviour
         instance.AssertTempObjectsMade();
 
         instance.pointerEventData.Reset();
-        instance.pointerEventData.position = GetMousePosition();
+        instance.pointerEventData.position = GetUIMousePosition();
         instance.raycastResults.Clear();
         instance.graphicRayCaster.Raycast(instance.pointerEventData, instance.raycastResults);
         return instance.raycastResults.Count > 0;
@@ -338,14 +338,23 @@ public class InputController : MonoBehaviour
 
 
     /// <summary>
-    /// Returns the player's mouse position.
+    /// Returns the player's mouse screen-position.
     /// </summary>
-    /// <returns>the player's mouse position.</returns>
-    public static Vector2 GetMousePosition()
+    /// <returns>the player's mouse screen-position.</returns>
+    public static Vector2 GetUIMousePosition()
     {
         instance.AssertTempObjectsMade();
 
         return Input.mousePosition;
+    }
+
+    /// <summary>
+    /// Returns the player's mouse world-position.
+    /// </summary>
+    /// <returns>the player's mouse world-position.</returns>
+    public static Vector2 GetWorldMousePosition()
+    {
+        return CameraController.ScreenToWorldPoint(GetUIMousePosition());
     }
 
     /// <summary>
@@ -358,6 +367,20 @@ public class InputController : MonoBehaviour
         instance.AssertTempObjectsMade();
 
         if (Input.GetMouseButtonDown(0)) return true;
+        return false;
+    }
+
+    /// <summary>
+    /// Returns true if the player has some keycode down.
+    /// </summary>
+    /// <returns>true if the player clicked some keycode down; otherwise,
+    /// false/// .
+    /// </returns>
+    public static bool DidKeycodeDown(KeyCode keyCode)
+    {
+        instance.AssertTempObjectsMade();
+
+        if (Input.GetKeyDown(keyCode)) return true;
         return false;
     }
 

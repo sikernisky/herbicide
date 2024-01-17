@@ -1,0 +1,77 @@
+Date : 2024-01-15 22:34:48
+Directory : /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide
+Total : 36 files,  -15914 codes, 191 comments, -209 blanks, all -15932 lines
+
+Languages
++----------------+------------+------------+------------+------------+------------+
+| language       | files      | code       | comment    | blank      | total      |
++----------------+------------+------------+------------+------------+------------+
+| C#             |         25 |        257 |        191 |         72 |        520 |
+| TypeScript JSX |          1 |         80 |          0 |          0 |         80 |
+| JSON           |          1 |          3 |          0 |          0 |          3 |
+| XML            |          2 |        -12 |          0 |          0 |        -12 |
+| ApexLog        |          7 |    -16,242 |          0 |       -281 |    -16,523 |
++----------------+------------+------------+------------+------------+------------+
+
+Directories
++-------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                              | files      | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                 |         36 |    -15,914 |        191 |       -209 |    -15,932 |
+| . (Files)                                                                                                         |          1 |          3 |          0 |          0 |          3 |
+| Assets                                                                                                            |         26 |        260 |        191 |         72 |        523 |
+| Assets/Levels                                                                                                     |          1 |          3 |          0 |          0 |          3 |
+| Assets/Scripts                                                                                                    |         25 |        257 |        191 |         72 |        520 |
+| Assets/Scripts/Controllers                                                                                        |         12 |        188 |        113 |         49 |        350 |
+| Assets/Scripts/Factories                                                                                          |          2 |         29 |         42 |         13 |         84 |
+| Assets/Scripts/Loading                                                                                            |          3 |          0 |          2 |          4 |          6 |
+| Assets/Scripts/Managers                                                                                           |          1 |         22 |         17 |          5 |         44 |
+| Assets/Scripts/Models                                                                                             |          7 |         18 |         17 |          1 |         36 |
+| Logs                                                                                                              |          7 |    -16,242 |          0 |       -281 |    -16,523 |
+| Tiled                                                                                                             |          2 |         65 |          0 |          0 |         65 |
+| Tiled/Tilemaps                                                                                                    |          1 |        -15 |          0 |          0 |        -15 |
+| Tiled/Tilesets                                                                                                    |          1 |         80 |          0 |          0 |         80 |
++-------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-------------------------------------------------------------------------------------------------------------------+----------------+------------+------------+------------+------------+
+| filename                                                                                                          | language       | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------------------------------------+----------------+------------+------------+------------+------------+
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assembly-CSharp.csproj                                | XML            |          3 |          0 |          0 |          3 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Levels/level1.json                             | JSON           |          3 |          0 |          0 |          3 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/AcornController.cs         | C#             |         -3 |         -3 |          0 |         -6 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/BasicTreeSeedController.cs | C#             |         69 |         57 |         22 |        148 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/BearController.cs          | C#             |         -1 |         -4 |         -1 |         -6 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/BombController.cs          | C#             |          0 |         -2 |         -1 |         -3 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/ControllerController.cs    | C#             |          4 |          0 |          0 |          4 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/DefenderController.cs      | C#             |          5 |          9 |          6 |         20 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/FlooringController.cs      | C#             |         13 |         27 |          6 |         46 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/HedgehogController.cs      | C#             |         91 |         32 |         16 |        139 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/LevelController.cs         | C#             |          1 |          0 |          0 |          1 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/MobController.cs           | C#             |          7 |          1 |          1 |          9 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/ProjectileController.cs    | C#             |          3 |          0 |          0 |          3 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Controllers/SquirrelController.cs      | C#             |         -1 |         -4 |          0 |         -5 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Factories/BasicTreeSeedFactory.cs      | C#             |         26 |         35 |         11 |         72 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Factories/FlooringFactory.cs           | C#             |          3 |          7 |          2 |         12 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Loading/LayerData.cs                   | C#             |          1 |          2 |          2 |          5 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Loading/ObjectData.cs                  | C#             |         12 |          9 |          4 |         25 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Loading/TiledData.cs                   | C#             |        -13 |         -9 |         -2 |        -24 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Managers/TileGrid.cs                   | C#             |         22 |         17 |          5 |         44 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/Flooring.cs                     | C#             |         -3 |         -5 |         -1 |         -9 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/Hedgehog.cs                     | C#             |          1 |          4 |          1 |          6 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/Model.cs                        | C#             |          7 |         10 |          2 |         19 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/PlaceableObject.cs              | C#             |         -1 |         -6 |         -1 |         -8 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/SoilFlooring.cs                 | C#             |          1 |          5 |          1 |          7 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/Squirrel.cs                     | C#             |          0 |         -4 |         -3 |         -7 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Scripts/Models/Tile.cs                         | C#             |         13 |         13 |          2 |         28 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Logs/AssetImportWorker0-prev.log                      | ApexLog        |     -7,538 |          0 |       -127 |     -7,665 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Logs/AssetImportWorker0.log                           | ApexLog        |        771 |          0 |         15 |        786 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Logs/AssetImportWorker1-prev.log                      | ApexLog        |     -7,112 |          0 |       -127 |     -7,239 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Logs/AssetImportWorker1.log                           | ApexLog        |        837 |          0 |         15 |        852 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Logs/AssetImportWorker2-prev.log                      | ApexLog        |     -1,601 |          0 |        -29 |     -1,630 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Logs/AssetImportWorker3-prev.log                      | ApexLog        |     -1,601 |          0 |        -29 |     -1,630 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Logs/shadercompiler-AssetImportWorker0.log            | ApexLog        |          2 |          0 |          1 |          3 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Tiled/Tilemaps/level1.tmx                             | XML            |        -15 |          0 |          0 |        -15 |
+| /Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Tiled/Tilesets/Soil.tsx                               | TypeScript JSX |         80 |          0 |          0 |         80 |
+| Total                                                                                                             |                |    -15,914 |        191 |       -209 |    -15,932 |
++-------------------------------------------------------------------------------------------------------------------+----------------+------------+------------+------------+------------+

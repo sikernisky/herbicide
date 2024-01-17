@@ -68,19 +68,6 @@ public class TiledData
     }
 
     /// <summary>
-    /// Returns all LayerData objects that represent a layer of Soil
-    /// Flooring.
-    /// </summary>
-    /// <returns>a list of layers of Soil flooring.</returns>
-    public List<LayerData> GetSoilLayers()
-    {
-        List<LayerData> flooringLayers = GetFlooringLayers();
-        List<LayerData> soilLayers = new List<LayerData>();
-        flooringLayers.ForEach(l => { if (l.GetLayerName() == "Soil") soilLayers.Add(l); });
-        return soilLayers;
-    }
-
-    /// <summary>
     /// Returns all LayerData objects that represent a layer of Shore
     /// Tiles.
     /// </summary>
@@ -91,17 +78,6 @@ public class TiledData
         List<LayerData> shoreLayers = new List<LayerData>();
         edgeLayers.ForEach(l => { if (l.GetLayerName() == "Shore") shoreLayers.Add(l); });
         return shoreLayers;
-    }
-
-    /// <summary>
-    /// Returns a list of LayerData objects that represent Flooring layers.
-    /// </summary>
-    /// <returns>a list of Flooring LayerData objects.</returns>
-    private List<LayerData> GetFlooringLayers()
-    {
-        List<LayerData> flooringLayers = new List<LayerData>();
-        layers.ForEach(l => { if (l.IsFlooringLayer()) flooringLayers.Add(l); });
-        return flooringLayers;
     }
 
     /// <summary>

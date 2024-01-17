@@ -123,7 +123,6 @@ public abstract class Mob : PlaceableObject
     {
         spawned = true;
         ResetStats();
-        spawnPos = GetPosition();
     }
 
     /// <summary>
@@ -131,6 +130,12 @@ public abstract class Mob : PlaceableObject
     /// </summary>
     /// <returns>the position where this Mob spawned.</returns>
     public Vector3 GetSpawnPos() { return spawnPos; }
+
+    /// <summary>
+    /// Sets where this Mob spawns.
+    /// </summary>
+    /// <param name="spawnPos">Where the mob spawns. </param>
+    public void SetSpawnPos(Vector3 spawnPos) { this.spawnPos = spawnPos; }
 
     /// <summary>
     /// Returns true if this Mob is dead. This is when the Mob
@@ -274,15 +279,15 @@ public abstract class Mob : PlaceableObject
 
 
     /// <summary>
-    /// Changes this Mob's direction such that it faces some PlaceableObject.
+    /// Changes this Mob's direction such that it faces some Model.
     /// </summary>
-    /// <param name="mob">The PlaceableObject to face.</param>
-    public void FaceTarget(PlaceableObject mob)
+    /// <param name="target">The Model to face.</param>
+    public void FaceTarget(Model target)
     {
-        Assert.IsNotNull(mob, "Cannot face a null target.");
+        Assert.IsNotNull(target, "Cannot face a null target.");
 
-        float xDistance = GetPosition().x - mob.GetPosition().x;
-        float yDistance = GetPosition().y - mob.GetPosition().y;
+        float xDistance = GetPosition().x - target.GetPosition().x;
+        float yDistance = GetPosition().y - target.GetPosition().y;
         bool xGreater = Mathf.Abs(xDistance) > Mathf.Abs(yDistance)
             ? true : false;
 
