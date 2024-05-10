@@ -22,9 +22,12 @@ public enum ModelType
     NEXUS,
     NEXUS_HOLE,
     SEED_TOKEN,
-    SHOP_BOAT,
+    SHOP_CARD_BEAR,
+    SHOP_CARD_HEDGEHOG,
+    SHOP_CARD_SQUIRREL,
     SHORE_TILE,
     SOIL_FLOORING,
     SQUIRREL,
+    STONE_WALL,
     WATER_TILE
 }

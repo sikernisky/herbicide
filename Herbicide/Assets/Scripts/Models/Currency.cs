@@ -33,7 +33,11 @@ public abstract class Currency : Collectable
     /// Performs actions when this Currency spawns in game. Sets the
     /// starting position for the Bob animation.
     /// </summary>
-    public override void ResetStats() { ResetValue(); }
+    public override void ResetModel()
+    {
+        base.ResetModel();
+        ResetValue();
+    }
 
     /// <summary>
     /// Adds some amount to this Currency's value.

@@ -6,18 +6,12 @@ using UnityEngine.Assertions;
 /// <summary>
 /// Produces assets related to BasicTreeSeeds.
 /// </summary>
-public class BasicTreeSeedFactory : MonoBehaviour
+public class BasicTreeSeedFactory : Factory
 {
     /// <summary>
     /// Reference to the BasicTreeSeedFactory singleton.
     /// </summary>
     private static BasicTreeSeedFactory instance;
-
-    /// <summary>
-    /// GameObject with BasicTreeSeed component attached. 
-    /// </summary>
-    [SerializeField]
-    private GameObject basicTreeSeedPrefab;
 
     /// <summary>
     /// Animation track when placing.
@@ -45,15 +39,29 @@ public class BasicTreeSeedFactory : MonoBehaviour
         Assert.IsNotNull(basicTreeSeedFactories, "Array of TileFactories is null.");
         Assert.AreEqual(1, basicTreeSeedFactories.Length);
         instance = basicTreeSeedFactories[0];
+        instance.SpawnPools();
     }
 
     /// <summary>
-    /// Returns an original, non-copied GameObject with a BasicTreeSeed component
-    /// attached to it.
+    /// Returns a fresh BasicTreeSeed prefab from the object pool.
     /// </summary>
-    /// <returns>an original, non-copied GameObject with a BasicTreeSeed component
-    /// attached to it.</returns>
-    public static GameObject GetBasicTreeSeedPrefab() { return instance.basicTreeSeedPrefab; }
+    /// <returns>a GameObject with a BasicTreeSeed component attached to it</returns>
+    public static GameObject GetBasicTreeSeedPrefab()
+    {
+        return instance.RequestObject(ModelType.BASIC_TREE_SEED);
+    }
+
+    /// <summary>
+    /// Accepts a BasicTreeSeed prefab that the caller no longer needs. Adds it back
+    /// to the object pool.
+    /// </summary>
+    /// <param name="prefab">The BasicTreeSeed prefab to return.</param>
+    public static void ReturnBasicTreeSeedPrefab(GameObject prefab)
+    {
+        Assert.IsNotNull(prefab);
+        Assert.IsTrue(prefab.GetComponent<BasicTreeSeed>() != null);
+        instance.ReturnObject(prefab);
+    }
 
     /// <summary>
     /// Returns the animation track that represents this BasicTreeSeed when placing. 
@@ -68,4 +76,10 @@ public class BasicTreeSeedFactory : MonoBehaviour
     /// <returns>the animation track that represents this BasicTreeSeed when on a boat. 
     /// </returns>
     public static Sprite[] GetBoatTrack() { return instance.boatTrack; }
+
+    /// <summary>
+    /// Returns the Transform component of the BasicTreeSeedFactory instance.
+    /// </summary>
+    /// <returns>the Transform component of the BasicTreeSeedFactory instance.</returns>
+    protected override Transform GetTransform() { return instance.transform; }
 }

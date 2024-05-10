@@ -62,9 +62,9 @@ public abstract class Tree : Mob, ISurface
     /// <summary>
     /// Resets this Tree's stats to their starting values.
     /// </summary>
-    public override void ResetStats()
+    public override void ResetModel()
     {
-        base.ResetStats();
+        base.ResetModel();
         ResetResourceDropRate();
     }
 

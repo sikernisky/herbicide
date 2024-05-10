@@ -64,15 +64,7 @@ public class BasicTreeSeed : Projectile
     /// </summary>
     /// <returns>the GameObject that represents this BasicTreeSeed on the grid.
     /// </returns>
-    public override GameObject Copy() { return Instantiate(BasicTreeSeedFactory.GetBasicTreeSeedPrefab()); }
-
-    /// <summary>
-    /// Returns the Sprite track that represents this BasicTreeSeed on
-    /// a ShopBoat.
-    /// </summary>
-    /// <returns>the Sprite that that represents this BasicTreeSeed on a
-    /// ShopBoat.</returns>
-    public override Sprite[] GetBoatTrack() { return BasicTreeSeedFactory.GetBoatTrack(); }
+    public override GameObject Copy() { return BasicTreeSeedFactory.GetBasicTreeSeedPrefab(); }
 
     /// <summary>
     /// Returns a Sprite that represents this BasicTreeSeed when it is

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using System.Linq;
+using UnityEngine.UI;
 
 /// <summary>
 /// Manages the Shop: decides when to spawn ShopBoats and which
@@ -22,46 +23,30 @@ public class ShopManager : MonoBehaviour
     private static GameState gameState;
 
     /// <summary>
-    /// The ScriptableObject that stores the shop information for
-    /// the current level.
+    /// The slots for ShopCards. These are GameObjects that
+    /// will dynamically take on the form of a specific 
+    /// ShopCard. 
     /// </summary>
     [SerializeField]
-    private ShopScriptable shopScriptable;
+    private List<ShopSlot> shopSlots;
 
     /// <summary>
-    /// Prefab for the ShopBoat.<br></br>
-    /// 
-    /// NOTE: We are not using a factory because boats are so unique. They
-    /// are not defenders nor enemies nor structures -- they are something
-    /// else. Therefore, we trade performance for simplicity and isolation.  
-    /// /// </summary>
+    /// The types of ShopCards the Shop can display and
+    /// the number of that type remaining. 
+    /// </summary>
+    private Dictionary<ModelType, int> cardPool;
+
+    /// <summary>
+    /// Reference to the Reroll button component.
+    /// </summary>
     [SerializeField]
-    private GameObject boatPrefab;
+    private Button rerollButton;
 
     /// <summary>
-    /// The current shop.
+    /// How much currency it costs to reroll the shop.
     /// </summary>
-    private List<ShopModel> shop;
+    private static readonly int REROLL_COST = 50;
 
-    /// <summary>
-    /// The number of seconds since the last ShopBoat was spawned.
-    /// </summary>
-    private float timeSinceLastSpawn;
-
-    /// <summary>
-    /// The number of seconds until the next ShopBoat is spawned.
-    /// </summary>
-    private float nextSpawnGap;
-
-    /// <summary>
-    /// Number of boats spawned since the scene began.
-    /// </summary>
-    private int numSpawns;
-
-    /// <summary>
-    /// Where boats spawn.
-    /// </summary>
-    private Vector3 spawnPos;
 
 
     /// <summary>
@@ -77,6 +62,7 @@ public class ShopManager : MonoBehaviour
         Assert.IsNotNull(shopManagers, "Array of ShopManagers is null.");
         Assert.AreEqual(1, shopManagers.Length);
         instance = shopManagers[0];
+        instance.cardPool = new Dictionary<ModelType, int>();
 
     }
 
@@ -87,82 +73,86 @@ public class ShopManager : MonoBehaviour
     {
         if (gameState != GameState.ONGOING) return;
 
-        instance.timeSinceLastSpawn += Time.deltaTime;
-        if (instance.timeSinceLastSpawn >= instance.nextSpawnGap &&
-            instance.numSpawns < instance.shopScriptable.GetMaxSpawns())
+        if (InputController.DidKeycodeDown(KeyCode.S)) { instance.Reroll(false); } // TEMP
+
+        // Check & Handle ShopCard click
+        foreach (ShopSlot shopSlot in instance.shopSlots)
         {
-            instance.timeSinceLastSpawn = 0;
-            instance.ResetSpawnGap();
-
-            // Spawn a boat.
-
-            Model rolledRider = instance.RollRider();
-            Assert.IsNotNull(rolledRider);
-
-            Assert.IsNotNull(instance.boatPrefab, "Boat prefab is null.");
-            GameObject clonedShopBoat = Instantiate(instance.boatPrefab);
-            Assert.IsNotNull(clonedShopBoat);
-            ShopBoat clonedShopBoatComp = clonedShopBoat.GetComponent<ShopBoat>();
-            clonedShopBoatComp.SetWorldPosition(instance.spawnPos);
-            clonedShopBoatComp.SetRider(rolledRider);
-            ControllerController.MakeController(clonedShopBoatComp);
-
-            instance.numSpawns++;
+            int bal = EconomyController.GetBalance();
+            if (shopSlot.SlotClicked()) instance.ClickShopSlotButton(shopSlot.GetSlotIndex());
         }
 
+        // Enable / Disable reroll button depending on balance
+        if (EconomyController.GetBalance() < REROLL_COST) instance.rerollButton.interactable = false;
+        else instance.rerollButton.interactable = true;
+
+        // Lighten / Darken shop cards depending on if player can afford
+        foreach (ShopSlot shopSlot in instance.shopSlots)
+        {
+            if (shopSlot.Empty()) continue;
+            if (!shopSlot.CanBuy(EconomyController.GetBalance())) shopSlot.DarkenSlot();
+            else shopSlot.LightenSlot();
+        }
     }
 
     /// <summary>
-    /// Returns a rider given a list of ShopModels and their statistical probabilities
-    /// of spawning.
+    /// Loads the shop with the types of ShopCards it can sell.
     /// </summary>
-    /// <returns>a Rider this ShopManager should spawn next.</returns>
-    private Model RollRider()
+    /// <param name="modelTypes">the types of ShopCards 
+    /// the Shop can sell. If null, the Shop can sell all types.</param>
+    public static void LoadShop(HashSet<ModelType> modelTypes = null)
     {
-        float totalProbability = shop.Sum(model => model.GetSpawnRate());
-        Assert.IsTrue(totalProbability == 1f, "Probabilities sum to " + totalProbability + ", not 1.");
-        float randomPoint = Random.Range(0f, totalProbability);
-
-        float cumulativeProbability = 0f;
-        foreach (ShopModel shopModel in shop)
+        int slotCounter = 0;
+        foreach (ShopSlot shopSlot in instance.shopSlots)
         {
-            cumulativeProbability += shopModel.GetSpawnRate();
-            if (randomPoint <= cumulativeProbability)
-            {
-                return shopModel.GetPlaceablePrefab();
-            }
+            shopSlot.SetupSlot(shopSlot.GetComponent<RectTransform>().position, slotCounter);
+            slotCounter++;
         }
 
-        // Fallback, in case no model is selected
-        Assert.IsTrue(false, "No model was selected. Check the spawn rates.");
-        return null;
+        if (modelTypes == null)
+        {
+            modelTypes = new HashSet<ModelType>(){
+                ModelType.SHOP_CARD_SQUIRREL,
+                ModelType.SHOP_CARD_BEAR
+            };
+        }
+
+        Assert.IsNotNull(modelTypes);
+        foreach (ModelType modelType in modelTypes)
+        {
+            instance.cardPool.Add(modelType, 5); //5 is placeholder.
+        }
+
+        instance.Reroll(true);
     }
 
     /// <summary>
-    /// Initializes the shop, gathering data about what Models should spawn
-    /// and more.
+    /// Rerolls the shop, replacing every ShopSlot with a new ShopCard
+    /// from the ShopManager's card pool.
     /// </summary>
-    /// <param name="spawnPos">Where boats spawn. </param> 
-    public static void LoadShop(Vector3 spawnPos)
+    /// <param name="free">true if this reroll won't charge the player;
+    /// false if it will. </param>
+    private void Reroll(bool free)
     {
-        Assert.IsNotNull(instance.shopScriptable, "Scriptable is null.");
+        if (!free)
+        {
+            bool canReroll = EconomyController.GetBalance() >= REROLL_COST;
+            if (!canReroll) return;
+            EconomyController.Withdraw(REROLL_COST);
+        }
 
-        instance.spawnPos = spawnPos;
-        instance.shop = instance.shopScriptable.GetShop();
-    }
-
-    /// <summary>
-    /// Sets the next spawn gap to be a random value within the minimum
-    /// and maximum spawn gap values.
-    /// </summary>
-    private void ResetSpawnGap()
-    {
-        float maxSpawnGap = shopScriptable.GetMaxSpawnGap();
-        float minSpawnGap = shopScriptable.GetMinSpawnGap();
-        Assert.IsTrue(maxSpawnGap > 0);
-        Assert.IsTrue(minSpawnGap > 0);
-        Assert.IsTrue(maxSpawnGap >= minSpawnGap);
-        nextSpawnGap = Random.Range(minSpawnGap, maxSpawnGap);
+        foreach (ShopSlot cardSlot in shopSlots)
+        {
+            Assert.IsNotNull(cardSlot);
+            int randomIndex = Random.Range(0, cardPool.Count);
+            var randomKey = cardPool.Keys.ElementAt(randomIndex);
+            ModelType randomType = randomKey;
+            GameObject shopCardPrefab = ShopFactory.GetShopCardPrefab(randomType);
+            Assert.IsNotNull(shopCardPrefab);
+            ShopCard shopCardComp = shopCardPrefab.GetComponent<ShopCard>();
+            Assert.IsNotNull(shopCardComp);
+            cardSlot.Fill(shopCardComp);
+        }
     }
 
     /// <summary>
@@ -170,4 +160,39 @@ public class ShopManager : MonoBehaviour
     /// </summary>
     /// <param name="gameState">The most recent GameState.</param>
     public static void InformOfGameState(GameState gameState) { ShopManager.gameState = gameState; }
+
+    /// <summary>
+    /// #BUTTON EVENT#
+    /// 
+    /// Called when a ShopSlot button is clicked. Starts placing
+    /// from the clicked slot if possible. /// </summary>
+    /// <param name="slotIndex">The Slot that was clicked.</param>
+    public void ClickShopSlotButton(int slotIndex)
+    {
+        Assert.IsTrue(slotIndex >= 0 && slotIndex < shopSlots.Count);
+        ShopSlot clickedSlot = shopSlots.First(ss => ss.GetSlotIndex() == slotIndex);
+
+        if (!clickedSlot.CanBuy(EconomyController.GetBalance())) return;
+        if (PlacementController.Placing()) return;
+
+        GameObject slotPrefab = clickedSlot.GetCardPrefab();
+        Assert.IsNotNull(slotPrefab);
+        Model slotModel = slotPrefab.GetComponent<Model>();
+        Assert.IsNotNull(slotModel);
+
+        PlacementController.StartPlacingObject(slotModel);
+        EconomyController.Withdraw(clickedSlot.Buy(EconomyController.GetBalance()));
+
+        bool allSlotsEmpty = true;
+        foreach (ShopSlot shopSlot in shopSlots) { if (!shopSlot.Empty()) allSlotsEmpty = false; }
+        if (allSlotsEmpty) Reroll(true);
+    }
+
+    /// <summary>
+    /// #BUTTON EVENT#
+    /// 
+    /// Called when the player clicks the Reroll button. Refreshes
+    /// the shop if they have enough money.
+    /// </summary>
+    public void ClickRerollButton() { Reroll(false); }
 }

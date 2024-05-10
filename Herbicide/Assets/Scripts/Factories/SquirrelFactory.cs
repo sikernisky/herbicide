@@ -6,18 +6,12 @@ using UnityEngine.Assertions;
 /// <summary>
 /// Produces assets related to Squirrels.
 /// </summary>
-public class SquirrelFactory : MonoBehaviour
+public class SquirrelFactory : Factory
 {
     /// <summary>
     /// Reference to the SquirrelFactory singleton.
     /// </summary>
     private static SquirrelFactory instance;
-
-    /// <summary>
-    /// GameObject with Squirrel component attached. 
-    /// </summary>
-    [SerializeField]
-    private GameObject squirrelPrefab;
 
     /// <summary>
     /// Animation track when on a boat.
@@ -93,15 +87,25 @@ public class SquirrelFactory : MonoBehaviour
         Assert.IsNotNull(squirrelFactories, "Array of SquirrelFactories is null.");
         Assert.AreEqual(1, squirrelFactories.Length);
         instance = squirrelFactories[0];
+        instance.SpawnPools();
     }
 
     /// <summary>
-    /// Returns an original, non-copied GameObject with a Squirrel component
-    /// attached to it.
+    /// Returns a fresh Squirrel prefab from the object pool.
     /// </summary>
-    /// <returns>an original, non-copied GameObject with a Squirrel component
-    /// attached to it.</returns>
-    public static GameObject GetSquirrelPrefab() { return instance.squirrelPrefab; }
+    /// <returns>a GameObject with a Squirrel component attached to it</returns>
+    public static GameObject GetSquirrelPrefab() { return instance.RequestObject(ModelType.SQUIRREL); }
+
+    /// <summary>
+    /// Accepts a Squirrel prefab that the caller no longer needs. Adds it back
+    /// to the object pool.
+    /// </summary>
+    /// <param name="prefab">The Squirrel prefab to return.</param>
+    public static void ReturnSquirrelPrefab(GameObject prefab)
+    {
+        Assert.IsTrue(prefab.GetComponent<Squirrel>() != null);
+        instance.ReturnObject(prefab);
+    }
 
     /// <summary>
     /// Returns the animation track that represents the Squirrel attacking.
@@ -160,4 +164,10 @@ public class SquirrelFactory : MonoBehaviour
     /// <returns>the animation track that represents this Squirrel on a boat. 
     /// </returns>
     public static Sprite[] GetBoatTrack() { return instance.boatTrack; }
+
+    /// <summary>
+    /// Returns the SquirrelFactory instance's Transform component.
+    /// </summary>
+    /// <returns>the SquirrelFactory instance's Transform component.</returns>
+    protected override Transform GetTransform() { return instance.transform; }
 }

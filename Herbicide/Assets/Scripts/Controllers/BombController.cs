@@ -60,6 +60,11 @@ public class BombController : ProjectileController<BombController.BombState>
     /// <returns>this BombController's Bomb model.</returns>
     private Bomb GetBomb() { return GetProjectile() as Bomb; }
 
+    /// <summary>
+    /// Returns the Bomb prefab to the BombFactory singleton.
+    /// </summary>
+    public override void DestroyModel() { BombFactory.ReturnBombPrefab(GetBomb().gameObject); }
+
     //-----------------------STATE LOGIC----------------------//
 
     /// <summary>

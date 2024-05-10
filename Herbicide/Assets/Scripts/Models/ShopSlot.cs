@@ -1,0 +1,169 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Assertions;
+using UnityEngine.UI;
+
+/// <summary>
+/// Represents a place in the Shop that fills up
+/// with a ShopCard. 
+/// </summary>
+public class ShopSlot : MonoBehaviour
+{
+    /// <summary>
+    /// This ShopSlot's background component.
+    /// </summary>
+    [SerializeField]
+    private Image slotBackground;
+
+    /// <summary>
+    /// The index of this ShopSlot -- each slot has its
+    /// own index.
+    /// </summary>
+    private int slotIndex;
+
+    /// <summary>
+    /// The ShopCard in this slot; null if this slot is empty.
+    /// </summary>
+    private ShopCard occupant;
+
+    /// <summary>
+    /// The position of this ShopSlot in the scene. 
+    /// </summary>
+    private Vector3 slotPosition;
+
+    /// <summary>
+    /// true if the ShopManager has initialized this ShopSlot; otherwise, false.
+    /// </summary>
+    private bool setupByManager;
+
+
+    /// <summary>
+    /// Fills the ShopSlot with a ShopCard.
+    /// </summary>
+    /// <param name="shopCard">The ShopCard to display.</param>
+    public void Fill(ShopCard shopCard)
+    {
+        Assert.IsNotNull(shopCard);
+        Assert.IsTrue(IsSetup());
+
+        if (occupant != null) Destroy(occupant.gameObject);
+        occupant = null;
+
+        // TODO: put logic for positioning the card.
+        RectTransform cardTransform = shopCard.GetCardTransform();
+        cardTransform.SetParent(transform);
+        cardTransform.localScale = Vector3.one;
+        cardTransform.position = slotPosition;
+
+        //slotButton.interactable = true;
+
+        occupant = shopCard;
+
+    }
+
+    /// <summary>
+    /// Returns true if this ShopSlot has been setup by the ShopManager.
+    /// </summary>
+    /// <returns> true if this ShopSlot has been setup by the ShopManager;
+    /// otherwise, false. </returns>
+    public bool IsSetup() { return setupByManager; }
+
+    /// <summary>
+    /// Sets this ShopSlot's necessary attributes so that it
+    /// can function in the scene.
+    /// </summary>
+    /// <param name="slotPosition">The position the Slot should sit at.</param>
+    /// <param name="slotIndex">The unique index of this ShopSlot.</param>
+    public void SetupSlot(Vector3 slotPosition, int slotIndex)
+    {
+        Assert.IsFalse(IsSetup());
+
+        this.slotPosition = slotPosition;
+        this.slotIndex = slotIndex;
+        setupByManager = true;
+    }
+
+
+    /// <summary>
+    /// Returns an instantiated GameObject with this ShopSlot's Model
+    /// attached. 
+    /// </summary>
+    /// <returns>an instantiated GameObject with this ShopSlot's Model
+    /// attached.</returns>
+    public GameObject GetCardPrefab()
+    {
+        Assert.IsTrue(IsSetup());
+
+        return occupant.GetCardPrefab();
+    }
+
+    /// <summary>
+    /// Returns true if the player meets all conditions to buy the ShopCard that
+    /// fills this ShopSlot.
+    /// </summary>
+    /// <param name="currentBalance">How much currency the player has.</param>
+    /// <returns></returns>
+    public bool CanBuy(int currentBalance) { return occupant.GetPrice() <= currentBalance; }
+
+    /// <summary>
+    /// Returns how much currency it takes to buy the ShopCard in this ShopSlot.
+    /// Buys and removes the card.
+    /// </summary>
+    /// <param name="currentBalance">How much currency the player has.</param>
+    /// <returns></returns>
+    public int Buy(int currentBalance)
+    {
+        Assert.IsTrue(CanBuy(currentBalance));
+
+        int price = occupant.GetPrice();
+        Destroy(occupant.gameObject);
+        occupant = null;
+        //slotButton.interactable = false;
+
+        return price;
+    }
+
+    /// <summary>
+    /// Returns this ShopSlot's unique index.
+    /// </summary>
+    /// <returns>this ShopSlot's unique index.</returns>
+    public int GetSlotIndex() { return slotIndex; }
+
+    /// <summary>
+    /// Returns true if the player clicked on this ShopSlot.
+    /// </summary>
+    /// <returns>true if the player clicked on this ShopSlot;
+    /// otherwise, false. /// </returns>
+    public bool SlotClicked()
+    {
+        if (Empty()) return false;
+        return occupant.ClickedOn();
+    }
+
+    /// <summary>
+    /// Returns true if this ShopSlot has been purchased and hosts
+    /// no ShopCard.
+    /// </summary>
+    /// <returns>true if this ShopSlot has been purchased and hosts
+    /// no ShopCard; otherwise, false. </returns>
+    public bool Empty() { return occupant == null; }
+
+    /// <summary>
+    /// Darkens the ShopCard in this slot.
+    /// </summary>
+    public void DarkenSlot()
+    {
+        Assert.IsFalse(Empty());
+        occupant.TurnDark();
+    }
+
+    /// <summary>
+    /// Turns the ShopCard in this slot to a normal color.
+    /// </summary>
+    public void LightenSlot()
+    {
+        Assert.IsFalse(Empty());
+        occupant.TurnLight();
+    }
+}

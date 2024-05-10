@@ -84,7 +84,7 @@ public class InventorySlot : MonoBehaviour
         if (!CanLoad(item)) return false;
 
         occupant = item;
-        FillSprite(occupant.GetBoatTrack()[0]); // TODO: Animation
+        //FillSprite(occupant.GetBoatTrack()[0]); // TODO: Animation
         return true;
     }
 

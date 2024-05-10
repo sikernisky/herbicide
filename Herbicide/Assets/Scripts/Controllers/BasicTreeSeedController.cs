@@ -41,6 +41,14 @@ public class BasicTreeSeedController : ProjectileController<BasicTreeSeedControl
     /// <returns>the BasicTreeSeed model.</returns>
     protected BasicTreeSeed GetBasicTreeSeed() { return GetProjectile() as BasicTreeSeed; }
 
+    /// <summary>
+    /// Returns the BasicTreeSeed prefab to the BasicTreeSeedFactory singleton.
+    /// </summary>
+    public override void DestroyModel()
+    {
+        BasicTreeSeedFactory.ReturnBasicTreeSeedPrefab(GetBasicTreeSeed().gameObject);
+    }
+
     //-----------------------STATE LOGIC------------------------//
 
 
@@ -107,7 +115,7 @@ public class BasicTreeSeedController : ProjectileController<BasicTreeSeedControl
         GetBasicTreeSeed().SetColor(new Color32(255, 255, 255, 0));
 
         Vector2Int tilePos = new Vector2Int(GetBasicTreeSeed().GetX(), GetBasicTreeSeed().GetY());
-        GameObject flooringPrefab = FlooringFactory.GetSoilFlooringPrefab();
+        GameObject flooringPrefab = FlooringFactory.GetFlooringPrefab(ModelType.SOIL_FLOORING);
         Assert.IsNotNull(flooringPrefab);
         SoilFlooring soilFlooringComp = flooringPrefab.GetComponent<SoilFlooring>();
         Assert.IsNotNull(soilFlooringComp);

@@ -98,6 +98,11 @@ public class HedgehogController : DefenderController<HedgehogController.Hedgehog
     /// <returns>the Hedgehog's target; null if it doesn't have one.</returns>
     private GrassTile GetTarget() { return NumTargets() == 1 ? GetTargets()[0] as GrassTile : null; }
 
+    /// <summary>
+    /// Returns the Hedgehog prefab to the HedgehogFactory singleton.
+    /// </summary>
+    public override void DestroyModel() { HedgehogFactory.ReturnHedgehogPrefab(GetHedgehog().gameObject); }
+
     //--------------------BEGIN STATE LOGIC----------------------//
 
     /// <summary>
@@ -210,16 +215,16 @@ public class HedgehogController : DefenderController<HedgehogController.Hedgehog
         // Make a BasicTreeSeed and a BasicTreeSeedController.
         GameObject basicTreeSeedPrefab = BasicTreeSeedFactory.GetBasicTreeSeedPrefab();
         Assert.IsNotNull(basicTreeSeedPrefab);
-        GameObject clonedBasicTreeSeed = GameObject.Instantiate(basicTreeSeedPrefab);
-        Assert.IsNotNull(clonedBasicTreeSeed);
-        BasicTreeSeed clonedBasicTreeSeedComp = clonedBasicTreeSeed.GetComponent<BasicTreeSeed>();
-        Assert.IsNotNull(clonedBasicTreeSeedComp);
+        BasicTreeSeed basicTreeSeedComp = basicTreeSeedPrefab.GetComponent<BasicTreeSeed>();
+        Assert.IsNotNull(basicTreeSeedComp);
+
+        Debug.Log("Target: " + GetTarget().NAME);
+
         Vector3 targetPosition = GetTarget().GetAttackPosition();
         BasicTreeSeedController basicTreeSeedController = new BasicTreeSeedController(
-            clonedBasicTreeSeedComp, GetHedgehog().GetPosition(), targetPosition);
+            basicTreeSeedComp, GetHedgehog().GetPosition(), targetPosition);
         AddModelControllerForExtrication(basicTreeSeedController);
         attackedTargets.Add(GetTarget());
-
 
         // Reset attack animation.
         GetHedgehog().ResetAttackCooldown();

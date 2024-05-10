@@ -675,7 +675,7 @@ public abstract class Tile : Model, ISurface
     /// <summary>
     /// Resets this Tile's stats to their starting values.
     /// </summary>
-    public override void ResetStats() { return; }
+    public override void ResetModel() { return; }
 
     /// <summary>
     /// Sets the 2D Collider properties of this Tile.
@@ -688,17 +688,6 @@ public abstract class Tile : Model, ISurface
     /// <returns>the GameObject that represents this Tile on the grid.
     /// </returns>
     public override GameObject Copy()
-    {
-        throw new System.NotSupportedException("Tile placing not supported.");
-    }
-
-    /// <summary>
-    /// Returns the Sprite track that represents this Tile on
-    /// a ShopBoat.
-    /// </summary>
-    /// <returns>the Sprite that that represents this Tile on a
-    /// ShopBoat.</returns>
-    public override Sprite[] GetBoatTrack()
     {
         throw new System.NotSupportedException("Tile placing not supported.");
     }

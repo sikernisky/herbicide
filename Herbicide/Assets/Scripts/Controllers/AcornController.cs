@@ -35,6 +35,17 @@ public class AcornController : ProjectileController<AcornController.AcornState>
         base(acorn, start, destination)
     { }
 
+    /// <summary>
+    /// Returns the Acorn model.
+    /// </summary>
+    /// <returns>the Acorn model.</returns>
+    protected Acorn GetAcorn() { return GetProjectile() as Acorn; }
+
+    /// <summary>
+    /// Returns the Acorn prefab to the AcornFactory singleton.
+    /// </summary>
+    public override void DestroyModel() { AcornFactory.ReturnAcornPrefab(GetAcorn().gameObject); }
+
     //-----------------------STATE LOGIC------------------------//
 
     /// <summary>

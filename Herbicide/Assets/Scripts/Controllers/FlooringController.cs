@@ -25,7 +25,7 @@ public class FlooringController : ModelController
     /// </summary>
     /// <returns>true if the FlooringModel should be destroyed and removed;
     /// otherwise, false. </returns>
-    protected override bool ShouldRemoveModel() { return false; }
+    public override bool ValidModel() { return true; }
 
     /// <summary>
     /// Adds one chunk of Time.deltaTime to the animation
@@ -42,4 +42,18 @@ public class FlooringController : ModelController
     /// Sets the animation counter for the current state to 0.
     /// </summary>
     public override void ResetAnimationCounter() { return; }
+
+    /// <summary>
+    /// Returns the Flooring Model.
+    /// </summary>
+    /// <returns>the Flooring Model.</returns>
+    protected Flooring GetFlooring() { return GetModel() as Flooring; }
+
+    /// <summary>
+    /// Returns the Flooring prefab to the FlooringFactory singleton.
+    /// </summary>
+    public override void DestroyModel()
+    {
+        FlooringFactory.ReturnFlooringPrefab(GetFlooring().gameObject);
+    }
 }

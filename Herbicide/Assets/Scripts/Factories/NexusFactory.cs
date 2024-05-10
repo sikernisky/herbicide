@@ -6,18 +6,12 @@ using UnityEngine.Assertions;
 /// <summary>
 /// Produces assets related to Nexii. 
 /// </summary>
-public class NexusFactory : MonoBehaviour
+public class NexusFactory : Factory
 {
     /// <summary>
     /// Reference to the NexusFactory singleton.
     /// </summary>
     private static NexusFactory instance;
-
-    /// <summary>
-    /// GameObject with Nexus component attached. 
-    /// </summary>
-    [SerializeField]
-    private GameObject nexusPrefab;
 
     /// <summary>
     /// Animation track when placing.
@@ -45,15 +39,25 @@ public class NexusFactory : MonoBehaviour
         Assert.IsNotNull(nexusFactories, "Array of TileFactories is null.");
         Assert.AreEqual(1, nexusFactories.Length);
         instance = nexusFactories[0];
+        instance.SpawnPools();
     }
 
     /// <summary>
-    /// Returns an original, non-copied GameObject with a Nexus component
-    /// attached to it.
+    /// Returns a fresh Nexus prefab from the object pool.
     /// </summary>
-    /// <returns>an original, non-copied GameObject with a Nexus component
-    /// attached to it.</returns>
-    public static GameObject GetNexusPrefab() { return instance.nexusPrefab; }
+    /// <returns>a GameObject with a Nexus component attached to it</returns>
+    public static GameObject GetNexusPrefab() { return instance.RequestObject(ModelType.NEXUS); }
+
+    /// <summary>
+    /// Accepts a Nexus prefab that the caller no longer needs. Adds it back
+    /// to the object pool.
+    /// </summary>
+    /// <param name="prefab">The Nexus prefab to return.</param>
+    public static void ReturnNexusPrefab(GameObject prefab)
+    {
+        Assert.IsTrue(prefab.GetComponent<Nexus>() != null);
+        instance.ReturnObject(prefab);
+    }
 
     /// <summary>
     /// Returns the animation track that represents this Nexus when placing. 
@@ -62,4 +66,9 @@ public class NexusFactory : MonoBehaviour
     /// </returns>
     public static Sprite[] GetPlacementTrack() { return instance.placementTrack; }
 
+    /// <summary>
+    /// Returns the Transform component of the NexusFactory instance.
+    /// </summary>
+    /// <returns>the Transform component of the NexusFactory instance.</returns>
+    protected override Transform GetTransform() { return instance.transform; }
 }

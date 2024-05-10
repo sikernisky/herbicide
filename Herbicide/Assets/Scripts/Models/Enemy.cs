@@ -43,6 +43,12 @@ public abstract class Enemy : Mob
     private Vector3 exitPos;
 
     /// <summary>
+    /// How much a currency collectable dropped by this Enemy on death
+    /// is worth.
+    /// </summary>
+    public virtual int CURRENCY_VALUE_ON_DEATH => 25;
+
+    /// <summary>
     /// Type of this Enemy.
     /// </summary>
     public enum EnemyType

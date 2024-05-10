@@ -91,6 +91,11 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     /// <returns>the Squirrel's target; null if it doesn't have one.</returns>
     private Enemy GetTarget() { return NumTargets() == 1 ? GetTargets()[0] as Enemy : null; }
 
+    /// <summary>
+    /// Returns the Squirrel prefab to the SquirrelFactory singleton.
+    /// </summary>
+    public override void DestroyModel() { SquirrelFactory.ReturnSquirrelPrefab(GetSquirrel().gameObject); }
+
     //--------------------BEGIN STATE LOGIC----------------------//
 
     /// <summary>
@@ -207,11 +212,10 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         // Make an Acorn and an AcornController.
         GameObject acornPrefab = AcornFactory.GetAcornPrefab();
         Assert.IsNotNull(acornPrefab);
-        GameObject clonedAcorn = GameObject.Instantiate(acornPrefab);
-        Assert.IsNotNull(clonedAcorn);
-        Acorn clonedAcornComp = clonedAcorn.GetComponent<Acorn>();
+        Acorn acornComp = acornPrefab.GetComponent<Acorn>();
+        Assert.IsNotNull(acornComp);
         Vector3 targetPosition = GetTarget().GetAttackPosition();
-        AcornController acornController = new AcornController(clonedAcornComp, GetSquirrel().GetPosition(), targetPosition);
+        AcornController acornController = new AcornController(acornComp, GetSquirrel().GetPosition(), targetPosition);
         AddModelControllerForExtrication(acornController);
 
         // Reset attack animation.

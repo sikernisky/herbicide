@@ -62,5 +62,8 @@ public class SoilFlooring : Flooring
     /// </summary>
     /// <returns>the GameObject that represents this SoilFlooring on the grid.
     /// </returns>
-    public override GameObject Copy() { return Instantiate(FlooringFactory.GetSoilFlooringPrefab()); }
+    public override GameObject Copy()
+    {
+        return FlooringFactory.GetFlooringPrefab(ModelType.SOIL_FLOORING);
+    }
 }

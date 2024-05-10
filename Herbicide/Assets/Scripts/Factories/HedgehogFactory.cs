@@ -6,18 +6,12 @@ using UnityEngine.Assertions;
 /// <summary>
 /// Produces assets related to Hedgehogs.
 /// </summary>
-public class HedgehogFactory : MonoBehaviour
+public class HedgehogFactory : Factory
 {
     /// <summary>
     /// Reference to the HedgehogFactory singleton.
     /// </summary>
     private static HedgehogFactory instance;
-
-    /// <summary>
-    /// GameObject with Hedgehog component attached. 
-    /// </summary>
-    [SerializeField]
-    private GameObject hedgehogPrefab;
 
     /// <summary>
     /// Animation track when on a boat.
@@ -93,15 +87,31 @@ public class HedgehogFactory : MonoBehaviour
         Assert.IsNotNull(hedgehogFactories, "Array of HedgehogFactories is null.");
         Assert.AreEqual(1, hedgehogFactories.Length);
         instance = hedgehogFactories[0];
+        instance.SpawnPools();
     }
 
     /// <summary>
-    /// Returns an original, non-copied GameObject with a Hedgehog component
-    /// attached to it.
+    /// Returns a fresh Hedgehog prefab from the object pool.
     /// </summary>
-    /// <returns>an original, non-copied GameObject with a Hedgehog component
-    /// attached to it.</returns>
-    public static GameObject GetHedgehogPrefab() { return instance.hedgehogPrefab; }
+    /// <returns>a GameObject with an attached Hedgehog component.</returns>
+    public static GameObject GetHedgehogPrefab()
+    {
+        GameObject hedgehogPrefab = instance.RequestObject(ModelType.HEDGEHOG);
+        Debug.Log("gave out " + hedgehogPrefab.GetInstanceID());
+        return instance.RequestObject(ModelType.HEDGEHOG);
+    }
+
+    /// <summary>
+    /// Accepts a Hedgehog prefab that the caller no longer needs. Adds it back
+    /// to the object pool.
+    /// </summary>
+    /// <param name="prefab">The Hedgehog prefab to return.</param>
+    public static void ReturnHedgehogPrefab(GameObject prefab)
+    {
+        Assert.IsTrue(prefab.GetComponent<Hedgehog>() != null);
+        Debug.Log("taking in " + prefab.GetInstanceID());
+        instance.ReturnObject(prefab);
+    }
 
     /// <summary>
     /// Returns the animation track that represents the Hedgehog attacking.
@@ -160,4 +170,10 @@ public class HedgehogFactory : MonoBehaviour
     /// <returns>the animation track that represents this Hedgehog on a boat. 
     /// </returns>
     public static Sprite[] GetBoatTrack() { return instance.boatTrack; }
+
+    /// <summary>
+    /// Returns the HedgehogFactory instance's Transform component. 
+    /// </summary>
+    /// <returns>the HedgehogFactory instance's Transform component. </returns>
+    protected override Transform GetTransform() { return instance.transform; }
 }

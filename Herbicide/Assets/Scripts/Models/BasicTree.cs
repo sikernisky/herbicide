@@ -93,13 +93,6 @@ public class BasicTree : Tree
     public override float MIN_MOVEMENT_SPEED => 0f;
 
     /// <summary>
-    /// Returns the animation track that represents this BasicTree on a boat.
-    /// </summary>
-    /// <returns>the animation track that represents this BasicTree on a boat.
-    /// </returns>
-    public override Sprite[] GetBoatTrack() { return BasicTreeFactory.GetBoatTrack(); }
-
-    /// <summary>
     /// Returns the animation track that represents this BasicTree when placing.
     /// </summary>
     /// <returns>the animation track that represents this BasicTree when placing.
@@ -111,10 +104,7 @@ public class BasicTree : Tree
     /// </summary>
     /// <returns>the GameObject that represents this BasicTree on the grid.
     /// </returns>
-    public override GameObject Copy()
-    {
-        return Instantiate(BasicTreeFactory.GetBasicTreePrefab());
-    }
+    public override GameObject Copy() { return BasicTreeFactory.GetBasicTreePrefab(); }
 
     /// <summary>
     /// Sets this BasicTree's 2D Collider's properties.

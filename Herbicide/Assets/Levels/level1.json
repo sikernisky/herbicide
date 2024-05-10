@@ -1,24 +1,30 @@
 { "compressionlevel":-1,
- "height":14,
+ "height":20,
  "infinite":false,
  "layers":[
         {
          "class":"TileLayer",
-         "data":[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 0, 0, 0, 3, 0, 0, 0, 0, 0, 3, 0, 0, 0, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3,
-            3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3,
-            3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
-         "height":14,
+         "data":[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 3, 0, 0, 0, 0, 0, 3, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+         "height":20,
          "id":3,
          "name":"Water",
          "opacity":1,
@@ -30,26 +36,32 @@
                 }],
          "type":"tilelayer",
          "visible":true,
-         "width":24,
+         "width":30,
          "x":0,
          "y":0
         }, 
         {
-         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 27, 24, 31, 0, 0, 0, 0, 0, 0, 0, 27, 24, 31, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 25, 0, 28, 0, 27, 24, 24, 24, 31, 0, 25, 0, 28, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 30, 29, 26, 27, 33, 0, 0, 0, 35, 31, 30, 29, 26, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 27, 24, 24, 24, 24, 33, 0, 0, 0, 0, 0, 35, 24, 24, 24, 24, 31, 0, 0, 0, 0,
-            0, 0, 0, 25, 0, 0, 0, 0, 0, 0, 0, 40, 0, 0, 0, 0, 0, 0, 0, 28, 0, 0, 0, 0,
-            0, 0, 0, 30, 29, 29, 29, 29, 29, 29, 29, 41, 29, 29, 29, 29, 29, 29, 29, 26, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         "height":14,
+         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 27, 24, 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 25, 0, 28, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 30, 29, 26, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 27, 24, 31, 0, 0, 0, 0, 0, 0, 0, 27, 24, 31, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 25, 0, 28, 0, 27, 24, 24, 24, 31, 0, 25, 0, 28, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 30, 29, 26, 27, 33, 0, 0, 0, 35, 31, 30, 29, 26, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 27, 24, 24, 24, 24, 33, 0, 0, 0, 0, 0, 35, 24, 24, 24, 24, 31, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 25, 0, 0, 0, 0, 0, 0, 0, 40, 0, 0, 0, 0, 0, 0, 0, 28, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 30, 29, 29, 29, 29, 29, 29, 29, 41, 29, 29, 29, 29, 29, 29, 29, 26, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         "height":20,
          "id":10,
          "name":"Shore",
          "opacity":1,
@@ -61,27 +73,33 @@
                 }],
          "type":"tilelayer",
          "visible":true,
-         "width":24,
+         "width":30,
          "x":0,
          "y":0
         }, 
         {
          "class":"TileLayer",
-         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 1, 2, 1, 2, 1, 2, 1, 0, 1, 2, 1, 2, 1, 2, 1, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         "height":14,
+         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 2, 1, 2, 1, 0, 1, 2, 1, 2, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         "height":20,
          "id":1,
          "name":"Grass",
          "opacity":1,
@@ -93,7 +111,7 @@
                 }],
          "type":"tilelayer",
          "visible":true,
-         "width":24,
+         "width":30,
          "x":0,
          "y":0
         }, 
@@ -117,8 +135,8 @@
                  "type":"Flooring",
                  "visible":true,
                  "width":16,
-                 "x":144,
-                 "y":112
+                 "x":192,
+                 "y":160
                 }, 
                 {
                  "gid":19,
@@ -135,8 +153,8 @@
                  "type":"Flooring",
                  "visible":true,
                  "width":16,
-                 "x":176,
-                 "y":112
+                 "x":224,
+                 "y":160
                 }, 
                 {
                  "gid":19,
@@ -153,8 +171,44 @@
                  "type":"Flooring",
                  "visible":true,
                  "width":16,
-                 "x":208,
-                 "y":112
+                 "x":256,
+                 "y":160
+                }, 
+                {
+                 "gid":19,
+                 "height":16,
+                 "id":350,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "rotation":0,
+                 "type":"Flooring",
+                 "visible":true,
+                 "width":16,
+                 "x":304,
+                 "y":128
+                }, 
+                {
+                 "gid":19,
+                 "height":16,
+                 "id":351,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "rotation":0,
+                 "type":"Flooring",
+                 "visible":true,
+                 "width":16,
+                 "x":144,
+                 "y":128
                 }],
          "opacity":1,
          "properties":[
@@ -189,8 +243,8 @@
                  "type":"Structure",
                  "visible":true,
                  "width":16,
-                 "x":288,
-                 "y":128
+                 "x":336,
+                 "y":176
                 }, 
                 {
                  "gid":48,
@@ -207,8 +261,8 @@
                  "type":"Structure",
                  "visible":true,
                  "width":16,
-                 "x":64,
-                 "y":128
+                 "x":112,
+                 "y":176
                 }, 
                 {
                  "gid":48,
@@ -225,11 +279,11 @@
                  "type":"Structure",
                  "visible":true,
                  "width":16,
-                 "x":80,
-                 "y":128
+                 "x":128,
+                 "y":176
                 }, 
                 {
-                 "gid":50,
+                 "gid":51,
                  "height":16,
                  "id":337,
                  "name":"",
@@ -243,8 +297,80 @@
                  "type":"Structure",
                  "visible":true,
                  "width":16,
+                 "x":192,
+                 "y":160
+                }, 
+                {
+                 "gid":51,
+                 "height":16,
+                 "id":352,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"BasicTree"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":304,
+                 "y":128
+                }, 
+                {
+                 "gid":51,
+                 "height":16,
+                 "id":353,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"BasicTree"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
                  "x":144,
-                 "y":112
+                 "y":128
+                }, 
+                {
+                 "gid":51,
+                 "height":16,
+                 "id":354,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"BasicTree"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":256,
+                 "y":160
+                }, 
+                {
+                 "gid":51,
+                 "height":16,
+                 "id":355,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"BasicTree"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":224,
+                 "y":160
                 }],
          "opacity":1,
          "properties":[
@@ -261,37 +387,19 @@
         {
          "class":"MarkerLayer",
          "draworder":"topdown",
-         "id":14,
+         "id":16,
          "name":"Markers",
          "objects":[
                 {
-                 "gid":52,
+                 "gid":57,
                  "height":16,
-                 "id":319,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"markerName",
-                         "type":"string",
-                         "value":"shopStart"
-                        }],
-                 "rotation":0,
-                 "type":"Marker",
-                 "visible":true,
-                 "width":16,
-                 "x":0,
-                 "y":176
-                }, 
-                {
-                 "gid":53,
-                 "height":16,
-                 "id":328,
+                 "id":349,
                  "name":"",
                  "properties":[
                         {
                          "name":"enemySpawnData",
                          "type":"string",
-                         "value":"kudzu30,kudzu40,kudzu45,kudzu50"
+                         "value":"kudzu1, kudzu10,kudzu20"
                         }, 
                         {
                          "name":"markerName",
@@ -302,8 +410,8 @@
                  "type":"Marker",
                  "visible":true,
                  "width":16,
-                 "x":289,
-                 "y":128
+                 "x":337,
+                 "y":176
                 }],
          "opacity":1,
          "properties":[
@@ -317,43 +425,356 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":16,
- "nextobjectid":348,
+ "nextlayerid":17,
+ "nextobjectid":356,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.1",
  "tileheight":16,
  "tilesets":[
         {
+         "columns":2,
          "firstgid":1,
-         "source":"..\/..\/Tiled\/Tilesets\/Grass.tsx"
+         "image":"..\/..\/..\/..\/..\/..\/Art\/Herbicide\/TileSets\/tileSetGrass.png",
+         "imageheight":16,
+         "imagewidth":32,
+         "margin":0,
+         "name":"Grass",
+         "spacing":0,
+         "tilecount":2,
+         "tileheight":16,
+         "tilewidth":16
         }, 
         {
+         "columns":1,
          "firstgid":3,
-         "source":"..\/..\/Tiled\/Tilesets\/Water.tsx"
+         "image":"..\/..\/..\/..\/..\/..\/Art\/Herbicide\/TileSets\/tilesetWater.png",
+         "imageheight":16,
+         "imagewidth":16,
+         "margin":0,
+         "name":"Water",
+         "spacing":0,
+         "tilecount":1,
+         "tileheight":16,
+         "tilewidth":16
         }, 
         {
+         "columns":4,
          "firstgid":4,
-         "source":"..\/..\/Tiled\/Tilesets\/Soil.tsx"
+         "image":"..\/..\/..\/..\/..\/..\/Art\/Herbicide\/TileSets\/tileSetSoil.png",
+         "imageheight":64,
+         "imagewidth":64,
+         "margin":0,
+         "name":"Soil",
+         "spacing":0,
+         "tilecount":16,
+         "tileheight":16,
+         "tiles":[
+                {
+                 "id":0,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }, 
+                {
+                 "id":1,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }, 
+                {
+                 "id":2,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }, 
+                {
+                 "id":3,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }, 
+                {
+                 "id":4,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }, 
+                {
+                 "id":5,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }, 
+                {
+                 "id":6,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }, 
+                {
+                 "id":7,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }, 
+                {
+                 "id":8,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }, 
+                {
+                 "id":9,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }, 
+                {
+                 "id":10,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }, 
+                {
+                 "id":11,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }, 
+                {
+                 "id":12,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }, 
+                {
+                 "id":13,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }, 
+                {
+                 "id":14,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }, 
+                {
+                 "id":15,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }],
+         "tilewidth":16
         }, 
         {
+         "columns":2,
          "firstgid":20,
-         "source":"..\/..\/Tiled\/Tilesets\/Enemies.tsx"
+         "image":"..\/..\/..\/..\/..\/..\/Art\/Herbicide\/TileSets\/tileSetEnemies.png",
+         "imageheight":32,
+         "imagewidth":32,
+         "margin":0,
+         "name":"Enemies",
+         "spacing":0,
+         "tilecount":4,
+         "tileheight":16,
+         "tiles":[
+                {
+                 "id":0,
+                 "properties":[
+                        {
+                         "name":"enemyName",
+                         "type":"string",
+                         "value":"Kudzu"
+                        }, 
+                        {
+                         "name":"spawnTime",
+                         "type":"string",
+                         "value":"1"
+                        }],
+                 "type":"Enemy"
+                }],
+         "tilewidth":16
         }, 
         {
+         "columns":4,
          "firstgid":24,
-         "source":"..\/..\/Tiled\/Tilesets\/Shore.tsx"
+         "image":"..\/..\/..\/..\/..\/..\/Art\/Herbicide\/TileSets\/tilesetShore.png",
+         "imageheight":96,
+         "imagewidth":64,
+         "margin":0,
+         "name":"Shore",
+         "spacing":0,
+         "tilecount":24,
+         "tileheight":16,
+         "tiles":[
+                {
+                 "id":0,
+                 "properties":[
+                        {
+                         "name":"testtesttest",
+                         "type":"string",
+                         "value":"hello"
+                        }],
+                 "type":"EdgeLayer"
+                }],
+         "tilewidth":16
         }, 
         {
+         "columns":3,
          "firstgid":48,
-         "source":"..\/..\/Tiled\/Tilesets\/Placeables.tsx"
+         "image":"..\/..\/..\/..\/..\/..\/Art\/Herbicide\/TileSets\/tileSetPlaceables.png",
+         "imageheight":48,
+         "imagewidth":48,
+         "margin":0,
+         "name":"Placeables",
+         "spacing":0,
+         "tilecount":9,
+         "tileheight":16,
+         "tiles":[
+                {
+                 "id":0,
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"Nexus"
+                        }],
+                 "type":"Structure"
+                }, 
+                {
+                 "id":1,
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"NexusHole"
+                        }],
+                 "type":"Structure"
+                }, 
+                {
+                 "id":3,
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"BasicTree"
+                        }],
+                 "type":"Structure"
+                }],
+         "tilewidth":16
         }, 
         {
-         "firstgid":52,
-         "source":"..\/..\/Tiled\/Tilesets\/Markers.tsx"
+         "columns":2,
+         "firstgid":57,
+         "image":"..\/..\/..\/..\/..\/..\/Art\/Herbicide\/TileSets\/markers.png",
+         "imageheight":32,
+         "imagewidth":32,
+         "margin":0,
+         "name":"markers",
+         "spacing":0,
+         "tilecount":4,
+         "tileheight":16,
+         "tiles":[
+                {
+                 "id":0,
+                 "properties":[
+                        {
+                         "name":"enemySpawnData",
+                         "type":"string",
+                         "value":"kudzu30"
+                        }, 
+                        {
+                         "name":"markerName",
+                         "type":"string",
+                         "value":"enemySpawn"
+                        }],
+                 "type":"Marker"
+                }, 
+                {
+                 "id":1,
+                 "properties":[
+                        {
+                         "name":"enemySpawnData",
+                         "type":"string",
+                         "value":""
+                        }, 
+                        {
+                         "name":"markerName",
+                         "type":"string",
+                         "value":"enemySpawn"
+                        }],
+                 "type":"Marker"
+                }],
+         "tilewidth":16
         }],
  "tilewidth":16,
  "type":"map",
  "version":"1.10",
- "width":24
+ "width":30
 }

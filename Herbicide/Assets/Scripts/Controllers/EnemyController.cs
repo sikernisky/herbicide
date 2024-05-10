@@ -78,15 +78,15 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     /// </summary>
     /// <returns>true if this controller's Enemy should be destoyed and
     /// set to null; otherwise, false.</returns>
-    protected override bool ShouldRemoveModel()
+    public override bool ValidModel()
     {
-        if (!GetEnemy().Spawned()) return false;
+        if (!GetEnemy().Spawned()) return true;
 
-        if (!TileGrid.OnWalkableTile(GetEnemy().GetPosition())) return true;
-        else if (GetEnemy().Dead()) return true;
-        else if (GetEnemy().Exited()) return true;
+        if (!TileGrid.OnWalkableTile(GetEnemy().GetPosition())) return false;
+        else if (GetEnemy().Dead()) return false;
+        else if (GetEnemy().Exited()) return false;
 
-        return false;
+        return true;
     }
 
 
@@ -115,21 +115,18 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     /// </summary>
     protected override void OnDestroyModel()
     {
-        if (ScheduledForDestruction()) return;
-
         // Drop held targets.
         foreach (PlaceableObject heldTarget in GetHeldTargets())
         {
+            if (heldTarget == null) continue;
+            heldTarget.Drop();
             Nexus nexusTarget = heldTarget as Nexus;
             if (nexusTarget != null)
             {
                 if (GetEnemy().Exited()) nexusTarget.CashIn();
-                else
-                {
-                    nexusTarget.Drop();
-                    TileGrid.PlaceOnTile(new Vector2Int(GetEnemy().GetX(), GetEnemy().GetY()), nexusTarget, true);
-                }
+                else TileGrid.PlaceOnTile(new Vector2Int(GetEnemy().GetX(), GetEnemy().GetY()), nexusTarget, true);
             }
+
         }
 
         base.OnDestroyModel();

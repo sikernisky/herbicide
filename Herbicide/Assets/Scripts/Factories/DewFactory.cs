@@ -6,18 +6,12 @@ using UnityEngine.Assertions;
 /// <summary>
 /// Produces assets related to Dew.
 /// </summary>
-public class DewFactory : MonoBehaviour
+public class DewFactory : Factory
 {
     /// <summary>
     /// Reference to the DewFactory singleton.
     /// </summary>
     private static DewFactory instance;
-
-    /// <summary>
-    /// GameObject with Dew component attached. 
-    /// </summary>
-    [SerializeField]
-    private GameObject dewPrefab;
 
     /// <summary>
     /// Animation track when placing.
@@ -45,15 +39,26 @@ public class DewFactory : MonoBehaviour
         Assert.IsNotNull(dewFactories, "Array of TileFactories is null.");
         Assert.AreEqual(1, dewFactories.Length);
         instance = dewFactories[0];
+        instance.SpawnPools();
     }
 
     /// <summary>
-    /// Returns an original, non-copied GameObject with a Dew component
-    /// attached to it.
+    /// Returns a fresh Dew prefab from the object pool.
     /// </summary>
-    /// <returns>an original, non-copied GameObject with a Dew component
-    /// attached to it.</returns>
-    public static GameObject GetDewPrefab() { return instance.dewPrefab; }
+    /// <returns>a GameObject with a Dew component attached to it</returns>
+    public static GameObject GetDewPrefab() { return instance.RequestObject(ModelType.DEW); }
+
+    /// <summary>
+    /// Accepts a Dew prefab that the caller no longer needs. Adds it back
+    /// to the object pool.
+    /// </summary>
+    /// <param name="prefab">The Dew prefab to return.</param>
+    public static void ReturnDewPrefab(GameObject prefab)
+    {
+        Assert.IsNotNull(prefab);
+        Assert.IsTrue(prefab.GetComponent<Dew>() != null);
+        instance.ReturnObject(prefab);
+    }
 
     /// <summary>
     /// Returns the animation track that represents this Dew when placing. 
@@ -68,4 +73,10 @@ public class DewFactory : MonoBehaviour
     /// <returns>the animation track that represents this Dew when on a boat. 
     /// </returns>
     public static Sprite[] GetBoatTrack() { return instance.boatTrack; }
+
+    /// <summary>
+    /// Returns the Transform component of the DewFactory instance. 
+    /// </summary>
+    /// <returns>the Transform component of the DewFactory instance. </returns>
+    protected override Transform GetTransform() { return instance.transform; }
 }

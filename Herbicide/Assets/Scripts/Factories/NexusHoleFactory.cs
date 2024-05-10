@@ -3,18 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-public class NexusHoleFactory : MonoBehaviour
+public class NexusHoleFactory : Factory
 {
     /// <summary>
     /// Reference to the NexusHoleFactory singleton.
     /// </summary>
     private static NexusHoleFactory instance;
-
-    /// <summary>
-    /// GameObject with NexusHole component attached. 
-    /// </summary>
-    [SerializeField]
-    private GameObject nexusHolePrefab;
 
     /// <summary>
     /// Animation track when placing.
@@ -42,15 +36,25 @@ public class NexusHoleFactory : MonoBehaviour
         Assert.IsNotNull(nexusHoleFactories, "Array of TileFactories is null.");
         Assert.AreEqual(1, nexusHoleFactories.Length);
         instance = nexusHoleFactories[0];
+        instance.SpawnPools();
     }
 
     /// <summary>
-    /// Returns an original, non-copied GameObject with a NexusHole component
-    /// attached to it.
+    /// Returns a fresh NexusHole prefab from the object pool.
     /// </summary>
-    /// <returns>an original, non-copied GameObject with a NexusHole component
-    /// attached to it.</returns>
-    public static GameObject GetNexusHolePrefab() { return instance.nexusHolePrefab; }
+    /// <returns>a GameObject with a NexusHole component attached to it</returns>
+    public static GameObject GetNexusHolePrefab() { return instance.RequestObject(ModelType.NEXUS_HOLE); }
+
+    /// <summary>
+    /// Accepts a NexusHole prefab that the caller no longer needs. Adds it back
+    /// to the object pool.
+    /// </summary>
+    /// <param name="prefab">The NexusHole prefab to return.</param>
+    public static void ReturnNexusHolePrefab(GameObject prefab)
+    {
+        Assert.IsTrue(prefab.GetComponent<NexusHole>() != null);
+        instance.ReturnObject(prefab);
+    }
 
     /// <summary>
     /// Returns the animation track that represents this NexusHole when placing. 
@@ -59,11 +63,16 @@ public class NexusHoleFactory : MonoBehaviour
     /// </returns>
     public static Sprite[] GetPlacementTrack() { return instance.placementTrack; }
 
-
     /// <summary>
     /// Returns the animation track that represents this NexusHole on a boat. 
     /// </summary>
     /// <returns>the animation track that represents this NexusHole on a boat. 
     /// </returns>
     public static Sprite[] GetBoatTrack() { return instance.boatTrack; }
+
+    /// <summary>
+    /// Returns the Transform component of the NexusHoleFactory instance.
+    /// </summary>
+    /// <returns>the Transform component of the NexusHoleFactory instance.</returns>
+    protected override Transform GetTransform() { return instance.transform; }
 }

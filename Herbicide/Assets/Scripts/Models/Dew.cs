@@ -10,7 +10,7 @@ public class Dew : Currency
     /// <summary>
     /// Starting value of a Dew.
     /// </summary>
-    public override int BASE_VALUE => 1;
+    public override int BASE_VALUE => 0;
 
     /// <summary>
     /// Maximum value of a Dew.
@@ -20,7 +20,7 @@ public class Dew : Currency
     /// <summary>
     /// Mimimum value of a Dew.
     /// </summary>
-    public override int MIN_VALUE => int.MinValue;
+    public override int MIN_VALUE => 0;
 
     /// <summary>
     /// Type of a Dew.
@@ -38,15 +38,7 @@ public class Dew : Currency
     /// </summary>
     /// <returns>the GameObject that represents this Dew on the grid.
     /// </returns>
-    public override GameObject Copy() { return Instantiate(DewFactory.GetDewPrefab()); }
-
-    /// <summary>
-    /// Returns the Sprite track that represents this Dew on
-    /// a ShopBoat.
-    /// </summary>
-    /// <returns>the Sprite that that represents this Dew on a
-    /// ShopBoat.</returns>
-    public override Sprite[] GetBoatTrack() { return DewFactory.GetBoatTrack(); }
+    public override GameObject Copy() { return DewFactory.GetDewPrefab(); }
 
     /// <summary>
     /// Returns a Sprite that represents this Dew when it is

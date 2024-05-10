@@ -102,14 +102,7 @@ public class Hedgehog : Defender
     /// Returns an instantiated Hedgehog prefab.
     /// </summary>
     /// <returns>an instantiated Hedgehog prefab.</returns>
-    public override GameObject Copy() { return Instantiate(HedgehogFactory.GetHedgehogPrefab()); }
-
-    /// <summary>
-    /// Returns the animation track that represents this Hedgehog on a boat.
-    /// </summary>
-    /// <returns>the animation track that represents this Hedgehog on a boat.
-    /// </returns>
-    public override Sprite[] GetBoatTrack() { return HedgehogFactory.GetBoatTrack(); }
+    public override GameObject Copy() { return HedgehogFactory.GetHedgehogPrefab(); }
 
     /// <summary>
     /// Returns the animation track that represents this Hedgehog when placing.

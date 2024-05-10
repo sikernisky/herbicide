@@ -6,18 +6,12 @@ using UnityEngine.Assertions;
 /// <summary>
 /// Produces assets related to BasicTrees.
 /// </summary>
-public class BasicTreeFactory : MonoBehaviour
+public class BasicTreeFactory : Factory
 {
     /// <summary>
     /// Reference to the BasicTreeFactory singleton.
     /// </summary>
     private static BasicTreeFactory instance;
-
-    /// <summary>
-    /// GameObject with BasicTree component attached. 
-    /// </summary>
-    [SerializeField]
-    private GameObject basicTreePrefab;
 
     /// <summary>
     /// Animation track when placing.
@@ -45,15 +39,29 @@ public class BasicTreeFactory : MonoBehaviour
         Assert.IsNotNull(basicTreeFactories, "Array of TileFactories is null.");
         Assert.AreEqual(1, basicTreeFactories.Length);
         instance = basicTreeFactories[0];
+        instance.SpawnPools();
     }
 
     /// <summary>
-    /// Returns an original, non-copied GameObject with a BasicTree component
-    /// attached to it.
+    /// Returns a fresh BasicTree prefab from the object pool.
     /// </summary>
-    /// <returns>an original, non-copied GameObject with a BasicTree component
-    /// attached to it.</returns>
-    public static GameObject GetBasicTreePrefab() { return instance.basicTreePrefab; }
+    /// <returns>a GameObject with a BasicTree component attached to it</returns>
+    public static GameObject GetBasicTreePrefab()
+    {
+        return instance.RequestObject(ModelType.BASIC_TREE);
+    }
+
+    /// <summary>
+    /// Accepts a BasicTree prefab that the caller no longer needs. Adds it back
+    /// to the object pool.
+    /// </summary>
+    /// <param name="prefab">The BasicTree prefab to return.</param>
+    public static void ReturnBasicTreePrefab(GameObject prefab)
+    {
+        Assert.IsNotNull(prefab);
+        Assert.IsTrue(prefab.GetComponent<BasicTree>() != null);
+        instance.ReturnObject(prefab);
+    }
 
     /// <summary>
     /// Returns the animation track that represents this BasicTree when placing. 
@@ -68,4 +76,10 @@ public class BasicTreeFactory : MonoBehaviour
     /// <returns>the animation track that represents this BasicTree when on a boat. 
     /// </returns>
     public static Sprite[] GetBoatTrack() { return instance.boatTrack; }
+
+    /// <summary>
+    /// Returns the Transform component of the BasicTreeFactory instance. 
+    /// </summary>
+    /// <returns>the Transform component of the BasicTreeFactory instance. </returns>
+    protected override Transform GetTransform() { return instance.transform; }
 }

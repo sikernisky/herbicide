@@ -98,11 +98,11 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     /// </summary>
     /// <returns>true if this controller's Defender should be destoyed and
     /// set to null; otherwise, false.</returns>
-    protected override bool ShouldRemoveModel()
+    public override bool ValidModel()
     {
-        if (GetDefender().Dead()) return true;
+        if (GetDefender().Dead()) return false;
 
-        return false;
+        return true;
     }
 
     /// <summary>
@@ -119,8 +119,6 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     /// <returns>true if the SpawnState has completed one execution;
     /// otherwise, false. </returns>
     protected bool SpawnStateDone() { return spawnStateDone; }
-
-
 }
 
 

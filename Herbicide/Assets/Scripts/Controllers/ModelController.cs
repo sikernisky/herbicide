@@ -45,12 +45,6 @@ public abstract class ModelController
     private List<EmanationController> volatileEmanationControllers = new List<EmanationController>();
 
     /// <summary>
-    /// true if this Model will be destroyed at the end of the frame;
-    /// otherwise, false.
-    /// </summary>
-    private bool scheduledForDestruction;
-
-    /// <summary>
     /// Number of active Models of each ModelType.
     /// </summary>
     private ModelCounts counts;
@@ -60,18 +54,21 @@ public abstract class ModelController
     /// </summary>
     private bool droppedDeathLoot;
 
+    /// <summary>
+    /// true if the Model has been deposited back into its Factory's ObjectPool.
+    /// </summary>
+    private bool modelRemoved;
+
 
     /// <summary>
     /// Makes a new ModelController for a Model.
     /// </summary>
-    /// <param name="model">The Model controlled by
-    ///  this ModelController.</param>
-    /// coroutine
+    /// <param name="model">The Model controlled by this ModelController.</param>
     public ModelController(Model model)
     {
         Assert.IsNotNull(model, "Model is null.");
         SetModel(model);
-        GetModel().ResetStats();
+        GetModel().ResetModel();
         GetModel().SubscribeToCollision(HandleCollision);
         ApplySynergies();
         id = ALL_MODELS.Count;
@@ -99,7 +96,6 @@ public abstract class ModelController
     /// </summary>
     public virtual void UpdateModel()
     {
-        if (ShouldRemoveModel()) DestroyAndRemoveModel();
         if (!ValidModel()) return;
 
         GetModel().UpdateEffects();
@@ -152,20 +148,17 @@ public abstract class ModelController
     /// </summary>
     protected virtual void DestroyAndRemoveModel()
     {
-        if (GetModel() == null || System.Object.Equals(null, GetModel())) return;
+        if (GetModel() == null || modelRemoved) return;
 
-        // Put stuff that needs extricating/an extra frame on death here.
         DropDeathLoot();
-
-        if (NeedsExtricating()) return;
-
-        // Put stuff that does not need extricating on death here.
         OnDestroyModel();
 
         ALL_MODELS.Remove(GetModel());
         DestroyModel();
         model = null;
+        modelRemoved = true;
     }
+
 
     /// <summary>
     /// Drops loot from this Mob when it dies. 
@@ -196,31 +189,26 @@ public abstract class ModelController
     /// </summary>
     /// <returns>true if this Controller's Model is valid; otherwise,
     /// false.</returns>
-    public virtual bool ValidModel()
-    {
-        return !scheduledForDestruction && GetModel() != null &&
-            !System.Object.Equals(GetModel(), null);
-    }
+    public abstract bool ValidModel();
 
     /// <summary>
-    /// Returns true if the model is no longer needed and
-    /// should be removed by the ControllerController.<br></br>
+    /// Returns true if this Controller should be removed. If so,
+    /// destroys its Model. This happens when the Model is invalid.
+    /// <br></br>
     /// 
-    /// By default, this returns true if the model controlled by this
-    /// Controller is NULL.
+    /// If the model is valid, does nothing.
     /// </summary>
-    /// <returns>true if the model is no longer needed and
-    /// should be removed by the ControllerController; otherwise,
-    /// returns false.</returns>
-    public virtual bool ShouldRemoveController() { return !ValidModel(); }
+    /// <returns>true if this Controller should be removed; otherwise,
+    /// false. </returns>
+    public bool TryRemoveController()
+    {
+        // Not ready to remove yet.
+        if (ValidModel()) return false;
 
-    /// <summary>
-    /// Returns true if this Controller's model should be destroyed
-    /// and set to null.
-    /// </summary>
-    /// <returns>true if this Controller's model should be destroyed
-    /// and set to null; otherwise, false. </returns>
-    protected abstract bool ShouldRemoveModel();
+        // Model is invalid; remove it.
+        DestroyAndRemoveModel();
+        return true;
+    }
 
     /// <summary>
     /// Returns a new list of ModelControllers that this ModelController has
@@ -377,25 +365,13 @@ public abstract class ModelController
     protected bool ClickedOnSinceSceneBegan() { return clicked; }
 
     /// <summary>
-    /// Schedules this Model for destruction and destroys it at the
-    /// end of the current frame.
+    /// Destroys the model. This should be done by a sub class, who gives
+    /// the prefab back to the correct Factory.
     /// </summary>
-    public void DestroyModel()
-    {
-        if (ScheduledForDestruction()) return;
-        scheduledForDestruction = true;
-        GameObject.Destroy(GetModel().gameObject);
-    }
+    public abstract void DestroyModel();
 
     /// <summary>
     /// Performs logic right before this Model is destroyed.
     /// </summary>
     protected virtual void OnDestroyModel() { return; }
-
-    /// <summary>
-    /// Returns true if this Model is scheduled for destruction.
-    /// </summary>
-    /// <returns>true if this Model is scheduled for destruction;
-    /// otherwise, false.</returns>
-    protected bool ScheduledForDestruction() { return scheduledForDestruction; }
 }

@@ -124,10 +124,10 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
     /// </summary>
     /// <returns>true if the Collectable should be nullified and destroyed;
     /// otherwise, false. </returns>
-    protected override bool ShouldRemoveModel()
+    public override bool ValidModel()
     {
-        if (GetCollectable().Collected()) return true;
-        return false;
+        if (GetCollectable().Collected()) return false;
+        return true;
     }
 
     /// <summary>

@@ -100,6 +100,14 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
     /// <returns>the Butterfly's target; null if it doesn't have one.</returns>
     private Enemy GetTarget() { return NumTargets() == 1 ? GetTargets()[0] as Enemy : null; }
 
+    /// <summary>
+    /// Returns the Butterfly prefab to the ButterflyFactory singleton.
+    /// </summary>
+    public override void DestroyModel()
+    {
+        ButterflyFactory.ReturnButterflyPrefab(GetButterfly().gameObject);
+    }
+
     //--------------------BEGIN STATE LOGIC----------------------//
 
     /// <summary>
@@ -277,12 +285,10 @@ public class ButterflyController : DefenderController<ButterflyController.Butter
         if (!CanAttack()) return;
         GameObject bombPrefab = BombFactory.GetBombPrefab();
         Assert.IsNotNull(bombPrefab);
-        GameObject clonedBomb = GameObject.Instantiate(bombPrefab);
-        Assert.IsNotNull(clonedBomb);
-        Bomb clonedBombComp = clonedBomb.GetComponent<Bomb>();
+        Bomb bombComp = bombPrefab.GetComponent<Bomb>();
         Vector3 targetPosition = GetTarget().GetAttackPosition();
         BombController bombController =
-            new BombController(clonedBombComp, GetButterfly().GetPosition(), targetPosition);
+            new BombController(bombComp, GetButterfly().GetPosition(), targetPosition);
         AddModelControllerForExtrication(bombController);
 
         GetButterfly().ResetAttackCooldown();

@@ -72,6 +72,10 @@ public class BearController : DefenderController<BearController.BearState>
     /// <returns>the Bear's target; null if it doesn't have one.</returns>
     private Enemy GetTarget() { return NumTargets() == 1 ? GetTargets()[0] as Enemy : null; }
 
+    /// <summary>
+    /// Returns the Bear prefab to the BearFactory singleton.
+    /// </summary>
+    public override void DestroyModel() { BearFactory.ReturnBearPrefab(GetBear().gameObject); }
 
     //--------------------BEGIN STATE LOGIC----------------------//
 

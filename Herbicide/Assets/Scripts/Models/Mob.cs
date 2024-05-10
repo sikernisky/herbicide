@@ -122,7 +122,7 @@ public abstract class Mob : PlaceableObject
     public virtual void OnSpawn()
     {
         spawned = true;
-        ResetStats();
+        ResetModel();
     }
 
     /// <summary>
@@ -266,9 +266,9 @@ public abstract class Mob : PlaceableObject
     /// <summary>
     /// Resets this Mob's stats to their default values.
     /// </summary>
-    public override void ResetStats()
+    public override void ResetModel()
     {
-        base.ResetStats();
+        base.ResetModel();
         ResetAttackRange();
         ResetChaseRange();
         ResetMovementSpeed();

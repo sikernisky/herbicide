@@ -35,14 +35,6 @@ public class BombSplat : SlowZone
 
 
     /// <summary>
-    /// Returns the Sprite that represents a BombSplat in
-    /// the inventory.
-    /// </summary>
-    /// <returns>the Sprite that represents a BombSplat in
-    /// the inventory.</returns>
-    public override Sprite[] GetBoatTrack() { return BombSplatFactory.GetBoatTrack(); }
-
-    /// <summary>
     /// Returns the Sprite that represents a BombSplat when
     /// placing from the Inventory.
     /// </summary>
@@ -56,10 +48,7 @@ public class BombSplat : SlowZone
     /// </summary>
     /// <returns>a BombSplat GameObject that can be placed
     /// on the TileGrid. </returns>
-    public override GameObject Copy()
-    {
-        return Instantiate(BombSplatFactory.GetBombSplatPrefab());
-    }
+    public override GameObject Copy() { return BombSplatFactory.GetBombSplatPrefab(); }
 
     /// <summary>
     /// Sets the BombSplat's 2D Collider properties.

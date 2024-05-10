@@ -123,12 +123,6 @@ public class TileGrid : MonoBehaviour
     private Dictionary<Tile, NexusHole> nexusHoleHosts;
 
     /// <summary>
-    /// The (X,Y) coordinates where the shop starts spawning things.
-    /// </summary>
-    private Vector3 shopSpawnPos;
-
-
-    /// <summary>
     /// Main update loop for the TileGrid; updates its Tiles.
     /// </summary>
     public static void UpdateTiles()
@@ -344,12 +338,6 @@ public class TileGrid : MonoBehaviour
                 Dictionary<Vector2Int, string> enemySpawnMarkers = new Dictionary<Vector2Int, string>();
                 foreach (ObjectData markToSpawn in markers)
                 {
-                    if (markToSpawn.GetMarkerName().ToLower() == "shopstart")
-                    {
-                        int x = markToSpawn.GetSpawnCoordinates(mapHeight).x;
-                        int y = markToSpawn.GetSpawnCoordinates(mapHeight).y;
-                        instance.shopSpawnPos = new Vector3(x, y, 1);
-                    }
                     if (markToSpawn.GetMarkerName().ToLower() == "enemyspawn")
                     {
                         int x = markToSpawn.GetSpawnCoordinates(mapHeight).x;
@@ -587,7 +575,7 @@ public class TileGrid : MonoBehaviour
         switch (flooringName.ToLower())
         {
             case "soilflooring":
-                return FlooringFactory.GetSoilFlooringPrefab();
+                return FlooringFactory.GetFlooringPrefab(ModelType.SOIL_FLOORING);
             default:
                 break;
         }
@@ -632,14 +620,6 @@ public class TileGrid : MonoBehaviour
         tiles.Add(t);
         if (t.GetTileType() == Tile.TileType.GRASS) grassTiles.Add(t);
     }
-
-    /// <summary>
-    /// Returns the position where the shop should begin spawning
-    /// objects.
-    /// </summary>
-    /// <returns>the position coordinates where the shop should begin spawning
-    /// objects.</returns>
-    public static Vector3 GetShopOrigin() { return instance.shopSpawnPos; }
 
     /// <summary>
     /// Returns the Tile-coordinates of the center-most tile in the TileGrid.
@@ -985,21 +965,18 @@ public class TileGrid : MonoBehaviour
         // We can place.
         if (!existing)
         {
-            GameObject prefabClone = candidate.Copy();
-            Assert.IsNotNull(prefabClone);
-            candidate = prefabClone.GetComponent<PlaceableObject>();
             Assert.IsNotNull(candidate);
 
-            Defender placedDefender = prefabClone.GetComponent<Defender>();
+            Defender placedDefender = candidate.GetComponent<Defender>();
             if (placedDefender != null) ControllerController.MakeController(placedDefender);
 
-            Hazard placedSlowZone = prefabClone.GetComponent<Hazard>();
+            Hazard placedSlowZone = candidate.GetComponent<Hazard>();
             if (placedSlowZone != null) ControllerController.MakeController(placedSlowZone);
 
-            Structure placedStructure = prefabClone.GetComponent<Structure>();
+            Structure placedStructure = candidate.GetComponent<Structure>();
             if (placedStructure != null) ControllerController.MakeController(placedStructure);
 
-            Tree placedTree = prefabClone.GetComponent<Tree>();
+            Tree placedTree = candidate.GetComponent<Tree>();
             if (placedTree != null) ControllerController.MakeController(placedTree);
         }
 
@@ -1068,9 +1045,6 @@ public class TileGrid : MonoBehaviour
 
         if (target.CanFloor(candidate, instance.GetNeighbors(target)))
         {
-            //Copy prefab.
-            GameObject copy = candidate.Copy();
-            candidate = copy.GetComponent<Flooring>();
             Assert.IsNotNull(candidate);
 
             // Flooring 

@@ -126,9 +126,9 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         if (GetKudzu().Exited()) return;
 
         Dew dew = DewFactory.GetDewPrefab().GetComponent<Dew>();
-        Dew copy = dew.Copy().GetComponent<Dew>();
         Vector3 lootPos = GetKudzu().Exited() ? GetKudzu().GetExitPos() : GetKudzu().GetPosition();
-        DewController dewController = new DewController(copy, lootPos);
+        int value = GetKudzu().CURRENCY_VALUE_ON_DEATH;
+        DewController dewController = new DewController(dew, lootPos, value);
         AddModelControllerForExtrication(dewController);
         base.DropDeathLoot();
     }
@@ -151,9 +151,9 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     /// </summary>
     /// <returns>true if this controller's Kudzu should be destoyed and
     /// set to null; otherwise, false.</returns>
-    protected override bool ShouldRemoveModel()
+    public override bool ValidModel()
     {
-        if (!GetEnemy().Spawned()) return false;
+        if (!GetEnemy().Spawned()) return true;
 
         HashSet<KudzuState> immuneStates = new HashSet<KudzuState>()
         {
@@ -164,13 +164,20 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         };
 
         bool isImmune = immuneStates.Contains(GetState());
-        if (!isImmune && !TileGrid.OnWalkableTile(GetEnemy().GetPosition())) return true;
-        else if (GetEnemy().Dead()) return true;
-        else if (GetEnemy().Exited()) return true;
+        if (!isImmune && !TileGrid.OnWalkableTile(GetEnemy().GetPosition())) return false;
+        else if (GetEnemy().Dead()) return false;
+        else if (GetEnemy().Exited()) return false;
 
-        return false;
+        return true;
     }
 
+    /// <summary>
+    /// Returns the Kudzu prefab to the KudzuFactory singleton.
+    /// </summary>
+    public override void DestroyModel()
+    {
+        KudzuFactory.ReturnKudzuPrefab(GetKudzu().gameObject);
+    }
 
     //--------------------BEGIN STATE LOGIC----------------------//
 

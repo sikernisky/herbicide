@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -165,12 +166,6 @@ public class ControllerController : MonoBehaviour
                 break;
             case ModelType.SEED_TOKEN:
                 break;
-            case ModelType.SHOP_BOAT:
-                ShopBoat shopBoat = model as ShopBoat;
-                Assert.IsNotNull(shopBoat);
-                ShopBoatController sbc = new ShopBoatController(shopBoat);
-                instance.structureControllers.Add(sbc);
-                break;
             case ModelType.SHORE_TILE:
                 break;
             case ModelType.SOIL_FLOORING:
@@ -272,18 +267,55 @@ public class ControllerController : MonoBehaviour
     }
 
     /// <summary>
-    /// Attempts to remove any unused or defunct Controllers.
+    /// Attempts to remove any unused or defunct Controllers. 
+    /// For those Controllers that are to be removed, extricates any
+    /// additional Controllers that Controller produced on death.
     /// </summary>
     private void TryRemoveControllers()
     {
-        enemyControllers.RemoveAll(ec => ec.ShouldRemoveController());
-        treeControllers.RemoveAll(tc => tc.ShouldRemoveController());
-        defenderControllers.RemoveAll(dc => dc.ShouldRemoveController());
-        projectileControllers.RemoveAll(pc => pc.ShouldRemoveController());
-        hazardControllers.RemoveAll(hc => hc.ShouldRemoveController());
-        collectableControllers.RemoveAll(cc => cc.ShouldRemoveController());
-        structureControllers.RemoveAll(sc => sc.ShouldRemoveController());
-        boatControllers.RemoveAll(bc => bc.ShouldRemoveController());
+        // Enemy Controllers
+        List<ModelController> enemyControllersToRemove =
+            enemyControllers.Where(ec => ec.TryRemoveController()).ToList();
+        instance.AddCollectedControllers(enemyControllersToRemove);
+        enemyControllers.RemoveAll(ec => enemyControllersToRemove.Contains(ec));
+
+        // Tree Controllers
+        List<ModelController> treeControllersToRemove =
+            treeControllers.Where(tc => tc.TryRemoveController()).ToList();
+        instance.AddCollectedControllers(treeControllersToRemove);
+        treeControllers.RemoveAll(tc => treeControllersToRemove.Contains(tc));
+
+        // Defender Controllers
+        List<ModelController> defenderControllersToRemove = defenderControllers.Where(dc => dc.TryRemoveController()).ToList();
+        instance.AddCollectedControllers(defenderControllersToRemove);
+        defenderControllers.RemoveAll(dc => defenderControllersToRemove.Contains(dc));
+
+        // Projectile Controllers
+        List<ModelController> projectileControllersToRemove = projectileControllers.Where(pc => pc.TryRemoveController()).ToList();
+        instance.AddCollectedControllers(projectileControllersToRemove);
+        projectileControllers.RemoveAll(pc => projectileControllersToRemove.Contains(pc));
+
+        // Hazard Controllers
+        List<ModelController> hazardControllersToRemove = hazardControllers.Where(hc => hc.TryRemoveController()).ToList();
+        instance.AddCollectedControllers(hazardControllersToRemove);
+        hazardControllers.RemoveAll(hc => hazardControllersToRemove.Contains(hc));
+
+        // Collectable Controllers
+        List<ModelController> collectableControllersToRemove = collectableControllers.Where(cc => cc.TryRemoveController()).ToList();
+        instance.AddCollectedControllers(collectableControllersToRemove);
+        collectableControllers.RemoveAll(cc => collectableControllersToRemove.Contains(cc));
+
+        // Structure Controllers
+        List<ModelController> structureControllersToRemove = structureControllers.Where(sc => sc.TryRemoveController()).ToList();
+        instance.AddCollectedControllers(structureControllersToRemove);
+        structureControllers.RemoveAll(sc => structureControllersToRemove.Contains(sc));
+
+        // Boat Controllers
+        List<ModelController> boatControllersToRemove = boatControllers.Where(bc => bc.TryRemoveController()).ToList();
+        instance.AddCollectedControllers(boatControllersToRemove);
+        boatControllers.RemoveAll(bc => boatControllersToRemove.Contains(bc));
+
+        // Emanation Controllers
         emanationControllers.RemoveAll(emc => emc.ShouldRemoveController());
     }
 

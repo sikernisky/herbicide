@@ -144,16 +144,7 @@ public class Butterfly : Defender
     /// Returns an instantiated copy of the Butterfly Model.
     /// </summary>
     /// <returns> an instantiated copy of the Butterfly Model.</returns>
-    public override GameObject Copy()
-    {
-        return Instantiate(ButterflyFactory.GetButterflyPrefab());
-    }
-
-    /// <summary>
-    /// Returns the Sprite that represents this Butterfly when on a boat.
-    /// </summary>
-    /// <returns>the Sprite that represents this Butterfly when on a boat.</returns>
-    public override Sprite[] GetBoatTrack() { return ButterflyFactory.GetBoatTrack(); }
+    public override GameObject Copy() { return ButterflyFactory.GetButterflyPrefab(); }
 
     /// <summary>
     /// Returns the Sprite that represents this Butterfly when placing.

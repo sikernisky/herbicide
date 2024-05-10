@@ -9,7 +9,7 @@ using UnityEngine.Assertions;
 /// can access its needed Sprite here rather than instantiating its own
 /// array of possible Sprites.
 /// </summary>
-public class FlooringFactory : MonoBehaviour
+public class FlooringFactory : Factory
 {
     /// <summary>
     /// Reference to the FlooringFactory singleton.
@@ -27,12 +27,6 @@ public class FlooringFactory : MonoBehaviour
     [SerializeField]
     private Sprite[] soilFlooringSprites;
 
-    /// <summary>
-    /// Prefab for a Soil Flooring
-    /// </summary>
-    [SerializeField]
-    private GameObject soilFlooringPrefab;
-
 
     /// <summary>
     /// Finds and sets the FlooringFactory singleton.
@@ -47,6 +41,7 @@ public class FlooringFactory : MonoBehaviour
         Assert.IsNotNull(flooringFactories, "Array of FlooringFactories is null.");
         Assert.AreEqual(1, flooringFactories.Length);
         instance = flooringFactories[0];
+        instance.SpawnPools();
     }
 
     /// <summary>
@@ -75,8 +70,38 @@ public class FlooringFactory : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns a non-instantiated SoilFlooring prefab. 
+    /// Returns a fresh Flooring prefab from the object pool.
     /// </summary>
-    /// <returns>a non-instantiated SoilFlooring prefab. </returns>
-    public static GameObject GetSoilFlooringPrefab() { return instance.soilFlooringPrefab; }
+    /// <param name="modelType">The type of Flooring prefab to get. </param>
+    /// <returns>a GameObject with a Flooring component attached to it</returns>
+    public static GameObject GetFlooringPrefab(ModelType modelType)
+    {
+        HashSet<ModelType> validModels = new HashSet<ModelType>()
+        {
+            ModelType.SOIL_FLOORING
+        };
+        Assert.IsTrue(validModels.Contains(modelType));
+        return instance.RequestObject(ModelType.SOIL_FLOORING);
+    }
+
+    /// <summary>
+    /// Accepts a Flooring prefab that the caller no longer needs. Adds it back
+    /// to the object pool.
+    /// </summary>
+    /// <param name="prefab">The Flooring prefab to return.</param>
+    public static void ReturnFlooringPrefab(GameObject prefab)
+    {
+        HashSet<ModelType> validModels = new HashSet<ModelType>()
+        {
+            ModelType.SOIL_FLOORING
+        };
+        Assert.IsTrue(validModels.Contains(prefab.GetComponent<Model>().TYPE));
+        instance.ReturnObject(prefab);
+    }
+
+    /// <summary>
+    /// Returns the Transform component of the FlooringFactory instance.
+    /// </summary>
+    /// <returns>the Transform component of the FlooringFactory instance.</returns>
+    protected override Transform GetTransform() { return instance.transform; }
 }

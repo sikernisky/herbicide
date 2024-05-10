@@ -96,6 +96,12 @@ public class SlowZoneController : HazardController<SlowZoneController.SlowZoneSt
     /// <returns>this SlowZoneController's SlowZone model</returns>
     protected SlowZone GetSlowZone() { return GetHazard() as SlowZone; }
 
+    /// <summary>
+    /// Returns the NexusHole prefab to the NexusHoleFactory singleton.
+    /// </summary>
+    public override void DestroyModel() { return; } //TODO : IMPLEMENT!!!!!!!!!!!
+
+
     //-----------------------STATE LOGIC----------------------//
 
     /// <summary>

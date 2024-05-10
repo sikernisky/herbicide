@@ -56,6 +56,20 @@ public class BasicTreeController : TreeController<BasicTreeController.BasicTreeS
         throw new System.NotImplementedException();
     }
 
+    /// <summary>
+    /// Returns the BasicTree model.
+    /// </summary>
+    /// <returns>the BasicTree model.</returns>
+    protected BasicTree GetBasicTree() { return GetTree() as BasicTree; }
+
+    /// <summary>
+    /// Returns the BasicTree prefab to the BasicTreeFactory singleton.
+    /// </summary>
+    public override void DestroyModel()
+    {
+        BasicTreeFactory.ReturnBasicTreePrefab(GetBasicTree().gameObject);
+    }
+
     //--------------------BEGIN STATE LOGIC----------------------//
 
     /// <summary>
@@ -125,16 +139,15 @@ public class BasicTreeController : TreeController<BasicTreeController.BasicTreeS
     protected override void DropResources()
     {
         GameObject dewPrefab = DewFactory.GetDewPrefab();
-        GameObject clonedDew = GameObject.Instantiate(dewPrefab);
-        Assert.IsNotNull(clonedDew);
-        Dew dewComp = clonedDew.GetComponent<Dew>();
+        Dew dewComp = dewPrefab.GetComponent<Dew>();
         Assert.IsNotNull(dewComp);
         Vector3 dropPosition = new Vector3(
             GetTree().GetX() + GetTree().DEFENDER_OFFSET_X,
             GetTree().GetY() + GetTree().DEFENDER_OFFSET_Y,
             1
         );
-        DewController dewController = new DewController(dewComp, dropPosition);
+        int dewValueFromTree = 25; // TEMP
+        DewController dewController = new DewController(dewComp, dropPosition, dewValueFromTree);
         AddModelControllerForExtrication(dewController);
     }
 }

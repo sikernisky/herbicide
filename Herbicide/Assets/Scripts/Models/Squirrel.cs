@@ -42,7 +42,7 @@ public class Squirrel : Defender
     /// <summary>
     /// Amount of attack cooldown this Squirrel starts with.
     /// </summary>
-    public override float BASE_ATTACK_COOLDOWN => 3f;
+    public override float BASE_ATTACK_COOLDOWN => 1f;
 
     /// <summary>
     /// Most amount of attack cooldown this Squirrel can have.
@@ -99,7 +99,7 @@ public class Squirrel : Defender
     /// <summary>
     /// How much currency it takes to place a Squirrel
     /// </summary>
-    public override int COST => 1;
+    public override int COST => 50;
 
     /// <summary>
     /// Type of a Squirrel
@@ -129,17 +129,7 @@ public class Squirrel : Defender
     /// </summary>
     /// <returns>an instantiated GameObject with a Squirrel component
     ///  attached.</returns>
-    public override GameObject Copy()
-    {
-        return Instantiate(SquirrelFactory.GetSquirrelPrefab());
-    }
-
-    /// <summary>
-    /// Returns the animation track that represents this Squirrel on a boat.
-    /// </summary>
-    /// <returns>the animation track that represents this Squirrel on a boat.
-    /// </returns>
-    public override Sprite[] GetBoatTrack() { return SquirrelFactory.GetBoatTrack(); }
+    public override GameObject Copy() { return SquirrelFactory.GetSquirrelPrefab(); }
 
     /// <summary>
     /// Returns the animation track that represents this Squirrel when placing.

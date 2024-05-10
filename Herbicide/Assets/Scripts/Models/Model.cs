@@ -11,11 +11,10 @@ using System.Linq;
 /// </summary>
 public abstract class Model : MonoBehaviour
 {
-
     /// <summary>
     /// How much currency is required to buy this Model.
     /// </summary>
-    public virtual int COST => 1;
+    public virtual int COST => 100;
 
     /// <summary>
     /// Name of this Model.
@@ -345,9 +344,9 @@ public abstract class Model : MonoBehaviour
     public abstract void SetColliderProperties();
 
     /// <summary>
-    /// Resets this Model's stats to their default values.
+    /// Resets this Model's state.
     /// </summary>
-    public abstract void ResetStats();
+    public abstract void ResetModel();
 
     /// <summary>
     /// Adds an effect to this Model's list of active effects.
@@ -468,14 +467,6 @@ public abstract class Model : MonoBehaviour
     /// <returns>the GameObject that represents this Model on the grid.
     /// </returns>
     public abstract GameObject Copy();
-
-    /// <summary>
-    /// Returns the Sprite track that represents this Model on
-    /// a ShopBoat.
-    /// </summary>
-    /// <returns>the Sprite that that represents this Model on a
-    /// ShopBoat.</returns>
-    public abstract Sprite[] GetBoatTrack();
 
     /// <summary>
     /// Returns a Sprite that represents this Model when it is

@@ -6,18 +6,12 @@ using UnityEngine.Assertions;
 /// <summary>
 /// Produces assets related to Bears.
 /// </summary>
-public class BearFactory : MonoBehaviour
+public class BearFactory : Factory
 {
     /// <summary>
     /// Reference to the BearFactory singleton.
     /// </summary>
     private static BearFactory instance;
-
-    /// <summary>
-    /// GameObject with Bear component attached. 
-    /// </summary>
-    [SerializeField]
-    private GameObject bearPrefab;
 
     /// <summary>
     /// Animation track when on a boat.
@@ -99,15 +93,26 @@ public class BearFactory : MonoBehaviour
         Assert.IsNotNull(bearFactories, "Array of TileFactories is null.");
         Assert.AreEqual(1, bearFactories.Length);
         instance = bearFactories[0];
+        instance.SpawnPools();
     }
 
     /// <summary>
-    /// Returns an original, non-copied GameObject with a Bear component
-    /// attached to it.
+    /// Returns a fresh Bear prefab from the object pool.
     /// </summary>
-    /// <returns>an original, non-copied GameObject with a Bear component
-    /// attached to it.</returns>
-    public static GameObject GetBearPrefab() { return instance.bearPrefab; }
+    /// <returns>a GameObject with a Bear component attached to it</returns>
+    public static GameObject GetBearPrefab() { return instance.RequestObject(ModelType.BEAR); }
+
+    /// <summary>
+    /// Accepts a Bear prefab that the caller no longer needs. Adds it back
+    /// to the object pool.
+    /// </summary>
+    /// <param name="prefab">The Bear prefab to return.</param>
+    public static void ReturnBearPrefab(GameObject prefab)
+    {
+        Assert.IsNotNull(prefab);
+        Assert.IsTrue(prefab.GetComponent<Bear>() != null);
+        instance.ReturnObject(prefab);
+    }
 
     /// <summary>
     /// Returns the animation track that represents the Bear attacking.
@@ -174,4 +179,10 @@ public class BearFactory : MonoBehaviour
     /// </returns>
 
     public static Sprite[] GetBiteTrack() { return instance.biteTrack; }
+
+    /// <summary>
+    /// Returns the Transform component of the BearFacotry instance.
+    /// </summary>
+    /// <returns>the Transform component of the BearFacotry instance</returns>
+    protected override Transform GetTransform() { return instance.transform; }
 }

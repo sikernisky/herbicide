@@ -78,4 +78,12 @@ public abstract class Collectable : Model
     /// <returns>this Collectable's homing curve.</returns>
     public AnimationCurve GetHomingCurve() { return homingCurve; }
 
+    /// <summary>
+    /// Resets this Collectable's state.
+    /// </summary>
+    public override void ResetModel()
+    {
+        collected = false;
+    }
+
 }

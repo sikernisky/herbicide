@@ -6,18 +6,12 @@ using UnityEngine.Assertions;
 /// <summary>
 /// Produces assets related to Acorns.
 /// </summary>
-public class AcornFactory : MonoBehaviour
+public class AcornFactory : Factory
 {
     /// <summary>
     /// Reference to the AcornFactory singleton.
     /// </summary>
     private static AcornFactory instance;
-
-    /// <summary>
-    /// GameObject with Acorn component attached. 
-    /// </summary>
-    [SerializeField]
-    private GameObject acornPrefab;
 
     /// <summary>
     /// Animation track when placing.
@@ -45,15 +39,28 @@ public class AcornFactory : MonoBehaviour
         Assert.IsNotNull(acornFactories, "Array of TileFactories is null.");
         Assert.AreEqual(1, acornFactories.Length);
         instance = acornFactories[0];
+        instance.SpawnPools();
     }
 
+
     /// <summary>
-    /// Returns an original, non-copied GameObject with a Acorn component
-    /// attached to it.
+    /// Returns a fresh Acorn prefab from the object pool.
     /// </summary>
-    /// <returns>an original, non-copied GameObject with a Acorn component
-    /// attached to it.</returns>
-    public static GameObject GetAcornPrefab() { return instance.acornPrefab; }
+    /// <returns>a GameObject with a Acorn component attached to it</returns>
+    public static GameObject GetAcornPrefab() { return instance.RequestObject(ModelType.ACORN); }
+
+    /// <summary>
+    /// Accepts a Acorn prefab that the caller no longer needs. Adds it back
+    /// to the object pool.
+    /// </summary>
+    /// <param name="prefab">The Acorn prefab to return.</param>
+    public static void ReturnAcornPrefab(GameObject prefab)
+    {
+        Assert.IsNotNull(prefab);
+        Acorn acorn = prefab.GetComponent<Acorn>();
+        Assert.IsTrue(acorn != null);
+        instance.ReturnObject(prefab);
+    }
 
     /// <summary>
     /// Returns the animation track that represents this Acorn when placing. 
@@ -68,5 +75,11 @@ public class AcornFactory : MonoBehaviour
     /// <returns>the animation track that represents this Acorn when on a boat. 
     /// </returns>
     public static Sprite[] GetBoatTrack() { return instance.boatTrack; }
+
+    /// <summary>
+    /// Returns the Transform component of the AcornFactory instance.
+    /// </summary>
+    /// <returns>the Transform component of the AcornFactory instance.</returns>
+    protected override Transform GetTransform() { return instance.transform; }
 
 }

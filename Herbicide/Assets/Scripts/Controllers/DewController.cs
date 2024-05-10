@@ -31,10 +31,12 @@ public class DewController : CollectableController<DewController.DewState>
     /// </summary>
     /// <param name="dew">The Dew to assign.</param>
     /// <param name="dropPos">Where the Dew first dropped.</param>
-    public DewController(Dew dew, Vector3 dropPos) : base(dew, dropPos)
+    /// <param name="value">How much the Dew collectable is worth..</param>
+    public DewController(Dew dew, Vector3 dropPos, int value) : base(dew, dropPos)
     {
         NUM_DEW++;
-        GetModel().SetWorldPosition(dropPos);
+        GetDew().SetWorldPosition(dropPos);
+        GetDew().AdjustValue(value);
     }
 
     /// <summary>
@@ -53,6 +55,10 @@ public class DewController : CollectableController<DewController.DewState>
     /// <returns>this controller's Dew model.</returns>
     private Dew GetDew() { return GetCollectable() as Dew; }
 
+    /// <summary>
+    /// Returns the Dew prefab to the DewFactory singleton.
+    /// </summary>
+    public override void DestroyModel() { DewFactory.ReturnDewPrefab(GetDew().gameObject); }
 
     //-----------------------STATE LOGIC----------------------//
 

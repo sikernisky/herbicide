@@ -56,7 +56,7 @@ public class NexusController : StructureController<NexusController.NexusState>
     /// Returns true if the Nexus should be removed.
     /// </summary>
     /// <returns>true if the Nexus should be removed; otherwise, false.</returns>
-    protected override bool ShouldRemoveModel() { return GetNexus().CashedIn(); }
+    public override bool ValidModel() { return !GetNexus().CashedIn(); }
 
     /// <summary>
     /// Returns the Nexus model.
@@ -88,7 +88,13 @@ public class NexusController : StructureController<NexusController.NexusState>
     /// </summary>
     public override void ResetAnimationCounter() { throw new System.NotImplementedException(); }
 
-
+    /// <summary>
+    /// Returns the Nexus prefab to the NexusFactory singleton.
+    /// </summary>
+    public override void DestroyModel()
+    {
+        NexusFactory.ReturnNexusPrefab(GetNexus().gameObject);
+    }
     //--------------------- STATE LOGIC-----------------------//
 
     /// <summary>

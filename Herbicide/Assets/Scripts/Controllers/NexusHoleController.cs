@@ -51,7 +51,7 @@ public class NexusHoleController : StructureController<NexusHoleController.Nexus
     /// Returns true if the NexusHole should be removed.
     /// </summary>
     /// <returns>true if the NexusHole should be removed; otherwise, false.</returns>
-    protected override bool ShouldRemoveModel() { return false; }
+    public override bool ValidModel() { return true; }
 
     /// <summary>
     /// Returns the NexusHole model.
@@ -83,6 +83,13 @@ public class NexusHoleController : StructureController<NexusHoleController.Nexus
     /// </summary>
     public override void ResetAnimationCounter() { throw new System.NotImplementedException(); }
 
+    /// <summary>
+    /// Returns the NexusHole prefab to the NexusHoleFactory singleton.
+    /// </summary>
+    public override void DestroyModel()
+    {
+        NexusHoleFactory.ReturnNexusHolePrefab(GetNexusHole().gameObject);
+    }
 
     //--------------------- STATE LOGIC-----------------------//
 

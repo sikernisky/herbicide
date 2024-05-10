@@ -6,18 +6,12 @@ using UnityEngine.Assertions;
 /// <summary>
 /// Produces assets related to Kudzus.
 /// </summary>
-public class KudzuFactory : MonoBehaviour
+public class KudzuFactory : Factory
 {
     /// <summary>
     /// Reference to the KudzuFactory singleton.
     /// </summary>
     private static KudzuFactory instance;
-
-    /// <summary>
-    /// GameObject with Kudzu component attached. 
-    /// </summary>
-    [SerializeField]
-    private GameObject kudzuPrefab;
 
     /// <summary>
     /// Animation track when placing.
@@ -256,15 +250,25 @@ public class KudzuFactory : MonoBehaviour
         Assert.IsNotNull(kudzuFactories, "Array of TileFactories is null.");
         Assert.AreEqual(1, kudzuFactories.Length);
         instance = kudzuFactories[0];
+        instance.SpawnPools();
     }
 
     /// <summary>
-    /// Returns an original, non-copied GameObject with a Kudzu component
-    /// attached to it.
+    /// Returns a fresh Kudzu prefab from the object pool.
     /// </summary>
-    /// <returns>an original, non-copied GameObject with a Kudzu component
-    /// attached to it.</returns>
-    public static GameObject GetKudzuPrefab() { return instance.kudzuPrefab; }
+    /// <returns>a GameObject with a Kudzu component attached to it.</returns>
+    public static GameObject GetKudzuPrefab() { return instance.RequestObject(ModelType.KUDZU); }
+
+    /// <summary>
+    /// Accepts a Kudzu prefab that the caller no longer needs. Adds it back
+    /// to the object pool.
+    /// </summary>
+    /// <param name="prefab">The Kudzu prefab to return.</param>
+    public static void ReturnKudzuPrefab(GameObject prefab)
+    {
+        Assert.IsTrue(prefab.GetComponent<Kudzu>() != null);
+        instance.ReturnObject(prefab);
+    }
 
     /// <summary>
     /// Returns the animation track that represents the Kudzu moving.
@@ -380,7 +384,6 @@ public class KudzuFactory : MonoBehaviour
         return GetMovementTrack(d, s);
     }
 
-
     /// <summary>
     /// Returns the animation track that represents this Kudzu when placing. 
     /// </summary>
@@ -394,4 +397,10 @@ public class KudzuFactory : MonoBehaviour
     /// <returns>the animation track that represents this Kudzu when on a boat. 
     /// </returns>
     public static Sprite[] GetBoatTrack() { return instance.boatTrack; }
+
+    /// <summary>
+    /// Returns the KudzuFactory instance's Transform compmonent. 
+    /// </summary>
+    /// <returns> the KudzuFactory instance's Transform compmonent. </returns>
+    protected override Transform GetTransform() { return instance.transform; }
 }

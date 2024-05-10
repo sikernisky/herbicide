@@ -103,26 +103,18 @@ public class Bear : Defender
     /// </summary>
     public float ATTACK_ANIMATION_DURATION => .25f;
 
+    /// <summary>
+    /// How currency is required to buy a Bear.
+    /// </summary>
+    public override int COST => 75;
+
 
     /// <summary>
     /// Returns an instantiated GameObject with a Bear component attached.
     /// </summary>
     /// <returns>an instantiated GameObject with a Bear component
     ///  attached.</returns>
-    public override GameObject Copy()
-    {
-        return Instantiate(BearFactory.GetBearPrefab());
-    }
-
-    /// <summary>
-    /// Returns the animation track that represents this Bear on a boat.
-    /// </summary>
-    /// <returns>the animation track that represents this Bear on a boat.
-    /// </returns>
-    public override Sprite[] GetBoatTrack()
-    {
-        return BearFactory.GetBoatTrack();
-    }
+    public override GameObject Copy() { return BearFactory.GetBearPrefab(); }
 
     /// <summary>
     /// Returns the animation track that represents this Bear when placing.

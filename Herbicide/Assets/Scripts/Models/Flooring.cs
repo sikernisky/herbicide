@@ -413,23 +413,12 @@ public abstract class Flooring : Model, ISurface
     /// <summary>
     /// Resets this Tile's stats to their starting values.
     /// </summary>
-    public override void ResetStats() { return; }
+    public override void ResetModel() { return; }
 
     /// <summary>
     /// Sets the 2D Collider properties of this Tile.
     /// </summary>
     public override void SetColliderProperties() { return; }
-
-    /// <summary>
-    /// Returns the Sprite track that represents this Flooring on
-    /// a ShopBoat.
-    /// </summary>
-    /// <returns>the Sprite that that represents this Flooring on a
-    /// ShopBoat.</returns>
-    public override Sprite[] GetBoatTrack()
-    {
-        throw new System.NotSupportedException("Tile placing not supported.");
-    }
 
     /// <summary>
     /// Returns a Sprite that represents this Flooring when it is

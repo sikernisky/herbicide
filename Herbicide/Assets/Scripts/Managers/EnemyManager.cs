@@ -57,19 +57,18 @@ public class EnemyManager : MonoBehaviour
             foreach (var enemyData in parsedData)
             {
                 string enemyName = enemyData.Item1;
-                GameObject spawnedEnemy = instance.GetEnemyPrefabFromString(enemyName);
-                Assert.IsNotNull(spawnedEnemy);
-                GameObject clonedEnemy = Instantiate(spawnedEnemy);
-                Enemy clonedEnemyComp = clonedEnemy.GetComponent<Enemy>();
-                clonedEnemyComp.gameObject.SetActive(false);
+                GameObject enemy = instance.GetEnemyPrefabFromString(enemyName);
+                Assert.IsNotNull(enemy);
+                Enemy enemyComp = enemy.GetComponent<Enemy>();
+                enemy.gameObject.SetActive(false);
                 float spawnX = TileGrid.CoordinateToPosition(marker.Key.x);
                 float spawnY = TileGrid.CoordinateToPosition(marker.Key.y);
                 Vector3 spawnWorldPos = new Vector3(spawnX, spawnY, 1);
                 float spawnTime = enemyData.Item2;
                 instance.spawnTimes.Add(spawnTime);
-                clonedEnemyComp.SetSpawnTime(spawnTime);
-                clonedEnemyComp.SetSpawnPos(spawnWorldPos);
-                ControllerController.MakeController(clonedEnemyComp);
+                enemyComp.SetSpawnTime(spawnTime);
+                enemyComp.SetSpawnPos(spawnWorldPos);
+                ControllerController.MakeController(enemyComp);
             }
         }
 

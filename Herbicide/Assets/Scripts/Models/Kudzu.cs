@@ -166,12 +166,6 @@ public class Kudzu : Enemy
     }
 
     /// <summary>
-    /// Returns the sprite that represents this Kudzu on boat.
-    /// </summary>
-    /// <returns>the sprite that represents this Kudzu on a boat.</returns>
-    public override Sprite[] GetBoatTrack() { return KudzuFactory.GetBoatTrack(); }
-
-    /// <summary>
     /// Returns the sprite that represents this Kudzu when placing.
     /// </summary>
     /// <returns>the sprite that represents this Kudzu when placing.</returns>
@@ -182,5 +176,5 @@ public class Kudzu : Enemy
     /// </summary>
     /// <returns>the GameObject that represents this Kudzu on the grid.
     /// </returns>
-    public override GameObject Copy() { return Instantiate(KudzuFactory.GetKudzuPrefab()); }
+    public override GameObject Copy() { return KudzuFactory.GetKudzuPrefab(); }
 }

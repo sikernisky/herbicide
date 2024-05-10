@@ -63,15 +63,7 @@ public class Bomb : Projectile
     /// </summary>
     /// <returns>the GameObject that represents this Bomb on the grid.
     /// </returns>
-    public override GameObject Copy() { return Instantiate(BombFactory.GetBombPrefab()); }
-
-    /// <summary>
-    /// Returns the Sprite track that represents this Bomb on
-    /// a ShopBoat.
-    /// </summary>
-    /// <returns>the Sprite that that represents this Bomb on a
-    /// ShopBoat.</returns>
-    public override Sprite[] GetBoatTrack() { return BombFactory.GetBoatTrack(); }
+    public override GameObject Copy() { return BombFactory.GetBombPrefab(); }
 
     /// <summary>
     /// Returns a Sprite that represents this Bomb when it is

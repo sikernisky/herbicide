@@ -134,13 +134,13 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// </summary>
     /// <returns>true if this controller's Projectile should be destoyed and
     /// set to null; otherwise, false.</returns>
-    protected override bool ShouldRemoveModel()
+    public override bool ValidModel()
     {
-        if (GetProjectile().GetVictim() != null) return true;
-        if (GetProjectile().Expired()) return true;
-        if (!GetProjectile().IsActive()) return true;
+        if (GetProjectile().GetVictim() != null) return false;
+        if (GetProjectile().Expired()) return false;
+        if (!GetProjectile().IsActive()) return false;
 
-        return false;
+        return true;
     }
 
     /// <summary>

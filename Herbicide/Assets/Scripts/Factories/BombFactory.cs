@@ -6,18 +6,12 @@ using UnityEngine.Assertions;
 /// <summary>
 /// Produces assets related to Bombs.
 /// </summary>
-public class BombFactory : MonoBehaviour
+public class BombFactory : Factory
 {
     /// <summary>
     /// Reference to the BombFactory singleton.
     /// </summary>
     private static BombFactory instance;
-
-    /// <summary>
-    /// GameObject with Bomb component attached. 
-    /// </summary>
-    [SerializeField]
-    private GameObject bombPrefab;
 
     /// <summary>
     /// Bomb's animation track for mid-air movement. 
@@ -51,15 +45,26 @@ public class BombFactory : MonoBehaviour
         Assert.IsNotNull(bombFactories, "Array of TileFactories is null.");
         Assert.AreEqual(1, bombFactories.Length);
         instance = bombFactories[0];
+        instance.SpawnPools();
     }
 
     /// <summary>
-    /// Returns an original, non-copied GameObject with a Bomb component
-    /// attached to it.
+    /// Returns a fresh Bomb prefab from the object pool.
     /// </summary>
-    /// <returns>an original, non-copied GameObject with a Bomb component
-    /// attached to it.</returns>
-    public static GameObject GetBombPrefab() { return instance.bombPrefab; }
+    /// <returns>a GameObject with a Bomb component attached to it</returns>
+    public static GameObject GetBombPrefab() { return instance.RequestObject(ModelType.BOMB_SPLAT); }
+
+    /// <summary>
+    /// Accepts a Bomb prefab that the caller no longer needs. Adds it back
+    /// to the object pool.
+    /// </summary>
+    /// <param name="prefab">The Bomb prefab to return.</param>
+    public static void ReturnBombPrefab(GameObject prefab)
+    {
+        Assert.IsNotNull(prefab);
+        Assert.IsTrue(prefab.GetComponent<Bomb>() != null);
+        instance.ReturnObject(prefab);
+    }
 
     /// <summary>
     /// Returns the animation track that represents the Bomb in mid-air.
@@ -80,4 +85,10 @@ public class BombFactory : MonoBehaviour
     /// <returns>the animation track that represents this Bomb when on a boat. 
     /// </returns>
     public static Sprite[] GetBoatTrack() { return instance.boatTrack; }
+
+    /// <summary>
+    /// Returns the Transform component of the BombFactory instance.
+    /// </summary>
+    /// <returns>the Transform component of the BombFactory instance.</returns>
+    protected override Transform GetTransform() { return instance.transform; }
 }

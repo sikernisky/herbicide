@@ -3,7 +3,8 @@
  <image source="../../../../../../Art/Herbicide/TileSets/markers.png" width="32" height="32"/>
  <tile id="0" type="Marker">
   <properties>
-   <property name="markerName" value="shopStart"/>
+   <property name="enemySpawnData" value="kudzu30"/>
+   <property name="markerName" value="enemySpawn"/>
   </properties>
  </tile>
  <tile id="1" type="Marker">

@@ -60,9 +60,8 @@ public class LevelController : MonoBehaviour
         Vector2 cameraPos = TileGrid.SpawnGrid(instance, tiledData);
         CameraController.MoveCamera(cameraPos);
 
-        //(4) Load the Shop 
-        Vector3 shopSpawnPos = TileGrid.GetShopOrigin();
-        ShopManager.LoadShop(shopSpawnPos);
+        //(4) Load the Shop
+        ShopManager.LoadShop();
 
         //(5) Load the Synergies (TODO: Remove this static HashSet with dynamic one)
         //HashSet<SynergyController.Synergy> synergies = new HashSet<SynergyController.Synergy>();
@@ -156,7 +155,7 @@ public class LevelController : MonoBehaviour
         KudzuFactory.SetSingleton(instance);
         NexusFactory.SetSingleton(instance);
         NexusHoleFactory.SetSingleton(instance);
-        ShopBoatFactory.SetSingleton(instance);
+        ShopFactory.SetSingleton(instance);
         SquirrelFactory.SetSingleton(instance);
         TileFactory.SetSingleton(instance);
     }
@@ -203,6 +202,7 @@ public class LevelController : MonoBehaviour
         //Inform Controllers.
         ControllerController.InformOfGameState(currentGameState);
         CanvasController.InformOfGameState(currentGameState);
+        EconomyController.InformOfGameState(currentGameState);
         PlacementController.InformOfGameState(currentGameState);
         ShopManager.InformOfGameState(currentGameState);
 

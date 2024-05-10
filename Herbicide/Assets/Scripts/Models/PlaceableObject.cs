@@ -117,13 +117,12 @@ public abstract class PlaceableObject : Model
     /// </summary>
     /// <returns>true if something can target this PlaceableObject;
     /// otherwise, false</returns>
-    public virtual bool Targetable() { return !Dead(); }
+    public virtual bool Targetable() { return !Dead() && gameObject.activeSelf; }
 
     /// <summary>
     /// Called when this PlaceableObject is placed.
     /// </summary>
     public virtual void OnPlace() { return; }
-
 
     /// <summary>
     /// Starts the Damage Flash animation by resetting the amount of time
@@ -176,7 +175,5 @@ public abstract class PlaceableObject : Model
     /// <summary>
     /// Resets this PlaceableObject's stats to their default values.
     /// </summary>
-    public override void ResetStats() { ResetHealth(); }
-
-
+    public override void ResetModel() { ResetHealth(); }
 }

@@ -15,7 +15,7 @@ public class Acorn : Projectile
     /// <summary>
     /// Starting speed of an Acorn.
     /// </summary>
-    public override float BASE_SPEED => 11f;
+    public override float BASE_SPEED => 9f;
 
     /// <summary>
     /// Maximum speed of an Acorn.
@@ -64,15 +64,7 @@ public class Acorn : Projectile
     /// </summary>
     /// <returns>the GameObject that represents this Acorn on the grid.
     /// </returns>
-    public override GameObject Copy() { return Instantiate(AcornFactory.GetAcornPrefab()); }
-
-    /// <summary>
-    /// Returns the Sprite track that represents this Acorn on
-    /// a ShopBoat.
-    /// </summary>
-    /// <returns>the Sprite that that represents this Acorn on a
-    /// ShopBoat.</returns>
-    public override Sprite[] GetBoatTrack() { return AcornFactory.GetBoatTrack(); }
+    public override GameObject Copy() { return AcornFactory.GetAcornPrefab(); }
 
     /// <summary>
     /// Returns a Sprite that represents this Acorn when it is

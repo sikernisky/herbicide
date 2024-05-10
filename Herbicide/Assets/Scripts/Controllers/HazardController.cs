@@ -43,11 +43,11 @@ public abstract class HazardController<T> : MobController<T> where T : Enum
     /// </summary>
     /// <returns>true if this controller's Hazard should be destoyed and
     /// set to null; otherwise, false.</returns>
-    protected override bool ShouldRemoveModel()
+    public override bool ValidModel()
     {
-        if (GetHazard().Expired()) return true;
+        if (GetHazard().Expired()) return false;
 
-        return false;
+        return true;
     }
 
     /// <summary>

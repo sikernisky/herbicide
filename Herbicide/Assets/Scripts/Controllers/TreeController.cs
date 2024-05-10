@@ -48,11 +48,11 @@ public abstract class TreeController<T> : MobController<T> where T : Enum
     /// </summary>
     /// <returns>true if this controller's Tree should be destoyed and
     /// set to null; otherwise, false.</returns>
-    protected override bool ShouldRemoveModel()
+    public override bool ValidModel()
     {
-        if (GetTree().GetHealth() <= 0) return true;
+        if (GetTree().Dead()) return false;
 
-        return false;
+        return true;
     }
 
     /// <summary>

@@ -123,13 +123,6 @@ public class Nexus : Structure
     public override bool Dead() { return GetHealth() <= 0; }
 
     /// <summary>
-    /// Returns the Sprite that represents this Nexus on a boat.
-    /// </summary>
-    /// <returns>the Sprite that represents this Nexus on a boat.
-    /// </returns>
-    public override Sprite[] GetBoatTrack() { return null; }
-
-    /// <summary>
     /// Returns the Sprite that represents this Nexus when placing.
     /// </summary>
     /// <returns>the Sprite that represents this Nexus when placing.
@@ -140,7 +133,7 @@ public class Nexus : Structure
     /// Returns a GameObject representing this Nexus on the TileGrid.
     /// </summary>
     /// <returns>a GameObject representing this Nexus on the TileGrid.</returns>
-    public override GameObject Copy() { return Instantiate(NexusFactory.GetNexusPrefab()); }
+    public override GameObject Copy() { return NexusFactory.GetNexusPrefab(); }
 
     /// <summary>
     /// Sets this Nexus' 2D collider properties.

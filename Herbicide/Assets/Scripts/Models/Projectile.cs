@@ -133,6 +133,12 @@ public abstract class Projectile : Model
     public Model GetVictim() { return victim; }
 
     /// <summary>
+    /// Sets this Projectile's properties such that it has not collided
+    /// with anything.
+    /// </summary>
+    private void SetUncollided() { victim = null; }
+
+    /// <summary>
     /// Informs this Projectile that it reached its positional target.
     /// </summary>
     public void SetReachedTarget() { reachedTarget = true; }
@@ -197,6 +203,11 @@ public abstract class Projectile : Model
     public void SetAsInactive() { active = false; }
 
     /// <summary>
+    /// Sets this Projectile as active.
+    /// </summary>
+    private void SetActive() { active = true; }
+
+    /// <summary>
     /// Adds to this Projectile's current age.
     /// </summary>
     /// <param name="time">the amount of time to add.</param>
@@ -208,6 +219,11 @@ public abstract class Projectile : Model
     /// <returns>true if this Projectile has hit its lifespan;
     /// otherwise, false.</returns>
     public bool Expired() { return age >= LIFESPAN; }
+
+    /// <summary>
+    /// Resets this Projectile's age to zero.
+    /// </summary>
+    private void ResetAge() { age = 0; }
 
     /// <summary>
     /// Returns this Projectile's animation curve component for
@@ -226,10 +242,13 @@ public abstract class Projectile : Model
     /// Resets this Projectile's stats to their starting
     /// values.
     /// </summary>
-    public override void ResetStats()
+    public override void ResetModel()
     {
         ResetSpeed();
         ResetDamage();
+        SetUncollided();
+        SetActive();
+        ResetAge();
     }
 
     /// <summary>

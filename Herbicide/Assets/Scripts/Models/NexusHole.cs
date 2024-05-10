@@ -108,14 +108,6 @@ public class NexusHole : Structure
     /// </summary>
     protected virtual int MAX_OCCUPANTS => int.MaxValue;
 
-
-    /// <summary>
-    /// Returns the Sprite that represents this NexusHole on a boat.
-    /// </summary>
-    /// <returns> the Sprite that represents this NexusHole on a boat.
-    /// </returns>
-    public override Sprite[] GetBoatTrack() { return NexusHoleFactory.GetBoatTrack(); }
-
     /// <summary>
     /// Returns the Sprite that represents this NexusHole when placing.
     /// </summary>
@@ -127,10 +119,7 @@ public class NexusHole : Structure
     /// Returns an instantiated copy of this NexusHole.
     /// </summary>
     /// <returns>an instantiated copy of this NexusHole.</returns>
-    public override GameObject Copy()
-    {
-        return Instantiate(NexusHoleFactory.GetNexusHolePrefab());
-    }
+    public override GameObject Copy() { return NexusHoleFactory.GetNexusHolePrefab(); }
 
     /// <summary>
     /// Sets the 2D Collider properties of this NexusHole.
