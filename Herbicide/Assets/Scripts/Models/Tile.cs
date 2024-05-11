@@ -411,7 +411,13 @@ public abstract class Tile : Model, ISurface
         }
         neighbors = tileNeighbors;
 
+        // If hosting a flooring, pass this event to the flooring.
         if (Floored()) flooring.UpdateSurfaceNeighbors(GetFlooringNeighbors());
+        else
+        {
+            PlaceableObject occupant = GetOccupant();
+            if (occupant != null) occupant.UpdateNeighbors(GetPlaceableObjectNeighbors());
+        }
     }
 
     /// <summary>

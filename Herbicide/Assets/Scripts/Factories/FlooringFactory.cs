@@ -60,11 +60,11 @@ public class FlooringFactory : Factory
     /// </summary>
     /// <param name="type">the type of Flooring Sprite</param>
     /// <param name="index">the Sprite index </param>
-    public static Sprite GetFlooringSprite(Flooring.FlooringType type, int index)
+    public static Sprite GetFlooringSprite(ModelType type, int index)
     {
         Assert.IsTrue(ValidFlooringIndex(index));
 
-        if (type == Flooring.FlooringType.SOIL) return instance.soilFlooringSprites[index];
+        if (type == ModelType.SOIL_FLOORING) return instance.soilFlooringSprites[index];
 
         return null;
     }

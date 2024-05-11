@@ -803,18 +803,6 @@ public class TileGrid : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns the GameObject prefab representing a Flooring type.
-    /// </summary>
-    /// <param name="type">the type of the Flooring</param>
-    /// <returns>the prefab representing the type</returns>
-    private GameObject FlooringTypeToPrefab(Flooring.FlooringType type)
-    {
-        if (flooringPrefabs == null || (int)type < 0 || (int)type >= flooringPrefabs.Count)
-            return new GameObject("FLOORINGPREFABS NULL");
-        return flooringPrefabs[(int)type];
-    }
-
-    /// <summary>
     /// Returns a world position that corresponds to a Tile's
     /// coordinate.
     /// </summary>
@@ -891,6 +879,14 @@ public class TileGrid : MonoBehaviour
         int originX = origin.GetX();
         int originY = origin.GetY();
 
+        // if (direction == Direction.NORTHWEST)
+        // {
+        //     neighborX = originX - 1;
+        //     neighborY = originY + 1;
+        //     Tile neighbor = instance.TileExistsAt(neighborX, neighborY);
+        //     if (neighbor != null) return neighbor;
+        // }
+
         if (direction == Direction.NORTH)
         {
             neighborX = originX;
@@ -898,6 +894,14 @@ public class TileGrid : MonoBehaviour
             Tile neighbor = instance.TileExistsAt(neighborX, neighborY);
             if (neighbor != null) return neighbor;
         }
+
+        // if (direction == Direction.NORTHEAST)
+        // {
+        //     neighborX = originX + 1;
+        //     neighborY = originY + 1;
+        //     Tile neighbor = instance.TileExistsAt(neighborX, neighborY);
+        //     if (neighbor != null) return neighbor;
+        // }
 
         if (direction == Direction.EAST)
         {
@@ -907,6 +911,14 @@ public class TileGrid : MonoBehaviour
             if (neighbor != null) return neighbor;
         }
 
+        // if (direction == Direction.SOUTHEAST)
+        // {
+        //     neighborX = originX + 1;
+        //     neighborY = originY - 1;
+        //     Tile neighbor = instance.TileExistsAt(neighborX, neighborY);
+        //     if (neighbor != null) return neighbor;
+        // }
+
         if (direction == Direction.SOUTH)
         {
             neighborX = originX;
@@ -914,6 +926,14 @@ public class TileGrid : MonoBehaviour
             Tile neighbor = instance.TileExistsAt(neighborX, neighborY);
             if (neighbor != null) return neighbor;
         }
+
+        // if (direction == Direction.SOUTHWEST)
+        // {
+        //     neighborX = originX - 1;
+        //     neighborY = originY - 1;
+        //     Tile neighbor = instance.TileExistsAt(neighborX, neighborY);
+        //     if (neighbor != null) return neighbor;
+        // }
 
         if (direction == Direction.WEST)
         {
@@ -925,7 +945,6 @@ public class TileGrid : MonoBehaviour
 
         return null;
     }
-
 
 
     /// <summary>
@@ -980,8 +999,11 @@ public class TileGrid : MonoBehaviour
             if (placedTree != null) ControllerController.MakeController(placedTree);
         }
 
+
+
         // Place the candidate.
         target.Place(candidate, instance.GetNeighbors(target));
+
         NexusHole nexusHoleCandidate = candidate as NexusHole;
         if (candidate as NexusHole != null) instance.nexusHoleHosts.Add(target, nexusHoleCandidate);
 
@@ -1042,6 +1064,8 @@ public class TileGrid : MonoBehaviour
     public static bool FloorTile(Tile target, Flooring candidate)
     {
         if (target == null) return false;
+
+        // TODO: Call new interface for dynamic sprite here
 
         if (target.CanFloor(candidate, instance.GetNeighbors(target)))
         {

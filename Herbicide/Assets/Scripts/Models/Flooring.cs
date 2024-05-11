@@ -15,11 +15,6 @@ public abstract class Flooring : Model, ISurface
     private int tilingIndex;
 
     /// <summary>
-    /// Type of this Flooring
-    /// </summary>
-    protected abstract FlooringType type { get; }
-
-    /// <summary>
     /// Type of Tile this flooring is on
     /// </summary>
     private Tile.TileType typeOn;
@@ -54,14 +49,6 @@ public abstract class Flooring : Model, ISurface
     /// </summary>
     private bool defined;
 
-    /// <summary>
-    /// Unique types of Floorings in the TileGrid.
-    /// </summary>
-    public enum FlooringType
-    {
-        SOIL
-    }
-
 
     /// <summary>
     /// Defines this Flooring on a Tile, setting its Sprite based on an
@@ -77,7 +64,7 @@ public abstract class Flooring : Model, ISurface
 
         defined = true;
         SetTileCoordinates(x, y);
-        name = type.ToString() + " (" + GetX() + ", " + GetY() + ")";
+        name = TYPE.ToString() + " (" + GetX() + ", " + GetY() + ")";
         UpdateSurfaceNeighbors(neighbors);
         this.typeOn = typeOn;
     }
@@ -137,7 +124,7 @@ public abstract class Flooring : Model, ISurface
         AssertDefined();
         if (!FlooringFactory.ValidFlooringIndex(newIndex)) return;
         if (flooringRenderer == null) flooringRenderer = GetComponent<SpriteRenderer>();
-        flooringRenderer.sprite = FlooringFactory.GetFlooringSprite(type, newIndex);
+        flooringRenderer.sprite = FlooringFactory.GetFlooringSprite(TYPE, newIndex);
         tilingIndex = newIndex;
     }
 
@@ -274,16 +261,6 @@ public abstract class Flooring : Model, ISurface
     /// <returns>the index representing the correct Sprite in this 
     /// Flooring's tile set.</returns>
     protected abstract int GetTilingIndex(ISurface[] neighbors);
-
-    /// <summary>
-    /// Returns this Flooring's FlooringType.
-    /// </summary>
-    /// <returns>this Flooring's FlooringType.</returns>
-    public FlooringType GetFlooringType()
-    {
-        AssertDefined();
-        return type;
-    }
 
     /// <summary>
     /// Asserts that this Flooring is defined.

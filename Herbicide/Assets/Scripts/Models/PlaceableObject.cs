@@ -31,6 +31,11 @@ public abstract class PlaceableObject : Model
     public abstract int MIN_HEALTH { get; }
 
     /// <summary>
+    /// This PlaceableObject's four neighbors.
+    /// </summary>
+    private PlaceableObject[] neighbors;
+
+    /// <summary>
     /// Current amount of health.
     /// </summary>
     private int health;
@@ -176,4 +181,22 @@ public abstract class PlaceableObject : Model
     /// Resets this PlaceableObject's stats to their default values.
     /// </summary>
     public override void ResetModel() { ResetHealth(); }
+
+    /// <summary>
+    /// Updates this PlaceableObject with its newest four neighbors.
+    /// </summary>
+    /// <param name="neighbors"> The four neighbors that surround this PlaceableObject.</param>
+    public virtual void UpdateNeighbors(PlaceableObject[] neighbors)
+    {
+        Assert.IsNotNull(neighbors, "Neighbors cannot be null.");
+        Assert.IsTrue(neighbors.Length == 4, "Neighbors must have 8 elements.");
+
+        this.neighbors = neighbors;
+    }
+
+    /// <summary>
+    /// Returns this PlaceableObject's neighbors.
+    /// </summary>
+    /// <returns>this PlaceableObject's neighbors.</returns>
+    protected PlaceableObject[] GetNeighbors() { return neighbors; }
 }

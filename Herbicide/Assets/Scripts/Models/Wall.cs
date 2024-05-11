@@ -25,4 +25,34 @@ public abstract class Wall : PlaceableObject
     /// true if this Wall is an occupier, false otherwise.
     /// </summary>
     public override bool OCCUPIER => true;
+
+    /// <summary>
+    /// Index of the Sprite in tile set this Wall takes on
+    /// </summary>
+    private int tilingIndex;
+
+    /// <summary>
+    /// Unique types of Walls.
+    /// </summary>
+    public enum FlooringType
+    {
+        STONE
+    }
+
+    /// <summary>
+    /// Updates this Wall with its newest four neighbors. Sets its sprite
+    /// accordingly. /// 
+    /// </summary>
+    /// <param name="neighbors"> The four neighbors that surround this Wall.</param>
+    public override void UpdateNeighbors(PlaceableObject[] neighbors)
+    {
+        base.UpdateNeighbors(neighbors);
+    }
+
+    protected abstract void SetTilingIndex();
+
+    protected abstract int GetTilingIndex();
+
+
+
 }

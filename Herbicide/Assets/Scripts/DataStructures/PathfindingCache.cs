@@ -20,12 +20,6 @@ public class PathfindingCache
         public bool IsReachable { get; set; }
 
         /// <summary>
-        /// The position of the Tile the pathfinding Model should move to next
-        /// to reach its target.
-        /// </summary>
-        public Vector3 NextTilePosTowardsGoal { get; set; }
-
-        /// <summary>
         /// The position of the target Model the last time we ran our
         /// pathfinding algorithm.
         /// </summary>

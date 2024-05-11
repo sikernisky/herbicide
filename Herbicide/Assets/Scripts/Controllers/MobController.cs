@@ -200,6 +200,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
         Assert.IsNotNull(nonTiles, "List of targets is null.");
 
         ClearTargets();
+
         foreach (Model targetable in nonTiles)
         {
             if (CanTarget(targetable) && NumTargets() < MAX_TARGETS)

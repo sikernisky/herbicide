@@ -158,6 +158,7 @@ public class LevelController : MonoBehaviour
         ShopFactory.SetSingleton(instance);
         SquirrelFactory.SetSingleton(instance);
         TileFactory.SetSingleton(instance);
+        WallFactory.SetSingleton(instance);
     }
 
     /// <summary>

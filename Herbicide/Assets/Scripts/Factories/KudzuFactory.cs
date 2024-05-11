@@ -298,7 +298,7 @@ public class KudzuFactory : Factory
                 else return instance.criticalMovementAnimationWest;
         }
 
-        throw new System.InvalidOperationException("Invalid direction or enemy health state.");
+        throw new System.InvalidOperationException("Invalid direction " + d + " or enemy health state " + s);
     }
 
     /// <summary>
