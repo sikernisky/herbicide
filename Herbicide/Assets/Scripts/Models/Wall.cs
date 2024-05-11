@@ -31,13 +31,7 @@ public abstract class Wall : PlaceableObject
     /// </summary>
     private int tilingIndex;
 
-    /// <summary>
-    /// Unique types of Walls.
-    /// </summary>
-    public enum FlooringType
-    {
-        STONE
-    }
+  
 
     /// <summary>
     /// Updates this Wall with its newest four neighbors. Sets its sprite
@@ -47,11 +41,28 @@ public abstract class Wall : PlaceableObject
     public override void UpdateNeighbors(PlaceableObject[] neighbors)
     {
         base.UpdateNeighbors(neighbors);
+        SetTilingIndex(GetTilingIndex(neighbors));
     }
 
-    protected abstract void SetTilingIndex();
+    /// <summary>
+    /// Sets the tiling index of this Wall to the given index.
+    /// </summary>
+    /// <param name="newIndex"> the new tiling index. </param>
+    protected void SetTilingIndex(int newIndex)
+    {
+        
+        if (!WallFactory.ValidWallIndex(newIndex)) return;
+        RefreshRenderer();
+        SetSprite(WallFactory.GetWallSprite(TYPE, newIndex));
+        tilingIndex = newIndex;
+    }
 
-    protected abstract int GetTilingIndex();
+    /// <summary>
+    /// Returns the tiling index of this Wall based off its neighbors.
+    /// </summary>
+    /// <param name="neighbors">Up to date neighbors of this Wall. </param>
+    /// <returns>the tiling index of this Wall based off its neighbors. </returns>
+    protected abstract int GetTilingIndex(PlaceableObject[] neighbors);
 
 
 

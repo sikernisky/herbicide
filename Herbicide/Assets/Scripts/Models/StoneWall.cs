@@ -32,11 +32,44 @@ public class StoneWall : Wall
 
     public override Sprite[] GetPlacementTrack()
     {
-        throw new System.NotImplementedException();
+        // 
     }
 
-    public override void SetColliderProperties()
+    /// <summary>
+    /// Sets the collider properties of this StoneWall.
+    /// </summary>
+    public override void SetColliderProperties() { return; }
+
+    /// <summary>
+    /// Returns the index representing the correct Sprite for this StoneWall.
+    /// </summary>
+    /// <param name="neighbors"> the four neighbors that surround this StoneWall.</param>
+    /// <returns> the index representing the correct Sprite for this StoneWall.</returns>
+    protected override int GetTilingIndex(PlaceableObject[] neighbors)
     {
-        throw new System.NotImplementedException();
+        bool hasNorth = neighbors[0] as Wall != null;
+        bool hasEast = neighbors[1] as Wall != null;
+        bool hasSouth = neighbors[2] as Wall != null;
+        bool hasWest = neighbors[3] as Wall != null;
+
+        if (hasEast && !hasWest && !hasSouth && !hasNorth) return 0;
+        if (hasEast && hasWest && !hasSouth && !hasNorth) return 0;
+        if (!hasEast && hasWest && !hasSouth && !hasNorth) return 0;
+        if (!hasEast && !hasWest && hasSouth && !hasNorth) return 0;
+        if (hasEast && !hasWest && hasSouth && !hasNorth) return 3;
+
+        // WE LEFT OFF HERE, NEED TO REDESIGN TILESET. 
+
+        if (hasEast && hasWest && hasSouth && !hasNorth) return 5;
+        if (!hasEast && hasWest && hasSouth && !hasNorth) return 6;
+        if (!hasEast && !hasWest && hasSouth && hasNorth) return 7;
+        if (hasEast && !hasWest && hasSouth && hasNorth) return 8;
+        if (hasEast && hasWest && hasSouth && hasNorth) return 9;
+        if (!hasEast && hasWest && hasSouth && hasNorth) return 10;
+        if (!hasEast && !hasWest && !hasSouth && hasNorth) return 11;
+        if (hasEast && !hasWest && !hasSouth && hasNorth) return 12;
+        if (hasEast && hasWest && !hasSouth && hasNorth) return 13;
+        if (!hasEast && hasWest && !hasSouth && hasNorth) return 14;
+        return 15; // has no neighbors
     }
 }
