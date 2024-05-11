@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset version="1.10" tiledversion="1.10.1" name="Soil" tilewidth="16" tileheight="16" tilecount="16" columns="4">
- <image source="../../../../../../Art/Herbicide/TileSets/tileSetSoil.png" width="64" height="64"/>
+ <image source="../HerbicideArt/TileSets/tileSetSoil.png" width="64" height="64"/>
  <tile id="0" type="Flooring">
   <properties>
    <property name="flooringName" value="soilFlooring"/>
