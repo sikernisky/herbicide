@@ -7,12 +7,55 @@
     "expandedProjectPaths": [
     ],
     "fileStates": {
+        "Tilemaps/level0.tmx": {
+            "scale": 3,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 148.16666666666663,
+                "y": 102.99999999999999
+            }
+        },
+        "Tilemaps/level1.json": {
+            "scale": 4,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 213.875,
+                "y": 126.25
+            }
+        },
+        "Tilemaps/level1.tmj": {
+            "scale": 2.273567708333333,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 192.4288414180173,
+                "y": 112.1585247122158
+            }
+        },
+        "Tilemaps/level1.tmx": {
+            "scale": 5.5,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 265.72727272727275,
+                "y": 147.63636363636363
+            }
+        },
+        "Tilemaps/level2.tmx": {
+            "scale": 1.8188541666666667,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 240.5360517725216,
+                "y": 160.54063341160298
+            }
+        }
     },
-    "last.imagePath": "/Users/teddysiker/Desktop/Art/Herbicide/TileSets",
+    "last.exportedFilePath": "C:/Users/teddy/OneDrive/Documents/GitHub/herbicide/Herbicide/Assets/Levels",
+    "last.imagePath": "C:/Users/teddy/OneDrive/Desktop/Art/Herbicide Art/TileSets",
+    "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
     "openFiles": [
     ],
     "project": "HerbicideTiled.tiled-project",
     "recentFiles": [
+        "Tilemaps/level1.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

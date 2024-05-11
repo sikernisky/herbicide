@@ -1065,11 +1065,10 @@ public class TileGrid : MonoBehaviour
     {
         if (target == null) return false;
 
-        // TODO: Call new interface for dynamic sprite here
-
         if (target.CanFloor(candidate, instance.GetNeighbors(target)))
         {
             Assert.IsNotNull(candidate);
+
 
             // Flooring 
             target.Floor(candidate, instance.GetNeighbors(target));

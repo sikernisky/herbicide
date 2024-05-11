@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 3474d7f7821fa4ef4bef708af0c39476
+guid: 8183bfb3551850545b77ebd1ad106aec
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -101,23 +101,179 @@ TextureImporter:
     overridden: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
       name: tilesetStoneWall_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 48
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bbb6623825a1b4c4dabf6159a2d52983
+      internalID: -630943810
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tilesetStoneWall_1
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 48
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6b8ebebaa2dc06948b98af9e429f1a0d
+      internalID: -179352664
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tilesetStoneWall_2
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 48
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a6659ceb4c1d151418cb20eac649c797
+      internalID: -634735921
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tilesetStoneWall_3
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 48
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4a5af82ba4385d64e970b0a09c545cbb
+      internalID: -174810127
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tilesetStoneWall_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 32
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1dd9f317cc541f542962049c12c0df60
+      internalID: -1813347358
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tilesetStoneWall_5
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 32
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b7f197c80c7c81645b81de188e64be99
+      internalID: -1579591578
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tilesetStoneWall_6
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 32
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9f2ebd65118e57d4281fb53f89174b84
+      internalID: 692415094
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tilesetStoneWall_7
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 32
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dc9570db353a7d54b8c11cdd9f16b058
+      internalID: -463028516
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tilesetStoneWall_8
       rect:
         serializedVersion: 2
         x: 0
@@ -131,14 +287,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f6e75a9a6bc2143f49daaa28f856286b
-      internalID: -1949725746
+      spriteID: 8a05beabfc289814291bfff266e4cb55
+      internalID: -1674927341
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tilesetStoneWall_1
+      name: tilesetStoneWall_9
       rect:
         serializedVersion: 2
         x: 16
@@ -152,14 +308,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 54416810b15334d1eb8e4755ba447f18
-      internalID: -689515689
+      spriteID: 3957a9afaec0a9a4ab4cc90fd7e3e974
+      internalID: 1999993242
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tilesetStoneWall_2
+      name: tilesetStoneWall_10
       rect:
         serializedVersion: 2
         x: 32
@@ -173,14 +329,35 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1da7eacbc154c40ec915908fa5b9cbc5
-      internalID: 1121702919
+      spriteID: b67f0d70ffbc7ce428e95a3b9fa4ad85
+      internalID: 277020371
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tilesetStoneWall_3
+      name: tilesetStoneWall_11
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 16
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f382f789e22bc1d49a7e97eea43fbc1b
+      internalID: 285294810
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tilesetStoneWall_12
       rect:
         serializedVersion: 2
         x: 0
@@ -194,14 +371,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 60a12edd5ba3b403b9f213ec285dd0c3
-      internalID: 1176330966
+      spriteID: 40a4e1bd77f7fdc45b505064f9a9c4bb
+      internalID: -973909835
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tilesetStoneWall_4
+      name: tilesetStoneWall_13
       rect:
         serializedVersion: 2
         x: 16
@@ -215,8 +392,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 58cd6023da1544ed4b7addc37f7a31de
-      internalID: -1879029409
+      spriteID: 569715ae28b701d43a669d45680c35b2
+      internalID: 814454546
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tilesetStoneWall_14
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0a6f36542dbb6fb41a0372ac528b0b25
+      internalID: 2110440522
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tilesetStoneWall_15
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d84d2bbe56803de4dbdd9bf8baeab677
+      internalID: 1744279878
       vertices: []
       indices: 
       edges: []
@@ -232,11 +451,22 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      tilesetStoneWall_2: 1121702919
-      tilesetStoneWall_3: 1176330966
-      tilesetStoneWall_0: -1949725746
-      tilesetStoneWall_1: -689515689
-      tilesetStoneWall_4: -1879029409
+      tilesetStoneWall_5: -1579591578
+      tilesetStoneWall_2: -634735921
+      tilesetStoneWall_8: -1674927341
+      tilesetStoneWall_3: -174810127
+      tilesetStoneWall_0: -630943810
+      tilesetStoneWall_10: 277020371
+      tilesetStoneWall_9: 1999993242
+      tilesetStoneWall_11: 285294810
+      tilesetStoneWall_7: -463028516
+      tilesetStoneWall_14: 2110440522
+      tilesetStoneWall_6: 692415094
+      tilesetStoneWall_1: -179352664
+      tilesetStoneWall_13: 814454546
+      tilesetStoneWall_15: 1744279878
+      tilesetStoneWall_12: -973909835
+      tilesetStoneWall_4: -1813347358
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

@@ -569,8 +569,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7dfc826b50254fb7af13b4e097188f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefabs: []
-  stoneWallSprites: []
+  prefabs:
+  - {fileID: 2820041071631143976, guid: 52ff82c23c1b94edc80be4fee60b2b6b, type: 3}
+  stoneWallSprites:
+  - {fileID: -630943810, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
+  - {fileID: -179352664, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
+  - {fileID: -634735921, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
+  - {fileID: -174810127, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
+  - {fileID: -1813347358, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
+  - {fileID: -1579591578, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
+  - {fileID: 692415094, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
+  - {fileID: -463028516, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
+  - {fileID: -1674927341, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
+  - {fileID: 1999993242, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
+  - {fileID: 277020371, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
+  - {fileID: 285294810, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
+  - {fileID: -973909835, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
+  - {fileID: 814454546, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
+  - {fileID: 2110440522, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
+  - {fileID: 1744279878, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
 --- !u!1 &315477444
 GameObject:
   m_ObjectHideFlags: 0

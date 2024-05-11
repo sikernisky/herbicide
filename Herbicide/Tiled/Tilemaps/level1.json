@@ -185,7 +185,7 @@
          "name":"Markers",
          "objects":[
                 {
-                 "gid":52,
+                 "gid":57,
                  "height":16,
                  "id":319,
                  "name":"",
@@ -197,7 +197,7 @@
                  "y":176
                 }, 
                 {
-                 "gid":53,
+                 "gid":58,
                  "height":16,
                  "id":328,
                  "name":"",
@@ -230,7 +230,7 @@
  "nextobjectid":329,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.10.1",
+ "tiledversion":"1.10.2",
  "tileheight":16,
  "tilesets":[
         {
@@ -258,7 +258,7 @@
          "source":"..\/Tilesets\/Placeables.tsx"
         }, 
         {
-         "firstgid":52,
+         "firstgid":57,
          "source":"..\/Tilesets\/Markers.tsx"
         }],
  "tilewidth":16,

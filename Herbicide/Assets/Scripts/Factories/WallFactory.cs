@@ -19,7 +19,7 @@ public class WallFactory : Factory
     /// <summary>
     /// The largest index of a Wall Sprite.
     /// </summary>
-    private const int MAX_INDEX = 4;
+    private const int MAX_INDEX = 15;
 
     /// <summary>
     /// Array of Sprites for Soil Flooring

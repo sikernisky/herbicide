@@ -30,9 +30,13 @@ public class StoneWall : Wall
     /// <returns>true if this StoneWall is dead, false otherwise.</returns>
     public override bool Dead() { return GetHealth() <= 0; }
 
+    /// <summary>
+    /// Returns the placement track for this StoneWall.
+    /// </summary>
+    /// <returns> the placement track for this StoneWall.</returns>
     public override Sprite[] GetPlacementTrack()
     {
-        // 
+        throw new System.NotImplementedException(); 
     }
 
     /// <summary>
