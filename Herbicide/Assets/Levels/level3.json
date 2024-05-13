@@ -245,6 +245,78 @@
                  "width":16,
                  "x":224,
                  "y":256
+                }, 
+                {
+                 "gid":13,
+                 "height":16,
+                 "id":856,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "rotation":0,
+                 "type":"Flooring",
+                 "visible":true,
+                 "width":16,
+                 "x":192,
+                 "y":160
+                }, 
+                {
+                 "gid":13,
+                 "height":16,
+                 "id":857,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "rotation":0,
+                 "type":"Flooring",
+                 "visible":true,
+                 "width":16,
+                 "x":192,
+                 "y":192
+                }, 
+                {
+                 "gid":13,
+                 "height":16,
+                 "id":860,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "rotation":0,
+                 "type":"Flooring",
+                 "visible":true,
+                 "width":16,
+                 "x":256,
+                 "y":160
+                }, 
+                {
+                 "gid":13,
+                 "height":16,
+                 "id":861,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "rotation":0,
+                 "type":"Flooring",
+                 "visible":true,
+                 "width":16,
+                 "x":256,
+                 "y":192
                 }],
          "opacity":1,
          "properties":[
@@ -1184,9 +1256,135 @@
                  "y":176
                 }, 
                 {
+                 "gid":52,
+                 "height":16,
+                 "id":858,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":272,
+                 "y":160
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":859,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":272,
+                 "y":192
+                }, 
+                {
+                 "gid":51,
+                 "height":16,
+                 "id":866,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"BasicTree"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":256,
+                 "y":160
+                }, 
+                {
+                 "gid":51,
+                 "height":16,
+                 "id":867,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"BasicTree"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":256,
+                 "y":192
+                }, 
+                {
+                 "gid":51,
+                 "height":16,
+                 "id":868,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"BasicTree"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":192,
+                 "y":192
+                }, 
+                {
+                 "gid":51,
+                 "height":16,
+                 "id":869,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"BasicTree"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":192,
+                 "y":160
+                }],
+         "opacity":1,
+         "properties":[
+                {
+                 "name":"layerClass",
+                 "type":"string",
+                 "value":"StructureLayer"
+                }],
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "class":"MarkerLayer",
+         "draworder":"topdown",
+         "id":16,
+         "name":"Markers",
+         "objects":[
+                {
                  "gid":57,
                  "height":16,
-                 "id":849,
+                 "id":850,
                  "name":"",
                  "properties":[
                         {
@@ -1211,24 +1409,6 @@
                 {
                  "name":"layerClass",
                  "type":"string",
-                 "value":"StructureLayer"
-                }],
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "class":"MarkerLayer",
-         "draworder":"topdown",
-         "id":16,
-         "name":"Markers",
-         "objects":[],
-         "opacity":1,
-         "properties":[
-                {
-                 "name":"layerClass",
-                 "type":"string",
                  "value":"MarkerLayer"
                 }],
          "type":"objectgroup",
@@ -1237,7 +1417,7 @@
          "y":0
         }],
  "nextlayerid":17,
- "nextobjectid":850,
+ "nextobjectid":870,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

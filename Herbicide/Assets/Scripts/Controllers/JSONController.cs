@@ -65,6 +65,7 @@ public class JSONController : MonoBehaviour
     /// </summary>
     public static void ParseTiledData()
     {
+        // print the extension of the file.
         string json = instance.tiledJSON.text;
         TiledData tiledData = Newtonsoft.Json.JsonConvert.DeserializeObject<TiledData>(json);
         Assert.IsNotNull(tiledData, "Parsed TileData object is null.");

@@ -571,27 +571,10 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         if (!GetKudzu().Spawned()) return false;
         if (GetState() == KudzuState.SPAWN) return false;
 
-
-        Tree treeTarget = target as Tree;
         Nexus nexusTarget = target as Nexus;
         NexusHole nexusHoleTarget = target as NexusHole;
 
-        // If it's a Tree, check to see if there are no targetable nexii first.
-        if (treeTarget != null)
-        {
-            foreach (Model model in GetAllModels())
-            {
-                Nexus nexusPlaceable = model as Nexus;
-                NexusHole nexusHolePlaceable = model as NexusHole;
-
-                // YEAH BITCH!! RECURSION!!!! SCIENCE MR. WHITE!!
-                if (nexusPlaceable != null && CanTarget(nexusPlaceable)) return false;
-                if (nexusHolePlaceable != null && CanTarget(nexusHolePlaceable)) return false;
-            }
-            if (!GetPathfindingCache().IsReachable(treeTarget)) return false;
-            return true;
-        }
-
+        // If escaping, only target NexusHoles.
         if (GetState() == KudzuState.ESCAPE || GetState() == KudzuState.EXITING)
         {
             if (nexusHoleTarget == null) return false;
@@ -604,6 +587,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
             return true;
         }
 
+        // If not escaping, only target Nexii.
         else
         {
             if (nexusTarget == null) return false;
@@ -615,6 +599,46 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
 
             return true;
         }
+
+        //// If it's a Tree, check to see if there are no targetable nexii first.
+        //if (treeTarget != null)
+        //{
+        //    foreach (Model model in GetAllModels())
+        //    {
+        //        Nexus nexusPlaceable = model as Nexus;
+        //        NexusHole nexusHolePlaceable = model as NexusHole;
+
+        //        // YEAH BITCH!! RECURSION!!!! SCIENCE MR. WHITE!!
+        //        if (nexusPlaceable != null && CanTarget(nexusPlaceable)) return false;
+        //        if (nexusHolePlaceable != null && CanTarget(nexusHolePlaceable)) return false;
+        //    }
+        //    if (!GetPathfindingCache().IsReachable(treeTarget)) return false;
+        //    return true;
+        //}
+
+        //if (GetState() == KudzuState.ESCAPE || GetState() == KudzuState.EXITING)
+        //{
+        //    if (nexusHoleTarget == null) return false;
+        //    if (!nexusHoleTarget.Targetable()) return false;
+        //    if (nexusHoleTarget.Filled()) return false;
+        //    if (nexusHoleTarget.PickedUp()) return false;
+        //    if (!GetPathfindingCache().IsReachable(nexusHoleTarget)) return false;
+        //    if (!ClosestValidNexusHole(nexusHoleTarget)) return false;
+
+        //    return true;
+        //}
+
+        //else
+        //{
+        //    if (nexusTarget == null) return false;
+        //    if (!nexusTarget.Targetable()) return false;
+        //    if (nexusTarget.PickedUp()) return false;
+        //    if (nexusTarget.CashedIn()) return false;
+        //    if (!GetPathfindingCache().IsReachable(nexusTarget)) return false;
+        //    if (!ClosestValidNexus(nexusTarget)) return false;
+
+        //    return true;
+        //}
 
         throw new System.Exception("Something wrong happened.");
     }

@@ -6,6 +6,7 @@
     "activeFile": "",
     "expandedProjectPaths": [
     ],
+    "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
         "Tilemaps/level0.tmx": {
             "scale": 3,
@@ -19,32 +20,49 @@
             "scale": 4,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 213.875,
-                "y": 126.25
+                "x": 213.125,
+                "y": 125.5
             }
         },
         "Tilemaps/level1.tmj": {
             "scale": 2.273567708333333,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 192.4288414180173,
-                "y": 112.1585247122158
+                "x": 191.9890040662047,
+                "y": 111.27885000859057
             }
         },
         "Tilemaps/level1.tmx": {
-            "scale": 5.5,
-            "selectedLayer": 2,
+            "expandedObjectLayers": [
+                13,
+                16
+            ],
+            "scale": 4,
+            "selectedLayer": 5,
             "viewCenter": {
-                "x": 265.72727272727275,
-                "y": 147.63636363636363
+                "x": 317.125,
+                "y": 133
             }
         },
         "Tilemaps/level2.tmx": {
-            "scale": 1.8188541666666667,
-            "selectedLayer": 0,
+            "expandedObjectLayers": [
+                13,
+                15,
+                16
+            ],
+            "scale": 2,
+            "selectedLayer": 5,
             "viewCenter": {
-                "x": 240.5360517725216,
-                "y": 160.54063341160298
+                "x": 281.75,
+                "y": 233.5
+            }
+        },
+        "Tilemaps/level3.tmx": {
+            "scale": 5.5,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 192.45454545454544,
+                "y": 140
             }
         }
     },

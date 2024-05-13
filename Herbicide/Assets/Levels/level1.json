@@ -447,42 +447,6 @@
                 {
                  "gid":52,
                  "height":16,
-                 "id":368,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":240,
-                 "y":160
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":369,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":240,
-                 "y":176
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
                  "id":370,
                  "name":"",
                  "properties":[
@@ -606,10 +570,10 @@
          "y":0
         }],
  "nextlayerid":17,
- "nextobjectid":374,
+ "nextobjectid":375,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.10.1",
+ "tiledversion":"1.10.2",
  "tileheight":16,
  "tilesets":[
         {

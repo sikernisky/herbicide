@@ -572,22 +572,22 @@ MonoBehaviour:
   prefabs:
   - {fileID: 2820041071631143976, guid: 52ff82c23c1b94edc80be4fee60b2b6b, type: 3}
   stoneWallSprites:
-  - {fileID: 34083844, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
-  - {fileID: -1770036253, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
-  - {fileID: 1118326894, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
-  - {fileID: 1286826564, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
-  - {fileID: -956344431, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
-  - {fileID: -143818719, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
-  - {fileID: 1692261884, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
-  - {fileID: -993082570, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
-  - {fileID: 1218465609, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
-  - {fileID: 1957072429, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
-  - {fileID: 1330735059, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
-  - {fileID: -1195800652, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
-  - {fileID: -572227606, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
-  - {fileID: 1579132730, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
-  - {fileID: -698604316, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
-  - {fileID: 753214274, guid: 8183bfb3551850545b77ebd1ad106aec, type: 3}
+  - {fileID: -1599784458, guid: a18b430241e63654c98a89bc8320d286, type: 3}
+  - {fileID: 542058569, guid: a18b430241e63654c98a89bc8320d286, type: 3}
+  - {fileID: -1569281173, guid: a18b430241e63654c98a89bc8320d286, type: 3}
+  - {fileID: -472198901, guid: a18b430241e63654c98a89bc8320d286, type: 3}
+  - {fileID: -1998238588, guid: a18b430241e63654c98a89bc8320d286, type: 3}
+  - {fileID: 217865299, guid: a18b430241e63654c98a89bc8320d286, type: 3}
+  - {fileID: 867671398, guid: a18b430241e63654c98a89bc8320d286, type: 3}
+  - {fileID: 828416786, guid: a18b430241e63654c98a89bc8320d286, type: 3}
+  - {fileID: 527501242, guid: a18b430241e63654c98a89bc8320d286, type: 3}
+  - {fileID: -2085154080, guid: a18b430241e63654c98a89bc8320d286, type: 3}
+  - {fileID: -344749004, guid: a18b430241e63654c98a89bc8320d286, type: 3}
+  - {fileID: -1194409255, guid: a18b430241e63654c98a89bc8320d286, type: 3}
+  - {fileID: 1255897972, guid: a18b430241e63654c98a89bc8320d286, type: 3}
+  - {fileID: -313992574, guid: a18b430241e63654c98a89bc8320d286, type: 3}
+  - {fileID: 1825866174, guid: a18b430241e63654c98a89bc8320d286, type: 3}
+  - {fileID: -1368246315, guid: a18b430241e63654c98a89bc8320d286, type: 3}
 --- !u!1 &315477444
 GameObject:
   m_ObjectHideFlags: 0
@@ -1167,7 +1167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e39eb794ddd14e1c9cc16d535114f3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tiledJSON: {fileID: 4900000, guid: e1c19d2c9ab7b4de89f1a4effc75ef56, type: 3}
+  tiledJSON: {fileID: 4900000, guid: 15ece15fc045dea46aebeca042c19590, type: 3}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -1222,7 +1222,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 6
+  orthographic size: 6.5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2

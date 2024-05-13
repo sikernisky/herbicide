@@ -98,9 +98,6 @@ public class ObjectPool
     public void ReturnToPool(GameObject prefab)
     {
         Assert.IsNotNull(prefab);
-        Assert.IsTrue(objectIds.Contains(prefab.GetInstanceID()), "Object with ID "
-            + prefab.GetInstanceID() + " is not part of this pool.");
-
         prefab.transform.SetParent(transform);
         prefab.SetActive(false);
         pool.Push(prefab);
