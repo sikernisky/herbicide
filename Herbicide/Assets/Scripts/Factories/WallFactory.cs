@@ -74,7 +74,7 @@ public class WallFactory : Factory
     /// </summary>
     /// <param name="modelType">The type of Wall prefab to get. </param>
     /// <returns>a GameObject with a Wall component attached to it</returns>
-    public static GameObject GetFlooringPrefab(ModelType modelType)
+    public static GameObject GetWallPrefab(ModelType modelType)
     {
         HashSet<ModelType> validModels = new HashSet<ModelType>()
         {
@@ -89,7 +89,7 @@ public class WallFactory : Factory
     /// to the object pool.
     /// </summary>
     /// <param name="prefab">The Wall prefab to return.</param>
-    public static void ReturnFlooringPrefab(GameObject prefab)
+    public static void ReturnWallPrefab(GameObject prefab)
     {
         HashSet<ModelType> validModels = new HashSet<ModelType>()
         {

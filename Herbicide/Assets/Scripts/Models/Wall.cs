@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Represents a Wall. 
 /// </summary>
-public abstract class Wall : PlaceableObject
+public abstract class Wall : Structure
 {
     /// <summary>
     /// Starting health of a Wall
@@ -31,7 +31,7 @@ public abstract class Wall : PlaceableObject
     /// </summary>
     private int tilingIndex;
 
-  
+
 
     /// <summary>
     /// Updates this Wall with its newest four neighbors. Sets its sprite
@@ -50,7 +50,6 @@ public abstract class Wall : PlaceableObject
     /// <param name="newIndex"> the new tiling index. </param>
     protected void SetTilingIndex(int newIndex)
     {
-        
         if (!WallFactory.ValidWallIndex(newIndex)) return;
         RefreshRenderer();
         SetSprite(WallFactory.GetWallSprite(TYPE, newIndex));
@@ -63,7 +62,4 @@ public abstract class Wall : PlaceableObject
     /// <param name="neighbors">Up to date neighbors of this Wall. </param>
     /// <returns>the tiling index of this Wall based off its neighbors. </returns>
     protected abstract int GetTilingIndex(PlaceableObject[] neighbors);
-
-
-
 }

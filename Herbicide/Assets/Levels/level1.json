@@ -125,8 +125,14 @@
                  "height":16,
                  "id":345,
                  "name":"",
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
                  "rotation":0,
-                 "type":"",
+                 "type":"Flooring",
                  "visible":true,
                  "width":16,
                  "x":192,
@@ -137,8 +143,14 @@
                  "height":16,
                  "id":346,
                  "name":"",
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
                  "rotation":0,
-                 "type":"",
+                 "type":"Flooring",
                  "visible":true,
                  "width":16,
                  "x":224,
@@ -149,8 +161,14 @@
                  "height":16,
                  "id":347,
                  "name":"",
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
                  "rotation":0,
-                 "type":"",
+                 "type":"Flooring",
                  "visible":true,
                  "width":16,
                  "x":256,
@@ -161,8 +179,14 @@
                  "height":16,
                  "id":350,
                  "name":"",
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
                  "rotation":0,
-                 "type":"",
+                 "type":"Flooring",
                  "visible":true,
                  "width":16,
                  "x":304,
@@ -173,8 +197,14 @@
                  "height":16,
                  "id":351,
                  "name":"",
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
                  "rotation":0,
-                 "type":"",
+                 "type":"Flooring",
                  "visible":true,
                  "width":16,
                  "x":144,
@@ -203,8 +233,14 @@
                  "height":16,
                  "id":310,
                  "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"NexusHole"
+                        }],
                  "rotation":0,
-                 "type":"",
+                 "type":"Structure",
                  "visible":true,
                  "width":16,
                  "x":336,
@@ -215,8 +251,14 @@
                  "height":16,
                  "id":324,
                  "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"Nexus"
+                        }],
                  "rotation":0,
-                 "type":"",
+                 "type":"Structure",
                  "visible":true,
                  "width":16,
                  "x":112,
@@ -227,8 +269,14 @@
                  "height":16,
                  "id":329,
                  "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"Nexus"
+                        }],
                  "rotation":0,
-                 "type":"",
+                 "type":"Structure",
                  "visible":true,
                  "width":16,
                  "x":128,
@@ -237,62 +285,272 @@
                 {
                  "gid":51,
                  "height":16,
-                 "id":337,
+                 "id":356,
                  "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"BasicTree"
+                        }],
                  "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":16,
-                 "x":192,
-                 "y":160
-                }, 
-                {
-                 "gid":51,
-                 "height":16,
-                 "id":352,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":16,
-                 "x":304,
-                 "y":128
-                }, 
-                {
-                 "gid":51,
-                 "height":16,
-                 "id":353,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":16,
-                 "x":144,
-                 "y":128
-                }, 
-                {
-                 "gid":51,
-                 "height":16,
-                 "id":354,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
+                 "type":"Structure",
                  "visible":true,
                  "width":16,
                  "x":256,
                  "y":160
                 }, 
                 {
-                 "gid":51,
+                 "gid":52,
                  "height":16,
-                 "id":355,
+                 "id":360,
                  "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
                  "rotation":0,
-                 "type":"",
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":208,
+                 "y":128
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":361,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
                  "visible":true,
                  "width":16,
                  "x":224,
+                 "y":128
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":362,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":240,
+                 "y":128
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":363,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":208,
+                 "y":144
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":364,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":240,
+                 "y":144
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":365,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":224,
+                 "y":144
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":366,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":208,
                  "y":160
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":367,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":208,
+                 "y":176
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":368,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":240,
+                 "y":160
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":369,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":240,
+                 "y":176
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":370,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":256,
+                 "y":176
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":371,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":272,
+                 "y":176
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":372,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":192,
+                 "y":176
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":373,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":176,
+                 "y":176
                 }],
          "opacity":1,
          "properties":[
@@ -322,9 +580,14 @@
                          "name":"enemySpawnData",
                          "type":"string",
                          "value":"kudzu1, kudzu10,kudzu20"
+                        }, 
+                        {
+                         "name":"markerName",
+                         "type":"string",
+                         "value":"enemySpawn"
                         }],
                  "rotation":0,
-                 "type":"",
+                 "type":"Marker",
                  "visible":true,
                  "width":16,
                  "x":337,
@@ -343,39 +606,362 @@
          "y":0
         }],
  "nextlayerid":17,
- "nextobjectid":356,
+ "nextobjectid":374,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.10.2",
+ "tiledversion":"1.10.1",
  "tileheight":16,
  "tilesets":[
         {
+         "columns":2,
          "firstgid":1,
-         "source":"..\/..\/Tiled\/Tilesets\/Grass.tsx"
+         "image":"..\/..\/Tiled\/HerbicideArt\/TileSets\/tileSetGrass.png",
+         "imageheight":16,
+         "imagewidth":32,
+         "margin":0,
+         "name":"Grass",
+         "spacing":0,
+         "tilecount":2,
+         "tileheight":16,
+         "tilewidth":16
         }, 
         {
+         "columns":1,
          "firstgid":3,
-         "source":"..\/..\/Tiled\/Tilesets\/Water.tsx"
+         "image":"..\/..\/Tiled\/HerbicideArt\/TileSets\/tilesetWater.png",
+         "imageheight":16,
+         "imagewidth":16,
+         "margin":0,
+         "name":"Water",
+         "spacing":0,
+         "tilecount":1,
+         "tileheight":16,
+         "tilewidth":16
         }, 
         {
+         "columns":4,
          "firstgid":4,
-         "source":"..\/..\/Tiled\/Tilesets\/Soil.tsx"
+         "image":"..\/..\/Tiled\/HerbicideArt\/TileSets\/tileSetSoil.png",
+         "imageheight":64,
+         "imagewidth":64,
+         "margin":0,
+         "name":"Soil",
+         "spacing":0,
+         "tilecount":16,
+         "tileheight":16,
+         "tiles":[
+                {
+                 "id":0,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }, 
+                {
+                 "id":1,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }, 
+                {
+                 "id":2,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }, 
+                {
+                 "id":3,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }, 
+                {
+                 "id":4,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }, 
+                {
+                 "id":5,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }, 
+                {
+                 "id":6,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }, 
+                {
+                 "id":7,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }, 
+                {
+                 "id":8,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }, 
+                {
+                 "id":9,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }, 
+                {
+                 "id":10,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }, 
+                {
+                 "id":11,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }, 
+                {
+                 "id":12,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }, 
+                {
+                 "id":13,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }, 
+                {
+                 "id":14,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }, 
+                {
+                 "id":15,
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "type":"Flooring"
+                }],
+         "tilewidth":16
         }, 
         {
+         "columns":2,
          "firstgid":20,
-         "source":"..\/..\/Tiled\/Tilesets\/Enemies.tsx"
+         "image":"..\/..\/Tiled\/HerbicideArt\/TileSets\/tileSetEnemies.png",
+         "imageheight":32,
+         "imagewidth":32,
+         "margin":0,
+         "name":"Enemies",
+         "spacing":0,
+         "tilecount":4,
+         "tileheight":16,
+         "tiles":[
+                {
+                 "id":0,
+                 "properties":[
+                        {
+                         "name":"enemyName",
+                         "type":"string",
+                         "value":"Kudzu"
+                        }, 
+                        {
+                         "name":"spawnTime",
+                         "type":"string",
+                         "value":"1"
+                        }],
+                 "type":"Enemy"
+                }],
+         "tilewidth":16
         }, 
         {
+         "columns":4,
          "firstgid":24,
-         "source":"..\/..\/Tiled\/Tilesets\/Shore.tsx"
+         "image":"..\/..\/Tiled\/HerbicideArt\/TileSets\/tilesetShore.png",
+         "imageheight":96,
+         "imagewidth":64,
+         "margin":0,
+         "name":"Shore",
+         "spacing":0,
+         "tilecount":24,
+         "tileheight":16,
+         "tiles":[
+                {
+                 "id":0,
+                 "properties":[
+                        {
+                         "name":"testtesttest",
+                         "type":"string",
+                         "value":"hello"
+                        }],
+                 "type":"EdgeLayer"
+                }],
+         "tilewidth":16
         }, 
         {
+         "columns":3,
          "firstgid":48,
-         "source":"..\/..\/Tiled\/Tilesets\/Placeables.tsx"
+         "image":"..\/..\/Tiled\/HerbicideArt\/TileSets\/tileSetPlaceables.png",
+         "imageheight":48,
+         "imagewidth":48,
+         "margin":0,
+         "name":"Placeables",
+         "spacing":0,
+         "tilecount":9,
+         "tileheight":16,
+         "tiles":[
+                {
+                 "id":0,
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"Nexus"
+                        }],
+                 "type":"Structure"
+                }, 
+                {
+                 "id":1,
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"NexusHole"
+                        }],
+                 "type":"Structure"
+                }, 
+                {
+                 "id":3,
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"BasicTree"
+                        }],
+                 "type":"Structure"
+                }, 
+                {
+                 "id":4,
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "type":"Structure"
+                }],
+         "tilewidth":16
         }, 
         {
+         "columns":2,
          "firstgid":57,
-         "source":"..\/..\/Tiled\/Tilesets\/Markers.tsx"
+         "image":"..\/..\/Tiled\/HerbicideArt\/TileSets\/markers.png",
+         "imageheight":32,
+         "imagewidth":32,
+         "margin":0,
+         "name":"markers",
+         "spacing":0,
+         "tilecount":4,
+         "tileheight":16,
+         "tiles":[
+                {
+                 "id":0,
+                 "properties":[
+                        {
+                         "name":"enemySpawnData",
+                         "type":"string",
+                         "value":"kudzu30"
+                        }, 
+                        {
+                         "name":"markerName",
+                         "type":"string",
+                         "value":"enemySpawn"
+                        }],
+                 "type":"Marker"
+                }, 
+                {
+                 "id":1,
+                 "properties":[
+                        {
+                         "name":"enemySpawnData",
+                         "type":"string",
+                         "value":""
+                        }, 
+                        {
+                         "name":"markerName",
+                         "type":"string",
+                         "value":"enemySpawn"
+                        }],
+                 "type":"Marker"
+                }],
+         "tilewidth":16
         }],
  "tilewidth":16,
  "type":"map",

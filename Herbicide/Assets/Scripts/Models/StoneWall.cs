@@ -19,6 +19,61 @@ public class StoneWall : Wall
     public override ModelType TYPE => ModelType.STONE_WALL;
 
     /// <summary>
+    /// Starting attack range of a StoneWall.
+    /// </summary>
+    public override float BASE_ATTACK_RANGE => 0f;
+
+    /// <summary>
+    /// Maximum attack range of a StoneWall.
+    /// </summary>
+    public override float MAX_ATTACK_RANGE => float.MaxValue;
+
+    /// <summary>
+    /// Minimum attack range of a StoneWall.
+    /// </summary>
+    public override float MIN_ATTACK_RANGE => 0f;
+
+    /// <summary>
+    /// Starting attack cooldown of a StoneWall.
+    /// </summary>
+    public override float BASE_ATTACK_COOLDOWN => float.MaxValue;
+
+    /// <summary>
+    /// Maximum attack cooldown of a StoneWall.
+    /// </summary>
+    public override float MAX_ATTACK_COOLDOWN => float.MaxValue;
+
+    /// <summary>
+    /// Starting chase range of a StoneWall.
+    /// </summary>
+    public override float BASE_CHASE_RANGE => float.MaxValue;
+
+    /// <summary>
+    /// Maximum chase range of a StoneWall.
+    /// </summary>
+    public override float MAX_CHASE_RANGE => float.MaxValue;
+
+    /// <summary>
+    /// Minimum chase range of a StoneWall.
+    /// </summary>
+    public override float MIN_CHASE_RANGE => 0f;
+
+    /// <summary>
+    /// Starting movement speed of a StoneWall.
+    /// </summary>
+    public override float BASE_MOVEMENT_SPEED => 0f;
+
+    /// <summary>
+    /// Maximum movement speed of a StoneWall.
+    /// </summary>
+    public override float MAX_MOVEMENT_SPEED => 0f;
+
+    /// <summary>
+    /// Minimum movement speed of a StoneWall.
+    /// </summary>
+    public override float MIN_MOVEMENT_SPEED => 0f;
+
+    /// <summary>
     /// Returns the GameObject that represents this StoneWall on the grid.
     /// </summary>
     /// <returns>the GameObject that represents this StoneWall on the grid</returns>
@@ -36,7 +91,7 @@ public class StoneWall : Wall
     /// <returns> the placement track for this StoneWall.</returns>
     public override Sprite[] GetPlacementTrack()
     {
-        throw new System.NotImplementedException(); 
+        throw new System.NotImplementedException();
     }
 
     /// <summary>
@@ -57,13 +112,10 @@ public class StoneWall : Wall
         bool hasWest = neighbors[3] as Wall != null;
 
         if (hasEast && !hasWest && !hasSouth && !hasNorth) return 0;
-        if (hasEast && hasWest && !hasSouth && !hasNorth) return 0;
-        if (!hasEast && hasWest && !hasSouth && !hasNorth) return 0;
-        if (!hasEast && !hasWest && hasSouth && !hasNorth) return 0;
-        if (hasEast && !hasWest && hasSouth && !hasNorth) return 3;
-
-        // WE LEFT OFF HERE, NEED TO REDESIGN TILESET. 
-
+        if (hasEast && hasWest && !hasSouth && !hasNorth) return 1;
+        if (!hasEast && hasWest && !hasSouth && !hasNorth) return 2;
+        if (!hasEast && !hasWest && hasSouth && !hasNorth) return 3;
+        if (hasEast && !hasWest && hasSouth && !hasNorth) return 4;
         if (hasEast && hasWest && hasSouth && !hasNorth) return 5;
         if (!hasEast && hasWest && hasSouth && !hasNorth) return 6;
         if (!hasEast && !hasWest && hasSouth && hasNorth) return 7;

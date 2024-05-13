@@ -16,4 +16,9 @@
    <property name="structureName" value="BasicTree"/>
   </properties>
  </tile>
+ <tile id="4" type="Structure">
+  <properties>
+   <property name="structureName" value="StoneWall"/>
+  </properties>
+ </tile>
 </tileset>

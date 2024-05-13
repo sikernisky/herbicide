@@ -180,6 +180,12 @@ public class ControllerController : MonoBehaviour
                 SquirrelController sc = new SquirrelController(squirrel);
                 instance.defenderControllers.Add(sc);
                 break;
+            case ModelType.STONE_WALL:
+                StoneWall stonewall = model as StoneWall;
+                Assert.IsNotNull(stonewall);
+                WallController swc = new WallController(stonewall);
+                instance.structureControllers.Add(swc);
+                break;
             case ModelType.WATER_TILE:
                 break;
         }

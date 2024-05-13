@@ -309,7 +309,8 @@ public abstract class Tile : Model, ISurface
         {
             ModelType.NEXUS,
             ModelType.NEXUS_HOLE,
-            ModelType.SOIL_FLOORING
+            ModelType.SOIL_FLOORING,
+            ModelType.STONE_WALL
         };
 
         if (Occupied()) return false;

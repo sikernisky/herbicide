@@ -3,8 +3,11 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "Tiled/Tilemaps/level1.tmx",
+    "activeFile": "Tiled/Tilemaps/level2.tmx",
     "expandedProjectPaths": [
+        "Tiled/Tilemaps",
+        "Tiled",
+        "."
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -21,60 +24,64 @@
             }
         },
         "Tiled/Tilemaps/level1.json": {
-            "scale": 3.4,
-            "selectedLayer": 3,
+            "scale": 1.453,
+            "selectedLayer": 5,
             "viewCenter": {
-                "x": 182.2058823529412,
-                "y": 110.58823529411765
+                "x": 200.963523743978,
+                "y": 185.82243633860975
+            }
+        },
+        "Tiled/Tilemaps/level1.tmj": {
+            "scale": 0.9821614583333333,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 192.43271907729022,
+                "y": 113.01604136285297
             }
         },
         "Tiled/Tilemaps/level1.tmx": {
-            "expandedObjectLayers": [
-                15,
-                13
-            ],
-            "scale": 2.0376,
-            "selectedLayer": 2,
+            "scale": 3.0694,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 222.56576364350218,
-                "y": 160.48292108362782
+                "x": 239.78627744836126,
+                "y": 159.96611715644755
             }
         },
         "Tiled/Tilemaps/level2.tmx": {
-            "scale": 0.7532,
-            "selectedLayer": 2,
+            "scale": 1.5,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 251.59320233669678,
-                "y": 270.8443972384493
+                "x": 292.6666666666667,
+                "y": 200
             }
         },
         "Tiled/Tilesets/Enemies.tsx": {
             "scaleInDock": 4.1205,
-            "scaleInEditor": 5.87
+            "scaleInEditor": 8.5
         },
         "Tiled/Tilesets/Grass.tsx": {
             "scaleInDock": 3.96,
-            "scaleInEditor": 5.87
+            "scaleInEditor": 8.5
         },
         "Tiled/Tilesets/Markers.tsx": {
-            "scaleInDock": 5.6752,
-            "scaleInEditor": 5.87
+            "scaleInDock": 3.5574,
+            "scaleInEditor": 8.5
         },
         "Tiled/Tilesets/Placeables.tsx": {
             "scaleInDock": 4.6426,
-            "scaleInEditor": 5.87
+            "scaleInEditor": 8.5
         },
         "Tiled/Tilesets/Shore.tsx": {
             "scaleInDock": 3.4863,
-            "scaleInEditor": 5.87
+            "scaleInEditor": 8.5
         },
         "Tiled/Tilesets/Soil.tsx": {
             "scaleInDock": 3.96,
-            "scaleInEditor": 5.87
+            "scaleInEditor": 8.5
         },
         "Tiled/Tilesets/Water.tsx": {
             "scaleInDock": 3.96,
-            "scaleInEditor": 1
+            "scaleInEditor": 8.5
         }
     },
     "last.exportedFilePath": "/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Levels",
@@ -92,21 +99,27 @@
         "Tiled/Tilesets/Grass.tsx",
         "Tiled/Tilesets/Markers.tsx",
         "Tiled/Tilesets/Placeables.tsx",
-        "Tiled/Tilemaps/level1.tmx"
+        "Tiled/Tilemaps/level1.tmx",
+        "Tiled/Tilemaps/level2.tmx",
+        "Tiled/Tilemaps/level1.json",
+        "Tiled/Tilesets/Water.tsx",
+        "Tiled/Tilemaps/level1.tmj"
     ],
     "project": "HerbicideTiled.tiled-project",
     "property.type": "string",
     "recentFiles": [
-        "Tiled/Tilemaps/level1.json",
-        "Tiled/Tilemaps/level1.tmx",
         "Tiled/Tilesets/Soil.tsx",
         "Tiled/Tilesets/Enemies.tsx",
         "Tiled/Tilesets/Shore.tsx",
         "Tiled/Tilesets/Grass.tsx",
         "Tiled/Tilesets/Markers.tsx",
         "Tiled/Tilesets/Placeables.tsx",
-        "Tiled/Tilemaps/level0.tmx",
-        "Tiled/Tilesets/Water.tsx"
+        "Tiled/Tilemaps/level1.tmx",
+        "Tiled/Tilemaps/level1.tmj",
+        "Tiled/Tilesets/Water.tsx",
+        "Tiled/Tilemaps/level1.json",
+        "Tiled/Tilemaps/level2.tmx",
+        "Tiled/Tilemaps/level0.tmx"
     ],
     "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)",
     "tileset.lastUsedFormat": "tsx",

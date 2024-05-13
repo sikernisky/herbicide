@@ -553,6 +553,8 @@ public class TileGrid : MonoBehaviour
                 return NexusHoleFactory.GetNexusHolePrefab();
             case "basictree":
                 return BasicTreeFactory.GetBasicTreePrefab();
+            case "stonewall":
+                return WallFactory.GetWallPrefab(ModelType.STONE_WALL);
             default:
                 break;
         }
@@ -963,6 +965,7 @@ public class TileGrid : MonoBehaviour
         if (neighbors == null) return false;
         Assert.IsNotNull(target as ISurface);
 
+
         // If we can't place on the Tile, return.
         int targetX = target.GetX();
         int targetY = target.GetY();
@@ -979,7 +982,6 @@ public class TileGrid : MonoBehaviour
             }
         }
 
-        instance.UnhighlightTiles();
 
         // We can place.
         if (!existing)
