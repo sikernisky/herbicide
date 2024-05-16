@@ -122,29 +122,9 @@ public class ControllerController : MonoBehaviour
                 BearController bc = new BearController(bear);
                 instance.defenderControllers.Add(bc);
                 break;
-            case ModelType.BOMB:
-                break;
-            case ModelType.BUTTERFLY:
-                Butterfly butterfly = model as Butterfly;
-                Assert.IsNotNull(butterfly);
-                ButterflyController bfc = new ButterflyController(butterfly);
-                instance.defenderControllers.Add(bfc);
-                break;
-            case ModelType.BOMB_SPLAT:
-                BombSplat bombSplat = model as BombSplat;
-                Assert.IsNotNull(bombSplat, "BombSplat is null.");
-                SlowZoneController szc = new SlowZoneController(bombSplat);
-                instance.hazardControllers.Add(szc);
-                break;
             case ModelType.DEW:
                 break;
             case ModelType.GRASS_TILE:
-                break;
-            case ModelType.HEDGEHOG:
-                Hedgehog hedgehog = model as Hedgehog;
-                Assert.IsNotNull(hedgehog);
-                HedgehogController hc = new HedgehogController(hedgehog);
-                instance.defenderControllers.Add(hc);
                 break;
             case ModelType.KUDZU:
                 Kudzu kudzu = model as Kudzu;
@@ -249,28 +229,12 @@ public class ControllerController : MonoBehaviour
         int counter = 0;
         foreach (ModelController mc in instance.structureControllers)
         {
-            if (mc == null || !mc.ValidModel()) continue;
-            if (mc.GetModel() as Nexus != null) counter++;
+            Nexus nexus = mc.GetModel() as Nexus;
+            if (nexus != null && !nexus.CashedIn()) counter++;
         }
         return counter;
     }
 
-    /// <summary>
-    /// Returns true if all NexusHoles are filled.
-    /// </summary>
-    /// <returns>true if all NexusHoles are filled; otherwise,
-    /// false.</returns>
-    public static bool AllHolesFilled()
-    {
-        foreach (ModelController mc in instance.structureControllers)
-        {
-            NexusHole nexusHoleModel = mc.GetModel() as NexusHole;
-            if (nexusHoleModel == null || !mc.ValidModel()) continue;
-            if (!nexusHoleModel.Filled()) return false;
-        }
-
-        return true;
-    }
 
     /// <summary>
     /// Attempts to remove any unused or defunct Controllers. 
@@ -411,33 +375,33 @@ public class ControllerController : MonoBehaviour
 
         // Update EnemyControllers
         instance.AddCollectedControllers(instance.enemyControllers);
-        instance.enemyControllers.ForEach(ec => ec.UpdateModel());
+        instance.enemyControllers.ForEach(ec => ec.UpdateController());
 
         // Update DefenderControllers
         instance.AddCollectedControllers(instance.defenderControllers);
-        instance.defenderControllers.ForEach(dc => dc.UpdateModel());
+        instance.defenderControllers.ForEach(dc => dc.UpdateController());
 
         // Update TreeControllers
         instance.AddCollectedControllers(instance.treeControllers);
-        instance.treeControllers.ForEach(tc => tc.UpdateModel());
+        instance.treeControllers.ForEach(tc => tc.UpdateController());
 
         // Update ProjectileControllers
         instance.AddCollectedControllers(instance.projectileControllers);
-        instance.projectileControllers.ForEach(pc => pc.UpdateModel());
+        instance.projectileControllers.ForEach(pc => pc.UpdateController());
 
         // Update HazardControllers
         instance.AddCollectedControllers(instance.hazardControllers);
-        instance.hazardControllers.ForEach(hc => hc.UpdateModel());
+        instance.hazardControllers.ForEach(hc => hc.UpdateController());
 
         // Update CollectableControllers
         instance.AddCollectedControllers(instance.collectableControllers);
-        instance.collectableControllers.ForEach(cc => cc.UpdateModel());
+        instance.collectableControllers.ForEach(cc => cc.UpdateController());
 
         // Update StructureControllers
-        instance.structureControllers.ForEach(sc => sc.UpdateModel());
+        instance.structureControllers.ForEach(sc => sc.UpdateController());
 
         // Update BoatControllers
-        instance.boatControllers.ForEach(bc => bc.UpdateModel());
+        instance.boatControllers.ForEach(bc => bc.UpdateController());
 
         // Update EmanationControllers
         instance.emanationControllers.ForEach(emc => emc.UpdateEmanation());

@@ -142,16 +142,11 @@ public class LevelController : MonoBehaviour
     {
         AcornFactory.SetSingleton(instance);
         BasicTreeFactory.SetSingleton(instance);
-        BasicTreeSeedFactory.SetSingleton(instance);
         BearFactory.SetSingleton(instance);
-        BombFactory.SetSingleton(instance);
-        BombSplatFactory.SetSingleton(instance);
-        ButterflyFactory.SetSingleton(instance);
         DewFactory.SetSingleton(instance);
         EdgeFactory.SetSingleton(instance);
         EmanationFactory.SetSingleton(instance);
         FlooringFactory.SetSingleton(instance);
-        HedgehogFactory.SetSingleton(instance);
         KudzuFactory.SetSingleton(instance);
         NexusFactory.SetSingleton(instance);
         NexusHoleFactory.SetSingleton(instance);
@@ -184,23 +179,23 @@ public class LevelController : MonoBehaviour
     private GameState DetermineGameState()
     {
         int activeEnemies = ControllerController.NumActiveEnemies();
-        bool nexusHolesFilled = ControllerController.AllHolesFilled();
         int enemiesRemaining = EnemyManager.EnemiesRemaining(SceneController.GetTimeElapsed());
         bool enemiesPresent = (enemiesRemaining > 0 || activeEnemies > 0);
+        bool nexusPresent = ControllerController.NumActiveNexii() > 0;
 
-        //Win condition: All enemies dead, at least one NexusHole not filled..
-        if (!enemiesPresent && !nexusHolesFilled) currentGameState = GameState.WIN;
+        // Win condition: All enemies dead, at least one nexus remaning. 
+        if (!enemiesPresent && nexusPresent) currentGameState = GameState.WIN;
 
-        //Lose condition: All holes filled.
-        else if (nexusHolesFilled) currentGameState = GameState.LOSE;
+        // Lose condition: No nexii remaining.
+        else if (!nexusPresent) currentGameState = GameState.LOSE;
 
-        //Ongoing condition: At least one nexus hole not filled and at least one Enemy alive.
-        else if (enemiesPresent && !nexusHolesFilled) currentGameState = GameState.ONGOING;
+        // Ongoing condition: At least one nexus present and at least one Enemy alive.
+        else if (enemiesPresent && nexusPresent) currentGameState = GameState.ONGOING;
 
-        //Something went wrong.
+        // Something went wrong.
         else currentGameState = GameState.INVALID;
 
-        //Inform Controllers.
+        // Inform Controllers.
         ControllerController.InformOfGameState(currentGameState);
         CanvasController.InformOfGameState(currentGameState);
         EconomyController.InformOfGameState(currentGameState);

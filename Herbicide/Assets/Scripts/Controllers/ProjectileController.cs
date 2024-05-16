@@ -84,9 +84,9 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// Main update loop for the ProjectileController. Here's where
     /// it manipulates its Projectile based off game state. 
     /// </summary>
-    public override void UpdateModel()
+    public override void UpdateController()
     {
-        base.UpdateModel();
+        base.UpdateController();
         if (!ValidModel()) return;
         GetProjectile().AddToLifespan(Time.deltaTime);
         UpdateStateFSM();

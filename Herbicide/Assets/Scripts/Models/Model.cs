@@ -84,11 +84,6 @@ public abstract class Model : MonoBehaviour
     public event CollisionHandler OnCollision;
 
     /// <summary>
-    /// All active Effects inflicted upon this Model.
-    /// </summary>
-    private List<Effect> activeEffects = new List<Effect>();
-
-    /// <summary>
     /// The (X, Y) dimensions of this Model.
     /// </summary>
     /// <value></value>
@@ -109,6 +104,11 @@ public abstract class Model : MonoBehaviour
     /// The offset of this Model's held objects. 
     /// </summary>
     public virtual Vector2 HOLDER_OFFSET => new Vector2(0, 0);
+
+    /// <summary>
+    /// The number of cycles of the current animation completed.
+    /// </summary>
+    private int numCyclesOfCurrentAnimationCompleted;
 
 
 
@@ -159,13 +159,26 @@ public abstract class Model : MonoBehaviour
     /// </summary>
     /// <param name="track">The current animation track.</param>
     /// <param name="startFrame">optionally, choose which frame to start with.</param>
-    public void SetAnimationTrack(Sprite[] track, int startFrame = 0)
+    /// <param name="isNewTrack">optionally, set to true if this is a new track.</param>
+    public void SetAnimationTrack(Sprite[] track, int startFrame = 0, bool isNewTrack = true)
     {
         Assert.IsNotNull(track, "Cannot set to a null animation track.");
         Assert.IsTrue(track.Length > 0, "Cannot have an empty animation track.");
         CurrentAnimationTrack = track;
         CurrentFrame = startFrame;
+        if(isNewTrack) numCyclesOfCurrentAnimationCompleted = 0;
     }
+
+    /// <summary>
+    /// Returns the number of cycles of the current animation completed.
+    /// </summary>
+    /// <returns>the number of cycles of the current animation completed. </returns>
+    public int GetNumCyclesOfCurrentAnimationCompleted() { return numCyclesOfCurrentAnimationCompleted; }
+
+    /// <summary>
+    /// Increments the number of cycles of the current animation completed.
+    /// </summary>
+    public void IncrementNumCyclesOfCurrentAnimationCompleted() { numCyclesOfCurrentAnimationCompleted++; }
 
     /// <summary>
     /// Returns true if this Model has a valid animation track set up.
@@ -305,6 +318,23 @@ public abstract class Model : MonoBehaviour
     public void FaceDirection(Direction direction) { this.direction = direction; }
 
     /// <summary>
+    /// Changes this Model's direction such that it faces some position.
+    /// </summary>
+    /// <param name="t">The position to face.</param>
+    public void FaceDirection(Vector3 t)
+    {
+        float xDistance = GetPosition().x - t.x;
+        float yDistance = GetPosition().y - t.y;
+        bool xGreater = Mathf.Abs(xDistance) > Mathf.Abs(yDistance)
+            ? true : false;
+
+        if (xGreater && xDistance <= 0) FaceDirection(Direction.EAST);
+        if (xGreater && xDistance > 0) FaceDirection(Direction.WEST);
+        if (!xGreater && yDistance <= 0) FaceDirection(Direction.NORTH);
+        if (!xGreater && yDistance > 0) FaceDirection(Direction.SOUTH);
+    }
+
+    /// <summary>
     /// Returns the Direction to which this Model faces.
     /// </summary>
     /// <returns>the Direction to which this Model faces</returns>
@@ -347,59 +377,6 @@ public abstract class Model : MonoBehaviour
     /// Resets this Model's state.
     /// </summary>
     public abstract void ResetModel();
-
-    /// <summary>
-    /// Adds an effect to this Model's list of active effects.
-    /// If this effect is already applied or exceeds the maximum number
-    /// of stacks possible, does nothing.
-    /// </summary>
-    public void ApplyEffect(Effect effect)
-    {
-        Assert.IsNotNull(effect, "Effect is null.");
-        Assert.IsNotNull(activeEffects, "Effects list is null.");
-        int maxStacks = effect.MAX_STACKS;
-        Type effectTYPE = effect.GetType();
-        int sameType = activeEffects.Count(e => e.GetType() == effect.GetType());
-
-        if (maxStacks == 1 && sameType == 1)
-        {
-            activeEffects.First().RefreshEffect();
-            return;
-        }
-
-        if (sameType >= maxStacks) return;
-        activeEffects.Add(effect);
-    }
-
-    /// <summary>
-    /// Removes an Effect from this Model's list of
-    /// active effects. If this Effect does not exist on this
-    /// Model, does nothing.
-    /// </summary>
-    /// <param name="effect">The effect to remove.</param>
-    public void RemoveEffect(Effect effect)
-    {
-        Assert.IsNotNull(effect, "Effect is null.");
-        Assert.IsNotNull(activeEffects, "Effects list is null.");
-        Assert.IsNull(effect as Synergy, "Cannot remove synergies. Set tier to 0.");
-        if (!activeEffects.Contains(effect)) return;
-        effect.EndEffect();
-        activeEffects.Remove(effect);
-    }
-
-    /// <summary>
-    /// Iterates through the list of active Effects and updates
-    /// each one.
-    /// </summary>
-    public void UpdateEffects()
-    {
-        Assert.IsNotNull(activeEffects, "Effects list is null.");
-
-        List<Effect> exp = new List<Effect>();
-        foreach (Effect effect in activeEffects) { if (effect.Expired()) exp.Add(effect); }
-        foreach (Effect effect in exp) { RemoveEffect(effect); }
-        foreach (Effect effect in activeEffects) { effect.UpdateEffect(); }
-    }
 
     /// <summary>
     /// Sets this Model's sorting layer.
@@ -483,5 +460,16 @@ public abstract class Model : MonoBehaviour
     public virtual Vector2Int GetPlacementTrackDimensions()
     {
         return new Vector2Int(16, 16);
+    }
+
+    /// <summary>
+    /// Returns the euclidian distance from this Model to another Model.
+    /// </summary>
+    /// <param name="other">The other model.</param>
+    /// <returns>the euclidian distance from this Model to another Model.</returns>
+    public float GetDistanceTo(Model other)
+    {
+        Assert.IsNotNull(other, "Other model is null.");
+        return Vector3.Distance(GetPosition(), other.GetPosition());    
     }
 }

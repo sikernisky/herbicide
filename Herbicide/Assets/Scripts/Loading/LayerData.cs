@@ -131,7 +131,7 @@ public class LayerData
     /// </returns>
     public List<ObjectData> GetFlooringObjectData()
     {
-        List<ObjectData> markerObjects = new List<ObjectData>();
+        List<ObjectData> markerObjects = new List<ObjectData>(); 
         GetObjectData().ForEach(o => { if (o.IsFlooring()) markerObjects.Add(o); });
         return markerObjects;
     }

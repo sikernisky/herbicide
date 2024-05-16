@@ -36,12 +36,12 @@ public class StoneWall : Wall
     /// <summary>
     /// Starting attack cooldown of a StoneWall.
     /// </summary>
-    public override float BASE_ATTACK_COOLDOWN => float.MaxValue;
+    public override float BASE_ATTACK_SPEED => float.MaxValue;
 
     /// <summary>
     /// Maximum attack cooldown of a StoneWall.
     /// </summary>
-    public override float MAX_ATTACK_COOLDOWN => float.MaxValue;
+    public override float MAX_ATTACK_SPEED => float.MaxValue;
 
     /// <summary>
     /// Starting chase range of a StoneWall.

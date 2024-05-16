@@ -10,7 +10,7 @@ using UnityEngine;
 /// it to life. This includes moving it, choosing targets, playing animations,
 /// and more.
 /// </summary>
-public class WallController : StructureController<WallController.WallState>
+public class WallController : MobController<WallController.WallState>
 {
     /// <summary>
     /// Maximum number of targets a Wall is allowed to have.

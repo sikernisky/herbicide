@@ -35,12 +35,12 @@ public class Bear : Defender
     /// <summary>
     /// Starting attack cooldown of a Bear.
     /// </summary>
-    public override float BASE_ATTACK_COOLDOWN => 1.5f;
+    public override float BASE_ATTACK_SPEED => 1.5f;
 
     /// <summary>
     /// Maximum attack cooldown of a Bear.
     /// </summary>
-    public override float MAX_ATTACK_COOLDOWN => float.MaxValue;
+    public override float MAX_ATTACK_SPEED => float.MaxValue;
 
     /// <summary>
     /// Starting chase range of a Bear.
@@ -102,6 +102,12 @@ public class Bear : Defender
     /// from start to finish. 
     /// </summary>
     public float ATTACK_ANIMATION_DURATION => .25f;
+
+    /// <summary>
+    /// How many seconds a Bear's idle animation lasts,
+    /// from start to finish.
+    /// </summary>
+    public float IDLE_ANIMATION_DURATION => .3f;
 
     /// <summary>
     /// How currency is required to buy a Bear.

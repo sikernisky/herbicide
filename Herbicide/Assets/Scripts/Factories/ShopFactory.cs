@@ -50,7 +50,6 @@ public class ShopFactory : Factory
         HashSet<ModelType> validCardTypes = new HashSet<ModelType>()
         {
             ModelType.SHOP_CARD_BEAR,
-            ModelType.SHOP_CARD_HEDGEHOG,
             ModelType.SHOP_CARD_SQUIRREL
         };
         Assert.IsTrue(validCardTypes.Contains(prefab.GetComponent<Model>().TYPE));

@@ -24,9 +24,13 @@ public class Kudzu : Enemy
     public override ModelType TYPE => ModelType.KUDZU;
 
     /// <summary>
-    /// The cooldown between each hop. 
+    /// The cooldown between each hop. <br></br>
+    /// 
+    /// This is different from movement speed. Movement speed is how fast
+    /// the Kudzu travels while hopping. This cooldown is how long the Kudzu
+    /// must wait before hopping again.
     /// </summary>
-    public float HOP_COOLDOWN => 2.5f; //DEFAULT: 2.5f
+    public float HOP_COOLDOWN => 0.25f; //DEFAULT: 2.5f
 
     /// <summary>
     /// Base health of a Kudzu.
@@ -46,12 +50,12 @@ public class Kudzu : Enemy
     /// <summary>
     /// Amount of attack cooldown this Kudzu starts with.
     /// </summary>
-    public override float BASE_ATTACK_COOLDOWN => 1f;
+    public override float BASE_ATTACK_SPEED => 1f;
 
     /// <summary>
     /// Most amount of attack cooldown this Kudzu can have.
     /// </summary>
-    public override float MAX_ATTACK_COOLDOWN => float.MaxValue;
+    public override float MAX_ATTACK_SPEED => float.MaxValue;
 
     /// <summary>
     /// Damage a Kudzu does each attack.

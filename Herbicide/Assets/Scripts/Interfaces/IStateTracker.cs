@@ -38,19 +38,4 @@ public interface IStateTracker<T> where T : System.Enum
     /// <param name="stateB">The second state</param>
     /// <returns>true if two states are equal; otherwise, false. </returns>
     public bool StateEquals(T stateA, T stateB);
-
-    /// <summary>
-    /// Returns the State that triggered the Model's most recent
-    /// animation.
-    /// </summary>
-    /// <returns>the State that triggered the Model's most recent
-    /// animation.</returns>
-    public T GetAnimationState();
-
-    /// <summary>
-    /// Sets the State that triggered the Model's most recent
-    /// animation.
-    /// </summary>
-    /// <param name="animationState">the animation state to set.</param>
-    public void SetAnimationState(T animationState);
 }

@@ -34,29 +34,29 @@ public abstract class Mob : PlaceableObject
     private float attackRange;
 
     /// <summary>
-    /// Amount of attack cooldown this Mob starts with.
+    /// Starting number of attacks this Mob can make per second.
     /// </summary>
-    public abstract float BASE_ATTACK_COOLDOWN { get; }
+    public abstract float BASE_ATTACK_SPEED { get; }
 
     /// <summary>
-    /// Most amount of attack cooldown this Mob can have.
+    /// Max number of attacks this Mob can make per second.
     /// </summary>
-    public abstract float MAX_ATTACK_COOLDOWN { get; }
+    public abstract float MAX_ATTACK_SPEED { get; }
 
     /// <summary>
-    /// Least amount of attack cooldown this Mob can have.
+    /// Min number of attacks this Mob can make per second.
     /// </summary>
-    public float MIN_ATTACK_COOLDOWN => 0f;
+    public float MIN_ATTACK_SPEED => 0f;
 
     /// <summary>
-    /// This Mob's current attack cooldown cap.
+    /// Current number of attacks this Mob can make per second.
     /// </summary>
-    private float attackCooldownCap;
+    private float attackSpeed;
 
     /// <summary>
-    /// This Mob's current attack cooldown.
+    /// How many seconds this Mob has to wait before attacking again.
     /// </summary>
-    private float attackCooldown;
+    private float attackCooldownTimer;
 
     /// <summary>
     /// Amount of chase range this Mob starts with.
@@ -167,75 +167,53 @@ public abstract class Mob : PlaceableObject
     public float GetAttackRange() { return attackRange; }
 
     /// <summary>
-    /// Sets this Mob's attack range.
-    /// </summary>
-    /// <param name="amount">The new attack range.</param>
-    public void SetAttackRange(float amount)
-    {
-        attackRange = Mathf.Clamp(amount, MIN_ATTACK_RANGE, MAX_ATTACK_RANGE);
-    }
-
-    /// <summary>
     /// Resets this Mob's attack range to its starting value.
     /// </summary>
     public void ResetAttackRange() { attackRange = BASE_ATTACK_RANGE; }
 
     /// <summary>
-    /// Returns this Mob's current attack cooldown.
+    /// Returns the number of seconds this Mob has to wait before
+    /// attacking again.
     /// </summary>
-    /// <returns>this Mob's current attack cooldown.</returns>
-    public float GetAttackCooldown() { return attackCooldown; }
+    /// <returns>the number of seconds this Mob has to wait before
+    /// attacking again.</returns>
+    public float GetAttackCooldown() { return attackCooldownTimer; }
 
     /// <summary>
-    /// Adds some amount to this Mob's attack cooldown.
+    /// Reduces this Mob's attack cooldown by Time.deltaTime.
     /// </summary>
-    /// <param name="amount">The new attack cooldown.</param>
-    public void AdjustAttackCooldown(float amount)
+    public void StepAttackCooldown()
     {
-        attackCooldown = Mathf.Clamp(GetAttackCooldown() + amount,
-            MIN_ATTACK_COOLDOWN, attackCooldownCap);
+        attackCooldownTimer = Mathf.Clamp(GetAttackCooldown() - Time.deltaTime,
+            MIN_ATTACK_SPEED, attackSpeed);
     }
 
     /// <summary>
-    /// Adds some amount to this Mob's attack cooldown cap
+    /// Returns the current number of attacks this Mob can make per second.
     /// </summary>
-    /// <param name="amount">The new attack cooldown cap.</param>
-    public void AdjustAttackCooldownCap(float amount)
-    {
-        attackCooldownCap = Mathf.Clamp(attackCooldownCap + amount,
-            MIN_ATTACK_COOLDOWN, MAX_ATTACK_COOLDOWN);
-    }
+    /// <returns>the current number of attacks this Mob can make per second.</returns>
+    public float GetAttackSpeed() { return attackSpeed; }
 
     /// <summary>
-    /// Returns this Mob's attack cooldown cap.
+    /// Sets the number of attacks this Mob can make per second.
     /// </summary>
-    /// <returns>this Mob's attack cooldown cap.</returns>
-    public float GetAttackCooldownCap() { return attackCooldownCap; }
+    public void SetAttackSpeed(float attackSpeed) { this.attackSpeed = attackSpeed; }  
 
     /// <summary>
     /// Resets this Mob's attack cooldown to its currently capped value.
     /// </summary>
-    public void ResetAttackCooldown() { attackCooldown = attackCooldownCap; }
+    public void RestartAttackCooldown() { attackCooldownTimer = 1f / attackSpeed; }
 
     /// <summary>
-    /// Resets this Mob's attack cooldown to its starting value.
+    /// Resets this Mob's attack speed to its starting value.
     /// </summary>
-    public void ResetAttackCooldownToBase() { attackCooldownCap = BASE_ATTACK_COOLDOWN; }
+    public void ResetAttackSpeed() { attackSpeed = BASE_ATTACK_SPEED; }
 
     /// <summary>
     /// Returns this Mob's current chase range.
     /// </summary>
     /// <returns>this Mob's current chase range.</returns>
     public virtual float GetChaseRange() { return chaseRange; }
-
-    /// <summary>
-    /// Sets this Mob's chase range.
-    /// </summary>
-    /// <param name="amount">The new chase range.</param>
-    public void SetChaseRange(float amount)
-    {
-        chaseRange = Mathf.Clamp(amount, MIN_CHASE_RANGE, MAX_CHASE_RANGE);
-    }
 
     /// <summary>
     /// Resets this Mob's chase range to its starting value.
@@ -247,16 +225,6 @@ public abstract class Mob : PlaceableObject
     /// </summary>
     /// <returns>this Mob's current movement speed.</returns>
     public float GetMovementSpeed() { return movementSpeed; }
-
-    /// <summary>
-    /// Adds some amount to this Mob's movement speed.
-    /// </summary>
-    /// <param name="amount">The amount to add.</param>
-    public virtual void AdjustMovementSpeed(float amount)
-    {
-        movementSpeed = Mathf.Clamp(movementSpeed + amount,
-            MIN_MOVEMENT_SPEED, MAX_MOVEMENT_SPEED);
-    }
 
     /// <summary>
     /// Resets this Mob's movement speed to its starting value.
@@ -272,45 +240,8 @@ public abstract class Mob : PlaceableObject
         ResetAttackRange();
         ResetChaseRange();
         ResetMovementSpeed();
-        ResetAttackCooldownToBase();
-        AdjustAttackCooldown(0);
+        ResetAttackSpeed();
     }
 
 
-
-    /// <summary>
-    /// Changes this Mob's direction such that it faces some Model.
-    /// </summary>
-    /// <param name="target">The Model to face.</param>
-    public void FaceTarget(Model target)
-    {
-        Assert.IsNotNull(target, "Cannot face a null target.");
-
-        float xDistance = GetPosition().x - target.GetPosition().x;
-        float yDistance = GetPosition().y - target.GetPosition().y;
-        bool xGreater = Mathf.Abs(xDistance) > Mathf.Abs(yDistance)
-            ? true : false;
-
-        if (xGreater && xDistance <= 0) FaceDirection(Direction.EAST);
-        if (xGreater && xDistance > 0) FaceDirection(Direction.WEST);
-        if (!xGreater && yDistance <= 0) FaceDirection(Direction.NORTH);
-        if (!xGreater && yDistance > 0) FaceDirection(Direction.SOUTH);
-    }
-
-    /// <summary>
-    /// Changes this Mob's direction such that it faces some position.
-    /// </summary>
-    /// <param name="t">The position to face.</param>
-    public void FaceTarget(Vector3 t)
-    {
-        float xDistance = GetPosition().x - t.x;
-        float yDistance = GetPosition().y - t.y;
-        bool xGreater = Mathf.Abs(xDistance) > Mathf.Abs(yDistance)
-            ? true : false;
-
-        if (xGreater && xDistance <= 0) FaceDirection(Direction.EAST);
-        if (xGreater && xDistance > 0) FaceDirection(Direction.WEST);
-        if (!xGreater && yDistance <= 0) FaceDirection(Direction.NORTH);
-        if (!xGreater && yDistance > 0) FaceDirection(Direction.SOUTH);
-    }
 }

@@ -55,12 +55,12 @@ public class BasicTree : Tree
     /// <summary>
     /// Amount of attack cooldown this BasicTree starts with.
     /// </summary>
-    public override float BASE_ATTACK_COOLDOWN => 0;
+    public override float BASE_ATTACK_SPEED => 0;
 
     /// <summary>
     /// Most amount of attack cooldown this BasicTree can have.
     /// </summary>
-    public override float MAX_ATTACK_COOLDOWN => 0;
+    public override float MAX_ATTACK_SPEED => 0;
 
     /// <summary>
     /// Starting chase range of a BasicTree.

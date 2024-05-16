@@ -135,16 +135,14 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
                 break;
             case SquirrelState.IDLE:
                 if (GetTarget() == null || !GetTarget().Targetable()) break;
-                if (GetSquirrel().DistanceToTargetFromTree(GetTarget())
-                    <= GetSquirrel().GetAttackRange() &&
+                if (DistanceToTargetFromTree()  <= GetSquirrel().GetAttackRange() &&
                     GetSquirrel().GetAttackCooldown() <= 0) SetState(SquirrelState.ATTACK);
                 break;
             case SquirrelState.ATTACK:
                 if (GetTarget() == null || !GetTarget().Targetable()) SetState(SquirrelState.IDLE);
                 if (GetAnimationCounter() > 0) break;
                 if (GetSquirrel().GetAttackCooldown() > 0) SetState(SquirrelState.IDLE);
-                else if (GetSquirrel().DistanceToTarget(GetTarget())
-                    > GetSquirrel().GetAttackRange()) SetState(SquirrelState.IDLE);
+                else if (DistanceToTarget() > GetSquirrel().GetAttackRange()) SetState(SquirrelState.IDLE);
                 break;
             case SquirrelState.INVALID:
                 throw new System.Exception("Invalid State.");
@@ -171,17 +169,12 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         if (!ValidModel()) return;
         if (GetState() != SquirrelState.IDLE) return;
 
-        if (GetTarget() != null) GetSquirrel().FaceTarget(GetTarget());
-        Direction direction = GetSquirrel().GetDirection();
-        Sprite[] idleTrack = SquirrelFactory.GetIdleTrack(direction);
-        GetSquirrel().SetAnimationTrack(idleTrack);
-        if (GetAnimationState() != SquirrelState.IDLE) GetSquirrel().SetAnimationTrack(idleTrack);
-        else GetSquirrel().SetAnimationTrack(idleTrack, GetSquirrel().CurrentFrame);
-        SetAnimationState(SquirrelState.IDLE);
+        if(GetTarget() != null && DistanceToTargetFromTree() <= GetSquirrel().GetAttackRange()) 
+             FaceTarget();
+        else GetSquirrel().FaceDirection(Direction.SOUTH);
 
-        //Step the animation.
-        StepAnimation();
-        GetSquirrel().SetSprite(GetSquirrel().GetSpriteAtCurrentFrame());
+        SetAnimation(GetSquirrel().IDLE_ANIMATION_DURATION, SquirrelFactory.GetIdleTrack(GetSquirrel().GetDirection()));
+
     }
 
     /// <summary>
@@ -195,17 +188,9 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
 
         // Animation Logic.
 
-        GetSquirrel().FaceTarget(GetTarget());
+        FaceTarget();
 
-        float duration = Mathf.Min(GetSquirrel().ATTACK_ANIMATION_DURATION,
-            GetSquirrel().GetAttackCooldownCap());
-        GetSquirrel().SetAnimationDuration(duration);
-        Direction direction = GetSquirrel().GetDirection();
-        Sprite[] attackTrack = SquirrelFactory.GetAttackTrack(direction);
-        GetSquirrel().SetAnimationTrack(attackTrack);
-        SetAnimationState(SquirrelState.ATTACK);
-        GetSquirrel().SetSprite(GetSquirrel().GetSpriteAtCurrentFrame());
-        StepAnimation();
+        SetAnimation(GetSquirrel().ATTACK_ANIMATION_DURATION, SquirrelFactory.GetAttackTrack(GetSquirrel().GetDirection()));
 
         if (!CanAttack()) return;
 
@@ -219,7 +204,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         AddModelControllerForExtrication(acornController);
 
         // Reset attack animation.
-        GetSquirrel().ResetAttackCooldown();
+        GetSquirrel().RestartAttackCooldown();
     }
 
     /// <summary>

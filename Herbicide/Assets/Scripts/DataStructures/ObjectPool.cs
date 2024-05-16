@@ -87,6 +87,7 @@ public class ObjectPool
         if (pool.Count < 1) AddNewPrefabToPool();
         GameObject selectedPrefab = pool.Pop();
         selectedPrefab.SetActive(true);
+
         return selectedPrefab;
     }
 

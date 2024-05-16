@@ -15,15 +15,12 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
 {
 
     /// <summary>
-    /// The TripleThreat Synergy applied to the Defender.
-    /// </summary>
-    private TripleThreat tripleThreat;
-
-    /// <summary>
     /// true if the Squirrel executed one call of its Spawn state;
     /// otherwise, false.
     /// </summary>
     private bool spawnStateDone;
+
+
 
 
     /// <summary>
@@ -33,6 +30,7 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     ///  DefenderController.</param>
     public DefenderController(Defender defender) : base(defender) { }
 
+
     /// <summary>
     /// Updates the Defender controlled by this DefenderController.
     /// </summary>
@@ -40,30 +38,12 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     protected override void UpdateMob()
     {
         if (!ValidModel()) return;
+        
         base.UpdateMob();
 
         if (GetGameState() != GameState.ONGOING) return;
-    }
 
-    /// <summary>
-    /// Queries the SynergyController to determine which Synergies are
-    /// active. Performs logic based on the active Synergies.
-    /// </summary>
-    protected override void UpdateSynergies()
-    {
-        base.UpdateSynergies();
-        tripleThreat.ChangeTier(SynergyController.
-            GetSynergyTier(SynergyController.Synergy.TRIPLE_THREAT));
-    }
-
-    /// <summary>
-    /// Adds to the Defender all Synergy effects that could affect it.
-    /// </summary>
-    protected override void ApplySynergies()
-    {
-        base.ApplySynergies();
-        tripleThreat = new TripleThreat(GetModel(), 0);
-        GetModel().ApplyEffect(tripleThreat);
+        UpdateSynergies();
     }
 
     /// <summary>
@@ -86,8 +66,10 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
         if (enemyTarget == null) return false;
         if (!enemyTarget.Spawned()) return false;
         if (!enemyTarget.Targetable()) return false;
-        if (GetDefender().DistanceToTargetFromTree(enemyTarget) >
-            GetDefender().GetAttackRange()) return false;
+
+        Vector3 treePos = GetDefender().GetTreePosition();
+        float distanceFromTree = Vector3.Distance(treePos, enemyTarget.GetPosition());
+        if (distanceFromTree > GetDefender().GetAttackRange()) return false;
 
         return true;
     }
@@ -119,6 +101,48 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     /// <returns>true if the SpawnState has completed one execution;
     /// otherwise, false. </returns>
     protected bool SpawnStateDone() { return spawnStateDone; }
+
+    /// <summary>
+    /// Returns the distance from the Defender's tree to its first
+    /// target.
+    /// </summary>
+    /// <returns>the distance from the Defender's tree to its first
+    /// target. </returns>
+    protected float DistanceToTargetFromTree()
+    {
+        Assert.IsNotNull(GetTargets(), "Targets is null.");
+        Model target = GetTargets()[0];
+        Assert.IsNotNull(target, "Target is null.");
+
+        return Vector3.Distance(GetDefender().GetTreePosition(), target.GetPosition());
+    }
+
+    /// <summary>
+    /// Returns the distance from the Defender's tree to one of its
+    /// targets.
+    /// </summary>
+    /// <returns>the distance from the Defender's tree to one of its
+    /// targets. </returns>
+    protected float DistanceToTargetFromTree(Model target)
+    {
+        Assert.IsNotNull(target);
+        Assert.IsTrue(GetTargets().Contains(target));
+
+        return Vector3.Distance(GetDefender().GetTreePosition(), target.GetPosition());
+    }
+
+    /// <summary>
+    /// Checks for synergies and buffs/defuffs its Defender accordingly.
+    /// </summary>
+    private void UpdateSynergies()
+    {
+        ModelCounts counts = GetModelCounts();
+
+        if(counts.GetCount(ModelType.SQUIRREL) == 2)
+        {
+            BuffAttackSpeed(2);
+        }
+    }
 }
 
 

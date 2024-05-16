@@ -83,7 +83,7 @@ public abstract class PlaceableObject : Model
         return hollowCopy;
     }
 
-    /// <summary>
+/*    /// <summary>
     /// Returns the Euclidian distance from this PlaceableObject to another Model.
     /// </summary>
     /// <param name="target">The Model from which to calculate distance.</param>
@@ -106,7 +106,7 @@ public abstract class PlaceableObject : Model
         }
 
         return minDistance;
-    }
+    }*/
 
     /// <summary>
     /// Returns true if this PlaceableObject is "Dead", which implementers

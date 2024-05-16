@@ -114,7 +114,7 @@ public class BearController : DefenderController<BearController.BearState>
                 break;
             case BearState.IDLE:
                 if (GetTarget() == null || !GetTarget().Targetable()) break;
-                if (GetBear().DistanceToTargetFromTree(GetTarget())
+                if (DistanceToTargetFromTree()
                     <= GetBear().GetAttackRange() &&
                     GetBear().GetAttackCooldown() <= 0) SetState(BearState.ATTACK);
                 break;
@@ -122,7 +122,7 @@ public class BearController : DefenderController<BearController.BearState>
                 if (GetTarget() == null || !GetTarget().Targetable()) SetState(BearState.IDLE);
                 if (GetAnimationCounter() > 0) break;
                 if (GetBear().GetAttackCooldown() > 0) SetState(BearState.IDLE);
-                else if (GetBear().DistanceToTargetFromTree(GetTarget())
+                else if (DistanceToTargetFromTree()
                     > GetBear().GetAttackRange()) SetState(BearState.IDLE);
                 break;
             case BearState.INVALID:
@@ -150,19 +150,10 @@ public class BearController : DefenderController<BearController.BearState>
         if (!ValidModel()) return;
         if (GetState() != BearState.IDLE) return;
 
-        if (GetTarget() != null) GetBear().FaceTarget(GetTarget());
+        if (GetTarget() != null) FaceTarget();
         else GetBear().FaceDirection(Direction.SOUTH);
 
-        Direction direction = GetBear().GetDirection();
-        Sprite[] idleTrack = BearFactory.GetIdleTrack(direction);
-        GetBear().SetAnimationTrack(idleTrack);
-        if (GetAnimationState() != BearState.IDLE) GetBear().SetAnimationTrack(idleTrack);
-        else GetBear().SetAnimationTrack(idleTrack, GetBear().CurrentFrame);
-        SetAnimationState(BearState.IDLE);
-
-        //Step the animation.
-        StepAnimation();
-        GetBear().SetSprite(GetBear().GetSpriteAtCurrentFrame());
+        SetAnimation(GetBear().IDLE_ANIMATION_DURATION, BearFactory.GetIdleTrack(GetBear().GetDirection()));
     }
 
     /// <summary>
@@ -176,17 +167,9 @@ public class BearController : DefenderController<BearController.BearState>
 
         // Animation Logic.
 
-        GetBear().FaceTarget(GetTarget());
+        FaceTarget();
 
-        float duration = Mathf.Min(GetBear().ATTACK_ANIMATION_DURATION,
-            GetBear().GetAttackCooldownCap());
-        GetBear().SetAnimationDuration(duration);
-        Direction direction = GetBear().GetDirection();
-        Sprite[] attackTrack = BearFactory.GetAttackTrack(direction);
-        GetBear().SetAnimationTrack(attackTrack);
-        SetAnimationState(BearState.ATTACK);
-        GetBear().SetSprite(GetBear().GetSpriteAtCurrentFrame());
-        StepAnimation();
+        SetAnimation(GetBear().ATTACK_ANIMATION_DURATION, BearFactory.GetAttackTrack(GetBear().GetDirection()));
 
         if (!CanAttack()) return;
 
@@ -199,7 +182,7 @@ public class BearController : DefenderController<BearController.BearState>
         GetTarget().AdjustHealth(-GetBear().CHOMP_DAMAGE);
 
         // Reset attack animation.
-        GetBear().ResetAttackCooldown();
+        GetBear().RestartAttackCooldown();
     }
 
     /// <summary>

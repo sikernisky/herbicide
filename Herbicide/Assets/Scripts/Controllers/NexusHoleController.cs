@@ -10,7 +10,7 @@ using UnityEngine.Assertions;
 /// it to life. This includes moving it, choosing targets, playing animations,
 /// and more.
 /// </summary>
-public class NexusHoleController : StructureController<NexusHoleController.NexusHoleState>
+public class NexusHoleController : MobController<NexusHoleController.NexusHoleState>
 {
     /// <summary>
     /// States of a NexusHole.

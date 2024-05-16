@@ -19,11 +19,12 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     public enum KudzuState
     {
         INACTIVE, // Not spawned yet.
-        SPAWN, // Just spawned,
+        SPAWNING, // Spawning in.
         IDLE, // Static, nothing to do.
         CHASE, // Pursuing target.
         ATTACK, // Attacking target.
         ESCAPE, // Running back to start.
+        PROTECT, // Protecting other escaping enemies.
         EXITING, // Leaving map.
         DEAD, // Dead.
         INVALID // Something went wrong.
@@ -64,6 +65,12 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     private float attackAnimationCounter;
 
     /// <summary>
+    /// Counts the number of seconds in the protect animation; resets
+    /// on step.
+    /// </summary>
+    private float protectAnimationCounter;
+
+    /// <summary>
     /// Counts the number of seconds in the escape animation; resets
     /// on step.
     /// </summary>
@@ -79,6 +86,8 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     /// Counts the number of seconds until the Kudzu can hop again.
     /// </summary>
     private float hopCooldownCounter;
+
+   
 
 
     /// <summary>
@@ -101,8 +110,10 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         ExecuteIdleState();
         ExecuteChaseState();
         ExecuteAttackState();
+        ExecuteProtectState();
         ExecuteEscapeState();
         ExecuteExitState();
+        // Debug.Log(GetState());
     }
 
     /// <summary>
@@ -158,15 +169,17 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         HashSet<KudzuState> immuneStates = new HashSet<KudzuState>()
         {
             KudzuState.INACTIVE,
-            KudzuState.SPAWN,
+            KudzuState.SPAWNING,
             KudzuState.EXITING,
             KudzuState.INVALID
         };
 
         bool isImmune = immuneStates.Contains(GetState());
         if (!isImmune && !TileGrid.OnWalkableTile(GetEnemy().GetPosition())) return false;
-        else if (GetEnemy().Dead()) return false;
-        else if (GetEnemy().Exited()) return false;
+        else if (GetKudzu().Dead()) return false;
+        else if (GetKudzu().Exited()) return false;
+
+        // Debug.Log("Valid Kudzu");
 
         return true;
     }
@@ -215,33 +228,91 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
             return;
         }
 
+       
+        bool targetExists = GetTarget() != null && GetTarget().Targetable();
+        bool carrierToProtect = GetNearestCarrier() != null;
+        bool withinChaseRange = targetExists && DistanceToTarget() <= GetKudzu().GetChaseRange();
+        bool withinAttackRange = targetExists && DistanceToTarget() <= GetKudzu().GetAttackRange();
+        bool holdingTarget = NumTargetsHolding() > 0;
+        bool otherKudzus = GetModelCounts().GetCount(ModelType.KUDZU) > 1;
+
+        //Debug.Log(GetState());
+
+
         switch (GetState())
         {
             case KudzuState.INACTIVE:
-                DecideFSMFromInactive();
+                if (GetKudzu().Spawned()) SetState(KudzuState.SPAWNING);
                 break;
-            case KudzuState.SPAWN:
-                DecideFSMFromSpawn();
+
+            case KudzuState.SPAWNING:
+                if (PoppedOutOfHole()) SetState(KudzuState.IDLE);
                 break;
+
             case KudzuState.IDLE:
-                DecideFSMFromIdle();
+
+                if (!ReachedMovementTarget()) break;
+                if (idleAnimationCounter > 0) break;
+
+                if (!targetExists && carrierToProtect) SetState(KudzuState.PROTECT);
+                else if (targetExists && withinChaseRange) SetState(KudzuState.CHASE);
+                else if (holdingTarget) SetState(KudzuState.ESCAPE);
                 break;
+
             case KudzuState.CHASE:
-                DecideFSMFromChase();
+                if (!ReachedMovementTarget()) break;
+                if(chaseAnimationCounter > 0) break;
+
+                if (!targetExists) SetState(carrierToProtect ? KudzuState.PROTECT : KudzuState.IDLE);
+                else if (withinAttackRange) SetState(KudzuState.ATTACK);
+                else if (!withinChaseRange) SetState(KudzuState.IDLE);
+                else if (holdingTarget) SetState(KudzuState.ESCAPE);
                 break;
+
             case KudzuState.ATTACK:
-                DecideFSMFromAttack();
+                if (!ReachedMovementTarget()) break;
+                if (attackAnimationCounter > 0) break;
+
+
+                if (holdingTarget) SetState(KudzuState.ESCAPE);
+                else if (!targetExists) SetState(carrierToProtect ? KudzuState.PROTECT : KudzuState.IDLE);
+                else if (!withinAttackRange) SetState(withinChaseRange ? KudzuState.CHASE : KudzuState.IDLE);
+
                 break;
             case KudzuState.ESCAPE:
-                DecideFSMFromEscape();
+                if (!ReachedMovementTarget()) break;
+                if (escapeAnimationCounter > 0) break;
+
+                if (!otherKudzus && targetExists) SetState(KudzuState.CHASE);
+                else if (!targetExists && !holdingTarget) SetState(carrierToProtect ? KudzuState.PROTECT : KudzuState.IDLE);
+                else if (!holdingTarget) SetState(KudzuState.IDLE);
+                else if (Vector2.Distance(GetKudzu().GetPosition(), GetTarget().GetPosition()) < 0.1f)
+                {
+                    SetState(KudzuState.EXITING);
+                }
                 break;
+
+            case KudzuState.PROTECT:
+                if (!ReachedMovementTarget()) break;
+                if (protectAnimationCounter > 0) break;
+
+                if (!carrierToProtect) SetState(KudzuState.IDLE);
+                else if (targetExists)
+                {
+                    if (withinAttackRange) SetState(KudzuState.ATTACK);
+                    else if (withinChaseRange) SetState(KudzuState.CHASE);
+                }
+                break;
+
             case KudzuState.EXITING:
-                DecideFSMFromExit();
-                break;
             case KudzuState.INVALID:
+                break;
+            default:
                 throw new System.Exception("Invalid state.");
         }
+    
     }
+
 
     /// <summary>
     /// Runs logic for the Kudzu model's Inactive state.
@@ -249,6 +320,8 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     protected virtual void ExecuteInactiveState()
     {
         if (GetState() != KudzuState.INACTIVE) return;
+
+        SetNextMovePos(GetKudzu().GetSpawnPos());
     }
 
     /// <summary>
@@ -256,25 +329,19 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     /// </summary>
     protected virtual void ExecuteSpawnState()
     {
-        if (GetState() != KudzuState.SPAWN) return;
+        if (GetState() != KudzuState.SPAWNING) return;
 
-        GetKudzu().SetAnimationDuration(GetKudzu().MOVE_ANIMATION_DURATION);
-        Enemy.EnemyHealthState healthState = GetKudzu().GetHealthState();
-        Direction direction = GetKudzu().GetDirection();
-        Sprite[] spawnTrack = KudzuFactory.GetSpawnTrack(direction, healthState);
-        if (GetAnimationState() != KudzuState.SPAWN) GetKudzu().SetAnimationTrack(spawnTrack);
-        else GetKudzu().SetAnimationTrack(spawnTrack, GetKudzu().CurrentFrame);
-        SetAnimationState(KudzuState.SPAWN);
 
-        // Step the animation.
-        StepAnimation();
-        GetKudzu().SetSprite(GetKudzu().GetSpriteAtCurrentFrame());
+        SetAnimation(GetKudzu().MOVE_ANIMATION_DURATION, KudzuFactory.GetSpawnTrack(
+                                  GetKudzu().GetDirection(), GetKudzu().GetHealthState()));
 
-        PopOutOfMovePos(GetKudzu().GetMovementSpeed(), NexusHoleSpawnPos(GetKudzu().GetSpawnPos()));
+        PopOutOfMovePos(NexusHoleSpawnPos(GetKudzu().GetSpawnPos()));
         GetKudzu().FaceDirection(Direction.SOUTH);
+        
         if (!ReachedMovementTarget()) return;
-        SetNextMovePos(GetKudzu().GetSpawnPos());
 
+        // We have fully popped out of the hole.
+        SetPoppedOutOfHole();
     }
 
     /// <summary>
@@ -284,19 +351,13 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     {
         if (GetState() != KudzuState.IDLE) return;
 
-        // Set up the animation
-        GetKudzu().SetAnimationDuration(GetKudzu().MOVE_ANIMATION_DURATION);
-        Enemy.EnemyHealthState healthState = GetKudzu().GetHealthState();
-        Direction direction = GetKudzu().GetDirection();
-        Sprite[] idleTrack = KudzuFactory.GetIdleTrack(direction, healthState);
-        if (GetAnimationState() != KudzuState.IDLE) GetKudzu().SetAnimationTrack(idleTrack);
-        else GetKudzu().SetAnimationTrack(idleTrack, GetKudzu().CurrentFrame);
-        SetAnimationState(KudzuState.IDLE);
-        GetKudzu().FaceDirection(Direction.SOUTH);
+        SetAnimation(GetKudzu().IDLE_ANIMATION_DURATION, KudzuFactory.GetIdleTrack(
+            GetKudzu().GetDirection(), GetKudzu().GetHealthState()));
 
-        //Step the animation.
-        StepAnimation();
-        GetKudzu().SetSprite(GetKudzu().GetSpriteAtCurrentFrame());
+        SetNextMovePos(GetKudzu().GetPosition());
+        MoveLinearlyTowardsMovePos();
+
+        GetKudzu().FaceDirection(Direction.SOUTH);
     }
 
     /// <summary>
@@ -307,22 +368,11 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         if (GetState() != KudzuState.CHASE) return;
         if (GetTarget() == null || !GetTarget().Targetable()) return;
 
-
-        // Set up the animation.
-        GetKudzu().SetAnimationDuration(GetKudzu().MOVE_ANIMATION_DURATION);
-        Enemy.EnemyHealthState healthState = GetKudzu().GetHealthState();
-        Direction direction = GetKudzu().GetDirection();
-        Sprite[] chaseTrack = KudzuFactory.GetMovementTrack(direction, healthState);
-        if (GetAnimationState() != KudzuState.CHASE) GetKudzu().SetAnimationTrack(chaseTrack);
-        else GetKudzu().SetAnimationTrack(chaseTrack, GetKudzu().CurrentFrame);
-        SetAnimationState(KudzuState.CHASE);
-
-        // Step the animation.
-        StepAnimation();
-        GetKudzu().SetSprite(GetKudzu().GetSpriteAtCurrentFrame());
+        SetAnimation(GetKudzu().MOVE_ANIMATION_DURATION, KudzuFactory.GetMovementTrack(
+            GetKudzu().GetDirection(), GetKudzu().GetHealthState()));
 
         // Move to target.
-        MoveLinearlyTowardsMovePos(GetKudzu().GetMovementSpeed());
+        MoveLinearlyTowardsMovePos();
 
         // Decrement hop counter.
         hopCooldownCounter -= Time.deltaTime;
@@ -330,8 +380,35 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
 
         // We reached our move target, so we need a new one.
         if (!ReachedMovementTarget()) return;
-        if (GetKudzu().DistanceToTarget(GetTarget()) <= GetKudzu().GetAttackRange()) return;
+        if (DistanceToTarget() <= GetKudzu().GetAttackRange()) return;
+
         Vector3 closest = ClosestPositionToTarget(GetTarget());
+        Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetKudzu().GetPosition(), closest);
+        SetNextMovePos(nextMove);
+        hopCooldownCounter = GetKudzu().HOP_COOLDOWN;
+    }
+
+    /// <summary>
+    /// Runs logic for the Kudzu model's protect state.
+    /// </summary>
+    protected virtual void ExecuteProtectState()
+    {
+        if(GetState() != KudzuState.PROTECT) return;
+
+        SetAnimation(GetKudzu().MOVE_ANIMATION_DURATION, KudzuFactory.GetMovementTrack(
+                       GetKudzu().GetDirection(), GetKudzu().GetHealthState()));
+
+        // Move to target.
+        MoveLinearlyTowardsMovePos();
+
+        // Decrement hop counter.
+        hopCooldownCounter -= Time.deltaTime;
+        if (hopCooldownCounter > 0) return;
+
+        // We reached our move target, so we need a new one.
+        if (!ReachedMovementTarget()) return;
+
+        Vector3 closest = GetNearestCarrier().GetPosition();
         Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetKudzu().GetPosition(), closest);
         SetNextMovePos(nextMove);
         hopCooldownCounter = GetKudzu().HOP_COOLDOWN;
@@ -344,28 +421,18 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     {
         if (GetState() != KudzuState.ATTACK) return;
 
-        //Animation Logic.
-        GetKudzu().SetAnimationDuration(GetKudzu().ATTACK_ANIMATION_DURATION);
-        Enemy.EnemyHealthState healthState = GetKudzu().GetHealthState();
-        Direction direction = GetKudzu().GetDirection();
-        Sprite[] attackTrack = KudzuFactory.GetAttackTrack(direction, healthState);
-        if (GetAnimationState() != KudzuState.ATTACK) GetKudzu().SetAnimationTrack(attackTrack);
-        else GetKudzu().SetAnimationTrack(attackTrack, GetKudzu().CurrentFrame);
-        SetAnimationState(KudzuState.ATTACK);
-
-        //Step the animation.
-        StepAnimation();
-        GetKudzu().SetSprite(GetKudzu().GetSpriteAtCurrentFrame());
+        SetAnimation(GetKudzu().ATTACK_ANIMATION_DURATION, KudzuFactory.GetAttackTrack(
+                       GetKudzu().GetDirection(), GetKudzu().GetHealthState()));
 
         //Attack Logic : Only if target is valid.
         bool validTarget = GetTarget() != null && GetTarget().Targetable();
         if (!CanAttack()) return;
         if (!validTarget) return;
 
-        GetKudzu().FaceTarget(GetTarget());
+        FaceTarget();
         if (CanHoldTarget(GetTarget())) HoldTarget(GetTarget()); // Hold.
         else GetTarget().AdjustHealth(-GetKudzu().BONK_DAMAGE); // Bonk.
-        GetKudzu().ResetAttackCooldown();
+        GetKudzu().RestartAttackCooldown();
     }
 
     /// <summary>
@@ -377,22 +444,20 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         if (!ValidModel()) return;
         if (GetTarget() == null) return;
 
-        // Set up the animation.
-        GetKudzu().SetAnimationDuration(GetKudzu().MOVE_ANIMATION_DURATION);
-        Enemy.EnemyHealthState healthState = GetKudzu().GetHealthState();
-        Direction direction = GetKudzu().GetDirection();
-        Sprite[] escapeTrack = KudzuFactory.GetEscapeTrack(direction, healthState);
-        if (GetAnimationState() != KudzuState.ESCAPE) GetKudzu().SetAnimationTrack(escapeTrack);
-        else GetKudzu().SetAnimationTrack(escapeTrack, GetKudzu().CurrentFrame);
-        SetAnimationState(KudzuState.ESCAPE);
+        SetAnimation(GetKudzu().MOVE_ANIMATION_DURATION, KudzuFactory.GetEscapeTrack(
+                                  GetKudzu().GetDirection(), GetKudzu().GetHealthState()));
 
-        // Step the animation.
-        StepAnimation();
-        GetKudzu().SetSprite(GetKudzu().GetSpriteAtCurrentFrame());
+
+        // If there are other Kudzus & next Tile is a NexusHole, throw Nexus in.
+        bool otherKudzus = GetModelCounts().GetCount(ModelType.KUDZU) > 1;
+        if(otherKudzus && TileGrid.IsNexusHole(GetNextMovePos()))
+        {
+
+        }
 
         // Move to target.
         if (TileGrid.IsNexusHole(GetNextMovePos())) MoveParabolicallyTowardsMovePos();
-        else MoveLinearlyTowardsMovePos(GetKudzu().GetMovementSpeed());
+        else MoveLinearlyTowardsMovePos();
 
         // Decrement hop counter.
         hopCooldownCounter -= Time.deltaTime;
@@ -414,7 +479,6 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         if (GetKudzu().Exited()) return;
         NexusHole nexusHoleTarget = GetTarget() as NexusHole;
         if (nexusHoleTarget == null) return;
-        if (nexusHoleTarget.Filled()) return;
 
         Assert.IsTrue(GetTarget() as NexusHole != null, "exit target needs to be a NH.");
         Vector3 nexusHolePosition = GetTarget().GetPosition();
@@ -423,140 +487,20 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
 
         if (!GetKudzu().IsExiting() && !GetKudzu().Exited()) GetKudzu().SetExiting(nexusHolePosition);
 
-        // Set up the animation.
-        GetKudzu().SetAnimationDuration(GetKudzu().MOVE_ANIMATION_DURATION);
-        Enemy.EnemyHealthState healthState = GetKudzu().GetHealthState();
-        Direction direction = GetKudzu().GetDirection();
-        Sprite[] chaseTrack = KudzuFactory.GetMovementTrack(direction, healthState);
-        if (GetAnimationState() != KudzuState.CHASE) GetKudzu().SetAnimationTrack(chaseTrack);
-        else GetKudzu().SetAnimationTrack(chaseTrack, GetKudzu().CurrentFrame);
-        SetAnimationState(KudzuState.CHASE);
-
-        // Step the animation.
-        StepAnimation();
-        GetKudzu().SetSprite(GetKudzu().GetSpriteAtCurrentFrame());
+        SetAnimation(GetKudzu().MOVE_ANIMATION_DURATION, KudzuFactory.GetMovementTrack(
+                       GetKudzu().GetDirection(), GetKudzu().GetHealthState()));
 
         // Move to target.
-        FallIntoMovePos(GetKudzu().GetMovementSpeed(), 3f);
+        SetNextMovePos(jumpPosition);
+        FallIntoMovePos(3f);
 
         if (!ReachedMovementTarget()) return;
-        SetNextMovePos(jumpPosition);
         if (GetKudzu().IsExiting() && GetKudzu().GetPosition() == jumpPosition)
             GetKudzu().SetExited();
         Assert.IsTrue(NumTargetsHolding() > 0, "You need to hold targets to exit.");
     }
 
-    /// <summary>
-    /// Examines the current INACTIVE state and decides which state
-    /// it should switch to next.
-    /// </summary>
-    private void DecideFSMFromInactive()
-    {
-        if (!ValidModel()) return;
-
-        // TO SPAWN
-        if (GetKudzu().Spawned()) SetState(KudzuState.SPAWN);
-    }
-
-    /// <summary>
-    /// Examines the current SPAWN state and decides which state
-    /// it should switch to next.
-    /// </summary>
-    private void DecideFSMFromSpawn()
-    {
-        if (!ValidModel()) return;
-        if (!ReachedMovementTarget()) return;
-
-        // TO IDLE
-        SetState(KudzuState.IDLE);
-    }
-
-    /// <summary>
-    /// Examines the current IDLE state and decides which state
-    /// it should switch to next.
-    /// </summary>
-    private void DecideFSMFromIdle()
-    {
-        if (!ValidModel()) return;
-
-        // TO CHASE
-        bool validTarget = GetTarget() != null && GetTarget().Targetable();
-        bool inChaseRange = validTarget ? GetKudzu().DistanceToTarget(GetTarget()) <= GetKudzu().GetChaseRange() : false;
-        if (inChaseRange) SetState(KudzuState.CHASE);
-
-        // TO ESCAPE
-        if (ShouldEscape()) SetState(KudzuState.ESCAPE);
-    }
-
-    /// <summary>
-    /// Examines the current CHASE state and decides which state
-    /// it should switch to next.
-    /// </summary>
-    private void DecideFSMFromChase()
-    {
-        if (!ValidModel()) return;
-        if (!ReachedMovementTarget()) return;
-
-        // TO ATTACK
-        bool validTarget = GetTarget() != null && GetTarget().Targetable();
-        bool inAttackRange = validTarget ? GetKudzu().DistanceToTarget(GetTarget()) <= GetKudzu().GetAttackRange() : false;
-        bool readyToAttack = validTarget ? GetKudzu().GetAttackCooldown() <= 0 : false;
-        if (readyToAttack && validTarget && inAttackRange) SetState(KudzuState.ATTACK);
-
-        // TO IDLE
-        bool inChaseRange = validTarget ? GetKudzu().DistanceToTarget(GetTarget()) <= GetKudzu().GetChaseRange() : false;
-        if (!validTarget || !inChaseRange) SetState(KudzuState.IDLE);
-
-        // TO ESCAPE
-        if (ShouldEscape()) SetState(KudzuState.ESCAPE);
-    }
-
-    /// <summary>
-    /// Examines the current ATTACK state and decides which state
-    /// it should switch to next.
-    /// </summary>
-    private void DecideFSMFromAttack()
-    {
-        if (!ValidModel()) return;
-
-        // FINISH ANIMATION FIRST
-        if (GetAnimationCounter() > 0) return;
-
-        // TO IDLE
-        bool attackOnCooldown = GetKudzu().GetAttackCooldown() > 0;
-        bool validTarget = GetTarget() != null && GetTarget().Targetable();
-        bool inAttackRange = validTarget ? GetKudzu().DistanceToTarget(GetTarget()) <= GetKudzu().GetAttackRange() : false;
-        if (!validTarget || !inAttackRange || attackOnCooldown) SetState(KudzuState.IDLE);
-
-        // TO ESCAPE
-        if (ShouldEscape()) SetState(KudzuState.ESCAPE);
-    }
-
-    /// <summary>
-    /// Examines the current ESCAPE state and decides which state
-    /// it should switch to next.
-    /// </summary>
-    private void DecideFSMFromEscape()
-    {
-        if (!ValidModel()) return;
-        if (!ReachedMovementTarget()) return;
-
-        // TO IDLE
-        if (!ShouldEscape()) SetState(KudzuState.IDLE);
-
-        // TO EXIT
-        if (ShouldExit()) SetState(KudzuState.EXITING);
-    }
-
-    /// <summary>
-    /// Examines the current EXIT state and decides which state
-    /// it should switch to next.
-    /// </summary>
-    private void DecideFSMFromExit()
-    {
-        if (!ValidModel()) return;
-    }
-
+    
 
     //---------------------END STATE LOGIC-----------------------//
 
@@ -569,7 +513,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     protected override bool CanTarget(Model target)
     {
         if (!GetKudzu().Spawned()) return false;
-        if (GetState() == KudzuState.SPAWN) return false;
+        if (GetState() == KudzuState.SPAWNING) return false;
 
         Nexus nexusTarget = target as Nexus;
         NexusHole nexusHoleTarget = target as NexusHole;
@@ -579,10 +523,9 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         {
             if (nexusHoleTarget == null) return false;
             if (!nexusHoleTarget.Targetable()) return false;
-            if (nexusHoleTarget.Filled()) return false;
             if (nexusHoleTarget.PickedUp()) return false;
-            if (!GetPathfindingCache().IsReachable(nexusHoleTarget)) return false;
-            if (!ClosestValidNexusHole(nexusHoleTarget)) return false;
+            if (!GetKudzu().IsExiting() && !TileGrid.CanReach(GetKudzu().GetPosition(), nexusHoleTarget.GetPosition())) return false;
+            if (!IsClosestNexusHole(nexusHoleTarget)) return false;
 
             return true;
         }
@@ -594,169 +537,15 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
             if (!nexusTarget.Targetable()) return false;
             if (nexusTarget.PickedUp()) return false;
             if (nexusTarget.CashedIn()) return false;
-            if (!GetPathfindingCache().IsReachable(nexusTarget)) return false;
-            if (!ClosestValidNexus(nexusTarget)) return false;
+            if (!TileGrid.CanReach(GetKudzu().GetPosition(), nexusTarget.GetPosition())) return false;
+            if (!IsClosestDroppedNexus(nexusTarget)) return false;
 
             return true;
         }
 
-        //// If it's a Tree, check to see if there are no targetable nexii first.
-        //if (treeTarget != null)
-        //{
-        //    foreach (Model model in GetAllModels())
-        //    {
-        //        Nexus nexusPlaceable = model as Nexus;
-        //        NexusHole nexusHolePlaceable = model as NexusHole;
-
-        //        // YEAH BITCH!! RECURSION!!!! SCIENCE MR. WHITE!!
-        //        if (nexusPlaceable != null && CanTarget(nexusPlaceable)) return false;
-        //        if (nexusHolePlaceable != null && CanTarget(nexusHolePlaceable)) return false;
-        //    }
-        //    if (!GetPathfindingCache().IsReachable(treeTarget)) return false;
-        //    return true;
-        //}
-
-        //if (GetState() == KudzuState.ESCAPE || GetState() == KudzuState.EXITING)
-        //{
-        //    if (nexusHoleTarget == null) return false;
-        //    if (!nexusHoleTarget.Targetable()) return false;
-        //    if (nexusHoleTarget.Filled()) return false;
-        //    if (nexusHoleTarget.PickedUp()) return false;
-        //    if (!GetPathfindingCache().IsReachable(nexusHoleTarget)) return false;
-        //    if (!ClosestValidNexusHole(nexusHoleTarget)) return false;
-
-        //    return true;
-        //}
-
-        //else
-        //{
-        //    if (nexusTarget == null) return false;
-        //    if (!nexusTarget.Targetable()) return false;
-        //    if (nexusTarget.PickedUp()) return false;
-        //    if (nexusTarget.CashedIn()) return false;
-        //    if (!GetPathfindingCache().IsReachable(nexusTarget)) return false;
-        //    if (!ClosestValidNexus(nexusTarget)) return false;
-
-        //    return true;
-        //}
-
         throw new System.Exception("Something wrong happened.");
     }
 
-    /// <summary>
-    /// Returns true if the Kudzu's position is at the spot it
-    /// is trying to move towards.
-    /// </summary>
-    /// <returns>true if the Kudzu made it to its movement destination;
-    /// otherwise, false. </returns>
-    private bool ReachedMovementTarget()
-    {
-        if (GetNextMovePos() == null) return true;
-
-        Vector3 nextMovePos = new Vector3(
-            GetNextMovePos().Value.x,
-            GetNextMovePos().Value.y,
-            1
-        );
-
-        return Vector3.Distance(GetKudzu().GetPosition(), nextMovePos) < 0.1f;
-    }
-
-    /// <summary>
-    /// Returns true if the Kudzu should stop trying to steal 
-    /// targets and escape. This is when the Kudzu has grabbed
-    /// as many targets as possible and there are no more it
-    /// can pick up. 
-    /// </summary>
-    /// <returns>true if the Kudzu should escape; otherwise, false.</returns>
-    protected virtual bool ShouldEscape()
-    {
-        if (NumTargetsHolding() >= HOLDING_LIMIT) return true;
-        if (NumTargetsHolding() == 0) return false;
-
-        if (GetTarget() != null) return false;
-        if (GetAllModels().Count == 0) return false;
-
-        foreach (PlaceableObject placeableObject in GetAllModels())
-        {
-            Nexus nexusTarget = placeableObject as Nexus;
-            if (nexusTarget == null) continue;
-            if (nexusTarget.PickedUp()) continue;
-            if (nexusTarget.CashedIn()) continue;
-            if (!GetPathfindingCache().IsReachable(nexusTarget)) continue;
-            return false;
-        }
-        return true;
-    }
-
-    /// <summary>
-    /// Returns true if the Kudzu should drop its last Nexus
-    /// and die. 
-    /// /// </summary>
-    /// <returns>true if the Kudzu should escape; otherwise, false.</returns>
-    protected virtual bool ShouldExit()
-    {
-        NexusHole nexusHoleTarget = GetTarget() as NexusHole;
-        if (nexusHoleTarget == null) return false;
-        if (nexusHoleTarget.Filled()) return false;
-        Vector3 kudzuPos = GetKudzu().GetPosition();
-        Vector3 holePos = GetTarget().GetPosition();
-        if (Vector3.Distance(kudzuPos, holePos) > 0.1f) return false;
-
-        return true;
-    }
-
-    /// <summary>
-    /// Returns true if a given Nexus is the closest Nexus to the
-    /// Kudzu that it can target.
-    /// </summary>
-    /// <param name="nexus">The Nexus to check.</param>
-    /// <returns>true if a given Nexus is the closest Nexus to the
-    /// Kudzu that it can target; otherwise, false. </returns>
-    private bool ClosestValidNexus(Nexus nexus)
-    {
-        Assert.IsNotNull(nexus);
-        if (nexus.CashedIn()) return false;
-        if (nexus.PickedUp()) return false;
-
-        List<Nexus> nexii = new List<Nexus>();
-        foreach (Model model in GetAllModels())
-        {
-            Nexus nexusObject = model as Nexus;
-            if (nexusObject != null && !nexusObject.CashedIn() && !nexusObject.PickedUp())
-                nexii.Add(nexusObject);
-        }
-
-        nexii.Sort((n1, n2) =>
-            n1.DistanceToTarget(GetKudzu()).CompareTo(n2.DistanceToTarget(GetKudzu())));
-
-        return nexii[0] == nexus;
-    }
-
-    /// <summary>
-    /// Returns true if a given NexusHole is the closest NexusHole to the
-    /// Kudzu that it can target.
-    /// </summary>
-    /// <param name="nexusHole">The NexusHole to check.</param>
-    /// <returns>true if a given NexusHole is the closest NexusHole to the
-    /// Kudzu that it can target; otherwise, false. </returns>
-    private bool ClosestValidNexusHole(NexusHole nexusHole)
-    {
-        Assert.IsNotNull(nexusHole);
-
-        List<NexusHole> holes = new List<NexusHole>();
-        foreach (Model model in GetAllModels())
-        {
-            NexusHole nexusHoleObject = model as NexusHole;
-            if (nexusHoleObject != null && !nexusHoleObject.Filled())
-                holes.Add(nexusHoleObject);
-        }
-
-        holes.Sort((n1, n2) =>
-            n1.DistanceToTarget(GetKudzu()).CompareTo(n2.DistanceToTarget(GetKudzu())));
-
-        return holes[0] == nexusHole;
-    }
 
     /// <summary>
     /// Adds one chunk of Time.deltaTime to the animation
@@ -765,10 +554,11 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     public override void AgeAnimationCounter()
     {
         KudzuState state = GetState();
-        if (state == KudzuState.SPAWN) spawnAnimationCounter += Time.deltaTime;
+        if (state == KudzuState.SPAWNING) spawnAnimationCounter += Time.deltaTime;
         else if (state == KudzuState.IDLE) idleAnimationCounter += Time.deltaTime;
         else if (state == KudzuState.CHASE) chaseAnimationCounter += Time.deltaTime;
         else if (state == KudzuState.ATTACK) attackAnimationCounter += Time.deltaTime;
+        else if (state == KudzuState.PROTECT) protectAnimationCounter += Time.deltaTime;
         else if (state == KudzuState.ESCAPE) escapeAnimationCounter += Time.deltaTime;
         else if (state == KudzuState.EXITING) exitingAnimationCounter += Time.deltaTime;
     }
@@ -780,13 +570,14 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     public override float GetAnimationCounter()
     {
         KudzuState state = GetState();
-        if (state == KudzuState.SPAWN) return spawnAnimationCounter;
+        if (state == KudzuState.SPAWNING) return spawnAnimationCounter;
         else if (state == KudzuState.IDLE) return idleAnimationCounter;
         else if (state == KudzuState.CHASE) return chaseAnimationCounter;
         else if (state == KudzuState.ATTACK) return attackAnimationCounter;
+        else if (state == KudzuState.PROTECT) return protectAnimationCounter;
         else if (state == KudzuState.ESCAPE) return escapeAnimationCounter;
         else if (state == KudzuState.EXITING) return exitingAnimationCounter;
-        else throw new System.Exception("State " + state + " has no counter.");
+        else return 0;
     }
 
     /// <summary>
@@ -795,10 +586,11 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     public override void ResetAnimationCounter()
     {
         KudzuState state = GetState();
-        if (state == KudzuState.SPAWN) spawnAnimationCounter = 0;
+        if (state == KudzuState.SPAWNING) spawnAnimationCounter = 0;
         else if (state == KudzuState.IDLE) idleAnimationCounter = 0;
         else if (state == KudzuState.CHASE) chaseAnimationCounter = 0;
         else if (state == KudzuState.ATTACK) attackAnimationCounter = 0;
+        else if (state == KudzuState.PROTECT) protectAnimationCounter = 0;
         else if (state == KudzuState.ESCAPE) escapeAnimationCounter = 0;
         else if (state == KudzuState.EXITING) exitingAnimationCounter = 0;
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using Newtonsoft.Json;
+using UnityEditor.VersionControl;
 
 /// <summary>
 /// Parses JSON files into data.

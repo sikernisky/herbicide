@@ -123,6 +123,21 @@ public class TileGrid : MonoBehaviour
     private Dictionary<Tile, NexusHole> nexusHoleHosts;
 
     /// <summary>
+    /// Total number of enemy spawn markers.
+    /// </summary>
+    private int numEnemySpawnMarkers;
+
+    /// <summary>
+    /// Total number of Nexii in the TileGrid.
+    /// </summary>
+    private int numNexii;
+
+    /// <summary>
+    /// All positions of objects in the TileGrid.
+    /// </summary>
+    private List<Vector3> objectPositions;
+
+    /// <summary>
     /// Main update loop for the TileGrid; updates its Tiles.
     /// </summary>
     public static void UpdateTiles()
@@ -219,6 +234,7 @@ public class TileGrid : MonoBehaviour
         instance.enemyLocations = new Dictionary<Enemy, Tile>();
         instance.edgeTiles = new HashSet<Tile>();
         instance.nexusHoleHosts = new Dictionary<Tile, NexusHole>();
+        instance.objectPositions = new List<Vector3>();
     }
 
     /// <summary>
@@ -254,12 +270,17 @@ public class TileGrid : MonoBehaviour
         data.GetShoreLayers().ForEach(l => SpawnLayer(l, layerWidth, layerHeight));
         data.GetObjectLayers().ForEach(l => SpawnObjectLayer(l, data.GetMapHeight()));
 
+        // Assert we have everything we need
+        Assert.IsTrue(instance.nexusHoleHosts.Count > 0, "No NexusHoles found in TileGrid.");
+        Assert.IsTrue(instance.numEnemySpawnMarkers > 0, "No enemy spawn markers found in TileGrid.");
+        Assert.IsTrue(instance.numNexii > 0, "No Nexii found in TileGrid.");
+
         // For pathfinding, give tiles their neighbors
         instance.SetNeighbors(layerWidth, layerHeight);
 
         //Finishing touches
         instance.SetGenerated();
-        return instance.GetCameraPositionOnGrid();
+        return instance.GetCameraPositionAtCenterOfObjects();
     }
 
     /// <summary>
@@ -327,7 +348,10 @@ public class TileGrid : MonoBehaviour
                     GameObject spawnedStructure = instance.GetStructurePrefabFromString(obToSpawn.GetStructureName());
                     Assert.IsNotNull(spawnedStructure);
                     Mob mob = spawnedStructure.GetComponent<Mob>();
-                    mob.SetSpawnPos(new Vector3(obToSpawn.GetSpawnCoordinates(mapHeight).x, obToSpawn.GetSpawnCoordinates(mapHeight).y, 1));
+                    if(mob as Nexus != null) instance.numNexii++;
+                    Vector3 spawnPos = new Vector3(obToSpawn.GetSpawnCoordinates(mapHeight).x, obToSpawn.GetSpawnCoordinates(mapHeight).y, 1);
+                    mob.SetSpawnPos(spawnPos);
+                    instance.objectPositions.Add(spawnPos);
                     Tile targetTile = instance.TileExistsAt(obToSpawn.GetSpawnCoordinates(mapHeight).x, obToSpawn.GetSpawnCoordinates(mapHeight).y);
                     PlaceOnTile(targetTile, mob);
                 }
@@ -344,7 +368,8 @@ public class TileGrid : MonoBehaviour
                         int y = markToSpawn.GetSpawnCoordinates(mapHeight).y;
                         string unparsedData = markToSpawn.GetEnemySpawnData();
                         enemySpawnMarkers.Add(new Vector2Int(x, y), unparsedData);
-                        // ENEMY SPAWN LOGIC HERE.
+                        instance.objectPositions.Add(new Vector3(x, y, 1));
+                        instance.numEnemySpawnMarkers++;
                     }
                 }
                 EnemyManager.PopulateWithEnemies(enemySpawnMarkers, mapHeight);
@@ -360,6 +385,7 @@ public class TileGrid : MonoBehaviour
                     Assert.IsNotNull(flooring);
                     int flooringX = obToSpawn.GetSpawnCoordinates(mapHeight).x;
                     int flooringY = obToSpawn.GetSpawnCoordinates(mapHeight).y;
+                    instance.objectPositions.Add(new Vector3(flooringX, flooringY, 1));
                     Tile tileOn = instance.TileExistsAt(flooringX, flooringY);
                     Assert.IsNotNull(tileOn);
                     FloorTile(tileOn, flooring);
@@ -413,7 +439,7 @@ public class TileGrid : MonoBehaviour
     /// </summary>
     /// <returns>the position for the Camera, that if set to, represents the center
     /// of the TileGrid.</returns>
-    private Vector2 GetCameraPositionOnGrid()
+    private Vector2 GetCameraPositionAtCenterOfGrid()
     {
         Vector2Int centerCoords = GetCenterCoordinates();
         float centerXPos = CoordinateToPosition(centerCoords.x) - TILE_SIZE / 2;
@@ -421,6 +447,31 @@ public class TileGrid : MonoBehaviour
 
         if (centerCoords.x % 2 == 0) centerXPos -= TILE_SIZE / 2;
         if (centerCoords.y % 2 == 0) centerYPos -= TILE_SIZE / 2;
+
+        return new Vector2(centerXPos, centerYPos);
+    }
+
+    /// <summary>
+    /// Returns the Camera's position at the center of all objects in the TileGrid.
+    /// </summary>
+    /// <returns>the position for the Camera, that if set to, represents the center</returns>
+    private Vector2 GetCameraPositionAtCenterOfObjects()
+    {
+        float minX = float.MaxValue;
+        float maxX = float.MinValue;
+        float minY = float.MaxValue;
+        float maxY = float.MinValue;
+
+        foreach (Vector2 pos in objectPositions)
+        {
+            minX = Mathf.Min(minX, pos.x);
+            maxX = Mathf.Max(maxX, pos.x);
+            minY = Mathf.Min(minY, pos.y);
+            maxY = Mathf.Max(maxY, pos.y);
+        }
+
+        float centerXPos = (minX + maxX) / 2f;
+        float centerYPos = (minY + maxY) / 2f;
 
         return new Vector2(centerXPos, centerYPos);
     }
@@ -881,14 +932,6 @@ public class TileGrid : MonoBehaviour
         int originX = origin.GetX();
         int originY = origin.GetY();
 
-        // if (direction == Direction.NORTHWEST)
-        // {
-        //     neighborX = originX - 1;
-        //     neighborY = originY + 1;
-        //     Tile neighbor = instance.TileExistsAt(neighborX, neighborY);
-        //     if (neighbor != null) return neighbor;
-        // }
-
         if (direction == Direction.NORTH)
         {
             neighborX = originX;
@@ -896,14 +939,6 @@ public class TileGrid : MonoBehaviour
             Tile neighbor = instance.TileExistsAt(neighborX, neighborY);
             if (neighbor != null) return neighbor;
         }
-
-        // if (direction == Direction.NORTHEAST)
-        // {
-        //     neighborX = originX + 1;
-        //     neighborY = originY + 1;
-        //     Tile neighbor = instance.TileExistsAt(neighborX, neighborY);
-        //     if (neighbor != null) return neighbor;
-        // }
 
         if (direction == Direction.EAST)
         {
@@ -913,14 +948,6 @@ public class TileGrid : MonoBehaviour
             if (neighbor != null) return neighbor;
         }
 
-        // if (direction == Direction.SOUTHEAST)
-        // {
-        //     neighborX = originX + 1;
-        //     neighborY = originY - 1;
-        //     Tile neighbor = instance.TileExistsAt(neighborX, neighborY);
-        //     if (neighbor != null) return neighbor;
-        // }
-
         if (direction == Direction.SOUTH)
         {
             neighborX = originX;
@@ -928,14 +955,6 @@ public class TileGrid : MonoBehaviour
             Tile neighbor = instance.TileExistsAt(neighborX, neighborY);
             if (neighbor != null) return neighbor;
         }
-
-        // if (direction == Direction.SOUTHWEST)
-        // {
-        //     neighborX = originX - 1;
-        //     neighborY = originY - 1;
-        //     Tile neighbor = instance.TileExistsAt(neighborX, neighborY);
-        //     if (neighbor != null) return neighbor;
-        // }
 
         if (direction == Direction.WEST)
         {
@@ -1242,6 +1261,17 @@ public class TileGrid : MonoBehaviour
     public static Vector3 NextTilePosTowardsGoal(Vector3 startPos, Vector3 goalPos)
     {
 
+        // Check if the path is already cached
+        if (PathfindingCache.IsCacheValid(startPos, goalPos))
+        {
+            if (PathfindingCache.GetIsReachable(startPos, goalPos))
+            {
+                var nextTile = PathfindingCache.GetNextTilePosition(startPos, goalPos);
+                return new Vector3(nextTile.x, nextTile.y, 1);
+            }
+            return startPos; // If not reachable, return start position
+        }
+
         //From given positions, find the corresponding Tiles.
         int xStartCoord = PositionToCoordinate(startPos.x);
         int yStartCoord = PositionToCoordinate(startPos.y);
@@ -1252,6 +1282,7 @@ public class TileGrid : MonoBehaviour
 
         if (instance.IsDebugging()) goalTile.SetColor(PATHFINDING_RED);
         if (startTile == null || goalTile == null) return startPos;
+        if(startPos == goalPos) return startPos;
 
         //Initialize data structures.
         List<Tile> openList = new List<Tile> { startTile };
@@ -1319,10 +1350,8 @@ public class TileGrid : MonoBehaviour
             }
         }
 
-        //Debug.Log("No path found.");
-
-        //No path found, so we return the lowest position possible.
-        return new Vector3(float.MinValue, float.MinValue, float.MinValue);
+        PathfindingCache.UpdateCache(startPos, goalPos, false, new Vector2Int(int.MinValue, int.MinValue));
+        return new Vector3(int.MinValue, int.MinValue, int.MinValue);
     }
 
     /// <summary>
@@ -1334,7 +1363,7 @@ public class TileGrid : MonoBehaviour
     /// <param name="startPos">The starting position of the path.</param>
     /// <param name="goalPos">The ending position of the path.</param>
     /// <returns>The length of the path or -1 if no path exists.</returns>
-    public static int PathLengthTowardsGoal(PathfindingCache cache, Vector3 startPos, Vector3 goalPos)
+    public static int PathLengthTowardsGoal(Vector3 startPos, Vector3 goalPos)
     {
         // From given positions, find the corresponding Tiles.
         int xStartCoord = PositionToCoordinate(startPos.x);
@@ -1442,11 +1471,22 @@ public class TileGrid : MonoBehaviour
     /// <param name="goalPos">The ending position.</param>
     /// <returns>true if a path exists from start to goal; otherwise,
     /// false. </returns>
-    public static bool CanReach(PathfindingCache cache, Vector3 startPos, Vector3 goalPos)
+    public static bool CanReach(Vector3 startPos, Vector3 goalPos)
     {
-        Assert.IsNotNull(cache);
+        // Check if the pathfinding result is already cached
+        if (PathfindingCache.IsCacheValid(startPos, goalPos))
+        {
+            return PathfindingCache.GetIsReachable(startPos, goalPos);
+        }
+
+        // Perform pathfinding and update the cache
+        Vector3 nextTilePos = NextTilePosTowardsGoal(startPos, goalPos);
+        bool isReachable = nextTilePos != new Vector3(int.MinValue, int.MinValue, int.MinValue);
+        PathfindingCache.UpdateCache(startPos, goalPos, isReachable, new Vector2Int((int)nextTilePos.x, (int)nextTilePos.y));
+        return isReachable;
+/*
         Vector3 minVector = new Vector3(float.MinValue, float.MinValue, float.MinValue);
-        return NextTilePosTowardsGoal(startPos, goalPos) != minVector;
+        return NextTilePosTowardsGoal(startPos, goalPos) != minVector;*/
     }
     //----------------------END PATHFINDING------------------------//
 }

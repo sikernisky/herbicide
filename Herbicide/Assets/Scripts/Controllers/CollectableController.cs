@@ -105,9 +105,9 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
     /// <summary>
     /// Main update loop for the Collectable.
     /// </summary>
-    public override void UpdateModel()
+    public override void UpdateController()
     {
-        base.UpdateModel();
+        base.UpdateController();
         UpdateStateFSM();
     }
 

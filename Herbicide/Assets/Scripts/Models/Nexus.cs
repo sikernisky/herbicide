@@ -66,12 +66,12 @@ public class Nexus : Structure
     /// <summary>
     /// Starting attack cooldown of a Nexus.
     /// </summary>
-    public override float BASE_ATTACK_COOLDOWN => float.MaxValue;
+    public override float BASE_ATTACK_SPEED => float.MaxValue;
 
     /// <summary>
     /// Maximum attack cooldown of a Nexus.
     /// </summary>
-    public override float MAX_ATTACK_COOLDOWN => float.MaxValue;
+    public override float MAX_ATTACK_SPEED => float.MaxValue;
 
     /// <summary>
     /// Starting chase range of a Nexus.

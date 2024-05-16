@@ -42,12 +42,12 @@ public class Squirrel : Defender
     /// <summary>
     /// Amount of attack cooldown this Squirrel starts with.
     /// </summary>
-    public override float BASE_ATTACK_COOLDOWN => 1f;
+    public override float BASE_ATTACK_SPEED => 2f;
 
     /// <summary>
     /// Most amount of attack cooldown this Squirrel can have.
     /// </summary>
-    public override float MAX_ATTACK_COOLDOWN => float.MaxValue;
+    public override float MAX_ATTACK_SPEED => float.MaxValue;
 
     /// <summary>
     /// Starting chase range of a Squirrel.

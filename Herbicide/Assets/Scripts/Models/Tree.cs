@@ -107,7 +107,7 @@ public abstract class Tree : Mob, ISurface
 
         string placeName = defender.NAME.ToLower() + "Place";
         SoundController.PlaySoundEffect(placeName);
-        defender.PassTreePosition(GetPosition());
+        defender.SetTreePosition(GetPosition());
         candidate.transform.SetParent(transform);
         candidate.transform.localPosition =
             new Vector3(DEFENDER_OFFSET_X, DEFENDER_OFFSET_Y, 1);

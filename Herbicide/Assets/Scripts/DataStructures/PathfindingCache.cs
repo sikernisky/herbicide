@@ -1,99 +1,77 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 /// <summary>
 /// Cache for expensive A* Pathfinding calls.
 /// </summary>
-public class PathfindingCache
+public static class PathfindingCache
 {
-    /// <summary>
-    /// Class to represent our Cache metadata.
-    /// </summary>
-    private class CacheData
+    private class CacheEntry
     {
-        /// <summary>
-        /// True if the target Model was reachable that last time we ran our
-        /// pathfinding algorithm.
-        /// </summary>
         public bool IsReachable { get; set; }
-
-        /// <summary>
-        /// The position of the target Model the last time we ran our
-        /// pathfinding algorithm.
-        /// </summary>
-        public Vector3 LastKnownTargetPosition { get; set; }
+        public Vector2Int NextTilePosition { get; set; }
     }
 
-    /// <summary>
-    /// Cache reference for Models.
-    /// </summary>
-    private Dictionary<Model, CacheData> cache;
+    private static Dictionary<(Vector3 start, Vector3 goal), CacheEntry> cache = new Dictionary<(Vector3, Vector3), CacheEntry>();
 
     /// <summary>
-    /// The Model to pathfind from.
+    /// Updates the cache with the pathfinding results.
     /// </summary>
-    private Model model;
-
-
-    /// <summary>
-    /// Creates a new PathfindingCache.
-    /// </summary>
-    /// <param name="model">The Model to pathfind from.</param>
-    public PathfindingCache(Model model)
+    /// <param name="startPos">The starting position.</param>
+    /// <param name="goalPos">The goal position.</param>
+    /// <param name="reachable">True if the goal is reachable from the start position.</param>
+    /// <param name="nextPos">The position of the next tile in the path.</param>
+    public static void UpdateCache(Vector3 startPos, Vector3 goalPos, bool reachable, Vector2Int nextPos)
     {
-        Assert.IsNotNull(model);
-        cache = new Dictionary<Model, CacheData>();
-        this.model = model;
-    }
-
-    /// <summary>
-    /// Returns true if a Model is reachable from this Model.
-    /// </summary>
-    /// <param name="model">The Model to check. </param>
-    /// <returns>true if a Model is reachable from this Mob; otherwise,
-    /// false. </returns>
-    public bool IsReachable(Model model)
-    {
-        Assert.IsNotNull(model, "Model is null.");
-
-        if (cache.TryGetValue(model, out CacheData data))
+        var key = (start: startPos, goal: goalPos);
+        cache[key] = new CacheEntry
         {
-            if (model.GetPosition() == data.LastKnownTargetPosition)
-                return data.IsReachable;
-        }
-
-
-        bool isReachable = Reachable(model);
-        cache[model] = new CacheData
-        {
-            IsReachable = isReachable,
-            LastKnownTargetPosition = model.GetPosition(),
+            IsReachable = reachable,
+            NextTilePosition = nextPos
         };
-        return isReachable;
+    }
+
+    /// <summary>
+    /// Checks if the cache has valid data for the given start and goal positions.
+    /// </summary>
+    /// <param name="startPos">The starting position.</param>
+    /// <param name="goalPos">The goal position.</param>
+    /// <returns>True if the cache has valid data for the given positions; otherwise, false.</returns>
+    public static bool IsCacheValid(Vector3 startPos, Vector3 goalPos)
+    {
+        var key = (start: startPos, goal: goalPos);
+        return cache.ContainsKey(key);
+    }
+
+    /// <summary>
+    /// Gets the reachability status from the cache.
+    /// </summary>
+    /// <param name="startPos">The starting position.</param>
+    /// <param name="goalPos">The goal position.</param>
+    /// <returns>True if the goal is reachable from the start position; otherwise, false.</returns>
+    public static bool GetIsReachable(Vector3 startPos, Vector3 goalPos)
+    {
+        var key = (start: startPos, goal: goalPos);
+        return cache[key].IsReachable;
+    }
+
+    /// <summary>
+    /// Gets the next tile position from the cache.
+    /// </summary>
+    /// <param name="startPos">The starting position.</param>
+    /// <param name="goalPos">The goal position.</param>
+    /// <returns>The position of the next tile in the path.</returns>
+    public static Vector2Int GetNextTilePosition(Vector3 startPos, Vector3 goalPos)
+    {
+        var key = (start: startPos, goal: goalPos);
+        return cache[key].NextTilePosition;
     }
 
     /// <summary>
     /// Clears the cache.
     /// </summary>
-    public void ClearCache()
+    public static void ClearCache()
     {
         cache.Clear();
-    }
-
-    /// <summary>
-    /// Returns the position of the next Tile in the path towards
-    /// some Model.
-    /// </summary>
-    /// <param name="model">The Model to pathfind towards.</param>
-    /// <returns>the position of the next Tile in the path towards
-    /// some Model.</returns>
-    private bool Reachable(Model model)
-    {
-        Assert.IsNotNull(model, "Model is null.");
-
-        return TileGrid.CanReach(this, this.model.GetPosition(),
-            model.GetPosition());
     }
 }

@@ -31,12 +31,12 @@ public class NexusHole : Structure
     /// <summary>
     /// Starting attack cooldown of a NexusHole.
     /// </summary>
-    public override float BASE_ATTACK_COOLDOWN => float.MaxValue;
+    public override float BASE_ATTACK_SPEED => float.MaxValue;
 
     /// <summary>
     /// Maximum attack cooldown of a NexusHole.
     /// </summary>
-    public override float MAX_ATTACK_COOLDOWN => float.MaxValue;
+    public override float MAX_ATTACK_SPEED => float.MaxValue;
 
     /// <summary>
     /// Starting chase range of a NexusHole.
@@ -108,6 +108,7 @@ public class NexusHole : Structure
     /// </summary>
     protected virtual int MAX_OCCUPANTS => int.MaxValue;
 
+
     /// <summary>
     /// Returns the Sprite that represents this NexusHole when placing.
     /// </summary>
@@ -125,23 +126,6 @@ public class NexusHole : Structure
     /// Sets the 2D Collider properties of this NexusHole.
     /// </summary>
     public override void SetColliderProperties() { return; }
-
-    /// <summary>
-    /// Returns true if no more Nexii can fit in this NexusHole.
-    /// </summary>
-    /// <returns>true if this NexusHole has reached capacity;
-    /// otherwise, false. </returns>
-    public bool Filled() { return occupants.Count >= MAX_OCCUPANTS; }
-
-    /// <summary>
-    /// Puts a Nexus in this NexusHole.
-    /// </summary>
-    /// <param name="nexus">The Nexus to fill with.</param>
-    public void Fill(Nexus nexus)
-    {
-        Assert.IsFalse(Filled(), "You need to check if this NexusHole is filled.");
-        occupants.Add(nexus);
-    }
 
     /// <summary>
     /// Removes a Nexus from this NexusHole.

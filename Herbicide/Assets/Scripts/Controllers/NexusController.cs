@@ -10,7 +10,7 @@ using UnityEngine.Assertions;
 /// it to life. This includes moving it, choosing targets, playing animations,
 /// and more.
 /// </summary>
-public class NexusController : StructureController<NexusController.NexusState>
+public class NexusController : MobController<NexusController.NexusState>
 {
     /// <summary>
     /// Maximum number of targets a Nexus can have.
@@ -40,6 +40,7 @@ public class NexusController : StructureController<NexusController.NexusState>
     protected override void UpdateMob()
     {
         base.UpdateMob();
+        ExecuteIdleState();
         ExecutePickedUpState();
     }
 
@@ -135,6 +136,30 @@ public class NexusController : StructureController<NexusController.NexusState>
     }
 
     /// <summary>
+    /// Executes logic for the Nexus' idle state.
+    /// </summary>
+    protected virtual void ExecuteIdleState()
+    {
+        if (GetState() != NexusState.IDLE) return;
+        if (!ValidModel()) return;
+        if (GetNexus().PickedUp()) return;
+        if (GetNexus().CashedIn()) return;
+
+        if(TileGrid.IsNexusHole(GetNexus().GetPosition()))
+        {
+            Vector3 nexusHolePosition = GetNexus().GetPosition();
+            Vector3 jumpPosition = nexusHolePosition;
+            jumpPosition.y -= 2;
+
+            SetNextMovePos(jumpPosition);
+            FallIntoMovePos(3f);
+
+            if (!ReachedMovementTarget()) return;
+            GetNexus().CashIn();
+        }
+    }
+
+    /// <summary>
     /// Executes logic for the Nexus' picked up state.
     /// </summary>
     protected virtual void ExecutePickedUpState()
@@ -143,4 +168,6 @@ public class NexusController : StructureController<NexusController.NexusState>
         if (!ValidModel()) return;
         if (!GetNexus().PickedUp()) return;
     }
+
+   
 }

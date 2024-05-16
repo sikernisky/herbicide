@@ -42,9 +42,9 @@ public class DewController : CollectableController<DewController.DewState>
     /// <summary>
     /// Main update loop for the Dew.
     /// </summary>
-    public override void UpdateModel()
+    public override void UpdateController()
     {
-        base.UpdateModel();
+        base.UpdateController();
         ExecuteBobbingState();
         ExecuteCollectingState();
     }

@@ -191,7 +191,7 @@
   </properties>
   <object id="669" gid="57" x="256" y="192" width="16" height="16">
    <properties>
-    <property name="enemySpawnData" value="kudzu1, kudzu10,kudzu20"/>
+    <property name="enemySpawnData" value="kudzu1"/>
    </properties>
   </object>
  </objectgroup>
