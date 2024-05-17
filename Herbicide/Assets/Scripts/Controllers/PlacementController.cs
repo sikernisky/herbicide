@@ -170,6 +170,12 @@ public class PlacementController : MonoBehaviour
     private void GlueSubjectToMouse()
     {
         dummy.transform.position = InputController.GetUIMousePosition();
+
+        Defender defender = subject as Defender;
+        if(defender != null)
+        {
+            // Debug.Log(defender.TYPE + " tier: " + defender.GetTier());
+        }
     }
 
     /// <summary>
@@ -215,4 +221,20 @@ public class PlacementController : MonoBehaviour
     {
         instance.gameState = state;
     }
+
+    /// <summary>
+    /// Upgrades the model that is currently being placed. If the model
+    /// cannot be upgraded or the player is not currently placing,
+    /// nothing happens.
+    /// </summary>
+    public static void UpgradeModelPlacing()
+    {
+        if (!Placing()) return;
+        Defender placingDefender = instance.subject as Defender;
+        if(placingDefender == null) return;
+
+        placingDefender.UpgradeTier();
+        Debug.Log("tier: " + placingDefender.GetTier());    
+    }
+    
 }

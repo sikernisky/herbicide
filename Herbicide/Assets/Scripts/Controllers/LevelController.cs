@@ -63,6 +63,7 @@ public class LevelController : MonoBehaviour
         //(4) Load the Shop
         ShopManager.LoadShop();
 
+
         //(5) Load the Synergies (TODO: Remove this static HashSet with dynamic one)
         //HashSet<SynergyController.Synergy> synergies = new HashSet<SynergyController.Synergy>();
         //synergies.Add(SynergyController.Synergy.TRIPLE_THREAT);
@@ -128,10 +129,10 @@ public class LevelController : MonoBehaviour
         InputController.SetSingleton(instance);
         PlacementController.SetSingleton(instance);
         EnemyManager.SetSingleton(instance);
+        ShopManager.SetSingleton(instance);
         ControllerController.SetSingleton(instance);
         EconomyController.SetSingleton(instance);
         CanvasController.SetSingleton(instance);
-        ShopManager.SetSingleton(instance);
         SoundController.SetSingleton(instance);
         //SynergyController.SetSingleton(instance);
     }

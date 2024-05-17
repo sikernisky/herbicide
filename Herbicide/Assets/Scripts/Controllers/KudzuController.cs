@@ -86,7 +86,6 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     /// Counts the number of seconds until the Kudzu can hop again.
     /// </summary>
     private float hopCooldownCounter;
-
    
 
 
@@ -283,8 +282,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
                 if (!ReachedMovementTarget()) break;
                 if (escapeAnimationCounter > 0) break;
 
-                if (!otherKudzus && targetExists) SetState(KudzuState.CHASE);
-                else if (!targetExists && !holdingTarget) SetState(carrierToProtect ? KudzuState.PROTECT : KudzuState.IDLE);
+                if (!targetExists && !holdingTarget) SetState(carrierToProtect ? KudzuState.PROTECT : KudzuState.IDLE);
                 else if (!holdingTarget) SetState(KudzuState.IDLE);
                 else if (Vector2.Distance(GetKudzu().GetPosition(), GetTarget().GetPosition()) < 0.1f)
                 {
@@ -445,15 +443,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         if (GetTarget() == null) return;
 
         SetAnimation(GetKudzu().MOVE_ANIMATION_DURATION, KudzuFactory.GetEscapeTrack(
-                                  GetKudzu().GetDirection(), GetKudzu().GetHealthState()));
-
-
-        // If there are other Kudzus & next Tile is a NexusHole, throw Nexus in.
-        bool otherKudzus = GetModelCounts().GetCount(ModelType.KUDZU) > 1;
-        if(otherKudzus && TileGrid.IsNexusHole(GetNextMovePos()))
-        {
-
-        }
+                                  GetKudzu().GetDirection(), GetKudzu().GetHealthState()));        
 
         // Move to target.
         if (TileGrid.IsNexusHole(GetNextMovePos())) MoveParabolicallyTowardsMovePos();
@@ -465,8 +455,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
 
         // We reached our move target, so we need a new one.
         if (!ReachedMovementTarget()) return;
-        SetNextMovePos(TileGrid.NextTilePosTowardsGoal(
-            GetKudzu().GetPosition(), GetTarget().GetPosition()));
+        SetNextMovePos(TileGrid.NextTilePosTowardsGoal(GetKudzu().GetPosition(), GetTarget().GetPosition()));
         hopCooldownCounter = GetKudzu().HOP_COOLDOWN;
     }
 

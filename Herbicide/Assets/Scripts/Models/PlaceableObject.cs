@@ -46,6 +46,16 @@ public abstract class PlaceableObject : Model
     protected virtual Vector3 PLACEMENT_SCALE => Vector3.one;
 
     /// <summary>
+    /// The tile coordinates where this PlaceableObject is placed.
+    /// </summary>
+    private Vector2Int placedCoords;
+    
+    /// <summary>
+    /// true if this PlaceableObject is placed; otherwise, false.
+    /// </summary>
+    private bool placed;
+
+    /// <summary>
     /// true if this PlaceableObject occupies a Tile, preventing
     /// further placement; otherwise, false.
     /// </summary>
@@ -83,31 +93,6 @@ public abstract class PlaceableObject : Model
         return hollowCopy;
     }
 
-/*    /// <summary>
-    /// Returns the Euclidian distance from this PlaceableObject to another Model.
-    /// </summary>
-    /// <param name="target">The Model from which to calculate distance.</param>
-    public float DistanceToTarget(Model target)
-    {
-        Assert.IsNotNull(target);
-
-        float minDistance = float.MaxValue;
-
-        foreach (var coord1 in GetExpandedTileCoordinates())
-        {
-            foreach (var coord2 in target.GetExpandedTileCoordinates())
-            {
-                float distance = Vector2Int.Distance(coord1, coord2);
-                if (distance < minDistance)
-                {
-                    minDistance = distance;
-                }
-            }
-        }
-
-        return minDistance;
-    }*/
-
     /// <summary>
     /// Returns true if this PlaceableObject is "Dead", which implementers
     /// define in their own way.
@@ -127,7 +112,18 @@ public abstract class PlaceableObject : Model
     /// <summary>
     /// Called when this PlaceableObject is placed.
     /// </summary>
-    public virtual void OnPlace() { return; }
+    /// <param name="placedCoords">The coordinates where this PlaceableObject
+    /// is placed.</param>
+    public virtual void OnPlace(Vector2Int placedCoords)
+    { 
+        this.placedCoords = placedCoords;
+        placed = true;
+    }
+
+    /// <summary>
+    /// Returns true if this PlaceableObject is placed.
+    /// </summary>
+    public bool IsPlaced() { return placed; }
 
     /// <summary>
     /// Starts the Damage Flash animation by resetting the amount of time
@@ -199,4 +195,9 @@ public abstract class PlaceableObject : Model
     /// </summary>
     /// <returns>this PlaceableObject's neighbors.</returns>
     protected PlaceableObject[] GetNeighbors() { return neighbors; }
+
+    /// <summary>
+    /// Returns the Tile coordinates where this PlaceableObject is placed.
+    /// </summary>
+    public Vector2Int GetPlacedCoords() { return placedCoords;}
 }

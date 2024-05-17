@@ -353,6 +353,7 @@ public class TileGrid : MonoBehaviour
                     mob.SetSpawnPos(spawnPos);
                     instance.objectPositions.Add(spawnPos);
                     Tile targetTile = instance.TileExistsAt(obToSpawn.GetSpawnCoordinates(mapHeight).x, obToSpawn.GetSpawnCoordinates(mapHeight).y);
+                    ControllerController.MakeController(mob);
                     PlaceOnTile(targetTile, mob);
                 }
                 break;
@@ -974,9 +975,8 @@ public class TileGrid : MonoBehaviour
     /// </summary>
     /// <param name="candidate">The PlaceableObject to place.</param>
     /// <param name="target">The Tile to place on.</param>
-    /// <param name="existing">true if the PlaceableObject to place has already been instantiated. </param>
     /// <returns>true if the PlaceableObject was placed; otherwise, false.</returns>
-    public static bool PlaceOnTile(Tile target, PlaceableObject candidate, bool existing = false)
+    public static bool PlaceOnTile(Tile target, PlaceableObject candidate)
     {
         // Safety checks
         if (target == null || candidate == null) return false;
@@ -1000,27 +1000,6 @@ public class TileGrid : MonoBehaviour
                 }
             }
         }
-
-
-        // We can place.
-        if (!existing)
-        {
-            Assert.IsNotNull(candidate);
-
-            Defender placedDefender = candidate.GetComponent<Defender>();
-            if (placedDefender != null) ControllerController.MakeController(placedDefender);
-
-            Hazard placedSlowZone = candidate.GetComponent<Hazard>();
-            if (placedSlowZone != null) ControllerController.MakeController(placedSlowZone);
-
-            Structure placedStructure = candidate.GetComponent<Structure>();
-            if (placedStructure != null) ControllerController.MakeController(placedStructure);
-
-            Tree placedTree = candidate.GetComponent<Tree>();
-            if (placedTree != null) ControllerController.MakeController(placedTree);
-        }
-
-
 
         // Place the candidate.
         target.Place(candidate, instance.GetNeighbors(target));
@@ -1049,16 +1028,50 @@ public class TileGrid : MonoBehaviour
     /// </summary>
     /// <param name="candidate">The PlaceableObject to place.</param>
     /// <param name="targetCoords">The coordinates of the Tile to place on.</param>
-    /// <param name="existing">true if the PlaceableObject to place has already been instantiated. </param>
     /// <returns>true if the PlaceableObject was placed; otherwise, false.</returns>
-    public static bool PlaceOnTile(Vector2Int targetCoords, PlaceableObject candidate, bool existing = false)
+    public static bool PlaceOnTile(Vector2Int targetCoords, PlaceableObject candidate)
     {
         //Safety checks
         int xCoord = PositionToCoordinate(targetCoords.x);
         int yCoord = PositionToCoordinate(targetCoords.y);
         Tile target = instance.TileExistsAt(xCoord, yCoord);
 
-        return PlaceOnTile(target, candidate, existing);
+        return PlaceOnTile(target, candidate);
+    }
+
+    /// <summary>
+    /// Returns true if trying to remove something from a Tile will actually
+    /// remove something. If so, removes it. Otherwise, does nothing and returns false.
+    /// </summary>
+    /// <param name="target">The Tile to remove from.</param>
+    private static bool RemoveFromTile(Tile target)
+    {
+        // Safety checks
+        if (target == null) return false;
+        ISurface[] neighbors = instance.GetNeighbors(target);
+        if (neighbors == null) return false;
+        Assert.IsNotNull(target as ISurface);
+
+        // If we can't remove from the Tile, return.
+        if (!target.CanRemove(neighbors)) return false;
+
+        // We can remove.
+        target.Remove(neighbors);
+        return true;
+    }
+    /// <summary>
+    /// Returns true if trying to remove something from a Tile will actually
+    /// remove something. If so, removes it. Otherwise, does nothing and returns false.
+    /// </summary>
+    /// <param name="targetCoords"> The coordinates of the Tile to remove from.</param>
+    public static bool RemoveFromTile(Vector2Int targetCoords)
+    {
+        //Safety checks
+        int xCoord = PositionToCoordinate(targetCoords.x);
+        int yCoord = PositionToCoordinate(targetCoords.y);
+        Tile target = instance.TileExistsAt(xCoord, yCoord);
+
+        return RemoveFromTile(target);
     }
 
     /// <summary>

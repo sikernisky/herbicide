@@ -32,6 +32,11 @@ public abstract class Defender : Mob
     }
 
     /// <summary>
+    /// Current tier of this Defender.
+    /// </summary>
+    private int tier;
+
+    /// <summary>
     /// Gets the position of the tree on which this Defender sits.
     /// </summary>
     /// <param name="treePos">the position of the tree on which this Defender sits.
@@ -43,4 +48,29 @@ public abstract class Defender : Mob
     /// </summary>
     /// <returns>the position of the tree on which this Defender sits.</returns>
     public Vector3 GetTreePosition() { return treePos; }
+
+    /// <summary>
+    /// Sets this Defender's tier to 1.
+    /// </summary>
+    public void ResetTier() { tier = 1; }
+
+    /// <summary>
+    /// Upgrades this Defender's tier by one if it is less than 3.
+    /// </summary>
+    public void UpgradeTier() { if (tier < 3) tier++;} 
+
+    /// <summary>
+    /// Returns this Defender's current tier.
+    /// </summary>
+    /// <returns>this Defender's current tier. </returns>
+    public int GetTier() { return tier; }
+
+    /// <summary>
+    /// Resets this Defender's model.
+    /// </summary>
+    public override void ResetModel()
+    {
+        base.ResetModel();
+        ResetTier();
+    }
 }

@@ -1,12 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Controller that controls the scene's controllers.
+/// Controller that controls the scene's controllers. Handles
+/// upgrading units.
 /// </summary>
 public class ControllerController : MonoBehaviour
 {
@@ -46,11 +49,6 @@ public class ControllerController : MonoBehaviour
     private List<ModelController> structureControllers;
 
     /// <summary>
-    /// List of active ShopBoatControllers.
-    /// </summary>
-    private List<ModelController> boatControllers;
-
-    /// <summary>
     /// List of active EmanationControllers.
     /// </summary>
     private List<EmanationController> emanationControllers;
@@ -69,6 +67,11 @@ public class ControllerController : MonoBehaviour
     /// The most recent GameState.
     /// </summary>
     private GameState gameState;
+
+    /// <summary>
+    /// ModelTypes that can be upgraded. 
+    /// </summary>
+    private HashSet<ModelType> upgradeableTypes;
 
 
     /// <summary>
@@ -93,10 +96,17 @@ public class ControllerController : MonoBehaviour
         instance.hazardControllers = new List<ModelController>();
         instance.collectableControllers = new List<ModelController>();
         instance.structureControllers = new List<ModelController>();
-        instance.boatControllers = new List<ModelController>();
         instance.emanationControllers = new List<EmanationController>();
 
         instance.counts = new ModelCounts();
+
+        instance.upgradeableTypes = new HashSet<ModelType>
+        {
+            ModelType.SQUIRREL,
+            ModelType.BEAR
+        };
+
+        ShopManager.SubscribeToRequestUpgradeDelegate(instance.OnPurchaseModelFromShop);
     }
 
     /// <summary>
@@ -169,6 +179,8 @@ public class ControllerController : MonoBehaviour
             case ModelType.WATER_TILE:
                 break;
         }
+
+        instance.counts.SetCount(instance, model.TYPE, instance.counts.GetCount(model.TYPE) + 1);
     }
 
     /// <summary>
@@ -245,48 +257,63 @@ public class ControllerController : MonoBehaviour
     {
         // Enemy Controllers
         List<ModelController> enemyControllersToRemove =
-            enemyControllers.Where(ec => ec.TryRemoveController()).ToList();
+            enemyControllers.Where(ec => ec.ShouldRemoveController()).ToList();
         instance.AddCollectedControllers(enemyControllersToRemove);
+        enemyControllersToRemove.ForEach(ec => DiscardController(ec));
         enemyControllers.RemoveAll(ec => enemyControllersToRemove.Contains(ec));
 
         // Tree Controllers
         List<ModelController> treeControllersToRemove =
-            treeControllers.Where(tc => tc.TryRemoveController()).ToList();
+            treeControllers.Where(tc => tc.ShouldRemoveController()).ToList();
         instance.AddCollectedControllers(treeControllersToRemove);
+        treeControllersToRemove.ForEach(tc => DiscardController(tc));
         treeControllers.RemoveAll(tc => treeControllersToRemove.Contains(tc));
 
         // Defender Controllers
-        List<ModelController> defenderControllersToRemove = defenderControllers.Where(dc => dc.TryRemoveController()).ToList();
+        List<ModelController> defenderControllersToRemove = defenderControllers.Where(dc => dc.ShouldRemoveController()).ToList();
         instance.AddCollectedControllers(defenderControllersToRemove);
+        defenderControllersToRemove.ForEach(dc => DiscardController(dc));
         defenderControllers.RemoveAll(dc => defenderControllersToRemove.Contains(dc));
 
         // Projectile Controllers
-        List<ModelController> projectileControllersToRemove = projectileControllers.Where(pc => pc.TryRemoveController()).ToList();
+        List<ModelController> projectileControllersToRemove = projectileControllers.Where(pc => pc.ShouldRemoveController()).ToList();
         instance.AddCollectedControllers(projectileControllersToRemove);
+        projectileControllersToRemove.ForEach(pc => DiscardController(pc));
         projectileControllers.RemoveAll(pc => projectileControllersToRemove.Contains(pc));
 
         // Hazard Controllers
-        List<ModelController> hazardControllersToRemove = hazardControllers.Where(hc => hc.TryRemoveController()).ToList();
+        List<ModelController> hazardControllersToRemove = hazardControllers.Where(hc => hc.ShouldRemoveController()).ToList();
         instance.AddCollectedControllers(hazardControllersToRemove);
+        hazardControllersToRemove.ForEach(hc => DiscardController(hc));
         hazardControllers.RemoveAll(hc => hazardControllersToRemove.Contains(hc));
 
         // Collectable Controllers
-        List<ModelController> collectableControllersToRemove = collectableControllers.Where(cc => cc.TryRemoveController()).ToList();
+        List<ModelController> collectableControllersToRemove = collectableControllers.Where(cc => cc.ShouldRemoveController()).ToList();
         instance.AddCollectedControllers(collectableControllersToRemove);
+        collectableControllersToRemove.ForEach(cc => DiscardController(cc));
         collectableControllers.RemoveAll(cc => collectableControllersToRemove.Contains(cc));
 
         // Structure Controllers
-        List<ModelController> structureControllersToRemove = structureControllers.Where(sc => sc.TryRemoveController()).ToList();
+        List<ModelController> structureControllersToRemove = structureControllers.Where(sc => sc.ShouldRemoveController()).ToList();
         instance.AddCollectedControllers(structureControllersToRemove);
+        structureControllersToRemove.ForEach(sc => DiscardController(sc));
         structureControllers.RemoveAll(sc => structureControllersToRemove.Contains(sc));
 
-        // Boat Controllers
-        List<ModelController> boatControllersToRemove = boatControllers.Where(bc => bc.TryRemoveController()).ToList();
-        instance.AddCollectedControllers(boatControllersToRemove);
-        boatControllers.RemoveAll(bc => boatControllersToRemove.Contains(bc));
-
         // Emanation Controllers
+        List<EmanationController> emanationControllersToRemove = emanationControllers.Where(emc => emc.ShouldRemoveController()).ToList();
+        enemyControllersToRemove.ForEach(emc => emc.RemoveController());
         emanationControllers.RemoveAll(emc => emc.ShouldRemoveController());
+    }
+
+    /// <summary>
+    /// Discards the given Controller from the list of active Controllers and updates
+    /// the ModelCounts object
+    /// </summary>
+    /// <param name="controllerToRemove">the controller to discard.</param>
+    private void DiscardController(ModelController controllerToRemove)
+    {
+        counts.SetCount(instance, controllerToRemove.GetModel().TYPE, counts.GetCount(controllerToRemove.GetModel().TYPE) - 1);
+        controllerToRemove.RemoveController();
     }
 
     /// <summary>
@@ -302,7 +329,6 @@ public class ControllerController : MonoBehaviour
         hazardControllers.ForEach(hc => hc.InformOfGameState(gameState));
         collectableControllers.ForEach(cc => cc.InformOfGameState(gameState));
         structureControllers.ForEach(sc => sc.InformOfGameState(gameState));
-        boatControllers.ForEach(bc => bc.InformOfGameState(gameState));
     }
 
     /// <summary>
@@ -400,9 +426,6 @@ public class ControllerController : MonoBehaviour
         // Update StructureControllers
         instance.structureControllers.ForEach(sc => sc.UpdateController());
 
-        // Update BoatControllers
-        instance.boatControllers.ForEach(bc => bc.UpdateController());
-
         // Update EmanationControllers
         instance.emanationControllers.ForEach(emc => emc.UpdateEmanation());
     }
@@ -419,65 +442,6 @@ public class ControllerController : MonoBehaviour
     /// </summary>
     private void UpdateModelCounts()
     {
-        counts.WipeCounts(instance);
-
-        // Find EnemyControllers
-        foreach (ModelController modelController in enemyControllers)
-        {
-            ModelType modelType = modelController.GetModel().TYPE;
-            counts.SetCount(instance, modelType, counts.GetCount(modelType) + 1);
-        }
-
-        // Find DefenderControllers
-        foreach (ModelController modelController in defenderControllers)
-        {
-            ModelType modelType = modelController.GetModel().TYPE;
-            counts.SetCount(instance, modelType, counts.GetCount(modelType) + 1);
-        }
-
-        // Find TreeControllers
-        foreach (ModelController modelController in treeControllers)
-        {
-            ModelType modelType = modelController.GetModel().TYPE;
-            counts.SetCount(instance, modelType, counts.GetCount(modelType) + 1);
-        }
-
-        // Find ProjectileControllers
-        foreach (ModelController modelController in enemyControllers)
-        {
-            ModelType modelType = modelController.GetModel().TYPE;
-            counts.SetCount(instance, modelType, counts.GetCount(modelType) + 1);
-        }
-
-        // Find HazardControllers
-        foreach (ModelController modelController in hazardControllers)
-        {
-            ModelType modelType = modelController.GetModel().TYPE;
-            counts.SetCount(instance, modelType, counts.GetCount(modelType) + 1);
-        }
-
-        // Find CollectableControllers
-        foreach (ModelController modelController in collectableControllers)
-        {
-            ModelType modelType = modelController.GetModel().TYPE;
-            counts.SetCount(instance, modelType, counts.GetCount(modelType) + 1);
-        }
-
-        // Find StructureControllers
-        foreach (ModelController modelController in structureControllers)
-        {
-            ModelType modelType = modelController.GetModel().TYPE;
-            counts.SetCount(instance, modelType, counts.GetCount(modelType) + 1);
-        }
-
-        // Find BoatControllers
-        foreach (ModelController modelController in boatControllers)
-        {
-            ModelType modelType = modelController.GetModel().TYPE;
-            counts.SetCount(instance, modelType, counts.GetCount(modelType) + 1);
-        }
-
-        // Update all
         instance.enemyControllers.ForEach(c => c.InformOfModelCounts(counts));
         instance.defenderControllers.ForEach(c => c.InformOfModelCounts(counts));
         instance.treeControllers.ForEach(c => c.InformOfModelCounts(counts));
@@ -485,6 +449,88 @@ public class ControllerController : MonoBehaviour
         instance.hazardControllers.ForEach(c => c.InformOfModelCounts(counts));
         instance.collectableControllers.ForEach(c => c.InformOfModelCounts(counts));
         instance.structureControllers.ForEach(c => c.InformOfModelCounts(counts));
-        instance.boatControllers.ForEach(c => c.InformOfModelCounts(counts));
+        ShopManager.InformOfModelCounts(counts);
+    }
+
+
+    /// <summary>
+    /// Called when the player buys a Model from the shop. Makes its controller
+    /// and handles any upgrades needed.
+    /// </summary>
+    /// <param name="purchasedModel">the Model that was just purchased.</param>
+    private void OnPurchaseModelFromShop(Model purchasedModel)
+    {
+        // Handle upgrades
+        int numTierOne = GetDefenderCountAtTier(purchasedModel.TYPE, 1);
+        int numTierTwo = GetDefenderCountAtTier(purchasedModel.TYPE, 2);
+        MakeController(purchasedModel);
+        if (upgradeableTypes.Contains(purchasedModel.TYPE))
+        {
+            if (numTierOne >= 2 && numTierTwo >= 2)
+            {
+                PlacementController.UpgradeModelPlacing();
+                PlacementController.UpgradeModelPlacing();
+                RemoveAllDefendersOfTypeAtTier(purchasedModel.TYPE, 1);
+                RemoveAllDefendersOfTypeAtTier(purchasedModel.TYPE, 2);
+            }
+
+            else if (numTierOne >= 2)
+            {
+                PlacementController.UpgradeModelPlacing();
+                RemoveAllDefendersOfTypeAtTier(purchasedModel.TYPE, 1);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Removes all Defenders of the given type and tier from the scene.
+    /// </summary>
+    /// <param name="defenderType">the type of Defender to remove</param>
+    /// <param name="tier">the tier of Defender to remove</param>
+    private void RemoveAllDefendersOfTypeAtTier(ModelType defenderType, int tier)
+    {
+        HashSet<ModelController> controllersToRemove = new HashSet<ModelController>();
+
+        foreach (ModelController dc in defenderControllers)
+        {
+            if (dc.GetModel().TYPE != defenderType) continue;
+            Defender defender = dc.GetModel() as Defender;
+            if (defender == null) continue;
+            if (!defender.IsPlaced()) continue;
+            //Debug.Log("Defender tier: " + defender.GetTier() + " target tier: " + tier);
+            if(defender.GetTier() != tier) continue;
+
+            TileGrid.RemoveFromTile(defender.GetPlacedCoords());
+            controllersToRemove.Add(dc);
+        }
+
+        foreach (ModelController dc in controllersToRemove)
+        {
+            DiscardController(dc);
+            defenderControllers.Remove(dc);
+        }
+    }
+
+    /// <summary>
+    /// Returns the number of Defenders of the given type and tier.
+    /// </summary>
+    /// <param name="defenderType">the type to get</param>
+    /// <param name="tier">the tier to get</param>
+    /// <returns>the number of Defenders of the given type and tier </returns>
+    private int GetDefenderCountAtTier(ModelType defenderType, int tier)
+    {
+        int count = 0;
+
+        foreach(ModelController defenderController in defenderControllers)
+        {
+            if(defenderController == null) continue;
+            Defender defender = defenderController.GetModel() as Defender;
+            if(defender == null) continue;
+
+            //Debug.Log("Defender type: " + defender.TYPE + " Defender tier: " + defender.GetTier());
+            if(defender.TYPE == defenderType && defender.GetTier() == tier) count++;
+        }
+
+        return count;
     }
 }

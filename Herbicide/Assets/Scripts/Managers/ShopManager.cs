@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using System.Linq;
 using UnityEngine.UI;
+using static Model;
 
 /// <summary>
 /// Manages the Shop: decides when to spawn ShopBoats and which
@@ -47,6 +48,21 @@ public class ShopManager : MonoBehaviour
     /// </summary>
     private static readonly int REROLL_COST = 50;
 
+    /// <summary>
+    /// The number of active Models of each type.
+    /// </summary>
+    private ModelCounts counts;
+
+    /// <summary>
+    /// Defines a delegate for buying a Model from the shop.
+    /// </summary>
+    /// <param name="modelType">The Model that was bought.</param>
+    public delegate void BuyDefenderDelegate(Model purchasedModel);
+
+    /// <summary>
+    /// Event triggered when a Model is bought from the Shop.
+    /// </summary>
+    public event BuyDefenderDelegate OnBuyModel;
 
 
     /// <summary>
@@ -65,6 +81,13 @@ public class ShopManager : MonoBehaviour
         instance.cardPool = new Dictionary<ModelType, int>();
 
     }
+
+    /// <summary>
+    /// Informs this ShopManager of the number of active Models of
+    /// each type.
+    /// </summary>
+    /// <param name="counts">The number of active Models of each ModelType.</param>
+    public static void InformOfModelCounts(ModelCounts counts) { instance.counts = counts; }
 
     /// <summary>
     /// Main update loop for the ShopManager.
@@ -183,6 +206,9 @@ public class ShopManager : MonoBehaviour
         PlacementController.StartPlacingObject(slotModel);
         EconomyController.Withdraw(clickedSlot.Buy(EconomyController.GetBalance()));
 
+        // Let the ControllerController bring this Model to life
+        OnBuyModel?.Invoke(slotModel);
+
         bool allSlotsEmpty = true;
         foreach (ShopSlot shopSlot in shopSlots) { if (!shopSlot.Empty()) allSlotsEmpty = false; }
         if (allSlotsEmpty) Reroll(true);
@@ -195,4 +221,16 @@ public class ShopManager : MonoBehaviour
     /// the shop if they have enough money.
     /// </summary>
     public void ClickRerollButton() { Reroll(false); }
+
+
+    /// <summary>
+    /// Subscribes a handler (the LevelController) to the request upgrade event.
+    /// </summary>
+    /// <param name="handler">The handler to subscribe.</param>
+    public static void SubscribeToRequestUpgradeDelegate(BuyDefenderDelegate handler)
+    {
+        Assert.IsNotNull(handler, "Handler is null.");
+        instance.OnBuyModel += handler;
+    }
+
 }

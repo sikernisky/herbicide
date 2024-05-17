@@ -3669,7 +3669,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currencyText: {fileID: 1344936708}
-  startingMoney: 200
+  startingMoney: 900
 --- !u!1 &2074973554
 GameObject:
   m_ObjectHideFlags: 0

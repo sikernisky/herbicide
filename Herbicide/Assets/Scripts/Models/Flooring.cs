@@ -174,7 +174,7 @@ public abstract class Flooring : Model, ISurface
         candidate.transform.localScale = candidate.GetPlacementScale();
         candidate.transform.SetParent(transform);
         if (candidate.OCCUPIER) occupant = candidate;
-        candidate.OnPlace();
+        candidate.OnPlace(new Vector2Int(GetX(), GetY()));
         SetTilingIndex(GetTilingIndex(neighbors));
     }
 

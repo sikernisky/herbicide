@@ -213,15 +213,19 @@ public abstract class ModelController
     /// </summary>
     /// <returns>true if this Controller should be removed; otherwise,
     /// false. </returns>
-    public bool TryRemoveController()
+    public bool ShouldRemoveController()
     {
         // Not ready to remove yet.
         if (ValidModel()) return false;
 
-        // Model is invalid; remove it.
-        DestroyAndRemoveModel();
+        // Ready.
         return true;
     }
+
+    /// <summary>
+    /// Removes this Controller, destroying its Model.
+    /// </summary>
+    public void RemoveController() { DestroyAndRemoveModel(); }
 
     /// <summary>
     /// Returns a new list of ModelControllers that this ModelController has
@@ -515,6 +519,5 @@ public abstract class ModelController
         // Calculate the new scale
         Vector3 newScale = Vector3.Lerp(new Vector3(0.1f, 0.1f, 0.1f), Vector3.one, scaleFraction);
         GetModel().transform.localScale = newScale;
-        
     }
 }

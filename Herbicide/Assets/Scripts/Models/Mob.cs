@@ -119,11 +119,7 @@ public abstract class Mob : PlaceableObject
     /// <summary>
     /// Called when this Mob activates in the scene.
     /// </summary>
-    public virtual void OnSpawn()
-    {
-        spawned = true;
-        ResetModel();
-    }
+    public virtual void OnSpawn() { spawned = true; }
 
     /// <summary>
     /// Returns this Mob's spawn position.
@@ -242,6 +238,4 @@ public abstract class Mob : PlaceableObject
         ResetMovementSpeed();
         ResetAttackSpeed();
     }
-
-
 }

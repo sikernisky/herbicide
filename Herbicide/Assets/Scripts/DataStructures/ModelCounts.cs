@@ -15,6 +15,11 @@ public class ModelCounts
     private Dictionary<ModelType, int> data;
 
     /// <summary>
+    /// The number of each tier of ModelType (Defenders).
+    /// </summary>
+    private Dictionary<ModelType, int> tierCounts;
+
+    /// <summary>
     /// Creates a new MobCounts object. Initializes the
     /// dictionary.
     /// </summary>
@@ -31,6 +36,7 @@ public class ModelCounts
         Assert.IsNotNull(controller);
         data[type] = count;
     }
+
 
     /// <summary>
     /// Returns the number of active Models of some ModelType.

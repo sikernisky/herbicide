@@ -21,8 +21,6 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     private bool spawnStateDone;
 
 
-
-
     /// <summary>
     /// Makes a new DefenderController for a Defender.
     /// </summary>
@@ -136,12 +134,8 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     /// </summary>
     private void UpdateSynergies()
     {
-        ModelCounts counts = GetModelCounts();
-
-        if(counts.GetCount(ModelType.SQUIRREL) == 2)
-        {
-            BuffAttackSpeed(2);
-        }
+/*        ModelCounts counts = GetModelCounts();
+        if(counts.GetCount(ModelType.SQUIRREL) == 2) BuffAttackSpeed(2);*/
     }
 }
 

@@ -133,7 +133,7 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
             if (nexusTarget != null)
             {
                 if (GetEnemy().Exited()) nexusTarget.CashIn();
-                else TileGrid.PlaceOnTile(new Vector2Int(GetEnemy().GetX(), GetEnemy().GetY()), nexusTarget, true);
+                else TileGrid.PlaceOnTile(new Vector2Int(GetEnemy().GetX(), GetEnemy().GetY()), nexusTarget);
             }
 
         }

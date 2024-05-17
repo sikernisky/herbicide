@@ -284,7 +284,7 @@ public abstract class Tile : Model, ISurface
         candidate.transform.position = transform.position;
         candidate.transform.localScale = candidate.GetPlacementScale();
         candidate.transform.SetParent(transform);
-        candidate.OnPlace();
+        candidate.OnPlace(new Vector2Int(GetX(), GetY()));
         if (candidate.OCCUPIER) SetOccupant(candidate);
 
         NexusHole nexusHole = candidate as NexusHole;
@@ -384,6 +384,7 @@ public abstract class Tile : Model, ISurface
         Assert.IsNotNull(neighbors, "Array of neighbors is null.");
 
         if (Floored()) return GetFlooring().CanRemove(neighbors);
+
         if (!Occupied()) return false;
 
         return true;

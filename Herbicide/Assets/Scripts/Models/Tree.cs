@@ -112,6 +112,7 @@ public abstract class Tree : Mob, ISurface
         candidate.transform.localPosition =
             new Vector3(DEFENDER_OFFSET_X, DEFENDER_OFFSET_Y, 1);
         candidate.transform.localScale = defender.GetPlacementScale();
+        candidate.OnPlace(new Vector2Int(GetX(), GetY()));
     }
 
     /// <summary>
