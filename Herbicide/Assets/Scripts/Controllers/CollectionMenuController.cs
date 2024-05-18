@@ -75,7 +75,7 @@ public class CollectionMenuController : MonoBehaviour
         CheckInputEvents();
 
         //(3) Update Canvas.
-        CanvasController.UpdateCanvas(SceneController.GetFPS());
+        CanvasController.UpdateCanvas();
 
         //(4) Update SkillSlotControllers.
         instance.skillSlotControllers.ForEach(ssc => ssc.UpdateSlot(instance.unlockedSkills));

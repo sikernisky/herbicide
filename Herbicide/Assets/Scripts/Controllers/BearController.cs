@@ -178,7 +178,7 @@ public class BearController : DefenderController<BearController.BearState>
             EmanationController.EmanationType.BEAR_CHOMP,
             1,
             GetTarget().GetAttackPosition());
-        AddEmanationControllerForExtrication(chompEmanationController);
+        ControllerController.AddEmanationController(chompEmanationController);
         GetTarget().AdjustHealth(-GetBear().CHOMP_DAMAGE);
 
         // Reset attack animation.

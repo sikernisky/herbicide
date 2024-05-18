@@ -68,7 +68,7 @@ public class EnemyManager : MonoBehaviour
                 instance.spawnTimes.Add(spawnTime);
                 enemyComp.SetSpawnTime(spawnTime);
                 enemyComp.SetSpawnPos(spawnWorldPos);
-                ControllerController.MakeController(enemyComp);
+                ControllerController.MakeModelController(enemyComp);
             }
         }
 

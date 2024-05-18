@@ -121,6 +121,15 @@ public abstract class Model : MonoBehaviour
     public void RefreshRenderer() { modelRenderer = GetComponent<SpriteRenderer>(); }
 
     /// <summary>
+    /// Sets this Model's sprite mask interaction.
+    /// </summary>
+    /// <param name="interaction">the interaction to set to.</param>
+    public void SetMaskInteraction(SpriteMaskInteraction interaction)
+    {
+        modelRenderer.maskInteraction = interaction;
+    }
+
+    /// <summary>
     /// Returns the Sprite occupying this Model's SpriteRenderer
     /// component.
     /// </summary>

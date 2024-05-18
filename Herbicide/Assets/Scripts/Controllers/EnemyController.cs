@@ -155,7 +155,11 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     /// <summary>
     /// Sets the EnemyController as popped out of a NexusHole.
     /// </summary>
-    protected void SetPoppedOutOfHole() { poppedOutOfHole = true; }
+    protected void SetPoppedOutOfHole() 
+    { 
+        poppedOutOfHole = true;
+        GetEnemy().SetMaskInteraction(SpriteMaskInteraction.None);
+    }
 
     /// <summary>
     /// Returns true if the Enemy has popped out of a NexusHole.

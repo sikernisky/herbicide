@@ -1,10 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
-using System.Linq;
 using UnityEngine.UI;
-using static Model;
 
 /// <summary>
 /// Manages the Shop: decides when to spawn ShopBoats and which
@@ -49,11 +47,6 @@ public class ShopManager : MonoBehaviour
     private static readonly int REROLL_COST = 50;
 
     /// <summary>
-    /// The number of active Models of each type.
-    /// </summary>
-    private ModelCounts counts;
-
-    /// <summary>
     /// Defines a delegate for buying a Model from the shop.
     /// </summary>
     /// <param name="modelType">The Model that was bought.</param>
@@ -63,6 +56,17 @@ public class ShopManager : MonoBehaviour
     /// Event triggered when a Model is bought from the Shop.
     /// </summary>
     public event BuyDefenderDelegate OnBuyModel;
+
+    /// <summary>
+    /// true if the shop has been loaded; false otherwise.
+    /// </summary>
+    private bool shopLoaded;
+
+    /// <summary>
+    /// true if the shop is active; false if the upgrades are active.
+    /// </summary>
+    private bool shopActive;
+
 
 
     /// <summary>
@@ -81,13 +85,7 @@ public class ShopManager : MonoBehaviour
         instance.cardPool = new Dictionary<ModelType, int>();
 
     }
-
-    /// <summary>
-    /// Informs this ShopManager of the number of active Models of
-    /// each type.
-    /// </summary>
-    /// <param name="counts">The number of active Models of each ModelType.</param>
-    public static void InformOfModelCounts(ModelCounts counts) { instance.counts = counts; }
+ 
 
     /// <summary>
     /// Main update loop for the ShopManager.
@@ -101,7 +99,6 @@ public class ShopManager : MonoBehaviour
         // Check & Handle ShopCard click
         foreach (ShopSlot shopSlot in instance.shopSlots)
         {
-            int bal = EconomyController.GetBalance();
             if (shopSlot.SlotClicked()) instance.ClickShopSlotButton(shopSlot.GetSlotIndex());
         }
 
@@ -125,29 +122,52 @@ public class ShopManager : MonoBehaviour
     /// the Shop can sell. If null, the Shop can sell all types.</param>
     public static void LoadShop(HashSet<ModelType> modelTypes = null)
     {
-        int slotCounter = 0;
-        foreach (ShopSlot shopSlot in instance.shopSlots)
-        {
-            shopSlot.SetupSlot(shopSlot.GetComponent<RectTransform>().position, slotCounter);
-            slotCounter++;
-        }
+        if(instance.shopActive) return;
 
-        if (modelTypes == null)
+        if (!instance.shopLoaded)
         {
-            modelTypes = new HashSet<ModelType>(){
+            int slotCounter = 0;
+            foreach (ShopSlot shopSlot in instance.shopSlots)
+            {
+                shopSlot.SetupSlot(shopSlot.GetComponent<RectTransform>().position, slotCounter);
+                slotCounter++;
+            }
+
+            if (modelTypes == null)
+            {
+                modelTypes = new HashSet<ModelType>(){
                 ModelType.SHOP_CARD_SQUIRREL,
                 ModelType.SHOP_CARD_BEAR
             };
-        }
+            }
 
-        Assert.IsNotNull(modelTypes);
-        foreach (ModelType modelType in modelTypes)
+            Assert.IsNotNull(modelTypes);
+            foreach (ModelType modelType in modelTypes)
+            {
+                instance.cardPool.Add(modelType, 5); //5 is placeholder.
+            }
+
+            instance.Reroll(true);
+        }
+        else
         {
-            instance.cardPool.Add(modelType, 5); //5 is placeholder.
+            instance.shopSlots.ForEach(ss => ss.EnableSlot());
         }
 
-        instance.Reroll(true);
+
+        instance.shopLoaded = true;
+        instance.shopActive = true;
     }
+
+    public static void LoadUpgrades()
+    {
+        if(!instance.shopActive) return;
+
+        instance.shopSlots.ForEach(ss => ss.DisableSlot());
+
+
+    }
+
 
     /// <summary>
     /// Rerolls the shop, replacing every ShopSlot with a new ShopCard
@@ -224,13 +244,12 @@ public class ShopManager : MonoBehaviour
 
 
     /// <summary>
-    /// Subscribes a handler (the LevelController) to the request upgrade event.
+    /// Subscribes a handler (the ControllerController) to the request upgrade event.
     /// </summary>
     /// <param name="handler">The handler to subscribe.</param>
-    public static void SubscribeToRequestUpgradeDelegate(BuyDefenderDelegate handler)
+    public static void SubscribeToBuyDefenderDelegate(BuyDefenderDelegate handler)
     {
         Assert.IsNotNull(handler, "Handler is null.");
         instance.OnBuyModel += handler;
     }
-
 }

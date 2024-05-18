@@ -110,8 +110,6 @@ public class BasicTreeController : TreeController<BasicTreeController.BasicTreeS
     {
         if (GetState() != BasicTreeState.IDLE) return;
         if (!ValidModel()) return;
-
-        EmitResources();
     }
 
     /// <summary>
@@ -132,22 +130,4 @@ public class BasicTreeController : TreeController<BasicTreeController.BasicTreeS
     public override void ResetAnimationCounter() { throw new System.NotImplementedException(); }
 
     //---------------------END STATE LOGIC-----------------------//
-
-    /// <summary>
-    /// Drops one prefab of the BasicTree's resource.
-    /// </summary>
-    protected override void DropResources()
-    {
-        GameObject dewPrefab = DewFactory.GetDewPrefab();
-        Dew dewComp = dewPrefab.GetComponent<Dew>();
-        Assert.IsNotNull(dewComp);
-        Vector3 dropPosition = new Vector3(
-            GetTree().GetX() + GetTree().DEFENDER_OFFSET_X,
-            GetTree().GetY() + GetTree().DEFENDER_OFFSET_Y,
-            1
-        );
-        int dewValueFromTree = 25; // TEMP
-        DewController dewController = new DewController(dewComp, dropPosition, dewValueFromTree);
-        AddModelControllerForExtrication(dewController);
-    }
 }

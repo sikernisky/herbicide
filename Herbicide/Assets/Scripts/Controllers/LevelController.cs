@@ -112,7 +112,7 @@ public class LevelController : MonoBehaviour
         TileGrid.UpdateTiles();
 
         //(9) Update Canvas.
-        CanvasController.UpdateCanvas(SceneController.GetFPS());
+        CanvasController.UpdateCanvas();
     }
 
     /// <summary>
@@ -212,7 +212,8 @@ public class LevelController : MonoBehaviour
     private void CheckInputEvents()
     {
         //Always check for these input events
-        PlacementController.CheckPlacementEvents(InputController.DidEscapeDown());
+        PlacementController.UpdatePlacementEvents(InputController.DidEscapeDown());
+        PlacementController.UpdateCombinationEvents();
 
         //Debug Toggle
         debugOn = InputController.DidDebugDown() ? !debugOn : debugOn;

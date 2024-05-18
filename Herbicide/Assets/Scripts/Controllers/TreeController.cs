@@ -9,32 +9,16 @@ using UnityEngine.Assertions;
 /// </summary>
 public abstract class TreeController<T> : MobController<T> where T : Enum
 {
-
-    /// <summary>
-    /// Number of Trees created in the level so far.
-    /// </summary>
-    private static int NUM_TREES;
-
     /// <summary>
     /// The maximum number of targets a Tree can select at once.
     /// </summary>
     protected override int MAX_TARGETS => 0;
 
     /// <summary>
-    /// The rate at which the Tree drops it resource.
-    /// </summary>
-    private float resourceDropInterval;
-
-    /// <summary>
-    /// Number of seconds since the Tree last dropped a resource.
-    /// </summary>
-    private float timeSinceLastDrop;
-
-    /// <summary>
     /// Makes a new TreeController for a Tree.
     /// </summary>
     /// <param name="tree">The Tree controlled by this TreeController.</param>
-    public TreeController(Tree tree) : base(tree) { NUM_TREES++; }
+    public TreeController(Tree tree) : base(tree) { }
 
     /// <summary>
     /// Returns this TreeController's Tree model.
@@ -64,24 +48,6 @@ public abstract class TreeController<T> : MobController<T> where T : Enum
     protected override bool CanTarget(Model target) { return false; }
 
     /// <summary>
-    /// Different Trees output different resources; outputs the
-    /// correct resource for the Tree model.
-    /// </summary>
-    protected void EmitResources()
-    {
-        if (!ValidModel()) return;
-        if (GetTree().GetResourceDropRate() <= 0f) return;
-
-        resourceDropInterval = 1f / GetTree().GetResourceDropRate();
-        timeSinceLastDrop += Time.deltaTime;
-        if (timeSinceLastDrop >= resourceDropInterval)
-        {
-            DropResources();
-            timeSinceLastDrop = 0;
-        }
-    }
-
-    /// <summary>
     /// Updates the Model's sorting order so that it appears behind Models
     /// before it and before Models behind it.
     /// </summary>
@@ -93,9 +59,4 @@ public abstract class TreeController<T> : MobController<T> where T : Enum
         if (GetTree().Occupied()) layer -= 1;
         GetModel().SetSortingOrder(layer);
     }
-
-    /// <summary>
-    /// Drops one prefab of the Tree's resource.
-    /// </summary> <summary>
-    protected abstract void DropResources();
 }

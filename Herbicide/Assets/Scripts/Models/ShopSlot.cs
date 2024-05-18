@@ -166,4 +166,20 @@ public class ShopSlot : MonoBehaviour
         Assert.IsFalse(Empty());
         occupant.TurnLight();
     }
+
+    /// <summary>
+    /// Disables this ShopSlot.
+    /// </summary>
+    public void DisableSlot()
+    {
+        gameObject.SetActive(false);
+    }
+
+    /// <summary>
+    /// Enables this ShopSlot.
+    /// </summary>
+    public void EnableSlot()
+    {
+        gameObject.SetActive(true);
+    }
 }

@@ -189,7 +189,6 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         // Animation Logic.
 
         FaceTarget();
-
         SetAnimation(GetSquirrel().ATTACK_ANIMATION_DURATION, SquirrelFactory.GetAttackTrack(GetSquirrel().GetDirection()));
 
         if (!CanAttack()) return;
@@ -201,7 +200,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         Assert.IsNotNull(acornComp);
         Vector3 targetPosition = GetTarget().GetAttackPosition();
         AcornController acornController = new AcornController(acornComp, GetSquirrel().GetPosition(), targetPosition);
-        AddModelControllerForExtrication(acornController);
+        ControllerController.AddModelController(acornController);
 
         // Reset attack animation.
         GetSquirrel().RestartAttackCooldown();

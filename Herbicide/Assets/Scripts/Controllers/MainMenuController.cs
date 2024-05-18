@@ -57,7 +57,7 @@ public class MainMenuController : MonoBehaviour
         CheckInputEvents();
 
         //(3) Update Canvas.
-        CanvasController.UpdateCanvas(SceneController.GetFPS());
+        CanvasController.UpdateCanvas();
     }
 
 

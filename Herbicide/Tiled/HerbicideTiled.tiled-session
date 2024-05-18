@@ -43,8 +43,8 @@
             "scale": 4,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 315.875,
-                "y": 165.5
+                "x": 239.875,
+                "y": 160
             }
         },
         "Tilemaps/level2.tmx": {
@@ -56,8 +56,8 @@
             "scale": 2,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 238.25,
-                "y": 158.5
+                "x": 239.75,
+                "y": 160
             }
         },
         "Tilemaps/level3.tmx": {
@@ -69,8 +69,8 @@
             "scale": 3,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 219.5,
-                "y": 153.33333333333331
+                "x": 207.83333333333331,
+                "y": 143.99999999999997
             }
         },
         "Tilemaps/level4.tmx": {

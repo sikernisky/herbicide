@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.UI;
 
 /// <summary>
 /// Controller that controls the scene's controllers. Handles
@@ -74,6 +75,8 @@ public class ControllerController : MonoBehaviour
     private HashSet<ModelType> upgradeableTypes;
 
 
+
+
     /// <summary>
     /// Finds and sets the ControllerController singleton. Also initializes the
     /// controller lists.
@@ -106,20 +109,28 @@ public class ControllerController : MonoBehaviour
             ModelType.BEAR
         };
 
-        ShopManager.SubscribeToRequestUpgradeDelegate(instance.OnPurchaseModelFromShop);
+        ShopManager.SubscribeToBuyDefenderDelegate(instance.OnPurchaseModelFromShop);
+        PlacementController.SubscribeToFinishCombiningDelegate(instance.OnFinishCombining);
     }
 
     /// <summary>
     /// Makes a Controller of the given ModelType and adds it to the list
     /// of active controllers that are updated and tracked. 
     /// </summary>
-    /// <param name="modelType">The Model that needs a ModelController.</param>
-    public static void MakeController(Model model)
+    /// <param name="model">The Model that needs a ModelController.</param>
+    public static void MakeModelController(Model model)
     {
+        bool needsParameters = false;
+        if(model as Projectile != null) needsParameters = true;
+        if(model as Collectable != null) needsParameters = true;
+        if (needsParameters) throw new Exception("You need to use AddModelController() for a " +
+            "model with type " + model.TYPE + " that requires parameters.");
+        bool hasNoController = false;
+        if(model as Tile != null) hasNoController = true;
+        if(hasNoController) throw new Exception("The model with type " + model.TYPE + " has no controller.");
+
         switch (model.TYPE)
         {
-            case ModelType.ACORN:
-                break;
             case ModelType.BASIC_TREE:
                 BasicTree basicTree = model as BasicTree;
                 Assert.IsNotNull(basicTree, "BasicTree is null");
@@ -131,10 +142,6 @@ public class ControllerController : MonoBehaviour
                 Assert.IsNotNull(bear);
                 BearController bc = new BearController(bear);
                 instance.defenderControllers.Add(bc);
-                break;
-            case ModelType.DEW:
-                break;
-            case ModelType.GRASS_TILE:
                 break;
             case ModelType.KUDZU:
                 Kudzu kudzu = model as Kudzu;
@@ -154,10 +161,6 @@ public class ControllerController : MonoBehaviour
                 NexusHoleController nhc = new NexusHoleController(nexusHole);
                 instance.structureControllers.Add(nhc);
                 break;
-            case ModelType.SEED_TOKEN:
-                break;
-            case ModelType.SHORE_TILE:
-                break;
             case ModelType.SOIL_FLOORING:
                 SoilFlooring soilFlooring = model as SoilFlooring;
                 Assert.IsNotNull(soilFlooring);
@@ -176,11 +179,35 @@ public class ControllerController : MonoBehaviour
                 WallController swc = new WallController(stonewall);
                 instance.structureControllers.Add(swc);
                 break;
-            case ModelType.WATER_TILE:
-                break;
         }
 
         instance.counts.SetCount(instance, model.TYPE, instance.counts.GetCount(model.TYPE) + 1);
+    }
+
+    /// <summary>
+    /// Adds a pre-created ModelController to the list of active controllers.
+    /// </summary>
+    /// <param name="modelController">the ModelController to add</param>
+    public static void AddModelController(ModelController modelController)
+    {
+        Assert.IsNotNull(modelController, "ModelController is null.");
+
+        Model model = modelController.GetModel();
+        if (model as Projectile != null) instance.projectileControllers.Add(modelController);
+        else if(model as Collectable != null) instance.collectableControllers.Add(modelController);
+        else if(model as Tile != null) return;
+        else throw new Exception("ModelController has no list to add to.");
+    }
+
+    /// <summary>
+    /// Adds an EmanationController to the list of active EmanationControllers.
+    /// </summary>
+    /// <param name="emanationController">The EmanationController to add. </param>
+    public static void AddEmanationController(EmanationController emanationController)
+    {
+        Assert.IsNotNull(emanationController, "EmanationController is null.");
+
+        instance.emanationControllers.Add(emanationController);
     }
 
     /// <summary>
@@ -201,38 +228,6 @@ public class ControllerController : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns the number of alive, active Trees
-    /// </summary>
-    /// <returns>the number of alive, active Trees </returns>
-    public static int NumActiveTrees()
-    {
-        int counter = 0;
-        foreach (ModelController mc in instance.treeControllers)
-        {
-            if (mc == null || !mc.ValidModel()) continue;
-            Tree model = mc.GetModel() as Tree;
-            if (model == null) continue;
-            if (!model.Dead()) counter++;
-        }
-        return counter;
-    }
-
-    /// <summary>
-    /// Returns the number of alive, active Squirrels.
-    /// </summary>
-    /// <returns>the number of alive, active Squirrels.</returns>
-    public static int NumActiveSquirrels()
-    {
-        int counter = 0;
-        foreach (ModelController mc in instance.defenderControllers)
-        {
-            if (mc == null || !mc.ValidModel()) continue;
-            if (mc.GetModel() as Squirrel != null) counter++;
-        }
-        return counter;
-    }
-
-    /// <summary>
     /// Returns the number of alive, active Nexii.
     /// </summary>
     /// <returns>the number of alive, active Nexii.</returns>
@@ -247,7 +242,6 @@ public class ControllerController : MonoBehaviour
         return counter;
     }
 
-
     /// <summary>
     /// Attempts to remove any unused or defunct Controllers. 
     /// For those Controllers that are to be removed, extricates any
@@ -258,44 +252,37 @@ public class ControllerController : MonoBehaviour
         // Enemy Controllers
         List<ModelController> enemyControllersToRemove =
             enemyControllers.Where(ec => ec.ShouldRemoveController()).ToList();
-        instance.AddCollectedControllers(enemyControllersToRemove);
         enemyControllersToRemove.ForEach(ec => DiscardController(ec));
         enemyControllers.RemoveAll(ec => enemyControllersToRemove.Contains(ec));
 
         // Tree Controllers
         List<ModelController> treeControllersToRemove =
             treeControllers.Where(tc => tc.ShouldRemoveController()).ToList();
-        instance.AddCollectedControllers(treeControllersToRemove);
         treeControllersToRemove.ForEach(tc => DiscardController(tc));
         treeControllers.RemoveAll(tc => treeControllersToRemove.Contains(tc));
 
         // Defender Controllers
         List<ModelController> defenderControllersToRemove = defenderControllers.Where(dc => dc.ShouldRemoveController()).ToList();
-        instance.AddCollectedControllers(defenderControllersToRemove);
         defenderControllersToRemove.ForEach(dc => DiscardController(dc));
         defenderControllers.RemoveAll(dc => defenderControllersToRemove.Contains(dc));
 
         // Projectile Controllers
         List<ModelController> projectileControllersToRemove = projectileControllers.Where(pc => pc.ShouldRemoveController()).ToList();
-        instance.AddCollectedControllers(projectileControllersToRemove);
         projectileControllersToRemove.ForEach(pc => DiscardController(pc));
         projectileControllers.RemoveAll(pc => projectileControllersToRemove.Contains(pc));
 
         // Hazard Controllers
         List<ModelController> hazardControllersToRemove = hazardControllers.Where(hc => hc.ShouldRemoveController()).ToList();
-        instance.AddCollectedControllers(hazardControllersToRemove);
         hazardControllersToRemove.ForEach(hc => DiscardController(hc));
         hazardControllers.RemoveAll(hc => hazardControllersToRemove.Contains(hc));
 
         // Collectable Controllers
         List<ModelController> collectableControllersToRemove = collectableControllers.Where(cc => cc.ShouldRemoveController()).ToList();
-        instance.AddCollectedControllers(collectableControllersToRemove);
         collectableControllersToRemove.ForEach(cc => DiscardController(cc));
         collectableControllers.RemoveAll(cc => collectableControllersToRemove.Contains(cc));
 
         // Structure Controllers
         List<ModelController> structureControllersToRemove = structureControllers.Where(sc => sc.ShouldRemoveController()).ToList();
-        instance.AddCollectedControllers(structureControllersToRemove);
         structureControllersToRemove.ForEach(sc => DiscardController(sc));
         structureControllers.RemoveAll(sc => structureControllersToRemove.Contains(sc));
 
@@ -331,62 +318,6 @@ public class ControllerController : MonoBehaviour
         structureControllers.ForEach(sc => sc.InformOfGameState(gameState));
     }
 
-    /// <summary>
-    /// Runs through the list of uncollected ModelControllers to identify
-    /// their most downcasted version. Adds it to the correct list.
-    /// </summary>
-    /// <param name="controllers">The list of ModelControllers to filter.</param>
-    private void AddCollectedControllers(List<ModelController> controllers)
-    {
-
-        List<ModelController> defControllers = new List<ModelController>();
-        List<ModelController> emyControllers = new List<ModelController>();
-        List<ModelController> treControllers = new List<ModelController>();
-        List<ModelController> proControllers = new List<ModelController>();
-        List<ModelController> hazControllers = new List<ModelController>();
-        List<ModelController> colControllers = new List<ModelController>();
-        List<EmanationController> emControllers = new List<EmanationController>();
-
-        foreach (ModelController controller in controllers)
-        {
-            if (!controller.NeedsExtricating()) continue;
-
-            // First do ModelControllers
-            List<ModelController> extricatedModelControllers =
-                controller.ExtricateModelControllers();
-            foreach (ModelController extricatedController in extricatedModelControllers)
-            {
-                if (extricatedController.GetModel() as Defender != null)
-                    defControllers.Add(extricatedController);
-                else if (extricatedController.GetModel() as Enemy != null)
-                    emyControllers.Add(extricatedController);
-                else if (extricatedController.GetModel() as Projectile != null)
-                    proControllers.Add(extricatedController);
-                else if (extricatedController.GetModel() as Hazard != null)
-                    hazControllers.Add(extricatedController);
-                else if (extricatedController.GetModel() as Tree != null)
-                    treControllers.Add(extricatedController);
-                else if (extricatedController.GetModel() as Collectable != null)
-                    colControllers.Add(extricatedController);
-            }
-
-            // Then do Emanations
-            List<EmanationController> extricatedEmanationControllers =
-                controller.ExtricateEmanationControllers();
-            foreach (EmanationController extricatedController in extricatedEmanationControllers)
-            {
-                emControllers.Add(extricatedController);
-            }
-        }
-
-        defenderControllers.AddRange(defControllers);
-        enemyControllers.AddRange(emyControllers);
-        treeControllers.AddRange(treControllers);
-        hazardControllers.AddRange(hazControllers);
-        projectileControllers.AddRange(proControllers);
-        collectableControllers.AddRange(colControllers);
-        emanationControllers.AddRange(emControllers);
-    }
 
     /// <summary>
     /// Updates all Controllers managed by the ControllerController.
@@ -400,27 +331,21 @@ public class ControllerController : MonoBehaviour
         instance.UpdateModelCounts();
 
         // Update EnemyControllers
-        instance.AddCollectedControllers(instance.enemyControllers);
         instance.enemyControllers.ForEach(ec => ec.UpdateController());
 
         // Update DefenderControllers
-        instance.AddCollectedControllers(instance.defenderControllers);
         instance.defenderControllers.ForEach(dc => dc.UpdateController());
 
         // Update TreeControllers
-        instance.AddCollectedControllers(instance.treeControllers);
         instance.treeControllers.ForEach(tc => tc.UpdateController());
 
         // Update ProjectileControllers
-        instance.AddCollectedControllers(instance.projectileControllers);
         instance.projectileControllers.ForEach(pc => pc.UpdateController());
 
         // Update HazardControllers
-        instance.AddCollectedControllers(instance.hazardControllers);
         instance.hazardControllers.ForEach(hc => hc.UpdateController());
 
         // Update CollectableControllers
-        instance.AddCollectedControllers(instance.collectableControllers);
         instance.collectableControllers.ForEach(cc => cc.UpdateController());
 
         // Update StructureControllers
@@ -449,7 +374,6 @@ public class ControllerController : MonoBehaviour
         instance.hazardControllers.ForEach(c => c.InformOfModelCounts(counts));
         instance.collectableControllers.ForEach(c => c.InformOfModelCounts(counts));
         instance.structureControllers.ForEach(c => c.InformOfModelCounts(counts));
-        ShopManager.InformOfModelCounts(counts);
     }
 
 
@@ -461,15 +385,19 @@ public class ControllerController : MonoBehaviour
     private void OnPurchaseModelFromShop(Model purchasedModel)
     {
         // Handle upgrades
-        int numTierOne = GetDefenderCountAtTier(purchasedModel.TYPE, 1);
-        int numTierTwo = GetDefenderCountAtTier(purchasedModel.TYPE, 2);
-        MakeController(purchasedModel);
+        int numTierOne = GetAllDefendersAtTier(purchasedModel.TYPE, 1).Count;
+        int numTierTwo = GetAllDefendersAtTier(purchasedModel.TYPE, 2).Count;
+        MakeModelController(purchasedModel);
         if (upgradeableTypes.Contains(purchasedModel.TYPE))
         {
             if (numTierOne >= 2 && numTierTwo >= 2)
             {
                 PlacementController.UpgradeModelPlacing();
                 PlacementController.UpgradeModelPlacing();
+                List<Model> tierOneDefenders = GetAllDefendersAtTier(purchasedModel.TYPE, 1);
+                List<Model> tierTwoDefenders = GetAllDefendersAtTier(purchasedModel.TYPE, 2);
+                List<Model> combined = tierOneDefenders.Concat(tierTwoDefenders).ToList();
+                PlacementController.CombineDefendersToCursor(combined);
                 RemoveAllDefendersOfTypeAtTier(purchasedModel.TYPE, 1);
                 RemoveAllDefendersOfTypeAtTier(purchasedModel.TYPE, 2);
             }
@@ -477,9 +405,24 @@ public class ControllerController : MonoBehaviour
             else if (numTierOne >= 2)
             {
                 PlacementController.UpgradeModelPlacing();
+                PlacementController.CombineDefendersToCursor(GetAllDefendersAtTier(purchasedModel.TYPE, 1));
                 RemoveAllDefendersOfTypeAtTier(purchasedModel.TYPE, 1);
+
             }
         }
+    }
+
+    /// <summary>
+    /// Called when the PlacementController completes its animation
+    /// of combining Defenders. Triggers the Upgrade layout on top
+    /// of the shop so that the player can choose the upgrade they want.
+    /// </summary>
+    /// <param name="combinedModelType">The type of the combined Model.</param>
+    /// <param name="newTier">The tier of the new Model.</param>
+    private void OnFinishCombining(ModelType combinedModelType, int newTier)
+    {
+        // Here is where we would open up the upgrade panel for the player to choose
+        
     }
 
     /// <summary>
@@ -512,14 +455,14 @@ public class ControllerController : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns the number of Defenders of the given type and tier.
+    /// Returns a list of all Defenders of the given type and tier.
     /// </summary>
-    /// <param name="defenderType">the type to get</param>
-    /// <param name="tier">the tier to get</param>
-    /// <returns>the number of Defenders of the given type and tier </returns>
-    private int GetDefenderCountAtTier(ModelType defenderType, int tier)
+    /// <param name="defenderType">The type of Defender to get</param>
+    /// <param name="tier">The tier of Defender to get</param>
+    /// <returns>a list of all Defenders of the given type and tier</returns>
+    private List<Model> GetAllDefendersAtTier(ModelType defenderType, int tier)
     {
-        int count = 0;
+        List<Model> list = new List<Model>();
 
         foreach(ModelController defenderController in defenderControllers)
         {
@@ -527,10 +470,9 @@ public class ControllerController : MonoBehaviour
             Defender defender = defenderController.GetModel() as Defender;
             if(defender == null) continue;
 
-            //Debug.Log("Defender type: " + defender.TYPE + " Defender tier: " + defender.GetTier());
-            if(defender.TYPE == defenderType && defender.GetTier() == tier) count++;
+            if(defender.TYPE == defenderType && defender.GetTier() == tier) list.Add(defender);
         }
 
-        return count;
+        return list;
     }
 }

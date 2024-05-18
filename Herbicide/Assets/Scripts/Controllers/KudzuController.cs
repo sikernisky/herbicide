@@ -139,7 +139,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         Vector3 lootPos = GetKudzu().Exited() ? GetKudzu().GetExitPos() : GetKudzu().GetPosition();
         int value = GetKudzu().CURRENCY_VALUE_ON_DEATH;
         DewController dewController = new DewController(dew, lootPos, value);
-        AddModelControllerForExtrication(dewController);
+        ControllerController.AddModelController(dewController);
         base.DropDeathLoot();
     }
 
@@ -233,9 +233,9 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         bool withinChaseRange = targetExists && DistanceToTarget() <= GetKudzu().GetChaseRange();
         bool withinAttackRange = targetExists && DistanceToTarget() <= GetKudzu().GetAttackRange();
         bool holdingTarget = NumTargetsHolding() > 0;
-        bool otherKudzus = GetModelCounts().GetCount(ModelType.KUDZU) > 1;
 
         //Debug.Log(GetState());
+
 
 
         switch (GetState())
@@ -249,7 +249,6 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
                 break;
 
             case KudzuState.IDLE:
-
                 if (!ReachedMovementTarget()) break;
                 if (idleAnimationCounter > 0) break;
 
@@ -260,7 +259,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
 
             case KudzuState.CHASE:
                 if (!ReachedMovementTarget()) break;
-                if(chaseAnimationCounter > 0) break;
+                if (chaseAnimationCounter > 0) break;
 
                 if (!targetExists) SetState(carrierToProtect ? KudzuState.PROTECT : KudzuState.IDLE);
                 else if (withinAttackRange) SetState(KudzuState.ATTACK);
@@ -364,7 +363,6 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     protected virtual void ExecuteChaseState()
     {
         if (GetState() != KudzuState.CHASE) return;
-        if (GetTarget() == null || !GetTarget().Targetable()) return;
 
         SetAnimation(GetKudzu().MOVE_ANIMATION_DURATION, KudzuFactory.GetMovementTrack(
             GetKudzu().GetDirection(), GetKudzu().GetHealthState()));
@@ -378,6 +376,8 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
 
         // We reached our move target, so we need a new one.
         if (!ReachedMovementTarget()) return;
+        if (GetTarget() == null || !GetTarget().Targetable()) return;
+
         if (DistanceToTarget() <= GetKudzu().GetAttackRange()) return;
 
         Vector3 closest = ClosestPositionToTarget(GetTarget());
@@ -405,6 +405,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
 
         // We reached our move target, so we need a new one.
         if (!ReachedMovementTarget()) return;
+        if(GetNearestCarrier() == null) return;
 
         Vector3 closest = GetNearestCarrier().GetPosition();
         Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetKudzu().GetPosition(), closest);
@@ -430,6 +431,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         FaceTarget();
         if (CanHoldTarget(GetTarget())) HoldTarget(GetTarget()); // Hold.
         else GetTarget().AdjustHealth(-GetKudzu().BONK_DAMAGE); // Bonk.
+        GetHeldTargets().ForEach(target => target.SetMaskInteraction(SpriteMaskInteraction.None));
         GetKudzu().RestartAttackCooldown();
     }
 
@@ -480,6 +482,8 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
                        GetKudzu().GetDirection(), GetKudzu().GetHealthState()));
 
         // Move to target.
+        GetKudzu().SetMaskInteraction(SpriteMaskInteraction.VisibleOutsideMask);
+        GetHeldTargets().ForEach(target => target.SetMaskInteraction(SpriteMaskInteraction.VisibleOutsideMask));
         SetNextMovePos(jumpPosition);
         FallIntoMovePos(3f);
 

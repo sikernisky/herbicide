@@ -70,13 +70,23 @@ public class CameraController : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns the world position of some other position.
+    /// Converts a position from screen coordinates to world coordinates.
     /// </summary>
-    /// <param name="pos">the position to convert.</param>
-    /// <returns>the converted world position.</returns>
+    /// <param name="pos">The position in screen coordinates to convert.</param>
+    /// <returns>The corresponding position in world coordinates.</returns>
     public static Vector2 ScreenToWorldPoint(Vector2 pos)
     {
         return instance.GetCamera().ScreenToWorldPoint(pos);
+    }
+
+    /// <summary>
+    /// Converts a position from world coordinates to screen coordinates.
+    /// </summary>
+    /// <param name="pos">The position in world coordinates to convert.</param>
+    /// <returns>The corresponding position in screen coordinates.</returns>
+    public static Vector3 WorldToScreenPoint(Vector2 pos)
+    {
+        return instance.GetCamera().WorldToScreenPoint(pos);
     }
 
     /// <summary>
@@ -87,19 +97,5 @@ public class CameraController : MonoBehaviour
     private Camera GetCamera()
     {
         return cam;
-    }
-
-    /// <summary>
-    /// Returns the (Width, Height) of this CameraController's Camera
-    /// component as a Vector2.
-    /// </summary>
-    /// <returns>A Vector2 containing the (Width, Height) of this CameraController's
-    /// Camera component.</returns>
-    public static Vector2 GetDimensions()
-    {
-        Camera cam = instance.GetCamera();
-        float height = cam.orthographicSize * 2f;
-        float width = height * cam.aspect;
-        return new Vector2(width, height);
     }
 }

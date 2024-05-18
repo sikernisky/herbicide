@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
+using static ShopManager;
 
 /// <summary>
 /// Handles selecting and placing items. This may happen in regards to the
@@ -33,6 +34,39 @@ public class PlacementController : MonoBehaviour
     private Image dummyImage;
 
     /// <summary>
+    /// Dummy GameObjects for combination events
+    /// </summary>
+    [SerializeField]
+    private GameObject[] combinationDummies;
+
+    /// <summary>
+    /// Images of dummy GameObjects for combination events
+    /// </summary>
+    [SerializeField]
+    private Image[] combinationDummyImages;
+
+    /// <summary>
+    /// Stores the start times for each combination dummy.
+    /// </summary>
+    private float[] combinationStartTimes;
+
+    /// <summary>
+    /// Number of seconds it takes to combine defenders.
+    /// </summary>
+    private float combinationMoveDuration = 1f;
+
+    /// <summary>
+    /// Animation curve used for the combination lerp. 
+    /// </summary>
+    [SerializeField]
+    private AnimationCurve combinationLerpCurve;
+
+    /// <summary>
+    /// true if there is an active combination event; otherwise, false.
+    /// </summary>
+    private bool combining;
+
+    /// <summary>
     /// The Tile on which the player is ghost placing; null if they aren't.
     /// </summary>
     private Tile ghostSubject;
@@ -52,6 +86,19 @@ public class PlacementController : MonoBehaviour
     /// </summary>
     private Model subject;
 
+    /// <summary>
+    /// Defines a delegate for completing a Model combination and upgrade.
+    /// </summary>
+    /// <param name="combinedModelType">The type of the combined Model.</param>
+    /// <param name="newTier">The new tier of the combined Model.</param>
+    public delegate void FinishCombiningDelegate(ModelType combinedModelType, int newTier);
+
+    /// <summary>
+    /// Event triggered when a Model is combined and upgraded.
+    /// </summary>
+    public event FinishCombiningDelegate OnFinishCombining;
+
+
 
     /// <summary>
     /// Finds and sets the PlacementController singleton.
@@ -68,6 +115,10 @@ public class PlacementController : MonoBehaviour
         instance = placementControllers[0];
         Assert.IsNotNull(instance.dummy);
         Assert.IsNotNull(instance.dummyImage);
+        Assert.IsNotNull(instance.combinationDummies);
+        Assert.IsNotNull(instance.combinationDummyImages);
+
+        instance.combinationStartTimes = new float[instance.combinationDummies.Length];
     }
 
 
@@ -79,7 +130,9 @@ public class PlacementController : MonoBehaviour
     /// Also checks if the player pressed escape. If so, cancels any active placement
     /// and/or ghost placement events.
     /// </summary>
-    public static void CheckPlacementEvents(bool didEscape)
+    /// <param name="didEscape">true if the player pressed escape this frame; otherwise,
+    /// false. </param>
+    public static void UpdatePlacementEvents(bool didEscape)
     {
         if (instance == null) return;
 
@@ -234,7 +287,112 @@ public class PlacementController : MonoBehaviour
         if(placingDefender == null) return;
 
         placingDefender.UpgradeTier();
-        Debug.Log("tier: " + placingDefender.GetTier());    
     }
-    
+
+    /// <summary>
+    /// Triggers a combination event with the given Defenders.
+    /// </summary>
+    /// <param name="defendersToCombine">The Defenders to combine.</param>
+    public static void CombineDefendersToCursor(List<Model> defendersToCombine)
+    {
+        Assert.IsNotNull(defendersToCombine);
+        Assert.IsTrue(defendersToCombine.Count >= 0 && defendersToCombine.Count <= instance.combinationDummies.Length);
+
+        List<Vector3> initialPositions = new List<Vector3>();
+        List<Sprite> combinationSprites = new List<Sprite>();
+        List<Vector3> dummySizes = new List<Vector3>();
+
+        foreach (Model model in defendersToCombine)
+        {
+            Assert.IsNotNull(model);
+            initialPositions.Add(CameraController.WorldToScreenPoint(model.GetPosition()));
+            combinationSprites.Add(model.GetSprite());
+            Vector3 size = new Vector3(model.GetPlacementTrackDimensions().x, model.GetPlacementTrackDimensions().y, 1);
+            dummySizes.Add(size);
+        }
+
+        // Setup dummies
+        for (int i = 0; i < defendersToCombine.Count; i++)
+        {
+            instance.combinationDummies[i].SetActive(true);
+            instance.combinationDummies[i].transform.position = initialPositions[i];
+            instance.combinationDummyImages[i].rectTransform.sizeDelta = dummySizes[i];
+            instance.combinationDummyImages[i].sprite = combinationSprites[i];
+            instance.combinationDummyImages[i].color = PLACE_COLOR;
+            instance.combinationStartTimes[i] = Time.time;
+        }
+
+        instance.combining = true;
+    }
+
+    /// <summary>
+    /// Updates the combination events, moving the dummies towards the cursor.
+    /// </summary>
+    public static void UpdateCombinationEvents()
+    {
+        if (instance.combinationDummies == null || instance.combinationLerpCurve == null) return;
+        if(!instance.combining) return;
+        Defender defenderSubject = instance.subject as Defender;
+        if (defenderSubject == null) return;
+
+        Vector3 targetPosition = InputController.GetUIMousePosition();
+        targetPosition.z = 0;
+
+        float combinationDuration = instance.combinationMoveDuration;
+
+        for (int i = 0; i < instance.combinationDummies.Length; i++)
+        {
+            if (!instance.combinationDummies[i].activeSelf) continue;
+
+            float elapsedTime = Time.time - instance.combinationStartTimes[i];
+            float t = Mathf.Clamp01(elapsedTime / combinationDuration);
+            float lerpFactor = instance.combinationLerpCurve.Evaluate(t);
+
+            instance.combinationDummies[i].transform.position = Vector3.Lerp(
+                instance.combinationDummies[i].transform.position,
+                targetPosition,
+                lerpFactor
+            );
+
+            if (t >= 1.0f || Vector3.Distance(instance.combinationDummies[i].transform.position, targetPosition) < 10f)
+            {
+                instance.combinationDummies[i].SetActive(false);
+                instance.combinationDummies[i].transform.position = Vector3.zero;
+            }
+        }
+
+        // Check to see if all dummies are inactive
+        bool allInactive = true;
+        for (int i = 0; i < instance.combinationDummies.Length; i++)
+        {
+            if (instance.combinationDummies[i].activeSelf)
+            {
+                allInactive = false;
+                break;
+            }
+        }
+
+        if (allInactive)
+        {
+            instance.combining = false;
+            instance.OnFinishCombining?.Invoke(defenderSubject.TYPE, defenderSubject.GetTier());
+        }
+    }
+    /// <summary>
+    /// Returns true if there is an active combination event.
+    /// </summary>
+    /// <returns>true if there is an active combination event; otherwise,
+    /// false. </returns>
+    public static bool IsCombining() { return instance.combining; }
+
+    /// <summary>
+    /// Subscribes a handler (the ControllerController) to the finish combining event.
+    /// </summary>
+    /// <param name="handler">The handler to subscribe.</param>
+    public static void SubscribeToFinishCombiningDelegate(FinishCombiningDelegate handler)
+    {
+        Assert.IsNotNull(handler, "Handler is null.");
+        instance.OnFinishCombining += handler;
+    }
+
 }

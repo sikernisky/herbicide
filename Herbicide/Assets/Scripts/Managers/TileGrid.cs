@@ -353,7 +353,7 @@ public class TileGrid : MonoBehaviour
                     mob.SetSpawnPos(spawnPos);
                     instance.objectPositions.Add(spawnPos);
                     Tile targetTile = instance.TileExistsAt(obToSpawn.GetSpawnCoordinates(mapHeight).x, obToSpawn.GetSpawnCoordinates(mapHeight).y);
-                    ControllerController.MakeController(mob);
+                    ControllerController.MakeModelController(mob);
                     PlaceOnTile(targetTile, mob);
                 }
                 break;
@@ -432,26 +432,6 @@ public class TileGrid : MonoBehaviour
         throw new System.ArgumentException("Invalid global tile Id.", "globalTileId");
     }
 
-
-    /// <summary>
-    /// Returns the Camera's position at the center of the TileGrid. The center
-    /// of the TileGrid is at the world position of the grass tiles' center
-    /// tile.
-    /// </summary>
-    /// <returns>the position for the Camera, that if set to, represents the center
-    /// of the TileGrid.</returns>
-    private Vector2 GetCameraPositionAtCenterOfGrid()
-    {
-        Vector2Int centerCoords = GetCenterCoordinates();
-        float centerXPos = CoordinateToPosition(centerCoords.x) - TILE_SIZE / 2;
-        float centerYPos = CoordinateToPosition(centerCoords.y) - TILE_SIZE / 2;
-
-        if (centerCoords.x % 2 == 0) centerXPos -= TILE_SIZE / 2;
-        if (centerCoords.y % 2 == 0) centerYPos -= TILE_SIZE / 2;
-
-        return new Vector2(centerXPos, centerYPos);
-    }
-
     /// <summary>
     /// Returns the Camera's position at the center of all objects in the TileGrid.
     /// </summary>
@@ -473,6 +453,9 @@ public class TileGrid : MonoBehaviour
 
         float centerXPos = (minX + maxX) / 2f;
         float centerYPos = (minY + maxY) / 2f;
+
+        // Add a vertical offset because the shop sits at the bottom.
+        centerYPos -= 1f;
 
         return new Vector2(centerXPos, centerYPos);
     }
@@ -742,7 +725,7 @@ public class TileGrid : MonoBehaviour
         if (tile == null) return;
 
         //(1) and (2): Placing and Using
-        if (PlacementController.Placing())
+        if (PlacementController.Placing() && !PlacementController.IsCombining())
         {
             Model placingItem = PlacementController.GetObjectPlacing();
             PlaceableObject itemPlaceable = placingItem as PlaceableObject;
@@ -751,6 +734,7 @@ public class TileGrid : MonoBehaviour
                 //Stop the placement event.
                 PlacementController.StopGhostPlacing();
                 PlacementController.StopPlacingObject(true);
+                //ShopManager.SetUpgradeMode(false);
             }
             //TODO: implement (2) in a future sprint.
         }
@@ -1114,7 +1098,7 @@ public class TileGrid : MonoBehaviour
             }
 
             // Give Flooring a controller
-            ControllerController.MakeController(candidate);
+            ControllerController.MakeModelController(candidate);
             return true;
         }
         return false;

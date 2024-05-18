@@ -12,12 +12,6 @@ using System;
 /// </summary>
 public class SceneController : MonoBehaviour
 {
-
-    /// <summary>
-    /// Maximum frame rate.
-    /// </summary>
-    private const int MAX_FRAME_RATE = 60;
-
     /// <summary>
     /// Reference to the SceneController singleton.
     /// </summary>
@@ -33,26 +27,6 @@ public class SceneController : MonoBehaviour
     /// </summary>
     private bool loadingScene;
 
-    /// <summary>
-    /// Number of FPS frames.
-    /// </summary>
-    private int frameCount = 0;
-
-    /// <summary>
-    /// Time tracker for FPS.
-    /// </summary>
-    private float dt = 0.0f;
-
-    /// <summary>
-    /// How often to update FPS.
-    /// </summary>
-    private float updateRate = 10f;
-
-    /// <summary>
-    /// Current FPS.
-    /// </summary>
-    private float fps = 0.0f;
-
 
     /// <summary>
     /// Main update loop for the SceneController.
@@ -60,7 +34,6 @@ public class SceneController : MonoBehaviour
     public static void UpdateScene()
     {
         timeElapsed += Time.deltaTime;
-        instance.UpdateFPS();
     }
 
     /// <summary>
@@ -122,31 +95,9 @@ public class SceneController : MonoBehaviour
     /// </summary>
     public static void SetUnityProperties()
     {
-        Application.targetFrameRate = MAX_FRAME_RATE;
+        Application.targetFrameRate = 60;
         Screen.SetResolution(1920, 1080, false);
     }
-
-    /// <summary>
-    /// Returns the current FPS.
-    /// </summary>
-    /// <returns>current game FPS.</returns>
-    private void UpdateFPS()
-    {
-        instance.frameCount++;
-        instance.dt += Time.deltaTime;
-        if (dt > 1.0 / updateRate)
-        {
-            fps = frameCount / dt;
-            frameCount = 0;
-            dt -= 1.0f / updateRate;
-        }
-    }
-
-    /// <summary>
-    /// Returns the current FPS.
-    /// </summary>
-    /// <returns>current game FPS.</returns>
-    public static float GetFPS() { return instance.fps; }
 
     /// <summary>
     /// [!!BUTTON EVENT!!]

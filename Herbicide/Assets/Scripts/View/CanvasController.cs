@@ -49,12 +49,6 @@ public class CanvasController : MonoBehaviour
     private Image fader;
 
     /// <summary>
-    /// Text to display FPS.
-    /// </summary>
-    [SerializeField]
-    private TMP_Text fps;
-
-    /// <summary>
     /// true if the Fader is fading in or fading out.
     /// </summary>
     private bool fading;
@@ -173,8 +167,7 @@ public class CanvasController : MonoBehaviour
     /// <summary>
     /// Main update loop for the CanvasController.
     /// </summary>
-    /// <param name="fps">current game FPS.</param>
-    public static void UpdateCanvas(float fps)
+    public static void UpdateCanvas()
     {
         instance.UpdateFader();
 
@@ -193,17 +186,6 @@ public class CanvasController : MonoBehaviour
                 PlayFaderIn();
                 instance.fadedAfterLevelEnd = true;
             }
-        }
-
-        if (instance.IsDebugging())
-        {
-            instance.fps.enabled = true;
-            instance.fps.text = fps.ToString();
-        }
-        else
-        {
-            instance.fps.enabled = false;
-            instance.fps.text = "";
         }
     }
 
