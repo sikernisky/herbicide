@@ -147,7 +147,7 @@ GameObject:
   - component: {fileID: 9173442586906454706}
   - component: {fileID: 101354809318367112}
   m_Layer: 5
-  m_Name: SquirrelNameText
+  m_Name: Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -493,7 +493,7 @@ GameObject:
   - component: {fileID: 9073829249215328498}
   - component: {fileID: 7838228846455706653}
   m_Layer: 5
-  m_Name: Squirrel
+  m_Name: Splash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -621,10 +621,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 213fdd0cc2cae48b894da444a1616b7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modelType: 14
+  modelType: 15
   cardBackgroundImage: {fileID: 2861143171162560290}
-  modelSplashArt: {fileID: 7838228846455706653}
-  modelNameText: {fileID: 101354809318367112}
+  cardSplash: {fileID: 7838228846455706653}
+  cardTitle: {fileID: 101354809318367112}
   traitNames:
   - {fileID: 9106766624328845723}
   - {fileID: 2255216830269315497}

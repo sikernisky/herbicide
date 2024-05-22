@@ -169,26 +169,63 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabs:
   - {fileID: 2896626616884615408, guid: 7ffe22d2f864c433cb6da24359a7d202, type: 3}
-  boatTrack:
-  - {fileID: -1985209435, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
-  placementTrack:
-  - {fileID: -1985209435, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
-  attackAnimationNorth:
-  - {fileID: 241803896, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
-  attackAnimationEast:
-  - {fileID: 1842010287, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
-  attackAnimationSouth:
-  - {fileID: -1116763224, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
-  attackAnimationWest:
-  - {fileID: 362384017, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
-  idleAnimationNorth:
-  - {fileID: 241803896, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
-  idleAnimationEast:
-  - {fileID: -1741764920, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
-  idleAnimationSouth:
-  - {fileID: -1985209435, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
-  idleAnimationWest:
-  - {fileID: 629033695, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  tierOneSquirrel:
+    placementTrack:
+    - {fileID: -1985209435, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+    attackAnimationNorth:
+    - {fileID: 241803896, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+    attackAnimationEast:
+    - {fileID: 1842010287, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+    attackAnimationSouth:
+    - {fileID: -1116763224, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+    attackAnimationWest:
+    - {fileID: 362384017, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+    idleAnimationNorth:
+    - {fileID: -1129439068, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+    idleAnimationEast:
+    - {fileID: -1741764920, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+    idleAnimationSouth:
+    - {fileID: -1985209435, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+    idleAnimationWest:
+    - {fileID: 629033695, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  tierTwoSquirrel:
+    placementTrack:
+    - {fileID: 2061260637, guid: 01970f2e7961561489d6127e7712fbb2, type: 3}
+    attackAnimationNorth:
+    - {fileID: 1526493444, guid: 01970f2e7961561489d6127e7712fbb2, type: 3}
+    attackAnimationEast:
+    - {fileID: 1471673049, guid: 01970f2e7961561489d6127e7712fbb2, type: 3}
+    attackAnimationSouth:
+    - {fileID: -2056377725, guid: 01970f2e7961561489d6127e7712fbb2, type: 3}
+    attackAnimationWest:
+    - {fileID: -1995303922, guid: 01970f2e7961561489d6127e7712fbb2, type: 3}
+    idleAnimationNorth:
+    - {fileID: -805717049, guid: 01970f2e7961561489d6127e7712fbb2, type: 3}
+    idleAnimationEast:
+    - {fileID: -878656122, guid: 01970f2e7961561489d6127e7712fbb2, type: 3}
+    idleAnimationSouth:
+    - {fileID: 2061260637, guid: 01970f2e7961561489d6127e7712fbb2, type: 3}
+    idleAnimationWest:
+    - {fileID: 1445336377, guid: 01970f2e7961561489d6127e7712fbb2, type: 3}
+  tierThreeSquirrel:
+    placementTrack:
+    - {fileID: -2076439399, guid: 7cec5e00f0faf4d42a75fbde06f5d094, type: 3}
+    attackAnimationNorth:
+    - {fileID: 767792262, guid: 7cec5e00f0faf4d42a75fbde06f5d094, type: 3}
+    attackAnimationEast:
+    - {fileID: -476337369, guid: 7cec5e00f0faf4d42a75fbde06f5d094, type: 3}
+    attackAnimationSouth:
+    - {fileID: -365496843, guid: 7cec5e00f0faf4d42a75fbde06f5d094, type: 3}
+    attackAnimationWest:
+    - {fileID: 1272331073, guid: 7cec5e00f0faf4d42a75fbde06f5d094, type: 3}
+    idleAnimationNorth:
+    - {fileID: 767792262, guid: 7cec5e00f0faf4d42a75fbde06f5d094, type: 3}
+    idleAnimationEast:
+    - {fileID: -259049284, guid: 7cec5e00f0faf4d42a75fbde06f5d094, type: 3}
+    idleAnimationSouth:
+    - {fileID: -365496843, guid: 7cec5e00f0faf4d42a75fbde06f5d094, type: 3}
+    idleAnimationWest:
+    - {fileID: 1272331073, guid: 7cec5e00f0faf4d42a75fbde06f5d094, type: 3}
 --- !u!1 &49647442
 GameObject:
   m_ObjectHideFlags: 0
@@ -2807,6 +2844,7 @@ MonoBehaviour:
   prefabs:
   - {fileID: 8243588634895102957, guid: 33d6f0d91cf424ab6a78a2a83a02d4d2, type: 3}
   - {fileID: 8243588634895102957, guid: 2fd948259679640fc87149ce1291f5ed, type: 3}
+  - {fileID: 8243588634895102957, guid: 87bb6a3f14829144cbb232dc73ef9e98, type: 3}
 --- !u!1 &1259674932
 GameObject:
   m_ObjectHideFlags: 0
@@ -4267,7 +4305,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currencyText: {fileID: 1344936708}
-  startingMoney: 900
+  startingMoney: 200
 --- !u!1 &2074973554
 GameObject:
   m_ObjectHideFlags: 0

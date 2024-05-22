@@ -49,6 +49,11 @@ public abstract class Enemy : Mob
     public virtual int CURRENCY_VALUE_ON_DEATH => 25;
 
     /// <summary>
+    /// true if this Enemy is currently spawning; otherwise, false.
+    /// </summary>
+    private bool spawning;
+
+    /// <summary>
     /// Type of this Enemy.
     /// </summary>
     public enum EnemyType
@@ -152,5 +157,25 @@ public abstract class Enemy : Mob
     /// <returns>the position of the structure the Enemy is
     /// using to exit.</returns>
     public Vector3 GetExitPos() { return exitPos; }
+
+    /// <summary>
+    /// Sets the Enemy as spawning.
+    /// </summary>
+    public void SetSpawning(bool spawning) { this.spawning = spawning; }
+
+    /// <summary>
+    /// Returns true if this Enemy is currently spawning.
+    /// </summary>
+    /// <returns>true if this Enemy is currently spawning; otherwise, false. </returns>
+    public bool IsSpawning() { return spawning; }
+
+    /// <summary>
+    /// Returns true if this Enemy is targetable.
+    /// </summary>
+    /// <returns>true if this Enemy is targetable; otherwise, false. </returns>
+    public override bool Targetable()
+    {
+        return base.Targetable() && !IsSpawning();
+    }
 }
 

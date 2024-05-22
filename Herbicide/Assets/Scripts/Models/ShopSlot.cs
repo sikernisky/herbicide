@@ -56,10 +56,19 @@ public class ShopSlot : MonoBehaviour
         cardTransform.localScale = Vector3.one;
         cardTransform.position = slotPosition;
 
-        //slotButton.interactable = true;
-
         occupant = shopCard;
 
+    }
+
+    /// <summary>
+    /// Fills the ShopSlot with a blank ShopCard.
+    /// </summary>
+    public void FillWithBlank()
+    {
+        GameObject blankCard = ShopFactory.GetShopCardPrefab(ModelType.SHOP_CARD_BLANK);
+        Assert.IsNotNull(blankCard);
+        Fill(blankCard.GetComponent<ShopCard>());
+       occupant = null;
     }
 
     /// <summary>
@@ -84,7 +93,6 @@ public class ShopSlot : MonoBehaviour
         setupByManager = true;
     }
 
-
     /// <summary>
     /// Returns an instantiated GameObject with this ShopSlot's Model
     /// attached. 
@@ -93,9 +101,9 @@ public class ShopSlot : MonoBehaviour
     /// attached.</returns>
     public GameObject GetCardPrefab()
     {
-        Assert.IsTrue(IsSetup());
+        Assert.IsTrue(IsSetup(), "Not setup.");
 
-        return occupant.GetCardPrefab();
+        return occupant.GetShopCardModelPrefab();
     }
 
     /// <summary>
@@ -118,8 +126,7 @@ public class ShopSlot : MonoBehaviour
 
         int price = occupant.GetPrice();
         Destroy(occupant.gameObject);
-        occupant = null;
-        //slotButton.interactable = false;
+        FillWithBlank();
 
         return price;
     }

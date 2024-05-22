@@ -20,6 +20,7 @@ public enum ModelType
     NEXUS_HOLE,
     SEED_TOKEN,
     SHOP_CARD_BEAR,
+    SHOP_CARD_BLANK,
     SHOP_CARD_HEDGEHOG,
     SHOP_CARD_SQUIRREL,
     SHORE_TILE,

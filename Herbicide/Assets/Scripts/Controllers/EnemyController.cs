@@ -16,11 +16,6 @@ using System;
 public abstract class EnemyController<T> : MobController<T> where T : Enum
 {
     /// <summary>
-    /// Total number of DefenderControllers created during this level so far.
-    /// </summary>
-    private static int NUM_ENEMIES;
-
-    /// <summary>
     /// Enemies who are holding an object and escaping.
     /// </summary>
     private static List<Enemy> activeCarriers;
@@ -35,7 +30,7 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     /// Initializes this EnemyController with the Enemy it controls.
     /// </summary>
     /// <param name="enemy">the enemy this EnemyController controls.</param>
-    public EnemyController(Enemy enemy) : base(enemy) { NUM_ENEMIES++; }
+    public EnemyController(Enemy enemy) : base(enemy) { }
 
     /// <summary>
     /// Updates the Enemy controlled by this EnemyController.
@@ -159,6 +154,7 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     { 
         poppedOutOfHole = true;
         GetEnemy().SetMaskInteraction(SpriteMaskInteraction.None);
+        GetEnemy().SetSpawning(false);
     }
 
     /// <summary>

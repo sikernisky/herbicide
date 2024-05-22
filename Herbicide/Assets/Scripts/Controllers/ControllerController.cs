@@ -401,13 +401,11 @@ public class ControllerController : MonoBehaviour
                 RemoveAllDefendersOfTypeAtTier(purchasedModel.TYPE, 1);
                 RemoveAllDefendersOfTypeAtTier(purchasedModel.TYPE, 2);
             }
-
             else if (numTierOne >= 2)
             {
                 PlacementController.UpgradeModelPlacing();
                 PlacementController.CombineDefendersToCursor(GetAllDefendersAtTier(purchasedModel.TYPE, 1));
                 RemoveAllDefendersOfTypeAtTier(purchasedModel.TYPE, 1);
-
             }
         }
     }
@@ -417,12 +415,12 @@ public class ControllerController : MonoBehaviour
     /// of combining Defenders. Triggers the Upgrade layout on top
     /// of the shop so that the player can choose the upgrade they want.
     /// </summary>
-    /// <param name="combinedModelType">The type of the combined Model.</param>
-    /// <param name="newTier">The tier of the new Model.</param>
-    private void OnFinishCombining(ModelType combinedModelType, int newTier)
+    /// <param name="combinedModel">The Model that was created by combining the Defenders.</param>
+    private void OnFinishCombining(Model combinedModel)
     {
         // Here is where we would open up the upgrade panel for the player to choose
         
+        // ShopManager.LoadUpgradesForPlacedModel(combinedModel);
     }
 
     /// <summary>

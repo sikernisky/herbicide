@@ -33,11 +33,6 @@ public class EconomyController : MonoBehaviour
     private static EconomyController instance;
 
     /// <summary>
-    /// All active Currency objects.
-    /// </summary>
-    private HashSet<Currency> activeCurrency;
-
-    /// <summary>
     /// How much money the player has.
     /// </summary>
     private static int currentMoney;
@@ -51,7 +46,7 @@ public class EconomyController : MonoBehaviour
     /// <summary>
     /// How much currency the player gets per tick.
     /// </summary>
-    private static readonly int PASSIVE_INCOME_AMOUNT = 50;
+    private static readonly int PASSIVE_INCOME_AMOUNT = 10;
 
     /// <summary>
     /// The number of seconds the player must wait until they
@@ -82,7 +77,6 @@ public class EconomyController : MonoBehaviour
         Assert.IsNotNull(economyControllers, "Array of EconomyControllers is null.");
         Assert.AreEqual(1, economyControllers.Length);
         instance = economyControllers[0];
-        instance.activeCurrency = new HashSet<Currency>();
         currentMoney = instance.startingMoney;
     }
 

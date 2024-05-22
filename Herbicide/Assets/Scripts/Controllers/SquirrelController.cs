@@ -47,6 +47,11 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     /// </summary>
     private float attackAnimationCounter;
 
+    /// <summary>
+    /// How many seconds to wait between firing acorns.
+    /// </summary>
+    private const float delayBetweenAcorns = 0.1f;
+
 
 
     /// <summary>
@@ -173,8 +178,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
              FaceTarget();
         else GetSquirrel().FaceDirection(Direction.SOUTH);
 
-        SetAnimation(GetSquirrel().IDLE_ANIMATION_DURATION, SquirrelFactory.GetIdleTrack(GetSquirrel().GetDirection()));
-
+        SetAnimation(GetSquirrel().IDLE_ANIMATION_DURATION, SquirrelFactory.GetIdleTrack(GetSquirrel().GetDirection(), GetSquirrel().GetTier()));
     }
 
     /// <summary>
@@ -189,18 +193,13 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         // Animation Logic.
 
         FaceTarget();
-        SetAnimation(GetSquirrel().ATTACK_ANIMATION_DURATION, SquirrelFactory.GetAttackTrack(GetSquirrel().GetDirection()));
+        SetAnimation(GetSquirrel().ATTACK_ANIMATION_DURATION, SquirrelFactory.GetAttackTrack(GetSquirrel().GetDirection(), GetSquirrel().GetTier()));
 
         if (!CanAttack()) return;
 
-        // Make an Acorn and an AcornController.
-        GameObject acornPrefab = AcornFactory.GetAcornPrefab();
-        Assert.IsNotNull(acornPrefab);
-        Acorn acornComp = acornPrefab.GetComponent<Acorn>();
-        Assert.IsNotNull(acornComp);
-        Vector3 targetPosition = GetTarget().GetAttackPosition();
-        AcornController acornController = new AcornController(acornComp, GetSquirrel().GetPosition(), targetPosition);
-        ControllerController.AddModelController(acornController);
+        int numAcornsToFire = GetSquirrel().HasUpgrade(UpgradeType.DOUBLE_SHOT) ? 2 : 1;
+        numAcornsToFire = GetSquirrel().HasUpgrade(UpgradeType.TRIPLE_SHOT) ? 3 : numAcornsToFire;
+        GetSquirrel().StartCoroutine(FireAcorns(numAcornsToFire));
 
         // Reset attack animation.
         GetSquirrel().RestartAttackCooldown();
@@ -250,5 +249,33 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         SquirrelState state = GetState();
         if (state == SquirrelState.IDLE) idleAnimationCounter = 0;
         else if (state == SquirrelState.ATTACK) attackAnimationCounter = 0;
+    }
+
+    /// <summary>
+    /// Queues an acorn to be fired at the Squirrel's target.
+    /// </summary>
+    /// <returns>A reference to the coroutine.</returns>
+    /// <param name="numAcorns">The number of acorns to fire.</param>
+    private IEnumerator FireAcorns(int numAcorns)
+    {
+        Assert.IsTrue(delayBetweenAcorns >= 0, "Delay needs to be non-negative");
+
+        for(int i = 0; i < numAcorns; i++)
+        {
+            if(GetTarget() == null || !GetTarget().Targetable()) yield break; // Invalid target.
+
+            GameObject acornPrefab = AcornFactory.GetAcornPrefab();
+            Assert.IsNotNull(acornPrefab);
+            Acorn acornComp = acornPrefab.GetComponent<Acorn>();
+            Assert.IsNotNull(acornComp);
+            Vector3 targetPosition = GetTarget().GetAttackPosition();
+            AcornController acornController = new AcornController(acornComp, GetSquirrel().GetPosition(), targetPosition);
+            ControllerController.AddModelController(acornController);
+
+            if (i < numAcorns - 1) // Wait for the delay between shots unless it's the last one
+            {
+                yield return new WaitForSeconds(delayBetweenAcorns);
+            }
+        }
     }
 }

@@ -14,64 +14,22 @@ public class SquirrelFactory : Factory
     private static SquirrelFactory instance;
 
     /// <summary>
-    /// Animation track when on a boat.
+    /// Sprite tracks for the tier one Squirrel.
     /// </summary>
     [SerializeField]
-    private Sprite[] boatTrack;
+    private DefenderAnimationSet tierOneSquirrel;
 
     /// <summary>
-    /// Animation track when placing.
+    /// Sprite tracks for the tier two Squirrel.
     /// </summary>
     [SerializeField]
-    private Sprite[] placementTrack;
+    private DefenderAnimationSet tierTwoSquirrel;
 
     /// <summary>
-    /// Attack animation when this Squirrel is facing north.
+    /// Sprite tracks for the tier three Squirrel.
     /// </summary>
     [SerializeField]
-    private Sprite[] attackAnimationNorth;
-
-    /// <summary>
-    /// Attack animation when this Squirrel is facing north.
-    /// </summary>
-    [SerializeField]
-    private Sprite[] attackAnimationEast;
-
-    /// <summary>
-    /// Attack animation when this Squirrel is facing south.
-    /// </summary>
-    [SerializeField]
-    private Sprite[] attackAnimationSouth;
-
-    /// <summary>
-    /// Attack animation when this Squirrel is facing west.
-    /// </summary>
-    [SerializeField]
-    private Sprite[] attackAnimationWest;
-
-    /// <summary>
-    /// Idle animation when this Squirrel is facing north.
-    /// </summary>
-    [SerializeField]
-    private Sprite[] idleAnimationNorth;
-
-    /// <summary>
-    /// Idle animation when this Squirrel is facing east.
-    /// </summary>
-    [SerializeField]
-    private Sprite[] idleAnimationEast;
-
-    /// <summary>
-    /// Idle animation when this Squirrel is facing south.
-    /// </summary>
-    [SerializeField]
-    private Sprite[] idleAnimationSouth;
-
-    /// <summary>
-    /// Idle animation when this Squirrel is facing west.
-    /// </summary>
-    [SerializeField]
-    private Sprite[] idleAnimationWest;
+    private DefenderAnimationSet tierThreeSquirrel;
 
 
     /// <summary>
@@ -112,21 +70,14 @@ public class SquirrelFactory : Factory
     /// </summary>
     /// <returns>the animation track that represents the Squirrel attacking.</returns>
     /// <param name="d">The Squirrel's Direction. </param>
-    public static Sprite[] GetAttackTrack(Direction d)
+    /// <param name="tier">The Squirrel's tier. </param>
+    public static Sprite[] GetAttackTrack(Direction d, int tier)
     {
-        switch (d)
-        {
-            case Direction.NORTH:
-                return instance.attackAnimationNorth;
-            case Direction.EAST:
-                return instance.attackAnimationEast;
-            case Direction.SOUTH:
-                return instance.attackAnimationSouth;
-            case Direction.WEST:
-                return instance.attackAnimationWest;
-        }
+        Assert.IsTrue(tier >= Defender.MIN_TIER && tier <= Defender.MAX_TIER, "Invalid tier.");
 
-        throw new System.InvalidOperationException("Invalid direction.");
+        if (tier == 1) return instance.tierOneSquirrel.GetAttackAnimation(d);
+        else if (tier == 2) return instance.tierTwoSquirrel.GetAttackAnimation(d);
+        else return instance.tierThreeSquirrel.GetAttackAnimation(d);
     }
 
     /// <summary>
@@ -134,21 +85,14 @@ public class SquirrelFactory : Factory
     /// </summary>
     /// <returns>the animation track that represents the Squirrel when idle.</returns>
     /// <param name="d">The Squirrel's Direction. </param>
-    public static Sprite[] GetIdleTrack(Direction d)
+    /// <param name="tier">The Squirrel's tier. </param>
+    public static Sprite[] GetIdleTrack(Direction d, int tier)
     {
-        switch (d)
-        {
-            case Direction.NORTH:
-                return instance.idleAnimationNorth;
-            case Direction.EAST:
-                return instance.idleAnimationEast;
-            case Direction.SOUTH:
-                return instance.idleAnimationSouth;
-            case Direction.WEST:
-                return instance.idleAnimationWest;
-        }
+        Assert.IsTrue(tier >= Defender.MIN_TIER && tier <= Defender.MAX_TIER, "Invalid tier.");
 
-        throw new System.InvalidOperationException("Invalid direction.");
+        if (tier == 1) return instance.tierOneSquirrel.GetIdleAnimation(d);
+        else if (tier == 2) return instance.tierTwoSquirrel.GetIdleAnimation(d);
+        else return instance.tierThreeSquirrel.GetIdleAnimation(d);
     }
 
     /// <summary>
@@ -156,14 +100,15 @@ public class SquirrelFactory : Factory
     /// </summary>
     /// <returns>the animation track that represents this Squirrel when placing. 
     /// </returns>
-    public static Sprite[] GetPlacementTrack() { return instance.placementTrack; }
+    /// <param name="tier">The Squirrel's tier. </param>
+    public static Sprite[] GetPlacementTrack(int tier)
+    {
+        Assert.IsTrue(tier >= Defender.MIN_TIER && tier <= Defender.MAX_TIER, "Invalid tier.");
 
-    /// <summary>
-    /// Returns the animation track that represents this Squirrel on a boat. 
-    /// </summary>
-    /// <returns>the animation track that represents this Squirrel on a boat. 
-    /// </returns>
-    public static Sprite[] GetBoatTrack() { return instance.boatTrack; }
+        if (tier == 1) return instance.tierOneSquirrel.GetPlacementAnimation();
+        else if (tier == 2) return instance.tierTwoSquirrel.GetPlacementAnimation();
+        else return instance.tierThreeSquirrel.GetPlacementAnimation();
+    }
 
     /// <summary>
     /// Returns the SquirrelFactory instance's Transform component.

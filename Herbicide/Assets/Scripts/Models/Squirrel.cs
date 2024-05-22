@@ -40,9 +40,9 @@ public class Squirrel : Defender
     public override float MIN_ATTACK_RANGE => 0f;
 
     /// <summary>
-    /// Amount of attack cooldown this Squirrel starts with.
+    /// Number of attacks per second a Squirrel starts with.
     /// </summary>
-    public override float BASE_ATTACK_SPEED => 2f;
+    public override float BASE_ATTACK_SPEED => .5f;
 
     /// <summary>
     /// Most amount of attack cooldown this Squirrel can have.
@@ -136,7 +136,7 @@ public class Squirrel : Defender
     /// </summary>
     /// <returns>the animation track that represents this Squirrel when placing.
     /// </returns>
-    public override Sprite[] GetPlacementTrack() { return SquirrelFactory.GetPlacementTrack(); }
+    public override Sprite[] GetPlacementTrack() { return SquirrelFactory.GetPlacementTrack(GetTier()); }
 
     /// <summary>
     /// Returns the (X, Y) dimensions of the Bear's placement track.
@@ -145,6 +145,23 @@ public class Squirrel : Defender
     public override Vector2Int GetPlacementTrackDimensions()
     {
         return new Vector2Int(16, 20);
+    }
+
+    /// <summary>
+    /// Returns a HashSet of upgrades the Squirrel gets at the given tier.
+    /// </summary>
+    /// <param name="tier">the tier of Upgrades to get</param>
+    /// <returns>a HashSet of upgrades the Squirrel gets at the given tier.</returns>
+    protected override HashSet<UpgradeType> GetUpgradesByTier(int tier)
+    {
+        Assert.IsTrue(tier >= 1 && tier <= 3, "Invalid tier.");
+        Assert.IsTrue(tier == GetTier(), "Tier does not match.");
+
+        HashSet<UpgradeType> upgrades = new HashSet<UpgradeType>();
+        if (tier == 2) upgrades.Add(UpgradeType.DOUBLE_SHOT);
+        if(tier == 3) upgrades.Add(UpgradeType.TRIPLE_SHOT);
+
+        return upgrades;
     }
 }
 

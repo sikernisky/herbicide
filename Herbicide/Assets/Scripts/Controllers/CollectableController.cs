@@ -80,7 +80,7 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
     /// <summary>
     /// Collection range.
     /// </summary>
-    private float collectionRange = 0.2f;
+    private float collectionRange = 0.25f;
 
     /// <summary>
     /// true if the Collectable got close enough to the cursor and should
@@ -282,7 +282,9 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
         float speedMultiplier = GetCollectable().GetHomingCurve().Evaluate(normalizedDistance);
         float movementSpeed = Mathf.Lerp(minSpeed, GetCollectable().HOME_SPEED, speedMultiplier) * Time.deltaTime;
         Vector2 currentPosition = GetCollectable().GetPosition();
-        if (currentPosition != mousePos)
+        float distanceToMouse = Vector2.Distance(currentPosition, mousePos);
+        float epsilon = 0.01f;
+        if (distanceToMouse > epsilon)
         {
             Vector2 newPosition = Vector2.MoveTowards(currentPosition, mousePos, movementSpeed);
             GetCollectable().SetWorldPosition(newPosition);

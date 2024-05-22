@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
-using static ShopManager;
 
 /// <summary>
 /// Handles selecting and placing items. This may happen in regards to the
@@ -89,15 +88,24 @@ public class PlacementController : MonoBehaviour
     /// <summary>
     /// Defines a delegate for completing a Model combination and upgrade.
     /// </summary>
-    /// <param name="combinedModelType">The type of the combined Model.</param>
-    /// <param name="newTier">The new tier of the combined Model.</param>
-    public delegate void FinishCombiningDelegate(ModelType combinedModelType, int newTier);
+    /// <param name="combinedModel">The combined Model.</param>
+    public delegate void FinishCombiningDelegate(Model combinedModel);
 
     /// <summary>
     /// Event triggered when a Model is combined and upgraded.
     /// </summary>
     public event FinishCombiningDelegate OnFinishCombining;
 
+    /// <summary>
+    /// Defines a delegate for completing a Model placement.
+    /// </summary>
+    /// <param name="model">The placed Model.</param>
+    public delegate void FinishPlacingDelegate(Model model);
+
+    /// <summary>
+    /// Event triggered when a Model is placed.
+    /// </summary>
+    public event FinishPlacingDelegate OnFinishPlacing;
 
 
     /// <summary>
@@ -139,6 +147,12 @@ public class PlacementController : MonoBehaviour
         if (instance.gameState == GameState.ONGOING)
         {
             instance.GlueSubjectToMouse();
+            if (Placing())
+            {
+                instance.dummyImage.sprite = instance.subject.GetPlacementTrack()[0];
+            }
+
+
             if (didEscape)
             {
                 if (Placing()) StopPlacingObject(false);
@@ -184,6 +198,8 @@ public class PlacementController : MonoBehaviour
         instance.dummyImage.sprite = null;
         instance.dummyImage.color = Color.white;
         instance.placing = false;
+        instance.OnFinishPlacing?.Invoke(instance.subject);
+        instance.subject = null;
     }
 
     /// <summary>
@@ -223,12 +239,6 @@ public class PlacementController : MonoBehaviour
     private void GlueSubjectToMouse()
     {
         dummy.transform.position = InputController.GetUIMousePosition();
-
-        Defender defender = subject as Defender;
-        if(defender != null)
-        {
-            // Debug.Log(defender.TYPE + " tier: " + defender.GetTier());
-        }
     }
 
     /// <summary>
@@ -375,7 +385,7 @@ public class PlacementController : MonoBehaviour
         if (allInactive)
         {
             instance.combining = false;
-            instance.OnFinishCombining?.Invoke(defenderSubject.TYPE, defenderSubject.GetTier());
+            instance.OnFinishCombining?.Invoke(defenderSubject);
         }
     }
     /// <summary>
@@ -393,6 +403,16 @@ public class PlacementController : MonoBehaviour
     {
         Assert.IsNotNull(handler, "Handler is null.");
         instance.OnFinishCombining += handler;
+    }
+
+    /// <summary>
+    /// Subscribes a handler (the ControllerController) to the finish placing event.
+    /// </summary>
+    /// <param name="handler">The handler to subscribe. </param>
+    public static void SubscribeToFinishPlacingDelegate(FinishPlacingDelegate handler)
+    {
+        Assert.IsNotNull(handler, "Handler is null.");
+        instance.OnFinishPlacing += handler;
     }
 
 }

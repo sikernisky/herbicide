@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1744683004831737470}
   - component: {fileID: 2255216830269315497}
   m_Layer: 5
-  m_Name: HedgehogTraitText2
+  m_Name: BearTraitText2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -35,7 +35,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 6, y: 3}
+  m_AnchoredPosition: {x: 5.94, y: 3.43}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1744683004831737470
@@ -66,7 +66,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '*Fluffer'
+  m_text: '
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 882c39620150a426488fad7d46a0297f, type: 2}
   m_sharedMaterial: {fileID: 4441153303911237134, guid: 882c39620150a426488fad7d46a0297f, type: 2}
@@ -147,7 +149,7 @@ GameObject:
   - component: {fileID: 9173442586906454706}
   - component: {fileID: 101354809318367112}
   m_Layer: 5
-  m_Name: HedgehogNameText
+  m_Name: Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -201,7 +203,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Hedgehog
+  m_text: '
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 882c39620150a426488fad7d46a0297f, type: 2}
   m_sharedMaterial: {fileID: 4441153303911237134, guid: 882c39620150a426488fad7d46a0297f, type: 2}
@@ -228,8 +232,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 29
-  m_fontSizeBase: 29
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -282,7 +286,7 @@ GameObject:
   - component: {fileID: 5612195091209622562}
   - component: {fileID: 9106766624328845723}
   m_Layer: 5
-  m_Name: HedgehogTraitText1
+  m_Name: BearTraitText1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -305,7 +309,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 6, y: 7}
+  m_AnchoredPosition: {x: 6, y: 7.7}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5612195091209622562
@@ -336,7 +340,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '*WHISPERER'
+  m_text: '
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 882c39620150a426488fad7d46a0297f, type: 2}
   m_sharedMaterial: {fileID: 4441153303911237134, guid: 882c39620150a426488fad7d46a0297f, type: 2}
@@ -493,7 +499,7 @@ GameObject:
   - component: {fileID: 9073829249215328498}
   - component: {fileID: 7838228846455706653}
   m_Layer: 5
-  m_Name: Hedgehog
+  m_Name: Splash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -516,8 +522,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -12, y: 0}
-  m_SizeDelta: {x: 16, y: 16}
+  m_AnchoredPosition: {x: -12, y: 3}
+  m_SizeDelta: {x: 16, y: 26}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9073829249215328498
 CanvasRenderer:
@@ -534,7 +540,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6641452368609629745}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -547,7 +553,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -371695392, guid: 6fb210092e0f24913a25e0834159301f, type: 3}
+  m_Sprite: {fileID: 1226891533, guid: cabd17ccd36144b86be59d2415f20aae, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -568,9 +574,9 @@ GameObject:
   - component: {fileID: 6298932089853266912}
   - component: {fileID: 1931960314570128068}
   - component: {fileID: 8036743979026315054}
-  - component: {fileID: 6372120043012786709}
+  - component: {fileID: 2507400078880901370}
   m_Layer: 5
-  m_Name: ShopCardHedgehog
+  m_Name: ShopCardBlank
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -621,18 +627,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 213fdd0cc2cae48b894da444a1616b7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modelType: 16
+  modelType: 13
+  cardType: 0
   cardBackgroundImage: {fileID: 2861143171162560290}
-  modelSplashArt: {fileID: 7838228846455706653}
-  modelNameText: {fileID: 101354809318367112}
+  cardSplash: {fileID: 7838228846455706653}
+  cardTitle: {fileID: 101354809318367112}
   traitNames:
   - {fileID: 9106766624328845723}
   - {fileID: 2255216830269315497}
+  upgradeDescription: {fileID: 0}
   cardTransform: {fileID: 6298932089853266912}
-  modelPrefab: {fileID: 4876196561823057326, guid: dacd2fd60cb314cd18b48808355393cd, type: 3}
-  model: {fileID: 1275960445827561937, guid: dacd2fd60cb314cd18b48808355393cd, type: 3}
-  cardButton: {fileID: 6372120043012786709}
---- !u!114 &6372120043012786709
+  modelPrefab: {fileID: 4258100568393254862, guid: 9a19eef9d372a4ae194ccfbc10988af8, type: 3}
+  model: {fileID: 2448526251401559834, guid: 9a19eef9d372a4ae194ccfbc10988af8, type: 3}
+  upgradeType: 0
+  cardButton: {fileID: 0}
+--- !u!114 &2507400078880901370
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -653,7 +662,7 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_NormalColor: {r: 0.4339623, g: 0.4339623, b: 0.4339623, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}

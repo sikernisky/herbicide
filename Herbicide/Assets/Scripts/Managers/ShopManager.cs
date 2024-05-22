@@ -44,18 +44,28 @@ public class ShopManager : MonoBehaviour
     /// <summary>
     /// How much currency it costs to reroll the shop.
     /// </summary>
-    private static readonly int REROLL_COST = 50;
+    private static readonly int REROLL_COST = 25;
+
+    /// <summary>
+    /// How long the shop will wait before automatically rerolling.
+    /// </summary>
+    private static readonly float AUTOMATIC_REROLL_TIME = 15f;
+
+    /// <summary>
+    /// How long it has been since the last reroll.
+    /// </summary>
+    private float timeSinceLastReroll;
 
     /// <summary>
     /// Defines a delegate for buying a Model from the shop.
     /// </summary>
     /// <param name="modelType">The Model that was bought.</param>
-    public delegate void BuyDefenderDelegate(Model purchasedModel);
+    public delegate void BuyModelDelegate(Model purchasedModel);
 
     /// <summary>
     /// Event triggered when a Model is bought from the Shop.
     /// </summary>
-    public event BuyDefenderDelegate OnBuyModel;
+    public event BuyModelDelegate OnBuyModel;
 
     /// <summary>
     /// true if the shop has been loaded; false otherwise.
@@ -66,7 +76,6 @@ public class ShopManager : MonoBehaviour
     /// true if the shop is active; false if the upgrades are active.
     /// </summary>
     private bool shopActive;
-
 
 
     /// <summary>
@@ -83,7 +92,7 @@ public class ShopManager : MonoBehaviour
         Assert.AreEqual(1, shopManagers.Length);
         instance = shopManagers[0];
         instance.cardPool = new Dictionary<ModelType, int>();
-
+        PlacementController.SubscribeToFinishPlacingDelegate(instance.OnFinishPlacing);
     }
  
 
@@ -113,6 +122,14 @@ public class ShopManager : MonoBehaviour
             if (!shopSlot.CanBuy(EconomyController.GetBalance())) shopSlot.DarkenSlot();
             else shopSlot.LightenSlot();
         }
+
+        // Update reroll timer
+        if (instance.timeSinceLastReroll <= 0)
+        {
+            instance.Reroll(true);
+            instance.timeSinceLastReroll = AUTOMATIC_REROLL_TIME;
+        }
+        else instance.timeSinceLastReroll -= Time.deltaTime;
     }
 
     /// <summary>
@@ -148,6 +165,7 @@ public class ShopManager : MonoBehaviour
             }
 
             instance.Reroll(true);
+            instance.timeSinceLastReroll = AUTOMATIC_REROLL_TIME;
         }
         else
         {
@@ -157,15 +175,6 @@ public class ShopManager : MonoBehaviour
 
         instance.shopLoaded = true;
         instance.shopActive = true;
-    }
-
-    public static void LoadUpgrades()
-    {
-        if(!instance.shopActive) return;
-
-        instance.shopSlots.ForEach(ss => ss.DisableSlot());
-
-
     }
 
 
@@ -196,6 +205,8 @@ public class ShopManager : MonoBehaviour
             Assert.IsNotNull(shopCardComp);
             cardSlot.Fill(shopCardComp);
         }
+
+        instance.shopActive = true;
     }
 
     /// <summary>
@@ -214,9 +225,10 @@ public class ShopManager : MonoBehaviour
     {
         Assert.IsTrue(slotIndex >= 0 && slotIndex < shopSlots.Count);
         ShopSlot clickedSlot = shopSlots.First(ss => ss.GetSlotIndex() == slotIndex);
+        if(clickedSlot.Empty()) return;
+        if (PlacementController.Placing()) return;
 
         if (!clickedSlot.CanBuy(EconomyController.GetBalance())) return;
-        if (PlacementController.Placing()) return;
 
         GameObject slotPrefab = clickedSlot.GetCardPrefab();
         Assert.IsNotNull(slotPrefab);
@@ -232,6 +244,18 @@ public class ShopManager : MonoBehaviour
         bool allSlotsEmpty = true;
         foreach (ShopSlot shopSlot in shopSlots) { if (!shopSlot.Empty()) allSlotsEmpty = false; }
         if (allSlotsEmpty) Reroll(true);
+            
+    }
+
+    /// <summary>
+    /// Called when the player finishes placing a Model.
+    /// </summary>
+    private void OnFinishPlacing(Model m)
+    {
+        Assert.IsNotNull(m, "Placed model is null.");
+        
+/*        Defender defender = m as Defender;
+        if(defender != null && defender.NeedsUpgrade()) LoadUpgradesForPlacedDefender(defender);*/
     }
 
     /// <summary>
@@ -247,7 +271,7 @@ public class ShopManager : MonoBehaviour
     /// Subscribes a handler (the ControllerController) to the request upgrade event.
     /// </summary>
     /// <param name="handler">The handler to subscribe.</param>
-    public static void SubscribeToBuyDefenderDelegate(BuyDefenderDelegate handler)
+    public static void SubscribeToBuyDefenderDelegate(BuyModelDelegate handler)
     {
         Assert.IsNotNull(handler, "Handler is null.");
         instance.OnBuyModel += handler;

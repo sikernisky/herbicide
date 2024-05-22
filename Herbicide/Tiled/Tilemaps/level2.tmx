@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="17" nextobjectid="702">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="17" nextobjectid="706">
  <editorsettings>
   <export target="../../Assets/Levels/level2.json" format="json"/>
  </editorsettings>
@@ -100,6 +100,8 @@
   <object id="659" gid="13" x="224" y="128" width="16" height="16"/>
   <object id="662" gid="13" x="144" y="128" width="16" height="16"/>
   <object id="696" gid="19" x="320" y="128" width="16" height="16"/>
+  <object id="702" gid="19" x="192" y="128" width="16" height="16"/>
+  <object id="704" gid="19" x="192" y="144" width="16" height="16"/>
  </objectgroup>
  <objectgroup id="13" name="Structures" class="StructureLayer">
   <properties>
@@ -136,8 +138,6 @@
   <object id="620" gid="52" x="192" y="192" width="16" height="16"/>
   <object id="621" gid="52" x="192" y="176" width="16" height="16"/>
   <object id="622" gid="52" x="192" y="160" width="16" height="16"/>
-  <object id="623" gid="52" x="192" y="144" width="16" height="16"/>
-  <object id="624" gid="52" x="192" y="128" width="16" height="16"/>
   <object id="637" gid="52" x="304" y="96" width="16" height="16"/>
   <object id="638" gid="52" x="304" y="112" width="16" height="16"/>
   <object id="639" gid="52" x="288" y="96" width="16" height="16"/>
@@ -172,6 +172,8 @@
   <object id="694" gid="48" x="288" y="112" width="16" height="16"/>
   <object id="700" gid="51" x="320" y="128" width="16" height="16"/>
   <object id="701" gid="52" x="224" y="96" width="16" height="16"/>
+  <object id="703" gid="51" x="192" y="128" width="16" height="16"/>
+  <object id="705" gid="51" x="192" y="144" width="16" height="16"/>
  </objectgroup>
  <objectgroup id="16" name="Markers" class="MarkerLayer">
   <properties>
@@ -179,15 +181,22 @@
   </properties>
   <object id="669" gid="57" x="256" y="176" width="16" height="16">
    <properties>
-    <property name="enemySpawnData">kudzu1,kudzu2,kudzu3,
+    <property name="enemySpawnData">kudzu1,
 
-kudzu10,kudzu12,kudzu13,
+kudzu10,
 
-kudzu20,kudzu24,
+kudzu20,
 
-kudzu34,kudzu35,kudzu36,
+kudzu30, kudzu 32
 
-kudzu51,kudzu52,kudzu53,kudzu54,kudzu55</property>
+kudzu38,
+
+kudzu48, kudzu 51, kudzu 52,
+
+kudzu60, kudzu 61, kudzu 63,
+
+kudzu70, kudzu 72, kudzu 74
+</property>
    </properties>
   </object>
  </objectgroup>

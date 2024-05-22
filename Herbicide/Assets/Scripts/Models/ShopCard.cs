@@ -1,8 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine;
+using UnityEngine.Assertions;
+using UnityEngine.UI;
 
 /// <summary>
 /// Represents a card in the Shop. Cards hold information
@@ -17,19 +17,21 @@ public class ShopCard : UIModel
     private Image cardBackgroundImage;
 
     /// <summary>
-    /// Image that represents the ShopCard's model art.
+    /// Image that represents the ShopCard's art.
     /// </summary>
     [SerializeField]
-    private Image modelSplashArt;
+    private Image cardSplash;
 
     /// <summary>
-    /// Text to represent the ShopCard's model name.
+    /// Text to represent the ShopCard's title.
     /// </summary>
     [SerializeField]
-    private TMP_Text modelNameText;
+    private TMP_Text cardTitle;
 
     /// <summary>
-    /// Text components to represent the ShopCard model's traits.
+    /// Text components to represent the ShopCard model's traits.<br></br>
+    /// 
+    /// This is disabled if the ShopCard is an upgrade card.
     /// </summary>
     [SerializeField]
     private List<TMP_Text> traitNames;
@@ -41,13 +43,13 @@ public class ShopCard : UIModel
     private RectTransform cardTransform;
 
     /// <summary>
-    /// The prefab of the Model this ShopCard produces.
+    /// The prefab of the Model this ShopCard produces
     /// </summary>
     [SerializeField]
     private GameObject modelPrefab;
 
     /// <summary>
-    /// The Model this ShopCard produces.
+    /// The Model this ShopCard produces
     /// </summary>
     [SerializeField]
     private Model model;
@@ -87,12 +89,19 @@ public class ShopCard : UIModel
     /// </summary>
     /// <returns>an instantiated GameObject with this ShopCard's Model
     /// attached.</returns>
-    public GameObject GetCardPrefab() { return Instantiate(modelPrefab); }
+    public GameObject GetShopCardModelPrefab()
+    {
+        Assert.IsNotNull(modelPrefab, "Model prefab is null.");
+
+        return Instantiate(modelPrefab); 
+    }
 
     /// <summary>
-    /// Returns the price of this ShopCard's Model.
+    /// Returns the price of this ShopCard's Model. Returns 0 if this
+    /// is an upgrade card.
     /// </summary>
-    /// <returns>the price of this ShopCard's Model.</returns>
+    /// <returns>the price of this ShopCard's Model, or 0 if this is
+    /// an upgrade card.</returns>
     public int GetPrice() { return model.COST; }
 
     /// <summary>
@@ -120,7 +129,7 @@ public class ShopCard : UIModel
     public void TurnDark()
     {
         cardBackgroundImage.color = darkenedColor;
-        modelNameText.color = darkenedColor;
+        cardTitle.color = darkenedColor;
     }
 
     /// <summary>
@@ -129,6 +138,6 @@ public class ShopCard : UIModel
     public void TurnLight()
     {
         cardBackgroundImage.color = defaultColor;
-        modelNameText.color = defaultColor;
+        cardTitle.color = defaultColor;
     }
 }

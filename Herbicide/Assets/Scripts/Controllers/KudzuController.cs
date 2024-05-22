@@ -36,11 +36,6 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     protected override int MAX_TARGETS => 1;
 
     /// <summary>
-    /// The number of Kudzus spawned so far this scene.
-    /// </summary>
-    private static int NUM_KUDZUS;
-
-    /// <summary>
     /// Counts the number of seconds in the spawn animation; resets
     /// on step.
     /// </summary>
@@ -94,7 +89,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     /// </summary>
     /// <param name="kudzu">The Kudzu Enemy. </param>
     /// <returns>The created KudzuController.</returns>
-    public KudzuController(Kudzu kudzu) : base(kudzu) { NUM_KUDZUS++; }
+    public KudzuController(Kudzu kudzu) : base(kudzu) {  }
 
     /// <summary>
     /// Updates the Kudzu controlled by this KudzuController.
@@ -328,7 +323,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     {
         if (GetState() != KudzuState.SPAWNING) return;
 
-
+        GetKudzu().SetSpawning(true);
         SetAnimation(GetKudzu().MOVE_ANIMATION_DURATION, KudzuFactory.GetSpawnTrack(
                                   GetKudzu().GetDirection(), GetKudzu().GetHealthState()));
 

@@ -13,6 +13,11 @@ public class ShopFactory : Factory
     /// </summary>
     private static ShopFactory instance;
 
+    /// <summary>
+    /// How many prefabs to fill each ObjectPool with at start.
+    /// </summary>
+    protected override int poolStartingCount => 4;
+
 
     /// <summary>
     /// Finds and sets the ShopFactory singleton.
@@ -50,7 +55,8 @@ public class ShopFactory : Factory
         HashSet<ModelType> validCardTypes = new HashSet<ModelType>()
         {
             ModelType.SHOP_CARD_BEAR,
-            ModelType.SHOP_CARD_SQUIRREL
+            ModelType.SHOP_CARD_SQUIRREL,
+            ModelType.SHOP_CARD_BLANK
         };
         Assert.IsTrue(validCardTypes.Contains(prefab.GetComponent<Model>().TYPE));
         instance.ReturnObject(prefab);

@@ -181,14 +181,8 @@ public abstract class Mob : PlaceableObject
     public void StepAttackCooldown()
     {
         attackCooldownTimer = Mathf.Clamp(GetAttackCooldown() - Time.deltaTime,
-            MIN_ATTACK_SPEED, attackSpeed);
+            MIN_ATTACK_SPEED, 1f / attackSpeed);
     }
-
-    /// <summary>
-    /// Returns the current number of attacks this Mob can make per second.
-    /// </summary>
-    /// <returns>the current number of attacks this Mob can make per second.</returns>
-    public float GetAttackSpeed() { return attackSpeed; }
 
     /// <summary>
     /// Sets the number of attacks this Mob can make per second.

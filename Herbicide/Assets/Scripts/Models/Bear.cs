@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 /// <summary>
 /// Represents a Squirrel Defender. It Bites Enemies.
@@ -145,4 +146,19 @@ public class Bear : Defender
     /// Sets this Bear's 2D Collider properties.
     /// </summary>
     public override void SetColliderProperties() { return; }
+
+    /// <summary>
+    /// Returns a HashSet of upgrades the Bear gets at the given tier.
+    /// </summary>
+    /// <param name="tier">the tier of Upgrades to get</param>
+    /// <returns>a HashSet of upgrades the Bear gets at the given tier.</returns>
+    protected override HashSet<UpgradeType> GetUpgradesByTier(int tier)
+    {
+        Assert.IsTrue(tier >= 1 && tier <= 3, "Invalid tier.");
+        Assert.IsTrue(tier == GetTier(), "Tier does not match.");
+
+        HashSet<UpgradeType> upgrades = new HashSet<UpgradeType>();
+
+        return upgrades;
+    }
 }

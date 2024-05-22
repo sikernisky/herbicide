@@ -37,8 +37,8 @@
         },
         "Tilemaps/level1.tmx": {
             "expandedObjectLayers": [
-                16,
-                13
+                13,
+                16
             ],
             "scale": 4,
             "selectedLayer": 5,
@@ -49,9 +49,9 @@
         },
         "Tilemaps/level2.tmx": {
             "expandedObjectLayers": [
+                13,
                 15,
-                16,
-                13
+                16
             ],
             "scale": 2,
             "selectedLayer": 5,
@@ -62,9 +62,9 @@
         },
         "Tilemaps/level3.tmx": {
             "expandedObjectLayers": [
+                13,
                 15,
-                16,
-                13
+                16
             ],
             "scale": 3,
             "selectedLayer": 5,
