@@ -6,12 +6,26 @@ using UnityEngine;
 /// </summary>
 public static class PathfindingCache
 {
+    /// <summary>
+    /// Represents a cache entry.
+    /// </summary>
     private class CacheEntry
     {
+        /// <summary>
+        /// true if the goal is reachable from the start position;
+        /// otherwise, false. 
+        /// </summary>
         public bool IsReachable { get; set; }
+
+        /// <summary>
+        /// The position of the next tile in the path.
+        /// </summary>
         public Vector2Int NextTilePosition { get; set; }
     }
 
+    /// <summary>
+    /// The cache for pathfinding results.
+    /// </summary>
     private static Dictionary<(Vector3 start, Vector3 goal), CacheEntry> cache = new Dictionary<(Vector3, Vector3), CacheEntry>();
 
     /// <summary>
@@ -70,8 +84,5 @@ public static class PathfindingCache
     /// <summary>
     /// Clears the cache.
     /// </summary>
-    public static void ClearCache()
-    {
-        cache.Clear();
-    }
+    public static void ClearCache() { cache.Clear(); }
 }

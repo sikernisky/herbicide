@@ -9,11 +9,6 @@ using UnityEngine.Assertions;
 public class Kudzu : Enemy
 {
     /// <summary>
-    /// Name of this Kudzu.
-    /// </summary>
-    public override string NAME => "Kudzu";
-
-    /// <summary>
     /// Cost of placing a Kudzu from the inventory. 
     /// </summary>
     public override int COST => 0;
@@ -35,17 +30,17 @@ public class Kudzu : Enemy
     /// <summary>
     /// Base health of a Kudzu.
     /// </summary>
-    public override int BASE_HEALTH => 100;
+    public override float BASE_HEALTH => 100;
 
     /// <summary>
     /// Upper bound of a Kudzu's health. 
     /// </summary>
-    public override int MAX_HEALTH => 150;
+    public override float MAX_HEALTH => 100;
 
     /// <summary>
     /// Minimum health of a Kudzu
     /// </summary>
-    public override int MIN_HEALTH => 0;
+    public override float MIN_HEALTH => 0;
 
     /// <summary>
     /// Amount of attack cooldown this Kudzu starts with.
@@ -61,12 +56,6 @@ public class Kudzu : Enemy
     /// Damage a Kudzu does each attack.
     /// </summary>
     public int BONK_DAMAGE => 50;
-
-    /// <summary>
-    /// The chance, between 0-1, that a Kudzu drops loot
-    /// upon its death.
-    /// </summary>
-    public override float LOOT_DROP_CHANCE => .5f;
 
     /// <summary>
     /// Starting attack range of a Kudzu.
@@ -96,7 +85,7 @@ public class Kudzu : Enemy
     /// <summary>
     /// Minimum chase range of a Kudzu.
     /// </summary>
-    public override float MIN_CHASE_RANGE => float.MaxValue;
+    public override float MIN_CHASE_RANGE => float.MinValue;
 
     /// <summary>
     /// How many seconds a Kudzu's move animation lasts,
@@ -159,7 +148,7 @@ public class Kudzu : Enemy
     }
 
     /// <summary>
-    /// Returns the position at which an IAttackable will aim at when
+    /// Returns the position at which an attacker will aim at when
     /// attacking this Kudzu.
     /// </summary>
     /// <returns>this Kuduu's attack position.</returns>
@@ -173,12 +162,12 @@ public class Kudzu : Enemy
     /// Returns the sprite that represents this Kudzu when placing.
     /// </summary>
     /// <returns>the sprite that represents this Kudzu when placing.</returns>
-    public override Sprite[] GetPlacementTrack() { return KudzuFactory.GetPlacementTrack(); }
+    public override Sprite[] GetPlacementTrack() { return EnemyFactory.GetPlacementTrack(TYPE); }
 
     /// <summary>
     /// Returns the GameObject that represents this Kudzu on the grid.
     /// </summary>
     /// <returns>the GameObject that represents this Kudzu on the grid.
     /// </returns>
-    public override GameObject Copy() { return KudzuFactory.GetKudzuPrefab(); }
+    public override GameObject Copy() { return EnemyFactory.GetEnemyPrefab(TYPE); }
 }

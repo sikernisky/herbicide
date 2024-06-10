@@ -15,11 +15,6 @@ using UnityEngine.Assertions;
 public class SquirrelController : DefenderController<SquirrelController.SquirrelState>
 {
     /// <summary>
-    /// The number of Squirrels spawned so far this scene.
-    /// </summary>
-    private static int NUM_SQUIRRELS;
-
-    /// <summary>
     /// The maximum number of targets a Squirrel can select at once.
     /// </summary>
     protected override int MAX_TARGETS => 1;
@@ -59,10 +54,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     /// </summary>
     /// <param name="defender">The Squirrel Defender. </param>
     /// <returns>The created SquirrelController.</returns>
-    public SquirrelController(Squirrel squirrel) : base(squirrel)
-    {
-        NUM_SQUIRRELS++;
-    }
+    public SquirrelController(Squirrel squirrel) : base(squirrel) { }
 
     /// <summary>
     /// Main update loop for the Squirrel.
@@ -89,12 +81,6 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     /// </summary>
     /// <param name="other">the other collider.</param>
     protected override void HandleCollision(Collider2D other) { throw new NotImplementedException(); }
-
-    /// <summary>
-    /// Returns the Squirrel's target if it has one. 
-    /// </summary>
-    /// <returns>the Squirrel's target; null if it doesn't have one.</returns>
-    private Enemy GetTarget() { return NumTargets() == 1 ? GetTargets()[0] as Enemy : null; }
 
     /// <summary>
     /// Returns the Squirrel prefab to the SquirrelFactory singleton.
@@ -132,19 +118,19 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         }
 
 
-
+        Enemy target = GetTarget() as Enemy;
         switch (GetState())
         {
             case SquirrelState.SPAWN:
                 if (SpawnStateDone()) SetState(SquirrelState.IDLE);
                 break;
             case SquirrelState.IDLE:
-                if (GetTarget() == null || !GetTarget().Targetable()) break;
-                if (DistanceToTargetFromTree()  <= GetSquirrel().GetAttackRange() &&
+                if (target == null || !target.Targetable()) break;
+                if (DistanceToTargetFromTree() <= GetSquirrel().GetAttackRange() &&
                     GetSquirrel().GetAttackCooldown() <= 0) SetState(SquirrelState.ATTACK);
                 break;
             case SquirrelState.ATTACK:
-                if (GetTarget() == null || !GetTarget().Targetable()) SetState(SquirrelState.IDLE);
+                if (target == null || !target.Targetable()) SetState(SquirrelState.IDLE);
                 if (GetAnimationCounter() > 0) break;
                 if (GetSquirrel().GetAttackCooldown() > 0) SetState(SquirrelState.IDLE);
                 else if (DistanceToTarget() > GetSquirrel().GetAttackRange()) SetState(SquirrelState.IDLE);
@@ -173,9 +159,9 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     {
         if (!ValidModel()) return;
         if (GetState() != SquirrelState.IDLE) return;
-
-        if(GetTarget() != null && DistanceToTargetFromTree() <= GetSquirrel().GetAttackRange()) 
-             FaceTarget();
+        Enemy target = GetTarget() as Enemy;
+        if (target != null && DistanceToTargetFromTree() <= GetSquirrel().GetAttackRange())
+            FaceTarget();
         else GetSquirrel().FaceDirection(Direction.SOUTH);
 
         SetAnimation(GetSquirrel().IDLE_ANIMATION_DURATION, SquirrelFactory.GetIdleTrack(GetSquirrel().GetDirection(), GetSquirrel().GetTier()));
@@ -187,18 +173,16 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     protected virtual void ExecuteAttackState()
     {
         if (!ValidModel()) return;
-        if (GetTarget() == null || !GetTarget().Targetable()) return;
+        Enemy target = GetTarget() as Enemy;
+        if (target == null || !target.Targetable()) return;
         if (GetState() != SquirrelState.ATTACK) return;
 
-        // Animation Logic.
-
         FaceTarget();
-        SetAnimation(GetSquirrel().ATTACK_ANIMATION_DURATION, SquirrelFactory.GetAttackTrack(GetSquirrel().GetDirection(), GetSquirrel().GetTier()));
-
         if (!CanAttack()) return;
 
-        int numAcornsToFire = GetSquirrel().HasUpgrade(UpgradeType.DOUBLE_SHOT) ? 2 : 1;
-        numAcornsToFire = GetSquirrel().HasUpgrade(UpgradeType.TRIPLE_SHOT) ? 3 : numAcornsToFire;
+        // Calculate the number of acorns to fire based on the Squirrel's tier.
+        int tier = GetSquirrel().GetTier();
+        int numAcornsToFire = (int)((0.5 * tier * tier) - (0.5 * tier) + 1);
         GetSquirrel().StartCoroutine(FireAcorns(numAcornsToFire));
 
         // Reset attack animation.
@@ -214,7 +198,8 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     {
         if (!base.CanAttack()) return false; //Cooldown
         if (GetState() != SquirrelState.ATTACK) return false; //Not in the attack state.
-        if (GetTarget() == null || !GetTarget().Targetable()) return false; //Invalid target.
+        Enemy target = GetTarget() as Enemy;
+        if (target == null || !target.Targetable()) return false; //Invalid target.
         return true;
     }
 
@@ -260,9 +245,12 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     {
         Assert.IsTrue(delayBetweenAcorns >= 0, "Delay needs to be non-negative");
 
-        for(int i = 0; i < numAcorns; i++)
+        for (int i = 0; i < numAcorns; i++)
         {
-            if(GetTarget() == null || !GetTarget().Targetable()) yield break; // Invalid target.
+            Enemy target = GetTarget() as Enemy;
+            if (target == null || !target.Targetable()) yield break; // Invalid target.
+
+            SetAnimation(GetSquirrel().ATTACK_ANIMATION_DURATION / numAcorns, SquirrelFactory.GetAttackTrack(GetSquirrel().GetDirection(), GetSquirrel().GetTier()));
 
             GameObject acornPrefab = AcornFactory.GetAcornPrefab();
             Assert.IsNotNull(acornPrefab);

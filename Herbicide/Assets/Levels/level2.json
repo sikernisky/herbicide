@@ -1499,7 +1499,7 @@
                         {
                          "name":"enemySpawnData",
                          "type":"string",
-                         "value":"kudzu1,\n\nkudzu10,\n\nkudzu20,\n\nkudzu30, kudzu 32\n\nkudzu38,\n\nkudzu48, kudzu 51, kudzu 52,\n\nkudzu60, kudzu 61, kudzu 63,\n\nkudzu70, kudzu 72, kudzu 74\n"
+                         "value":"kudzu1"
                         }, 
                         {
                          "name":"markerName",
@@ -1529,7 +1529,7 @@
  "nextobjectid":706,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.10.2",
+ "tiledversion":"1.10.1",
  "tileheight":16,
  "tilesets":[
         {

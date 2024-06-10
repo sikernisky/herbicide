@@ -133,6 +133,7 @@ public class LevelController : MonoBehaviour
         ControllerController.SetSingleton(instance);
         EconomyController.SetSingleton(instance);
         CanvasController.SetSingleton(instance);
+        SettingsController.SetSingleton(instance);
         SoundController.SetSingleton(instance);
         //SynergyController.SetSingleton(instance);
     }
@@ -147,8 +148,8 @@ public class LevelController : MonoBehaviour
         DewFactory.SetSingleton(instance);
         EdgeFactory.SetSingleton(instance);
         EmanationFactory.SetSingleton(instance);
+        EnemyFactory.SetSingleton(instance);
         FlooringFactory.SetSingleton(instance);
-        KudzuFactory.SetSingleton(instance);
         NexusFactory.SetSingleton(instance);
         NexusHoleFactory.SetSingleton(instance);
         ShopFactory.SetSingleton(instance);

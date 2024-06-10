@@ -121,13 +121,13 @@ public class ControllerController : MonoBehaviour
     public static void MakeModelController(Model model)
     {
         bool needsParameters = false;
-        if(model as Projectile != null) needsParameters = true;
-        if(model as Collectable != null) needsParameters = true;
+        if (model as Projectile != null) needsParameters = true;
+        if (model as Collectable != null) needsParameters = true;
         if (needsParameters) throw new Exception("You need to use AddModelController() for a " +
             "model with type " + model.TYPE + " that requires parameters.");
         bool hasNoController = false;
-        if(model as Tile != null) hasNoController = true;
-        if(hasNoController) throw new Exception("The model with type " + model.TYPE + " has no controller.");
+        if (model as Tile != null) hasNoController = true;
+        if (hasNoController) throw new Exception("The model with type " + model.TYPE + " has no controller.");
 
         switch (model.TYPE)
         {
@@ -143,11 +143,17 @@ public class ControllerController : MonoBehaviour
                 BearController bc = new BearController(bear);
                 instance.defenderControllers.Add(bc);
                 break;
+            case ModelType.KNOTWOOD:
+                Knotwood knotwood = model as Knotwood;
+                Assert.IsNotNull(knotwood, "Knotwood is null.");
+                KnotwoodController kwc = new KnotwoodController(knotwood);
+                instance.enemyControllers.Add(kwc);
+                break;
             case ModelType.KUDZU:
                 Kudzu kudzu = model as Kudzu;
                 Assert.IsNotNull(kudzu, "Kudzu is null.");
-                KudzuController kc = new KudzuController(kudzu);
-                instance.enemyControllers.Add(kc);
+                KudzuController kzc = new KudzuController(kudzu);
+                instance.enemyControllers.Add(kzc);
                 break;
             case ModelType.NEXUS:
                 Nexus nexus = model as Nexus;
@@ -194,8 +200,8 @@ public class ControllerController : MonoBehaviour
 
         Model model = modelController.GetModel();
         if (model as Projectile != null) instance.projectileControllers.Add(modelController);
-        else if(model as Collectable != null) instance.collectableControllers.Add(modelController);
-        else if(model as Tile != null) return;
+        else if (model as Collectable != null) instance.collectableControllers.Add(modelController);
+        else if (model as Tile != null) return;
         else throw new Exception("ModelController has no list to add to.");
     }
 
@@ -392,19 +398,19 @@ public class ControllerController : MonoBehaviour
         {
             if (numTierOne >= 2 && numTierTwo >= 2)
             {
-                PlacementController.UpgradeModelPlacing();
-                PlacementController.UpgradeModelPlacing();
+                //PlacementController.UpgradeModelPlacing();
+                //PlacementController.UpgradeModelPlacing();
                 List<Model> tierOneDefenders = GetAllDefendersAtTier(purchasedModel.TYPE, 1);
                 List<Model> tierTwoDefenders = GetAllDefendersAtTier(purchasedModel.TYPE, 2);
                 List<Model> combined = tierOneDefenders.Concat(tierTwoDefenders).ToList();
-                PlacementController.CombineDefendersToCursor(combined);
+                PlacementController.CombineDefendersToCursor(combined, 3);
                 RemoveAllDefendersOfTypeAtTier(purchasedModel.TYPE, 1);
                 RemoveAllDefendersOfTypeAtTier(purchasedModel.TYPE, 2);
             }
             else if (numTierOne >= 2)
             {
-                PlacementController.UpgradeModelPlacing();
-                PlacementController.CombineDefendersToCursor(GetAllDefendersAtTier(purchasedModel.TYPE, 1));
+                //PlacementController.UpgradeModelPlacing();
+                PlacementController.CombineDefendersToCursor(GetAllDefendersAtTier(purchasedModel.TYPE, 1), 2);
                 RemoveAllDefendersOfTypeAtTier(purchasedModel.TYPE, 1);
             }
         }
@@ -418,9 +424,7 @@ public class ControllerController : MonoBehaviour
     /// <param name="combinedModel">The Model that was created by combining the Defenders.</param>
     private void OnFinishCombining(Model combinedModel)
     {
-        // Here is where we would open up the upgrade panel for the player to choose
-        
-        // ShopManager.LoadUpgradesForPlacedModel(combinedModel);
+
     }
 
     /// <summary>
@@ -439,7 +443,7 @@ public class ControllerController : MonoBehaviour
             if (defender == null) continue;
             if (!defender.IsPlaced()) continue;
             //Debug.Log("Defender tier: " + defender.GetTier() + " target tier: " + tier);
-            if(defender.GetTier() != tier) continue;
+            if (defender.GetTier() != tier) continue;
 
             TileGrid.RemoveFromTile(defender.GetPlacedCoords());
             controllersToRemove.Add(dc);
@@ -462,13 +466,13 @@ public class ControllerController : MonoBehaviour
     {
         List<Model> list = new List<Model>();
 
-        foreach(ModelController defenderController in defenderControllers)
+        foreach (ModelController defenderController in defenderControllers)
         {
-            if(defenderController == null) continue;
+            if (defenderController == null) continue;
             Defender defender = defenderController.GetModel() as Defender;
-            if(defender == null) continue;
+            if (defender == null) continue;
 
-            if(defender.TYPE == defenderType && defender.GetTier() == tier) list.Add(defender);
+            if (defender.TYPE == defenderType && defender.GetTier() == tier) list.Add(defender);
         }
 
         return list;

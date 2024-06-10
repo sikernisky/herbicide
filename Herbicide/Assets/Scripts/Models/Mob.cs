@@ -11,6 +11,7 @@ using UnityEngine.Assertions;
 /// </summary>
 public abstract class Mob : PlaceableObject
 {
+
     //--------------------BEGIN STATS----------------------//
 
     /// <summary>
@@ -187,7 +188,13 @@ public abstract class Mob : PlaceableObject
     /// <summary>
     /// Sets the number of attacks this Mob can make per second.
     /// </summary>
-    public void SetAttackSpeed(float attackSpeed) { this.attackSpeed = attackSpeed; }  
+    public void SetAttackSpeed(float attackSpeed) { this.attackSpeed = attackSpeed; }
+
+    /// <summary>
+    /// Returns this Mob's current attack speed.
+    /// </summary>
+    /// <returns>this Mob's current attack speed.</returns>
+    public float GetAttackSpeed() { return attackSpeed; }
 
     /// <summary>
     /// Resets this Mob's attack cooldown to its currently capped value.

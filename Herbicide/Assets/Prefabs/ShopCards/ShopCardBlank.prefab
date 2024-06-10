@@ -627,19 +627,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 213fdd0cc2cae48b894da444a1616b7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modelType: 13
-  cardType: 0
+  modelType: 14
   cardBackgroundImage: {fileID: 2861143171162560290}
   cardSplash: {fileID: 7838228846455706653}
   cardTitle: {fileID: 101354809318367112}
   traitNames:
   - {fileID: 9106766624328845723}
   - {fileID: 2255216830269315497}
-  upgradeDescription: {fileID: 0}
   cardTransform: {fileID: 6298932089853266912}
   modelPrefab: {fileID: 4258100568393254862, guid: 9a19eef9d372a4ae194ccfbc10988af8, type: 3}
   model: {fileID: 2448526251401559834, guid: 9a19eef9d372a4ae194ccfbc10988af8, type: 3}
-  upgradeType: 0
   cardButton: {fileID: 0}
 --- !u!114 &2507400078880901370
 MonoBehaviour:

@@ -9,11 +9,6 @@ using UnityEngine;
 public class GrassTile : Tile
 {
     /// <summary>
-    /// Name of this GrassTile.
-    /// </summary>
-    public override string NAME => "GrassTile";
-
-    /// <summary>
     /// Type of this GrassTile.
     /// </summary>
     protected override TileType type => Tile.TileType.GRASS;

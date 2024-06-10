@@ -12,17 +12,17 @@ public class Squirrel : Defender
     /// <summary>
     /// Starting health of a Squirrel
     /// </summary>
-    public override int BASE_HEALTH => 200;
+    public override float BASE_HEALTH => 200;
 
     /// <summary>
     /// Maximum health of a Squirrel
     /// </summary>
-    public override int MAX_HEALTH => 200;
+    public override float MAX_HEALTH => 200;
 
     /// <summary>
     /// Minimum health of a Squirrel
     /// </summary>
-    public override int MIN_HEALTH => 0;
+    public override float MIN_HEALTH => 0;
 
     /// <summary>
     /// Starting attack range of a Squirrel
@@ -42,7 +42,7 @@ public class Squirrel : Defender
     /// <summary>
     /// Number of attacks per second a Squirrel starts with.
     /// </summary>
-    public override float BASE_ATTACK_SPEED => .5f;
+    public override float BASE_ATTACK_SPEED => .3f;
 
     /// <summary>
     /// Most amount of attack cooldown this Squirrel can have.
@@ -90,11 +90,6 @@ public class Squirrel : Defender
     /// from start to finish. 
     /// </summary>
     public float IDLE_ANIMATION_DURATION => Mathf.Clamp(GetAttackCooldown(), 0.0001f, float.MaxValue);
-
-    /// <summary>
-    /// Name of a Squirrel
-    /// </summary>
-    public override string NAME => "Squirrel";
 
     /// <summary>
     /// How much currency it takes to place a Squirrel
@@ -145,23 +140,6 @@ public class Squirrel : Defender
     public override Vector2Int GetPlacementTrackDimensions()
     {
         return new Vector2Int(16, 20);
-    }
-
-    /// <summary>
-    /// Returns a HashSet of upgrades the Squirrel gets at the given tier.
-    /// </summary>
-    /// <param name="tier">the tier of Upgrades to get</param>
-    /// <returns>a HashSet of upgrades the Squirrel gets at the given tier.</returns>
-    protected override HashSet<UpgradeType> GetUpgradesByTier(int tier)
-    {
-        Assert.IsTrue(tier >= 1 && tier <= 3, "Invalid tier.");
-        Assert.IsTrue(tier == GetTier(), "Tier does not match.");
-
-        HashSet<UpgradeType> upgrades = new HashSet<UpgradeType>();
-        if (tier == 2) upgrades.Add(UpgradeType.DOUBLE_SHOT);
-        if(tier == 3) upgrades.Add(UpgradeType.TRIPLE_SHOT);
-
-        return upgrades;
     }
 }
 

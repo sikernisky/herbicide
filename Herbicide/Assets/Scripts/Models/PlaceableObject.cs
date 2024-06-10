@@ -18,17 +18,17 @@ public abstract class PlaceableObject : Model
     /// <summary>
     /// Amount of health this PlaceableObject starts with.
     /// </summary>
-    public abstract int BASE_HEALTH { get; }
+    public abstract float BASE_HEALTH { get; }
 
     /// <summary>
     /// Most amount of health this PlaceableObject can have.
     /// </summary>
-    public abstract int MAX_HEALTH { get; }
+    public abstract float MAX_HEALTH { get; }
 
     /// <summary>
     /// Least amount of health this PlaceableObject can have.
     /// </summary>
-    public abstract int MIN_HEALTH { get; }
+    public abstract float MIN_HEALTH { get; }
 
     /// <summary>
     /// This PlaceableObject's four neighbors.
@@ -38,7 +38,7 @@ public abstract class PlaceableObject : Model
     /// <summary>
     /// Current amount of health.
     /// </summary>
-    private int health;
+    private float health;
 
     /// <summary>
     /// The scale of this PlaceableObject when placed.
@@ -49,7 +49,7 @@ public abstract class PlaceableObject : Model
     /// The tile coordinates where this PlaceableObject is placed.
     /// </summary>
     private Vector2Int placedCoords;
-    
+
     /// <summary>
     /// true if this PlaceableObject is placed; otherwise, false.
     /// </summary>
@@ -115,7 +115,7 @@ public abstract class PlaceableObject : Model
     /// <param name="placedCoords">The coordinates where this PlaceableObject
     /// is placed.</param>
     public virtual void OnPlace(Vector2Int placedCoords)
-    { 
+    {
         this.placedCoords = placedCoords;
         placed = true;
     }
@@ -155,9 +155,9 @@ public abstract class PlaceableObject : Model
     /// Adds some amount (can be negative) of health to this PlaceableObject.
     /// </summary>
     /// <param name="amount">The amount of health to adjust.</param>
-    public virtual void AdjustHealth(int amount)
+    public virtual void AdjustHealth(float amount)
     {
-        int healthBefore = GetHealth();
+        float healthBefore = GetHealth();
         health = Mathf.Clamp(GetHealth() + amount, MIN_HEALTH, MAX_HEALTH);
         if (GetHealth() < healthBefore) FlashDamage();
     }
@@ -166,7 +166,7 @@ public abstract class PlaceableObject : Model
     /// Returns this PlaceableObject's current health.
     /// </summary>
     /// <returns>this PlaceableObject's current health.</returns>
-    public int GetHealth() { return health; }
+    public float GetHealth() { return health; }
 
     /// <summary>
     /// Resets this PlaceableObject's health to its starting health value.
@@ -199,5 +199,5 @@ public abstract class PlaceableObject : Model
     /// <summary>
     /// Returns the Tile coordinates where this PlaceableObject is placed.
     /// </summary>
-    public Vector2Int GetPlacedCoords() { return placedCoords;}
+    public Vector2Int GetPlacedCoords() { return placedCoords; }
 }

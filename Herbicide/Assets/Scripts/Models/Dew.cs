@@ -27,11 +27,6 @@ public class Dew : Currency
     /// </summary>
     public override ModelType TYPE => ModelType.DEW;
 
-    /// <summary>
-    /// Name of a Dew.
-    /// </summary>
-    public override string NAME => "Dew";
-
 
     /// <summary>
     /// Returns the GameObject that represents this Dew on the grid.

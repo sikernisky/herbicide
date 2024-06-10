@@ -20,11 +20,6 @@ public class EnemyManager : MonoBehaviour
     private static EnemyManager instance;
 
     /// <summary>
-    /// Number of Enemy objects spawned so far
-    /// </summary>
-    private int numEnemiesSpawned;
-
-    /// <summary>
     /// Sorted spawn times of all Enemies this level.
     /// </summary>
     private List<float> spawnTimes;
@@ -157,8 +152,10 @@ public class EnemyManager : MonoBehaviour
 
         switch (enemyName.ToLower())
         {
+            case "knotwood":
+                return EnemyFactory.GetEnemyPrefab(ModelType.KNOTWOOD);
             case "kudzu":
-                return KudzuFactory.GetKudzuPrefab();
+                return EnemyFactory.GetEnemyPrefab(ModelType.KUDZU);
             default:
                 break;
         }

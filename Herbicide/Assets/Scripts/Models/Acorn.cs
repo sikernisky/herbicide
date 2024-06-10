@@ -48,11 +48,6 @@ public class Acorn : Projectile
     public override float LIFESPAN => float.MaxValue;
 
     /// <summary>
-    /// Name of an Acorn.
-    /// </summary>
-    public override string NAME => "Acorn";
-
-    /// <summary>
     /// How many seconds an Acorn's move animation lasts,
     /// from start to finish. 
     /// </summary>

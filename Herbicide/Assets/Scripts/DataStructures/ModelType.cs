@@ -15,6 +15,7 @@ public enum ModelType
     EMANATION,
     GRASS_TILE,
     HEDGEHOG,
+    KNOTWOOD,
     KUDZU,
     NEXUS,
     NEXUS_HOLE,

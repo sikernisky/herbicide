@@ -46,6 +46,8 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
 
         UpdateEnemyHealthState();
         UpdateEnemyCollider();
+        GetEnemy().UpdateDamageOverTimeEffects();
+        GetEnemy().ToggleHealthBar(SettingsController.SHOW_HEALTH_BARS);
     }
 
     /// <summary>
@@ -123,7 +125,7 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
         {
             if (heldTarget == null) continue;
             heldTarget.Drop();
-            if(heldTarget as Nexus != null) RemoveAsCarrier();
+            if (heldTarget as Nexus != null) RemoveAsCarrier();
             Nexus nexusTarget = heldTarget as Nexus;
             if (nexusTarget != null)
             {
@@ -150,8 +152,8 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     /// <summary>
     /// Sets the EnemyController as popped out of a NexusHole.
     /// </summary>
-    protected void SetPoppedOutOfHole() 
-    { 
+    protected void SetPoppedOutOfHole()
+    {
         poppedOutOfHole = true;
         GetEnemy().SetMaskInteraction(SpriteMaskInteraction.None);
         GetEnemy().SetSpawning(false);
@@ -169,7 +171,7 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     /// </summary>
     protected void AddAsCarrier()
     {
-        if(activeCarriers == null) activeCarriers = new List<Enemy>();
+        if (activeCarriers == null) activeCarriers = new List<Enemy>();
         activeCarriers.Add(GetEnemy());
     }
 
@@ -178,7 +180,7 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     /// </summary>
     protected void RemoveAsCarrier()
     {
-        if(activeCarriers == null) return;
+        if (activeCarriers == null) return;
         activeCarriers.Remove(GetEnemy());
     }
 
@@ -189,7 +191,7 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     protected override void HoldTarget(PlaceableObject target)
     {
         base.HoldTarget(target);
-        if(target as Nexus != null) AddAsCarrier();
+        if (target as Nexus != null) AddAsCarrier();
     }
 
     /// <summary>
@@ -209,8 +211,8 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
         {
             if (carrier == currentEnemy) continue;
             if (carrier.Exited()) continue;
-            if(carrier.IsExiting()) continue;
-                 
+            if (carrier.IsExiting()) continue;
+
             float dist = Vector2.Distance(currentEnemy.GetPosition(), carrier.GetPosition());
             if (dist < nearestCarrierDist)
             {

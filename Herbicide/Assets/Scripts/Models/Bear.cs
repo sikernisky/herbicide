@@ -16,7 +16,22 @@ public class Bear : Defender
     /// <summary>
     /// Damage a Bear deals each chomp.
     /// </summary>
-    public int CHOMP_DAMAGE => 10;
+    public float CHOMP_DAMAGE => 10;
+
+    /// <summary>
+    /// Damage a Bear deals over a bleed effect. 
+    /// </summary>
+    public float BLEED_DAMAGE => 5;
+
+    /// <summary>
+    /// Damage a Bear deals over a bleed effect. 
+    /// </summary>
+    public float BLEED_DURATION => 1;
+
+    /// <summary>
+    /// The number of ticks a Bear's bleed effect deals.
+    /// </summary>
+    public int BLEED_TICKS => 30;
 
     /// <summary>
     /// Starting attack range of a Bear.
@@ -36,7 +51,7 @@ public class Bear : Defender
     /// <summary>
     /// Starting attack cooldown of a Bear.
     /// </summary>
-    public override float BASE_ATTACK_SPEED => 1.5f;
+    public override float BASE_ATTACK_SPEED => .5f;
 
     /// <summary>
     /// Maximum attack cooldown of a Bear.
@@ -76,22 +91,17 @@ public class Bear : Defender
     /// <summary>
     /// Starting health of a Bear.
     /// </summary>
-    public override int BASE_HEALTH => 300;
+    public override float BASE_HEALTH => 300;
 
     /// <summary>
     /// Maximum health of a Bear.
     /// </summary>
-    public override int MAX_HEALTH => int.MaxValue;
+    public override float MAX_HEALTH => int.MaxValue;
 
     /// <summary>
     /// Minimum health of a Bear.
     /// </summary>
-    public override int MIN_HEALTH => 0;
-
-    /// <summary>
-    /// Name of a Bear.
-    /// </summary>
-    public override string NAME => "Bear";
+    public override float MIN_HEALTH => 0;
 
     /// <summary>
     /// ModelType of a Bear.
@@ -146,19 +156,4 @@ public class Bear : Defender
     /// Sets this Bear's 2D Collider properties.
     /// </summary>
     public override void SetColliderProperties() { return; }
-
-    /// <summary>
-    /// Returns a HashSet of upgrades the Bear gets at the given tier.
-    /// </summary>
-    /// <param name="tier">the tier of Upgrades to get</param>
-    /// <returns>a HashSet of upgrades the Bear gets at the given tier.</returns>
-    protected override HashSet<UpgradeType> GetUpgradesByTier(int tier)
-    {
-        Assert.IsTrue(tier >= 1 && tier <= 3, "Invalid tier.");
-        Assert.IsTrue(tier == GetTier(), "Tier does not match.");
-
-        HashSet<UpgradeType> upgrades = new HashSet<UpgradeType>();
-
-        return upgrades;
-    }
 }

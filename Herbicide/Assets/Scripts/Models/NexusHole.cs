@@ -76,22 +76,17 @@ public class NexusHole : Structure
     /// <summary>
     /// Starting health of a NexusHole.
     /// </summary>
-    public override int BASE_HEALTH => 100;
+    public override float BASE_HEALTH => 100;
 
     /// <summary>
     /// Maximum health of a NexusHole.
     /// </summary>
-    public override int MAX_HEALTH => int.MaxValue;
+    public override float MAX_HEALTH => int.MaxValue;
 
     /// <summary>
     /// Minimum health of a NexusHole.
     /// </summary>
-    public override int MIN_HEALTH => 0;
-
-    /// <summary>
-    /// Name of a NexusHole.
-    /// </summary>
-    public override string NAME => "Nexus Hole";
+    public override float MIN_HEALTH => 0;
 
     /// <summary>
     /// NexusHoles do not occupy Tiles.

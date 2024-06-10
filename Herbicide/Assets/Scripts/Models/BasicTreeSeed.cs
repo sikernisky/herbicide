@@ -47,10 +47,6 @@ public class BasicTreeSeed : Projectile
     /// </summary>
     public override float LIFESPAN => float.MaxValue;
 
-    /// <summary>
-    /// Name of a BasicTreeSeed.
-    /// </summary>
-    public override string NAME => "BasicTreeSeed";
 
     /// <summary>
     /// How many seconds an BasicTreeSeed's move animation lasts,

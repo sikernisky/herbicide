@@ -11,7 +11,7 @@ using UnityEditor.VersionControl;
 public class JSONController : MonoBehaviour
 {
     /// <summary>
-    /// Reference to the JSONControlelr singleton.
+    /// Reference to the JSONController singleton.
     /// </summary>
     private static JSONController instance;
 

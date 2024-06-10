@@ -12,10 +12,16 @@ using System.Linq;
 public abstract class Enemy : Mob
 {
     /// <summary>
-    /// The chance, between 0-1, that this Enemy drops
-    /// its loot upon death. 
+    /// Reference to the Enemy's health bar background SpriteRenderer component.
     /// </summary>
-    public abstract float LOOT_DROP_CHANCE { get; }
+    [SerializeField]
+    private SpriteRenderer healthBarBackground;
+
+    /// <summary>
+    /// Reference to the Enemy's health bar SpriteRenderer component.
+    /// </summary> 
+    [SerializeField]
+    private SpriteRenderer healthBarFill;
 
     /// <summary>
     /// The time at which this Enemy spawns.
@@ -54,6 +60,16 @@ public abstract class Enemy : Mob
     private bool spawning;
 
     /// <summary>
+    /// Set of active DamageOverTime effects on this Enemy.
+    /// </summary>
+    private HashSet<DamageOverTime> activeDOTs;
+
+    /// <summary>
+    /// The DamageOverTime effects applied to this Enemy this cycle.
+    /// </summary>
+    private HashSet<DamageOverTime.DOTType> appliedDOTsThisCycle;
+
+    /// <summary>
     /// Type of this Enemy.
     /// </summary>
     public enum EnemyType
@@ -79,6 +95,9 @@ public abstract class Enemy : Mob
     {
         Assert.IsTrue(ReadyToSpawn(), "Not Ready.");
         base.OnSpawn();
+
+        activeDOTs = new HashSet<DamageOverTime>();
+        appliedDOTsThisCycle = new HashSet<DamageOverTime.DOTType>();
     }
 
     /// <summary>
@@ -176,6 +195,73 @@ public abstract class Enemy : Mob
     public override bool Targetable()
     {
         return base.Targetable() && !IsSpawning();
+    }
+
+    /// <summary>
+    /// Adjusts this Mob's health by some amount. Updates the health bar.
+    /// </summary>
+    /// <param name="amount">The amount to adjust by. </param>
+    public override void AdjustHealth(float amount)
+    {
+        base.AdjustHealth(amount);
+        float healthPercentage = (float)GetHealth() / BASE_HEALTH;
+        healthBarFill.transform.localScale = new Vector3(healthPercentage, 1, 1);
+    }
+
+    /// <summary>
+    /// Adjusts this Mob's health by some amount over time. Updates the health bar.
+    /// </summary>
+    /// <param name="amount">The amount to adjust by. </param>
+    public void AdjustHealth(DamageOverTime dot)
+    {
+        Assert.IsNotNull(dot, "DamageOverTime is null.");
+
+        activeDOTs.Add(dot);
+    }
+
+    /// <summary>
+    /// Updates the DamageOverTime effects on this Enemy.
+    /// </summary>
+    public void UpdateDamageOverTimeEffects()
+    {
+        if (activeDOTs == null) activeDOTs = new HashSet<DamageOverTime>();
+        if (appliedDOTsThisCycle == null) appliedDOTsThisCycle = new HashSet<DamageOverTime.DOTType>();
+
+        foreach (DamageOverTime dot in activeDOTs)
+        {
+            bool shouldAdjustHealth = dot.UpdateDamageOverTime();
+
+            if (!dot.DoesStack())
+            {
+                if (appliedDOTsThisCycle.Contains(dot.GetDOTType())) continue;
+                appliedDOTsThisCycle.Add(dot.GetDOTType());
+            }
+
+            if (shouldAdjustHealth) AdjustHealth(-dot.GetDamage());
+        }
+
+        activeDOTs.RemoveWhere(dot => dot.IsFinished());
+        appliedDOTsThisCycle.Clear();
+    }
+
+    /// <summary>
+    /// Toggle the visibility of the Enemy's health bar.
+    /// </summary>
+    public void ToggleHealthBar(bool showHealthBar)
+    {
+        Assert.IsNotNull(healthBarBackground, "HealthBarBackground is null.");
+        Assert.IsNotNull(healthBarFill, "HealthBarFill is null.");
+
+        if (showHealthBar)
+        {
+            healthBarBackground.enabled = true;
+            healthBarFill.enabled = true;
+        }
+        else
+        {
+            healthBarBackground.enabled = false;
+            healthBarFill.enabled = false;
+        }
     }
 }
 

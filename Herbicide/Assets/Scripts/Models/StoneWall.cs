@@ -9,11 +9,6 @@ using UnityEngine;
 public class StoneWall : Wall
 {
     /// <summary>
-    /// Name of this Stone Wall.
-    /// </summary>
-    public override string NAME => "Stone Wall";
-
-    /// <summary>
     /// Type of a Stone Wall.
     /// </summary>
     public override ModelType TYPE => ModelType.STONE_WALL;

@@ -21,17 +21,17 @@ public class Nexus : Structure
     /// <summary>
     /// Starting health of a Nexus.
     /// </summary>
-    public override int BASE_HEALTH => 300;
+    public override float BASE_HEALTH => 300;
 
     /// <summary>
     /// Maximum health of a Nexus.
     /// </summary>
-    public override int MAX_HEALTH => int.MaxValue;
+    public override float MAX_HEALTH => int.MaxValue;
 
     /// <summary>
     /// Minimum health of a Nexus.
     /// </summary>
-    public override int MIN_HEALTH => 0;
+    public override float MIN_HEALTH => 0;
 
     /// <summary>
     /// true if the Nexus occupies tiles.
@@ -42,11 +42,6 @@ public class Nexus : Structure
     /// Size of a Nexus on the TileGrid.
     /// </summary>
     public override Vector2Int SIZE => new Vector2Int(1, 1);
-
-    /// <summary>
-    /// Name of a Nexus.
-    /// </summary>
-    public override string NAME => "Nexus";
 
     /// <summary>
     /// Starting attack range of a Nexus.

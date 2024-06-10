@@ -19,7 +19,7 @@ public abstract class Model : MonoBehaviour
     /// <summary>
     /// Name of this Model.
     /// </summary>
-    public abstract string NAME { get; }
+    public string NAME => TYPE.ToString();
 
     /// <summary>
     /// Type of this Model.
@@ -175,7 +175,7 @@ public abstract class Model : MonoBehaviour
         Assert.IsTrue(track.Length > 0, "Cannot have an empty animation track.");
         CurrentAnimationTrack = track;
         CurrentFrame = startFrame;
-        if(isNewTrack) numCyclesOfCurrentAnimationCompleted = 0;
+        if (isNewTrack) numCyclesOfCurrentAnimationCompleted = 0;
     }
 
     /// <summary>
@@ -479,6 +479,6 @@ public abstract class Model : MonoBehaviour
     public float GetDistanceTo(Model other)
     {
         Assert.IsNotNull(other, "Other model is null.");
-        return Vector3.Distance(GetPosition(), other.GetPosition());    
+        return Vector3.Distance(GetPosition(), other.GetPosition());
     }
 }

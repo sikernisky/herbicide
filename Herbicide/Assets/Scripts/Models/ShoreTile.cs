@@ -9,11 +9,6 @@ using UnityEngine;
 public class ShoreTile : EdgeTile
 {
     /// <summary>
-    /// Name of this ShoreTile.
-    /// </summary>
-    public override string NAME => "ShoreTile";
-
-    /// <summary>
     /// Tile type of a ShoreTile.
     /// </summary>
     protected override TileType type => TileType.SHORE;

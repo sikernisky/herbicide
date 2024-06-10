@@ -73,7 +73,7 @@ public abstract class Tree : Mob, ISurface
     /// If it is occupied, adjusts its occupant's health instead.  
     /// </summary>
     /// <param name="amount">The amount to adjust by.</param>
-    public override void AdjustHealth(int amount)
+    public override void AdjustHealth(float amount)
     {
         if (Occupied()) defender.AdjustHealth(amount);
         else base.AdjustHealth(amount);

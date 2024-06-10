@@ -67,12 +67,6 @@ public class BearController : DefenderController<BearController.BearState>
     protected override void HandleCollision(Collider2D other) { throw new NotImplementedException(); }
 
     /// <summary>
-    /// Returns the Bear's target if it has one. 
-    /// </summary>
-    /// <returns>the Bear's target; null if it doesn't have one.</returns>
-    private Enemy GetTarget() { return NumTargets() == 1 ? GetTargets()[0] as Enemy : null; }
-
-    /// <summary>
     /// Returns the Bear prefab to the BearFactory singleton.
     /// </summary>
     public override void DestroyModel() { BearFactory.ReturnBearPrefab(GetBear().gameObject); }
@@ -107,19 +101,20 @@ public class BearController : DefenderController<BearController.BearState>
             return;
         }
 
+        Enemy target = GetTarget() as Enemy;
         switch (GetState())
         {
             case BearState.SPAWN:
                 if (SpawnStateDone()) SetState(BearState.IDLE);
                 break;
             case BearState.IDLE:
-                if (GetTarget() == null || !GetTarget().Targetable()) break;
+                if (GetTarget() == null || !target.Targetable()) break;
                 if (DistanceToTargetFromTree()
                     <= GetBear().GetAttackRange() &&
                     GetBear().GetAttackCooldown() <= 0) SetState(BearState.ATTACK);
                 break;
             case BearState.ATTACK:
-                if (GetTarget() == null || !GetTarget().Targetable()) SetState(BearState.IDLE);
+                if (GetTarget() == null || !target.Targetable()) SetState(BearState.IDLE);
                 if (GetAnimationCounter() > 0) break;
                 if (GetBear().GetAttackCooldown() > 0) SetState(BearState.IDLE);
                 else if (DistanceToTargetFromTree()
@@ -162,7 +157,8 @@ public class BearController : DefenderController<BearController.BearState>
     protected virtual void ExecuteAttackState()
     {
         if (!ValidModel()) return;
-        if (GetTarget() == null || !GetTarget().Targetable()) return;
+        Enemy target = GetTarget() as Enemy;
+        if (GetTarget() == null || !target.Targetable()) return;
         if (GetState() != BearState.ATTACK) return;
 
         // Animation Logic.
@@ -179,7 +175,20 @@ public class BearController : DefenderController<BearController.BearState>
             1,
             GetTarget().GetAttackPosition());
         ControllerController.AddEmanationController(chompEmanationController);
-        GetTarget().AdjustHealth(-GetBear().CHOMP_DAMAGE);
+
+        target.AdjustHealth(-GetBear().CHOMP_DAMAGE);
+        if (GetBear().GetTier() > 1)
+        {
+            float bleedDamage = GetBear().GetTier() == 2 ? GetBear().BLEED_DAMAGE :
+                GetBear().BLEED_DAMAGE * 3;
+            DamageOverTime chompBleed = new DamageOverTime(
+                bleedDamage,
+                GetBear().BLEED_DURATION,
+                GetBear().BLEED_TICKS,
+                DamageOverTime.DOTType.BEAR_CHOMP
+            );
+            target.AdjustHealth(chompBleed);
+        }
 
         // Reset attack animation.
         GetBear().RestartAttackCooldown();
@@ -194,7 +203,8 @@ public class BearController : DefenderController<BearController.BearState>
     {
         if (!base.CanAttack()) return false; //Cooldown
         if (GetState() != BearState.ATTACK) return false; //Not in the attack state.
-        if (GetTarget() == null || !GetTarget().Targetable()) return false; //Invalid target.
+        Enemy target = GetTarget() as Enemy;
+        if (GetTarget() == null || !target.Targetable()) return false; //Invalid target.
         return true;
     }
 

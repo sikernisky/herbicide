@@ -295,7 +295,7 @@ public abstract class ModelController
     /// </summary>
     private void StepAnimation()
     {
-        if(!GetModel().HasAnimationTrack()) return;
+        if (!GetModel().HasAnimationTrack()) return;
 
         AgeAnimationCounter();
         if (GoNextFrame())
@@ -424,7 +424,7 @@ public abstract class ModelController
 
         float scaleStep = 3.5f * Time.deltaTime;
         Vector3 newScale = Vector3.Lerp(GetModel().transform.localScale, Vector3.zero, scaleStep);
-        GetModel().transform.localScale = newScale;   
+        GetModel().transform.localScale = newScale;
     }
 
     /// <summary>

@@ -52,13 +52,6 @@ public class ShopFactory : Factory
     /// <param name="prefab">The ShopCard prefab to return.</param>
     public static void ReturnShopCardPrefab(GameObject prefab)
     {
-        HashSet<ModelType> validCardTypes = new HashSet<ModelType>()
-        {
-            ModelType.SHOP_CARD_BEAR,
-            ModelType.SHOP_CARD_SQUIRREL,
-            ModelType.SHOP_CARD_BLANK
-        };
-        Assert.IsTrue(validCardTypes.Contains(prefab.GetComponent<Model>().TYPE));
         instance.ReturnObject(prefab);
     }
 

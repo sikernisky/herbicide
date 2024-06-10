@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6869bf1261269456b8333deb154be0ab, type: 3}
+  m_Name: KudzuAnimationSet
+  m_EditorClassIdentifier: 
+  placementTrack: []
+  attackAnimationNorthHealthy: []
+  attackAnimationEastHealthy: []
+  attackAnimationSouthHealthy: []
+  attackAnimationWestHealthy: []
+  attackAnimationNorthDamaged: []
+  attackAnimationEastDamaged: []
+  attackAnimationSouthDamaged: []
+  attackAnimationWestDamaged: []
+  attackAnimationNorthCritical: []
+  attackAnimationEastCritical: []
+  attackAnimationSouthCritical: []
+  attackAnimationWestCritical: []
+  idleAnimationNorthHealthy: []
+  idleAnimationEastHealthy: []
+  idleAnimationSouthHealthy: []
+  idleAnimationWestHealthy: []
+  idleAnimationNorthDamaged: []
+  idleAnimationEastDamaged: []
+  idleAnimationSouthDamaged: []
+  idleAnimationWestDamaged: []
+  idleAnimationNorthCritical: []
+  idleAnimationEastCritical: []
+  idleAnimationSouthCritical: []
+  idleAnimationWestCritical: []
+  movementAnimationNorthHealthy: []
+  movementAnimationEastHealthy: []
+  movementAnimationSouthHealthy: []
+  movementAnimationWestHealthy: []
+  movementAnimationNorthDamaged: []
+  movementAnimationEastDamaged: []
+  movementAnimationSouthDamaged: []
+  movementAnimationWestDamaged: []
+  movementAnimationNorthCritical: []
+  movementAnimationEastCritical: []
+  movementAnimationSouthCritical: []
+  movementAnimationWestCritical: []

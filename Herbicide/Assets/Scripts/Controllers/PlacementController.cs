@@ -107,6 +107,16 @@ public class PlacementController : MonoBehaviour
     /// </summary>
     public event FinishPlacingDelegate OnFinishPlacing;
 
+    /// <summary>
+    /// The position of the last placed Model.
+    /// </summary>
+    private Vector3 lastPlacedPosition;
+
+    /// <summary>
+    /// The tier of the newly combined Defender.
+    /// </summary>
+    private int newTier;
+
 
     /// <summary>
     /// Finds and sets the PlacementController singleton.
@@ -150,6 +160,7 @@ public class PlacementController : MonoBehaviour
             if (Placing())
             {
                 instance.dummyImage.sprite = instance.subject.GetPlacementTrack()[0];
+                instance.lastPlacedPosition = instance.dummy.transform.position;
             }
 
 
@@ -294,16 +305,17 @@ public class PlacementController : MonoBehaviour
     {
         if (!Placing()) return;
         Defender placingDefender = instance.subject as Defender;
-        if(placingDefender == null) return;
+        if (placingDefender == null) return;
 
-        placingDefender.UpgradeTier();
+        placingDefender.Upgrade();
     }
 
     /// <summary>
     /// Triggers a combination event with the given Defenders.
     /// </summary>
     /// <param name="defendersToCombine">The Defenders to combine.</param>
-    public static void CombineDefendersToCursor(List<Model> defendersToCombine)
+    /// <param name="newTier">The tier of the new Defender.</param>
+    public static void CombineDefendersToCursor(List<Model> defendersToCombine, int newTier)
     {
         Assert.IsNotNull(defendersToCombine);
         Assert.IsTrue(defendersToCombine.Count >= 0 && defendersToCombine.Count <= instance.combinationDummies.Length);
@@ -311,6 +323,7 @@ public class PlacementController : MonoBehaviour
         List<Vector3> initialPositions = new List<Vector3>();
         List<Sprite> combinationSprites = new List<Sprite>();
         List<Vector3> dummySizes = new List<Vector3>();
+        instance.newTier = newTier;
 
         foreach (Model model in defendersToCombine)
         {
@@ -341,11 +354,13 @@ public class PlacementController : MonoBehaviour
     public static void UpdateCombinationEvents()
     {
         if (instance.combinationDummies == null || instance.combinationLerpCurve == null) return;
-        if(!instance.combining) return;
+        if (!instance.combining) return;
         Defender defenderSubject = instance.subject as Defender;
         if (defenderSubject == null) return;
 
-        Vector3 targetPosition = InputController.GetUIMousePosition();
+        Vector3 targetPosition;
+        if (Placing()) targetPosition = InputController.GetUIMousePosition();
+        else targetPosition = instance.lastPlacedPosition;
         targetPosition.z = 0;
 
         float combinationDuration = instance.combinationMoveDuration;
@@ -385,6 +400,11 @@ public class PlacementController : MonoBehaviour
         if (allInactive)
         {
             instance.combining = false;
+            for (int i = 1; i < instance.newTier; i++)
+            {
+                defenderSubject.Upgrade();
+            }
+
             instance.OnFinishCombining?.Invoke(defenderSubject);
         }
     }

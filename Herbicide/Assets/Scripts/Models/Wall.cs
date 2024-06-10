@@ -10,16 +10,16 @@ public abstract class Wall : Structure
     /// <summary>
     /// Starting health of a Wall
     /// </summary>
-    public override int BASE_HEALTH => int.MaxValue;
+    public override float BASE_HEALTH => int.MaxValue;
 
     /// <summary>
     /// Maximum health of a Wall
     /// </summary> 
-    public override int MAX_HEALTH => int.MaxValue;
+    public override float MAX_HEALTH => int.MaxValue;
     /// <summary>
     /// Minimum health of a Wall
     /// </summary>
-    public override int MIN_HEALTH => 0;
+    public override float MIN_HEALTH => 0;
 
     /// <summary>
     /// true if this Wall is an occupier, false otherwise.

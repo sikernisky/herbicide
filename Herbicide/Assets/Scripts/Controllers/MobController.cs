@@ -125,9 +125,20 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// Returns a copy of the list of this MobController's current targets. Mobs interperet
     /// targets differently; for example, a Squirrel will attack its target,
     /// but some other Mob might heal its target.
+    /// 
+    /// TODO: Add priority logic, put the most prio targets at the front of the list.
+    /// This works with mobs who have multiple targets. 
+    /// 
+    /// 
     /// </summary>
     /// <returns>this MobController's target.</returns>
     protected List<Model> GetTargets() { return new List<Model>(targets); }
+
+    /// <summary>
+    /// Returns the Mob's most pressing target.
+    /// </summary>
+    /// <returns>the Mob's most pressing target.</returns>
+    protected virtual Model GetTarget() { return targets.Count == 0 ? null : targets[0]; }
 
     /// <summary>
     /// Clears the Mob's list of targets.
@@ -159,6 +170,11 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
         Assert.IsNotNull(nonTiles, "List of targets is null.");
 
         ClearTargets();
+
+        // Need to rework to give all possible targets, have specific subclass choose which one. 
+
+        // If can target, add to targets.
+        // GetTarget() needs to incorporate filtering logic to choose from the list. 
 
         foreach (Model targetable in nonTiles)
         {
@@ -293,7 +309,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
 
         targetsHolding.Add(target);
         target.PickUp(GetMob().GetTransform(), GetMob().HOLDER_OFFSET);
-        
+
     }
 
     /// <summary>
@@ -395,7 +411,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// </summary>
     protected void MoveLinearlyTowardsMovePos()
     {
-        if(GetNextMovePos() == null) return;
+        if (GetNextMovePos() == null) return;
         MoveLinearlyTowards(GetNextMovePos().Value, GetMob().GetMovementSpeed());
     }
 
@@ -407,7 +423,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
 
     protected void FallIntoMovePos(float acceleration)
     {
-        if(GetNextMovePos() == null) return;
+        if (GetNextMovePos() == null) return;
         FallTowards(GetNextMovePos().Value, GetMob().GetMovementSpeed(), acceleration);
     }
 
@@ -427,7 +443,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// </summary>
     protected void MoveParabolicallyTowardsMovePos()
     {
-        if(GetNextMovePos() == null) return;
+        if (GetNextMovePos() == null) return;
         MoveParabolicallyTowards(GetNextMovePos().Value, GetMob().GetMovementSpeed());
     }
 
@@ -492,7 +508,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     protected void FaceTarget()
     {
         if (GetTargets().Count == 0) return;
-        Model target = GetTargets()[0];
+        Model target = GetTarget();
         if (target != null) GetMob().FaceDirection(target.GetPosition());
     }
 
@@ -514,7 +530,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     {
         // Attack speed
         float combinedAttackSpeedBuff = 1f;
-        foreach(float multiplier in attackSpeedBuffMultipliers)
+        foreach (float multiplier in attackSpeedBuffMultipliers)
         {
             combinedAttackSpeedBuff *= multiplier;
         }

@@ -8,11 +8,6 @@ using UnityEngine;
 public class BasicTree : Tree
 {
     /// <summary>
-    /// Name of a BasicTree.
-    /// </summary>
-    public override string NAME => "Basic Tree";
-
-    /// <summary>
     /// How much currency it takes to place a BasicTree
     /// </summary>
     public override int COST => 1;
@@ -25,17 +20,17 @@ public class BasicTree : Tree
     /// <summary>
     /// Starting health of a BasicTree.
     /// </summary>
-    public override int BASE_HEALTH => 200;
+    public override float BASE_HEALTH => 200;
 
     /// <summary>
     /// Maximum health of a BasicTree.
     /// </summary>
-    public override int MAX_HEALTH => 200;
+    public override float MAX_HEALTH => 200;
 
     /// <summary>
     /// Minimum health of a BasicTree.
     /// </summary>
-    public override int MIN_HEALTH => 0;
+    public override float MIN_HEALTH => 0;
 
     /// <summary>
     /// Starting attack range of a BasicTree.

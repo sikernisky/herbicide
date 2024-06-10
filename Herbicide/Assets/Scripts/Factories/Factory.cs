@@ -84,7 +84,7 @@ public abstract class Factory : MonoBehaviour
         Model model = returnedPrefab.GetComponent<Model>();
         ModelType returnedType = model.TYPE;
         ObjectPool objectPool = pools.Find(op => op.GetPoolType() == returnedType);
-        Assert.IsNotNull(objectPool);
+        Assert.IsNotNull(objectPool, "No pool found for model type " + returnedType);
 
         model.ResetModel();
         objectPool.ReturnToPool(returnedPrefab);
