@@ -1,34 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Net;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.UIElements;
-using System.Linq;
-using System.Net.Http.Headers;
 
 /// <summary>
 /// Controller for a Kudzu Enemy.
 /// </summary>
-public class KudzuController : EnemyController<KudzuController.KudzuState>
+public class KudzuController : EnemyController
 {
-    /// <summary>
-    /// State of a Kudzu.
-    /// </summary>
-    public enum KudzuState
-    {
-        INACTIVE, // Not spawned yet.
-        SPAWNING, // Spawning in.
-        IDLE, // Static, nothing to do.
-        CHASE, // Pursuing target.
-        ATTACK, // Attacking target.
-        ESCAPE, // Running back to start.
-        PROTECT, // Protecting other escaping enemies.
-        EXITING, // Leaving map.
-        DEAD, // Dead.
-        INVALID // Something went wrong.
-    }
 
     /// <summary>
     /// The maximum number of targets a Kudzu can select at once.
@@ -36,52 +16,9 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     protected override int MAX_TARGETS => 1;
 
     /// <summary>
-    /// Counts the number of seconds in the spawn animation; resets
-    /// on step.
-    /// </summary>
-    private float spawnAnimationCounter;
-
-    /// <summary>
-    /// Counts the number of seconds in the idle animation; resets
-    /// on step.
-    /// </summary>
-    private float idleAnimationCounter;
-
-    /// <summary>
-    /// Counts the number of seconds in the chase animation; resets
-    /// on step.
-    /// </summary>
-    private float chaseAnimationCounter;
-
-    /// <summary>
-    /// Counts the number of seconds in the attack animation; resets
-    /// on step.
-    /// </summary>
-    private float attackAnimationCounter;
-
-    /// <summary>
-    /// Counts the number of seconds in the protect animation; resets
-    /// on step.
-    /// </summary>
-    private float protectAnimationCounter;
-
-    /// <summary>
-    /// Counts the number of seconds in the escape animation; resets
-    /// on step.
-    /// </summary>
-    private float escapeAnimationCounter;
-
-    /// <summary>
-    /// Counts the number of seconds in the exiting animation; resets
-    /// on step.
-    /// </summary>
-    private float exitingAnimationCounter;
-
-    /// <summary>
     /// Counts the number of seconds until the Kudzu can hop again.
     /// </summary>
     private float hopCooldownCounter;
-
 
 
     /// <summary>
@@ -91,24 +28,6 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     /// <returns>The created KudzuController.</returns>
     public KudzuController(Kudzu kudzu) : base(kudzu) { }
 
-    /// <summary>
-    /// Updates the Kudzu controlled by this KudzuController.
-    /// </summary>
-    protected override void UpdateMob()
-    {
-        base.UpdateMob();
-
-        if (!ValidModel()) return;
-        ExecuteInactiveState();
-        ExecuteSpawnState();
-        ExecuteIdleState();
-        ExecuteChaseState();
-        ExecuteAttackState();
-        ExecuteProtectState();
-        ExecuteEscapeState();
-        ExecuteExitState();
-        // Debug.Log(GetState());
-    }
 
     /// <summary>
     /// Returns this KudzuController's Kudzu model.
@@ -116,21 +35,6 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     /// <returns>this KudzuController's Kudzu model.</returns>
     private Kudzu GetKudzu() { return GetModel() as Kudzu; }
 
-    /// <summary>
-    /// Drops a resource at the Kudzu's resource drop rate.
-    /// </summary>
-    protected override void DropDeathLoot()
-    {
-        if (DroppedDeathLoot()) return;
-        if (GetKudzu().Exited()) return;
-
-        Dew dew = DewFactory.GetDewPrefab().GetComponent<Dew>();
-        Vector3 lootPos = GetKudzu().Exited() ? GetKudzu().GetExitPos() : GetKudzu().GetPosition();
-        int value = GetKudzu().CURRENCY_VALUE_ON_DEATH;
-        DewController dewController = new DewController(dew, lootPos, value);
-        ControllerController.AddModelController(dewController);
-        base.DropDeathLoot();
-    }
 
     /// <summary>
     /// Returns the spawn position of the Kudzu when in a NexusHole.
@@ -154,12 +58,12 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     {
         if (!GetEnemy().Spawned()) return true;
 
-        HashSet<KudzuState> immuneStates = new HashSet<KudzuState>()
+        HashSet<EnemyState> immuneStates = new HashSet<EnemyState>()
         {
-            KudzuState.INACTIVE,
-            KudzuState.SPAWNING,
-            KudzuState.EXITING,
-            KudzuState.INVALID
+            EnemyState.INACTIVE,
+            EnemyState.SPAWNING,
+            EnemyState.EXITING,
+            EnemyState.INVALID
         };
 
         bool isImmune = immuneStates.Contains(GetState());
@@ -170,27 +74,6 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         // Debug.Log("Valid Kudzu");
 
         return true;
-    }
-
-    /// <summary>
-    /// Returns the Kudzu prefab to the KudzuFactory singleton.
-    /// </summary>
-    public override void DestroyModel()
-    {
-        EnemyFactory.ReturnEnemyPrefab(GetKudzu().gameObject);
-    }
-
-    //--------------------BEGIN STATE LOGIC----------------------//
-
-    /// <summary>
-    /// Returns true if two KudzuStates are equal.
-    /// </summary>
-    /// <param name="stateA">The first state.</param>
-    /// <param name="stateB">The second state.</param>
-    /// <returns>true if two KudzuStates are equal; otherwise, false.</returns>
-    public override bool StateEquals(KudzuState stateA, KudzuState stateB)
-    {
-        return stateA == stateB;
     }
 
     /// <summary>
@@ -212,7 +95,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         if (!ValidModel()) return;
         if (GetGameState() != GameState.ONGOING)
         {
-            SetState(KudzuState.IDLE);
+            SetState(EnemyState.IDLE);
             return;
         }
 
@@ -229,69 +112,69 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
 
         switch (GetState())
         {
-            case KudzuState.INACTIVE:
-                if (GetKudzu().Spawned()) SetState(KudzuState.SPAWNING);
+            case EnemyState.INACTIVE:
+                if (GetKudzu().Spawned()) SetState(EnemyState.SPAWNING);
                 break;
 
-            case KudzuState.SPAWNING:
-                if (PoppedOutOfHole()) SetState(KudzuState.IDLE);
+            case EnemyState.SPAWNING:
+                if (PoppedOutOfHole()) SetState(EnemyState.IDLE);
                 break;
 
-            case KudzuState.IDLE:
+            case EnemyState.IDLE:
                 if (!ReachedMovementTarget()) break;
                 if (idleAnimationCounter > 0) break;
 
-                if (!targetExists && carrierToProtect) SetState(KudzuState.PROTECT);
-                else if (targetExists && withinChaseRange) SetState(KudzuState.CHASE);
-                else if (holdingTarget) SetState(KudzuState.ESCAPE);
+                if (!targetExists && carrierToProtect) SetState(EnemyState.PROTECT);
+                else if (targetExists && withinChaseRange) SetState(EnemyState.CHASE);
+                else if (holdingTarget) SetState(EnemyState.ESCAPE);
                 break;
 
-            case KudzuState.CHASE:
+            case EnemyState.CHASE:
                 if (!ReachedMovementTarget()) break;
                 if (chaseAnimationCounter > 0) break;
 
-                if (!targetExists) SetState(carrierToProtect ? KudzuState.PROTECT : KudzuState.IDLE);
-                else if (withinAttackRange) SetState(KudzuState.ATTACK);
-                else if (!withinChaseRange) SetState(KudzuState.IDLE);
-                else if (holdingTarget) SetState(KudzuState.ESCAPE);
+                if (!targetExists) SetState(carrierToProtect ? EnemyState.PROTECT : EnemyState.IDLE);
+                else if (withinAttackRange) SetState(EnemyState.ATTACK);
+                else if (!withinChaseRange) SetState(EnemyState.IDLE);
+                else if (holdingTarget) SetState(EnemyState.ESCAPE);
                 break;
 
-            case KudzuState.ATTACK:
+            case EnemyState.ATTACK:
                 if (!ReachedMovementTarget()) break;
                 if (attackAnimationCounter > 0) break;
 
 
-                if (holdingTarget) SetState(KudzuState.ESCAPE);
-                else if (!targetExists) SetState(carrierToProtect ? KudzuState.PROTECT : KudzuState.IDLE);
-                else if (!withinAttackRange) SetState(withinChaseRange ? KudzuState.CHASE : KudzuState.IDLE);
+                if (holdingTarget) SetState(EnemyState.ESCAPE);
+                else if (!targetExists) SetState(carrierToProtect ? EnemyState.PROTECT : EnemyState.IDLE);
+                else if (!withinAttackRange) SetState(withinChaseRange ? EnemyState.CHASE : EnemyState.IDLE);
 
                 break;
-            case KudzuState.ESCAPE:
+            case EnemyState.ESCAPE:
                 if (!ReachedMovementTarget()) break;
                 if (escapeAnimationCounter > 0) break;
 
-                if (!targetExists && !holdingTarget) SetState(carrierToProtect ? KudzuState.PROTECT : KudzuState.IDLE);
-                else if (!holdingTarget) SetState(KudzuState.IDLE);
+                if (!targetExists && !holdingTarget) SetState(carrierToProtect ? EnemyState.PROTECT : EnemyState.IDLE);
+                else if (!holdingTarget) SetState(EnemyState.IDLE);
                 else if (Vector2.Distance(GetKudzu().GetPosition(), GetTarget().GetPosition()) < 0.1f)
                 {
-                    SetState(KudzuState.EXITING);
+                    SetState(EnemyState.EXITING);
                 }
                 break;
 
-            case KudzuState.PROTECT:
+            case EnemyState.PROTECT:
                 if (!ReachedMovementTarget()) break;
                 if (protectAnimationCounter > 0) break;
 
-                if (!carrierToProtect) SetState(KudzuState.IDLE);
+                if (!carrierToProtect) SetState(EnemyState.IDLE);
                 else if (targetExists)
                 {
-                    if (withinAttackRange) SetState(KudzuState.ATTACK);
-                    else if (withinChaseRange) SetState(KudzuState.CHASE);
+                    if (withinAttackRange) SetState(EnemyState.ATTACK);
+                    else if (withinChaseRange) SetState(EnemyState.CHASE);
                 }
                 break;
 
-            case KudzuState.EXITING:
-            case KudzuState.INVALID:
+            case EnemyState.EXITING:
+            case EnemyState.INVALID:
                 break;
             default:
                 throw new System.Exception("Invalid state.");
@@ -299,13 +182,12 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
 
     }
 
-
     /// <summary>
     /// Runs logic for the Kudzu model's Inactive state.
     /// </summary>
-    protected virtual void ExecuteInactiveState()
+    protected override void ExecuteInactiveState()
     {
-        if (GetState() != KudzuState.INACTIVE) return;
+        if (GetState() != EnemyState.INACTIVE) return;
 
         SetNextMovePos(GetKudzu().GetSpawnPos());
     }
@@ -313,9 +195,9 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     /// <summary>
     /// Runs logic for the Kudzu model's Spawn state.
     /// </summary>
-    protected virtual void ExecuteSpawnState()
+    protected override void ExecuteSpawnState()
     {
-        if (GetState() != KudzuState.SPAWNING) return;
+        if (GetState() != EnemyState.SPAWNING) return;
 
         GetKudzu().SetSpawning(true);
         SetAnimation(GetKudzu().MOVE_ANIMATION_DURATION, EnemyFactory.GetSpawnTrack(
@@ -334,9 +216,9 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     /// <summary>
     /// Runs logic for the Kudzu model's idle state.
     /// </summary>
-    protected virtual void ExecuteIdleState()
+    protected override void ExecuteIdleState()
     {
-        if (GetState() != KudzuState.IDLE) return;
+        if (GetState() != EnemyState.IDLE) return;
 
         SetAnimation(GetKudzu().IDLE_ANIMATION_DURATION, EnemyFactory.GetIdleTrack(
             GetKudzu().TYPE,
@@ -351,9 +233,9 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     /// <summary>
     /// Runs logic for the Kudzu model's chase state. 
     /// </summary>
-    protected virtual void ExecuteChaseState()
+    protected override void ExecuteChaseState()
     {
-        if (GetState() != KudzuState.CHASE) return;
+        if (GetState() != EnemyState.CHASE) return;
 
         SetAnimation(GetKudzu().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
             GetKudzu().TYPE,
@@ -382,9 +264,9 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     /// <summary>
     /// Runs logic for the Kudzu model's protect state.
     /// </summary>
-    protected virtual void ExecuteProtectState()
+    protected override void ExecuteProtectState()
     {
-        if (GetState() != KudzuState.PROTECT) return;
+        if (GetState() != EnemyState.PROTECT) return;
 
         SetAnimation(GetKudzu().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
             GetKudzu().TYPE,
@@ -410,9 +292,9 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     /// <summary>
     /// Runs logic for the Kudzu model's attack state. 
     /// </summary>
-    protected virtual void ExecuteAttackState()
+    protected override void ExecuteAttackState()
     {
-        if (GetState() != KudzuState.ATTACK) return;
+        if (GetState() != EnemyState.ATTACK) return;
 
         SetAnimation(GetKudzu().ATTACK_ANIMATION_DURATION, EnemyFactory.GetAttackTrack(
             GetKudzu().TYPE,
@@ -425,7 +307,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         if (!validTarget) return;
 
         FaceTarget();
-        if (CanHoldTarget(target)) HoldTarget(target); // Hold.
+        if (CanHoldTarget(target as Nexus)) HoldTarget(target as Nexus); // Hold.
         else target.AdjustHealth(-GetKudzu().BONK_DAMAGE); // Bonk.
         GetHeldTargets().ForEach(target => target.SetMaskInteraction(SpriteMaskInteraction.None));
         GetKudzu().RestartAttackCooldown();
@@ -434,9 +316,9 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     /// <summary>
     /// Runs logic for the Kudzu model's escaping state. 
     /// </summary>
-    protected virtual void ExecuteEscapeState()
+    protected override void ExecuteEscapeState()
     {
-        if (GetState() != KudzuState.ESCAPE) return;
+        if (GetState() != EnemyState.ESCAPE) return;
         if (!ValidModel()) return;
         if (GetTarget() == null) return;
 
@@ -461,9 +343,9 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     /// <summary>
     /// Runs logic for the Kudzu's Exit state.
     /// </summary>
-    protected virtual void ExecuteExitState()
+    protected override void ExecuteExitState()
     {
-        if (GetState() != KudzuState.EXITING) return;
+        if (GetState() != EnemyState.EXITING) return;
         if (GetKudzu().Exited()) return;
         NexusHole nexusHoleTarget = GetTarget() as NexusHole;
         if (nexusHoleTarget == null) return;
@@ -505,17 +387,16 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     protected override bool CanTarget(Model target)
     {
         if (!GetKudzu().Spawned()) return false;
-        if (GetState() == KudzuState.SPAWNING) return false;
+        if (GetState() == EnemyState.SPAWNING) return false;
 
         Nexus nexusTarget = target as Nexus;
         NexusHole nexusHoleTarget = target as NexusHole;
 
         // If escaping, only target NexusHoles.
-        if (GetState() == KudzuState.ESCAPE || GetState() == KudzuState.EXITING)
+        if (GetState() == EnemyState.ESCAPE || GetState() == EnemyState.EXITING)
         {
             if (nexusHoleTarget == null) return false;
             if (!nexusHoleTarget.Targetable()) return false;
-            if (nexusHoleTarget.PickedUp()) return false;
             if (!GetKudzu().IsExiting() && !TileGrid.CanReach(GetKudzu().GetPosition(), nexusHoleTarget.GetPosition())) return false;
             if (!IsClosestNexusHole(nexusHoleTarget)) return false;
 
@@ -536,54 +417,5 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         }
 
         throw new System.Exception("Something wrong happened.");
-    }
-
-
-    /// <summary>
-    /// Adds one chunk of Time.deltaTime to the animation
-    /// counter that tracks the current state.
-    /// </summary>
-    public override void AgeAnimationCounter()
-    {
-        KudzuState state = GetState();
-        if (state == KudzuState.SPAWNING) spawnAnimationCounter += Time.deltaTime;
-        else if (state == KudzuState.IDLE) idleAnimationCounter += Time.deltaTime;
-        else if (state == KudzuState.CHASE) chaseAnimationCounter += Time.deltaTime;
-        else if (state == KudzuState.ATTACK) attackAnimationCounter += Time.deltaTime;
-        else if (state == KudzuState.PROTECT) protectAnimationCounter += Time.deltaTime;
-        else if (state == KudzuState.ESCAPE) escapeAnimationCounter += Time.deltaTime;
-        else if (state == KudzuState.EXITING) exitingAnimationCounter += Time.deltaTime;
-    }
-
-    /// <summary>
-    /// Returns the animation counter for the current state.
-    /// </summary>
-    /// <returns>the animation counter for the current state.</returns>
-    public override float GetAnimationCounter()
-    {
-        KudzuState state = GetState();
-        if (state == KudzuState.SPAWNING) return spawnAnimationCounter;
-        else if (state == KudzuState.IDLE) return idleAnimationCounter;
-        else if (state == KudzuState.CHASE) return chaseAnimationCounter;
-        else if (state == KudzuState.ATTACK) return attackAnimationCounter;
-        else if (state == KudzuState.PROTECT) return protectAnimationCounter;
-        else if (state == KudzuState.ESCAPE) return escapeAnimationCounter;
-        else if (state == KudzuState.EXITING) return exitingAnimationCounter;
-        else return 0;
-    }
-
-    /// <summary>
-    /// Sets the animation counter for the current state to 0.
-    /// </summary>
-    public override void ResetAnimationCounter()
-    {
-        KudzuState state = GetState();
-        if (state == KudzuState.SPAWNING) spawnAnimationCounter = 0;
-        else if (state == KudzuState.IDLE) idleAnimationCounter = 0;
-        else if (state == KudzuState.CHASE) chaseAnimationCounter = 0;
-        else if (state == KudzuState.ATTACK) attackAnimationCounter = 0;
-        else if (state == KudzuState.PROTECT) protectAnimationCounter = 0;
-        else if (state == KudzuState.ESCAPE) escapeAnimationCounter = 0;
-        else if (state == KudzuState.EXITING) exitingAnimationCounter = 0;
     }
 }

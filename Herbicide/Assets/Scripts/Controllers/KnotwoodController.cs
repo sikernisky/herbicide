@@ -6,71 +6,12 @@ using UnityEngine.Assertions;
 /// <summary>
 /// Controller for a Knotwood Enemy.
 /// </summary>
-public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodState>
+public class KnotwoodController : EnemyController
 {
     /// <summary>
     /// The maximum number of targets a Knotwood can select at once.
     /// </summary>
     protected override int MAX_TARGETS => 1;
-
-    /// <summary>
-    /// Counts the number of seconds in the spawn animation; resets
-    /// on step.
-    /// </summary>
-    private float spawnAnimationCounter;
-
-    /// <summary>
-    /// Counts the number of seconds in the idle animation; resets
-    /// on step.
-    /// </summary>
-    private float idleAnimationCounter;
-
-    /// <summary>
-    /// Counts the number of seconds in the chase animation; resets
-    /// on step.
-    /// </summary>
-    private float chaseAnimationCounter;
-
-    /// <summary>
-    /// Counts the number of seconds in the attack animation; resets
-    /// on step.
-    /// </summary>
-    private float attackAnimationCounter;
-
-    /// <summary>
-    /// Counts the number of seconds in the protect animation; resets
-    /// on step.
-    /// </summary>
-    private float protectAnimationCounter;
-
-    /// <summary>
-    /// Counts the number of seconds in the escape animation; resets
-    /// on step.
-    /// </summary>
-    private float escapeAnimationCounter;
-
-    /// <summary>
-    /// Counts the number of seconds in the exiting animation; resets
-    /// on step.
-    /// </summary>
-    private float exitingAnimationCounter;
-
-    /// <summary>
-    /// Different states a Knotwood can be in.
-    /// </summary>
-    public enum KnotwoodState
-    {
-        INACTIVE, // Not spawned yet.
-        SPAWNING, // Spawning in.
-        IDLE, // Static, nothing to do.
-        CHASE, // Pursuing target.
-        ATTACK, // Attacking target.
-        ESCAPE, // Running back to start.
-        PROTECT, // Protecting other escaping enemies.
-        EXITING, // Leaving map.
-        DEAD, // Dead.
-        INVALID // Something went wrong.
-    }
 
 
     /// <summary>
@@ -85,25 +26,6 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
     /// </summary>
     /// <returns>the Knotwood model of this KnotwoodController.</returns>
     protected Knotwood GetKnotwood() { return GetModel() as Knotwood; }
-
-    /// <summary>
-    /// Updates the Knotwood controlled by this KnotwoodController.
-    /// </summary>
-    protected override void UpdateMob()
-    {
-        base.UpdateMob();
-
-        if (!ValidModel()) return;
-        ExecuteInactiveState();
-        ExecuteSpawnState();
-        ExecuteIdleState();
-        ExecuteChaseState();
-        ExecuteAttackState();
-        ExecuteProtectState();
-        ExecuteEscapeState();
-        ExecuteExitState();
-    }
-
 
     /// <summary>
     /// Updates the state of this KnotwoodController's Knotwood model.
@@ -124,7 +46,7 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
         if (!ValidModel()) return;
         if (GetGameState() != GameState.ONGOING)
         {
-            SetState(KnotwoodState.IDLE);
+            SetState(EnemyState.IDLE);
             return;
         }
 
@@ -137,69 +59,69 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
 
         switch (GetState())
         {
-            case KnotwoodState.INACTIVE:
-                if (GetKnotwood().Spawned()) SetState(KnotwoodState.SPAWNING);
+            case EnemyState.INACTIVE:
+                if (GetKnotwood().Spawned()) SetState(EnemyState.SPAWNING);
                 break;
 
-            case KnotwoodState.SPAWNING:
-                if (PoppedOutOfHole()) SetState(KnotwoodState.IDLE);
+            case EnemyState.SPAWNING:
+                if (PoppedOutOfHole()) SetState(EnemyState.IDLE);
                 break;
 
-            case KnotwoodState.IDLE:
+            case EnemyState.IDLE:
                 if (!ReachedMovementTarget()) break;
                 if (idleAnimationCounter > 0) break;
 
-                if (!targetExists && carrierToProtect) SetState(KnotwoodState.PROTECT);
-                else if (targetExists && withinChaseRange) SetState(KnotwoodState.CHASE);
-                else if (holdingTarget) SetState(KnotwoodState.ESCAPE);
+                if (!targetExists && carrierToProtect) SetState(EnemyState.PROTECT);
+                else if (targetExists && withinChaseRange) SetState(EnemyState.CHASE);
+                else if (holdingTarget) SetState(EnemyState.ESCAPE);
                 break;
 
-            case KnotwoodState.CHASE:
+            case EnemyState.CHASE:
                 if (!ReachedMovementTarget()) break;
                 if (chaseAnimationCounter > 0) break;
 
-                if (!targetExists) SetState(carrierToProtect ? KnotwoodState.PROTECT : KnotwoodState.IDLE);
-                else if (withinAttackRange) SetState(KnotwoodState.ATTACK);
-                else if (!withinChaseRange) SetState(KnotwoodState.IDLE);
-                else if (holdingTarget) SetState(KnotwoodState.ESCAPE);
+                if (!targetExists) SetState(carrierToProtect ? EnemyState.PROTECT : EnemyState.IDLE);
+                else if (withinAttackRange) SetState(EnemyState.ATTACK);
+                else if (!withinChaseRange) SetState(EnemyState.IDLE);
+                else if (holdingTarget) SetState(EnemyState.ESCAPE);
                 break;
 
-            case KnotwoodState.ATTACK:
+            case EnemyState.ATTACK:
                 if (!ReachedMovementTarget()) break;
                 if (attackAnimationCounter > 0) break;
 
 
-                if (holdingTarget) SetState(KnotwoodState.ESCAPE);
-                else if (!targetExists) SetState(carrierToProtect ? KnotwoodState.PROTECT : KnotwoodState.IDLE);
-                else if (!withinAttackRange) SetState(withinChaseRange ? KnotwoodState.CHASE : KnotwoodState.IDLE);
+                if (holdingTarget) SetState(EnemyState.ESCAPE);
+                else if (!targetExists) SetState(carrierToProtect ? EnemyState.PROTECT : EnemyState.IDLE);
+                else if (!withinAttackRange) SetState(withinChaseRange ? EnemyState.CHASE : EnemyState.IDLE);
 
                 break;
-            case KnotwoodState.ESCAPE:
+            case EnemyState.ESCAPE:
                 if (!ReachedMovementTarget()) break;
                 if (escapeAnimationCounter > 0) break;
 
-                if (!targetExists && !holdingTarget) SetState(carrierToProtect ? KnotwoodState.PROTECT : KnotwoodState.IDLE);
-                else if (!holdingTarget) SetState(KnotwoodState.IDLE);
+                if (!targetExists && !holdingTarget) SetState(carrierToProtect ? EnemyState.PROTECT : EnemyState.IDLE);
+                else if (!holdingTarget) SetState(EnemyState.IDLE);
                 else if (Vector2.Distance(GetKnotwood().GetPosition(), GetTarget().GetPosition()) < 0.1f)
                 {
-                    SetState(KnotwoodState.EXITING);
+                    SetState(EnemyState.EXITING);
                 }
                 break;
 
-            case KnotwoodState.PROTECT:
+            case EnemyState.PROTECT:
                 if (!ReachedMovementTarget()) break;
                 if (protectAnimationCounter > 0) break;
 
-                if (!carrierToProtect) SetState(KnotwoodState.IDLE);
+                if (!carrierToProtect) SetState(EnemyState.IDLE);
                 else if (targetExists)
                 {
-                    if (withinAttackRange) SetState(KnotwoodState.ATTACK);
-                    else if (withinChaseRange) SetState(KnotwoodState.CHASE);
+                    if (withinAttackRange) SetState(EnemyState.ATTACK);
+                    else if (withinChaseRange) SetState(EnemyState.CHASE);
                 }
                 break;
 
-            case KnotwoodState.EXITING:
-            case KnotwoodState.INVALID:
+            case EnemyState.EXITING:
+            case EnemyState.INVALID:
                 break;
             default:
                 throw new System.Exception("Invalid state.");
@@ -209,9 +131,9 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
     /// <summary>
     /// Runs logic for the Knotwood model's Inactive state.
     /// </summary>
-    protected virtual void ExecuteInactiveState()
+    protected override void ExecuteInactiveState()
     {
-        if (GetState() != KnotwoodState.INACTIVE) return;
+        if (GetState() != EnemyState.INACTIVE) return;
 
         SetNextMovePos(GetKnotwood().GetSpawnPos());
     }
@@ -219,9 +141,9 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
     /// <summary>
     /// Runs logic for the Kudzu model's Spawn state.
     /// </summary>
-    protected virtual void ExecuteSpawnState()
+    protected override void ExecuteSpawnState()
     {
-        if (GetState() != KnotwoodState.SPAWNING) return;
+        if (GetState() != EnemyState.SPAWNING) return;
 
         GetKnotwood().SetSpawning(true);
         SetAnimation(GetKnotwood().MOVE_ANIMATION_DURATION, EnemyFactory.GetSpawnTrack(
@@ -240,9 +162,9 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
     /// <summary>
     /// Runs logic for the Kudzu model's idle state.
     /// </summary>
-    protected virtual void ExecuteIdleState()
+    protected override void ExecuteIdleState()
     {
-        if (GetState() != KnotwoodState.IDLE) return;
+        if (GetState() != EnemyState.IDLE) return;
 
         SetAnimation(GetKnotwood().IDLE_ANIMATION_DURATION, EnemyFactory.GetIdleTrack(
             GetKnotwood().TYPE,
@@ -257,9 +179,9 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
     /// <summary>
     /// Runs logic for the Kudzu model's chase state. 
     /// </summary>
-    protected virtual void ExecuteChaseState()
+    protected override void ExecuteChaseState()
     {
-        if (GetState() != KnotwoodState.CHASE) return;
+        if (GetState() != EnemyState.CHASE) return;
 
         SetAnimation(GetKnotwood().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
             GetKnotwood().TYPE,
@@ -283,9 +205,9 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
     /// <summary>
     /// Runs logic for the Kudzu model's protect state.
     /// </summary>
-    protected virtual void ExecuteProtectState()
+    protected override void ExecuteProtectState()
     {
-        if (GetState() != KnotwoodState.PROTECT) return;
+        if (GetState() != EnemyState.PROTECT) return;
 
         SetAnimation(GetKnotwood().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
             GetKnotwood().TYPE,
@@ -306,9 +228,9 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
     /// <summary>
     /// Runs logic for the Kudzu model's attack state. 
     /// </summary>
-    protected virtual void ExecuteAttackState()
+    protected override void ExecuteAttackState()
     {
-        if (GetState() != KnotwoodState.ATTACK) return;
+        if (GetState() != EnemyState.ATTACK) return;
 
         SetAnimation(GetKnotwood().ATTACK_ANIMATION_DURATION, EnemyFactory.GetAttackTrack(
                 GetKnotwood().TYPE,
@@ -321,7 +243,7 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
         if (!validTarget) return;
 
         FaceTarget();
-        if (CanHoldTarget(target)) HoldTarget(target); // Hold.
+        if (CanHoldTarget(target as Nexus)) HoldTarget(target as Nexus); // Hold.
         else target.AdjustHealth(-GetKnotwood().KICK_DAMAGE); // Kick.
         GetHeldTargets().ForEach(target => target.SetMaskInteraction(SpriteMaskInteraction.None));
         GetKnotwood().RestartAttackCooldown();
@@ -330,9 +252,9 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
     /// <summary>
     /// Runs logic for the Kudzu model's escaping state. 
     /// </summary>
-    protected virtual void ExecuteEscapeState()
+    protected override void ExecuteEscapeState()
     {
-        if (GetState() != KnotwoodState.ESCAPE) return;
+        if (GetState() != EnemyState.ESCAPE) return;
         if (!ValidModel()) return;
         if (GetTarget() == null) return;
 
@@ -352,9 +274,9 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
     /// <summary>
     /// Runs logic for the Kudzu's Exit state.
     /// </summary>
-    protected virtual void ExecuteExitState()
+    protected override void ExecuteExitState()
     {
-        if (GetState() != KnotwoodState.EXITING) return;
+        if (GetState() != EnemyState.EXITING) return;
         if (GetKnotwood().Exited()) return;
         NexusHole nexusHoleTarget = GetTarget() as NexusHole;
         if (nexusHoleTarget == null) return;
@@ -382,25 +304,7 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
         Assert.IsTrue(NumTargetsHolding() > 0, "You need to hold targets to exit.");
     }
 
-    /// <summary>
-    /// Returns the Knotwood prefab to the KnotwoodFactory singleton.
-    /// </summary>
-    public override void DestroyModel()
-    {
-        EnemyFactory.ReturnEnemyPrefab(GetKnotwood().gameObject);
-    }
 
-    /// <summary>
-    /// Returns true if two KnotwoodStates are equal.
-    /// </summary>
-    /// <param name="stateA">the first KnotwoodState</param>
-    /// <param name="stateB">the second KnotwoodState</param>
-    /// <returns> true if two KnotwoodStates are equal; otherwise,
-    /// false. </returns>
-    public override bool StateEquals(KnotwoodState stateA, KnotwoodState stateB)
-    {
-        return stateA == stateB;
-    }
 
     /// <summary>
     /// Returns the spawn position of the Knotwood when in a NexusHole.
@@ -424,17 +328,16 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
     protected override bool CanTarget(Model target)
     {
         if (!GetKnotwood().Spawned()) return false;
-        if (GetState() == KnotwoodState.SPAWNING) return false;
+        if (GetState() == EnemyState.SPAWNING) return false;
 
         Nexus nexusTarget = target as Nexus;
         NexusHole nexusHoleTarget = target as NexusHole;
 
         // If escaping, only target NexusHoles.
-        if (GetState() == KnotwoodState.ESCAPE || GetState() == KnotwoodState.EXITING)
+        if (GetState() == EnemyState.ESCAPE || GetState() == EnemyState.EXITING)
         {
             if (nexusHoleTarget == null) return false;
             if (!nexusHoleTarget.Targetable()) return false;
-            if (nexusHoleTarget.PickedUp()) return false;
             if (!GetKnotwood().IsExiting() && !TileGrid.CanReach(GetKnotwood().GetPosition(), nexusHoleTarget.GetPosition())) return false;
             if (!IsClosestNexusHole(nexusHoleTarget)) return false;
 
@@ -455,54 +358,5 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
         }
 
         throw new System.Exception("Something wrong happened.");
-    }
-
-
-    /// <summary>
-    /// Adds one chunk of Time.deltaTime to the animation
-    /// counter that tracks the current state.
-    /// </summary>
-    public override void AgeAnimationCounter()
-    {
-        KnotwoodState state = GetState();
-        if (state == KnotwoodState.SPAWNING) spawnAnimationCounter += Time.deltaTime;
-        else if (state == KnotwoodState.IDLE) idleAnimationCounter += Time.deltaTime;
-        else if (state == KnotwoodState.CHASE) chaseAnimationCounter += Time.deltaTime;
-        else if (state == KnotwoodState.ATTACK) attackAnimationCounter += Time.deltaTime;
-        else if (state == KnotwoodState.PROTECT) protectAnimationCounter += Time.deltaTime;
-        else if (state == KnotwoodState.ESCAPE) escapeAnimationCounter += Time.deltaTime;
-        else if (state == KnotwoodState.EXITING) exitingAnimationCounter += Time.deltaTime;
-    }
-
-    /// <summary>
-    /// Returns the animation counter for the current state.
-    /// </summary>
-    /// <returns>the animation counter for the current state.</returns>
-    public override float GetAnimationCounter()
-    {
-        KnotwoodState state = GetState();
-        if (state == KnotwoodState.SPAWNING) return spawnAnimationCounter;
-        else if (state == KnotwoodState.IDLE) return idleAnimationCounter;
-        else if (state == KnotwoodState.CHASE) return chaseAnimationCounter;
-        else if (state == KnotwoodState.ATTACK) return attackAnimationCounter;
-        else if (state == KnotwoodState.PROTECT) return protectAnimationCounter;
-        else if (state == KnotwoodState.ESCAPE) return escapeAnimationCounter;
-        else if (state == KnotwoodState.EXITING) return exitingAnimationCounter;
-        else return 0;
-    }
-
-    /// <summary>
-    /// Sets the animation counter for the current state to 0.
-    /// </summary>
-    public override void ResetAnimationCounter()
-    {
-        KnotwoodState state = GetState();
-        if (state == KnotwoodState.SPAWNING) spawnAnimationCounter = 0;
-        else if (state == KnotwoodState.IDLE) idleAnimationCounter = 0;
-        else if (state == KnotwoodState.CHASE) chaseAnimationCounter = 0;
-        else if (state == KnotwoodState.ATTACK) attackAnimationCounter = 0;
-        else if (state == KnotwoodState.PROTECT) protectAnimationCounter = 0;
-        else if (state == KnotwoodState.ESCAPE) escapeAnimationCounter = 0;
-        else if (state == KnotwoodState.EXITING) exitingAnimationCounter = 0;
     }
 }

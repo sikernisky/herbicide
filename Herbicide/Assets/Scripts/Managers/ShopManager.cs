@@ -22,6 +22,18 @@ public class ShopManager : MonoBehaviour
     private static GameState gameState;
 
     /// <summary>
+    /// Reference to the Shop's timer bar background Image component.
+    /// </summary>
+    [SerializeField]
+    private Image timerBarBackground;
+
+    /// <summary>
+    /// Reference to the Shop's timer bar fill SpriteRenderer component.
+    /// </summary> 
+    [SerializeField]
+    private Image timerBarFill;
+
+    /// <summary>
     /// The slots for ShopCards. These are GameObjects that
     /// will dynamically take on the form of a specific 
     /// ShopCard. 
@@ -94,7 +106,7 @@ public class ShopManager : MonoBehaviour
         instance.cardPool = new Dictionary<ModelType, int>();
         PlacementController.SubscribeToFinishPlacingDelegate(instance.OnFinishPlacing);
     }
- 
+
 
     /// <summary>
     /// Main update loop for the ShopManager.
@@ -124,6 +136,9 @@ public class ShopManager : MonoBehaviour
         }
 
         // Update reroll timer
+        float timePercentage = instance.timeSinceLastReroll / AUTOMATIC_REROLL_TIME;
+        instance.timerBarFill.transform.localScale = new Vector3(timePercentage, 1, 1);
+
         if (instance.timeSinceLastReroll <= 0)
         {
             instance.Reroll(true);
@@ -139,7 +154,7 @@ public class ShopManager : MonoBehaviour
     /// the Shop can sell. If null, the Shop can sell all types.</param>
     public static void LoadShop(HashSet<ModelType> modelTypes = null)
     {
-        if(instance.shopActive) return;
+        if (instance.shopActive) return;
 
         if (!instance.shopLoaded)
         {
@@ -225,7 +240,7 @@ public class ShopManager : MonoBehaviour
     {
         Assert.IsTrue(slotIndex >= 0 && slotIndex < shopSlots.Count);
         ShopSlot clickedSlot = shopSlots.First(ss => ss.GetSlotIndex() == slotIndex);
-        if(clickedSlot.Empty()) return;
+        if (clickedSlot.Empty()) return;
         if (PlacementController.Placing()) return;
 
         if (!clickedSlot.CanBuy(EconomyController.GetBalance())) return;
@@ -244,7 +259,7 @@ public class ShopManager : MonoBehaviour
         bool allSlotsEmpty = true;
         foreach (ShopSlot shopSlot in shopSlots) { if (!shopSlot.Empty()) allSlotsEmpty = false; }
         if (allSlotsEmpty) Reroll(true);
-            
+
     }
 
     /// <summary>
@@ -253,9 +268,9 @@ public class ShopManager : MonoBehaviour
     private void OnFinishPlacing(Model m)
     {
         Assert.IsNotNull(m, "Placed model is null.");
-        
-/*        Defender defender = m as Defender;
-        if(defender != null && defender.NeedsUpgrade()) LoadUpgradesForPlacedDefender(defender);*/
+
+        /*        Defender defender = m as Defender;
+                if(defender != null && defender.NeedsUpgrade()) LoadUpgradesForPlacedDefender(defender);*/
     }
 
     /// <summary>

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -36,7 +37,7 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     protected override void UpdateMob()
     {
         if (!ValidModel()) return;
-        
+
         base.UpdateMob();
 
         if (GetGameState() != GameState.ONGOING) return;
@@ -130,12 +131,38 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     }
 
     /// <summary>
+    /// Sorts the targets list. They are ordered by targeting priority.
+    /// </summary>
+    /// <param name="targets">The list of targets to sort. </param>
+    protected override void SortTargets(List<Model> targets)
+    {
+        base.SortTargets(targets);
+
+        // Sort in the following order:
+        // (1) Enemies holding a Nexus
+        // (2) Enemies closest, by the TileGrid's walkable pathfinding logic, to a Nexus
+        targets.Sort((a, b) =>
+        {
+            Enemy enemyA = a as Enemy;
+            Enemy enemyB = b as Enemy;
+
+            if (enemyA.IsHoldingNexus() && !enemyB.IsHoldingNexus()) return -1;
+            if (!enemyA.IsHoldingNexus() && enemyB.IsHoldingNexus()) return 1;
+
+            float distanceA = DistanceToTargetFromTree(enemyA);
+            float distanceB = DistanceToTargetFromTree(enemyB);
+
+            return distanceA.CompareTo(distanceB);
+        });
+    }
+
+    /// <summary>
     /// Checks for synergies and buffs/defuffs its Defender accordingly.
     /// </summary>
     private void UpdateSynergies()
     {
-/*        ModelCounts counts = GetModelCounts();
-        if(counts.GetCount(ModelType.SQUIRREL) == 2) BuffAttackSpeed(2);*/
+        /*        ModelCounts counts = GetModelCounts();
+                if(counts.GetCount(ModelType.SQUIRREL) == 2) BuffAttackSpeed(2);*/
     }
 }
 

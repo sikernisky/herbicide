@@ -145,7 +145,7 @@ public class NexusController : MobController<NexusController.NexusState>
         if (GetNexus().PickedUp()) return;
         if (GetNexus().CashedIn()) return;
 
-        if(TileGrid.IsNexusHole(GetNexus().GetPosition()))
+        if (TileGrid.IsNexusHole(GetNexus().GetPosition()))
         {
             Vector3 nexusHolePosition = GetNexus().GetPosition();
             Vector3 jumpPosition = nexusHolePosition;
@@ -167,7 +167,9 @@ public class NexusController : MobController<NexusController.NexusState>
         if (GetState() != NexusState.PICKED_UP) return;
         if (!ValidModel()) return;
         if (!GetNexus().PickedUp()) return;
+
+        GetNexus().SetWorldPosition(GetNexus().GetHeldPosition());
     }
 
-   
+
 }

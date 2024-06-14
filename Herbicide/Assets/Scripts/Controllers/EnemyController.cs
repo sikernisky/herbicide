@@ -13,17 +13,72 @@ using System;
 /// and more.
 /// </summary>
 /// <typeparam name="T">Enum to represent state of the Enemy.</typeparam>
-public abstract class EnemyController<T> : MobController<T> where T : Enum
+public abstract class EnemyController : MobController<EnemyController.EnemyState>
 {
-    /// <summary>
-    /// Enemies who are holding an object and escaping.
-    /// </summary>
-    private static List<Enemy> activeCarriers;
-
     /// <summary>
     /// true if the Enemy has popped out of a NexusHole and is fully spawned.
     /// </summary>
     private bool poppedOutOfHole;
+
+    /// <summary>
+    /// Counts the number of seconds in the spawn animation; resets
+    /// on step.
+    /// </summary>
+    protected float spawnAnimationCounter;
+
+    /// <summary>
+    /// Counts the number of seconds in the idle animation; resets
+    /// on step.
+    /// </summary>
+    protected float idleAnimationCounter;
+
+    /// <summary>
+    /// Counts the number of seconds in the chase animation; resets
+    /// on step.
+    /// </summary>
+    protected float chaseAnimationCounter;
+
+    /// <summary>
+    /// Counts the number of seconds in the attack animation; resets
+    /// on step.
+    /// </summary>
+    protected float attackAnimationCounter;
+
+    /// <summary>
+    /// Counts the number of seconds in the protect animation; resets
+    /// on step.
+    /// </summary>
+    protected float protectAnimationCounter;
+
+    /// <summary>
+    /// Counts the number of seconds in the escape animation; resets
+    /// on step.
+    /// </summary>
+    protected float escapeAnimationCounter;
+
+    /// <summary>
+    /// Counts the number of seconds in the exiting animation; resets
+    /// on step.
+    /// </summary>
+    protected float exitingAnimationCounter;
+
+    /// <summary>
+    /// All possible states of an Enemy. Not all Enemies need to define logic
+    /// for each state. 
+    /// </summary>
+    public enum EnemyState
+    {
+        INACTIVE, // Not spawned yet.
+        SPAWNING, // Spawning in.
+        IDLE, // Static, nothing to do.
+        CHASE, // Pursuing target.
+        ATTACK, // Attacking target.
+        ESCAPE, // Running back to start.
+        PROTECT, // Protecting other escaping enemies.
+        EXITING, // Leaving map.
+        DEAD, // Dead.
+        INVALID // Something went wrong.
+    }
 
 
     /// <summary>
@@ -48,6 +103,15 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
         UpdateEnemyCollider();
         GetEnemy().UpdateDamageOverTimeEffects();
         GetEnemy().ToggleHealthBar(SettingsController.SHOW_HEALTH_BARS);
+
+        ExecuteInactiveState();
+        ExecuteSpawnState();
+        ExecuteIdleState();
+        ExecuteChaseState();
+        ExecuteAttackState();
+        ExecuteProtectState();
+        ExecuteEscapeState();
+        ExecuteExitState();
     }
 
     /// <summary>
@@ -124,11 +188,10 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
         foreach (PlaceableObject heldTarget in GetHeldTargets())
         {
             if (heldTarget == null) continue;
-            heldTarget.Drop();
-            if (heldTarget as Nexus != null) RemoveAsCarrier();
             Nexus nexusTarget = heldTarget as Nexus;
             if (nexusTarget != null)
             {
+                nexusTarget.SetDropped();
                 if (GetEnemy().Exited()) nexusTarget.CashIn();
                 else TileGrid.PlaceOnTile(new Vector2Int(GetEnemy().GetX(), GetEnemy().GetY()), nexusTarget);
             }
@@ -136,6 +199,22 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
         }
 
         base.OnDestroyModel();
+    }
+
+    /// <summary>
+    /// Drops a resource at the Kudzu's resource drop rate.
+    /// </summary>
+    protected override void DropDeathLoot()
+    {
+        if (DroppedDeathLoot()) return;
+        if (GetEnemy().Exited()) return;
+
+        Dew dew = DewFactory.GetDewPrefab().GetComponent<Dew>();
+        Vector3 lootPos = GetEnemy().Exited() ? GetEnemy().GetExitPos() : GetEnemy().GetPosition();
+        int value = GetEnemy().CURRENCY_VALUE_ON_DEATH;
+        DewController dewController = new DewController(dew, lootPos, value);
+        ControllerController.AddModelController(dewController);
+        base.DropDeathLoot();
     }
 
     /// <summary>
@@ -167,56 +246,29 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     protected bool PoppedOutOfHole() { return poppedOutOfHole; }
 
     /// <summary>
-    /// Adds the Enemy as a carrier.
-    /// </summary>
-    protected void AddAsCarrier()
-    {
-        if (activeCarriers == null) activeCarriers = new List<Enemy>();
-        activeCarriers.Add(GetEnemy());
-    }
-
-    /// <summary>
-    /// Removes the Enemy as a carrier.
-    /// </summary>
-    protected void RemoveAsCarrier()
-    {
-        if (activeCarriers == null) return;
-        activeCarriers.Remove(GetEnemy());
-    }
-
-    /// <summary>
-    /// Holds a PlaceableObject target.
-    /// </summary>
-    /// <param name="target">the target to hold. </param>
-    protected override void HoldTarget(PlaceableObject target)
-    {
-        base.HoldTarget(target);
-        if (target as Nexus != null) AddAsCarrier();
-    }
-
-    /// <summary>
     /// Returns the Enemy closest to the one controlled by this EnemyController
     /// that is carrying an object. Returns null if there are no carriers.
     /// </summary>
     /// <returns>the closest carrier.</returns>
     protected Enemy GetNearestCarrier()
     {
-        if (activeCarriers == null || activeCarriers.Count == 0) return null;
-
         Enemy currentEnemy = GetEnemy();
         Enemy nearestCarrier = null;
         float nearestCarrierDist = float.MaxValue;
 
-        foreach (Enemy carrier in activeCarriers)
+        foreach (Model carrier in GetAllModels())
         {
-            if (carrier == currentEnemy) continue;
-            if (carrier.Exited()) continue;
-            if (carrier.IsExiting()) continue;
+            Enemy enemyCarrier = carrier as Enemy;
+            if (enemyCarrier == null) continue;
+            if (!enemyCarrier.IsHoldingNexus()) continue;
+            if (enemyCarrier == currentEnemy) continue;
+            if (enemyCarrier.Exited()) continue;
+            if (enemyCarrier.IsExiting()) continue;
 
-            float dist = Vector2.Distance(currentEnemy.GetPosition(), carrier.GetPosition());
+            float dist = Vector2.Distance(currentEnemy.GetPosition(), enemyCarrier.GetPosition());
             if (dist < nearestCarrierDist)
             {
-                nearestCarrier = carrier;
+                nearestCarrier = enemyCarrier;
                 nearestCarrierDist = dist;
             }
         }
@@ -286,4 +338,111 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
 
         return closestHole == nexusHole;
     }
+
+    /// <summary>
+    /// Returns the Knotwood prefab to the KnotwoodFactory singleton.
+    /// </summary>
+    public override void DestroyModel()
+    {
+        EnemyFactory.ReturnEnemyPrefab(GetEnemy().gameObject);
+    }
+
+    /// <summary>
+    /// Returns true if two EnemyStates are equal.
+    /// </summary>
+    /// <param name="stateA">The first EnemyState</param>
+    /// <param name="stateB">The second EnemyState</param>
+    /// <returns>true if two EnemyStates are equal; otherwise, false. </returns>
+    public override bool StateEquals(EnemyState stateA, EnemyState stateB)
+    {
+        return stateA == stateB;
+    }
+
+    /// <summary>
+    /// Adds one chunk of Time.deltaTime to the animation
+    /// counter that tracks the current state.
+    /// </summary>
+    public override void AgeAnimationCounter()
+    {
+        EnemyState state = GetState();
+        if (state == EnemyState.SPAWNING) spawnAnimationCounter += Time.deltaTime;
+        else if (state == EnemyState.IDLE) idleAnimationCounter += Time.deltaTime;
+        else if (state == EnemyState.CHASE) chaseAnimationCounter += Time.deltaTime;
+        else if (state == EnemyState.ATTACK) attackAnimationCounter += Time.deltaTime;
+        else if (state == EnemyState.PROTECT) protectAnimationCounter += Time.deltaTime;
+        else if (state == EnemyState.ESCAPE) escapeAnimationCounter += Time.deltaTime;
+        else if (state == EnemyState.EXITING) exitingAnimationCounter += Time.deltaTime;
+    }
+
+    /// <summary>
+    /// Returns the animation counter for the current state.
+    /// </summary>
+    /// <returns>the animation counter for the current state.</returns>
+    public override float GetAnimationCounter()
+    {
+        EnemyState state = GetState();
+        if (state == EnemyState.SPAWNING) return spawnAnimationCounter;
+        else if (state == EnemyState.IDLE) return idleAnimationCounter;
+        else if (state == EnemyState.CHASE) return chaseAnimationCounter;
+        else if (state == EnemyState.ATTACK) return attackAnimationCounter;
+        else if (state == EnemyState.PROTECT) return protectAnimationCounter;
+        else if (state == EnemyState.ESCAPE) return escapeAnimationCounter;
+        else if (state == EnemyState.EXITING) return exitingAnimationCounter;
+        else return 0;
+    }
+
+    /// <summary>
+    /// Sets the animation counter for the current state to 0.
+    /// </summary>
+    public override void ResetAnimationCounter()
+    {
+        EnemyState state = GetState();
+        if (state == EnemyState.SPAWNING) spawnAnimationCounter = 0;
+        else if (state == EnemyState.IDLE) idleAnimationCounter = 0;
+        else if (state == EnemyState.CHASE) chaseAnimationCounter = 0;
+        else if (state == EnemyState.ATTACK) attackAnimationCounter = 0;
+        else if (state == EnemyState.PROTECT) protectAnimationCounter = 0;
+        else if (state == EnemyState.ESCAPE) escapeAnimationCounter = 0;
+        else if (state == EnemyState.EXITING) exitingAnimationCounter = 0;
+    }
+
+    /// <summary>
+    /// Executes the logic for the INACTIVE state.
+    /// </summary>
+    protected abstract void ExecuteInactiveState();
+
+    /// <summary>
+    /// Executes the logic for the SPAWNING state.
+    /// </summary> 
+    protected abstract void ExecuteSpawnState();
+
+    /// <summary>
+    /// Executes the logic for the IDLE state.
+    /// </summary> 
+    protected abstract void ExecuteIdleState();
+
+    /// <summary>
+    /// Executes the logic for the CHASE state.
+    /// </summary> 
+    protected abstract void ExecuteChaseState();
+
+    /// <summary>
+    /// Executes the logic for the ATTACK state.
+    /// </summary> 
+    protected abstract void ExecuteAttackState();
+
+    /// <summary>
+    /// Executes the logic for the PROTECT state.
+    /// </summary> 
+    protected abstract void ExecuteProtectState();
+
+    /// <summary>
+    /// Executes the logic for the ESCAPE state.
+    /// </summary> 
+    protected abstract void ExecuteEscapeState();
+
+    /// <summary>
+    /// Executes the logic for the EXIT state.
+    /// </summary> 
+    protected abstract void ExecuteExitState();
 }

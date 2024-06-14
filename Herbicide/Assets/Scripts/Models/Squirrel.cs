@@ -124,14 +124,17 @@ public class Squirrel : Defender
     /// </summary>
     /// <returns>an instantiated GameObject with a Squirrel component
     ///  attached.</returns>
-    public override GameObject Copy() { return SquirrelFactory.GetSquirrelPrefab(); }
+    public override GameObject Copy() { return DefenderFactory.GetDefenderPrefab(ModelType.SQUIRREL); }
 
     /// <summary>
     /// Returns the animation track that represents this Squirrel when placing.
     /// </summary>
     /// <returns>the animation track that represents this Squirrel when placing.
     /// </returns>
-    public override Sprite[] GetPlacementTrack() { return SquirrelFactory.GetPlacementTrack(GetTier()); }
+    public override Sprite[] GetPlacementTrack()
+    {
+        return DefenderFactory.GetPlacementTrack(ModelType.SQUIRREL, GetTier());
+    }
 
     /// <summary>
     /// Returns the (X, Y) dimensions of the Bear's placement track.

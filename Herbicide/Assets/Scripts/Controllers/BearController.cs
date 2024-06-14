@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+/// <summary>
+/// Controls a Bear.
+/// 
+/// The BearController is responsible for manipulating its Bear and bringing
+/// it to life. This includes moving it, choosing targets, playing animations,
+/// and more.
+/// </summary>
 public class BearController : DefenderController<BearController.BearState>
 {
     /// <summary>
@@ -69,7 +76,7 @@ public class BearController : DefenderController<BearController.BearState>
     /// <summary>
     /// Returns the Bear prefab to the BearFactory singleton.
     /// </summary>
-    public override void DestroyModel() { BearFactory.ReturnBearPrefab(GetBear().gameObject); }
+    public override void DestroyModel() { DefenderFactory.ReturnDefenderPrefab(GetBear().gameObject); }
 
     //--------------------BEGIN STATE LOGIC----------------------//
 
@@ -148,7 +155,10 @@ public class BearController : DefenderController<BearController.BearState>
         if (GetTarget() != null) FaceTarget();
         else GetBear().FaceDirection(Direction.SOUTH);
 
-        SetAnimation(GetBear().IDLE_ANIMATION_DURATION, BearFactory.GetIdleTrack(GetBear().GetDirection()));
+        SetAnimation(GetBear().IDLE_ANIMATION_DURATION,
+            DefenderFactory.GetIdleTrack(ModelType.BEAR,
+                GetBear().GetDirection(),
+                GetBear().GetTier()));
     }
 
     /// <summary>
@@ -165,7 +175,8 @@ public class BearController : DefenderController<BearController.BearState>
 
         FaceTarget();
 
-        SetAnimation(GetBear().ATTACK_ANIMATION_DURATION, BearFactory.GetAttackTrack(GetBear().GetDirection()));
+        SetAnimation(GetBear().ATTACK_ANIMATION_DURATION,
+        DefenderFactory.GetAttackTrack(ModelType.BEAR, GetBear().GetDirection(), GetBear().GetTier()));
 
         if (!CanAttack()) return;
 

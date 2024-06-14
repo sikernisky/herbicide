@@ -153,7 +153,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1398493868}
-  m_RootOrder: 12
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &21045684
 MonoBehaviour:
@@ -226,175 +226,6 @@ MonoBehaviour:
     - {fileID: -2076439399, guid: 7cec5e00f0faf4d42a75fbde06f5d094, type: 3}
     idleAnimationWest:
     - {fileID: 1272331073, guid: 7cec5e00f0faf4d42a75fbde06f5d094, type: 3}
---- !u!1 &49647442
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 49647443}
-  - component: {fileID: 49647444}
-  m_Layer: 0
-  m_Name: KudzuFactory
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &49647443
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 49647442}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1398493868}
-  m_RootOrder: 8
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &49647444
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 49647442}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d39e6573d73dd4942843d187604866c1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prefabs:
-  - {fileID: 7290264091372080636, guid: 5fcaa2ef01e0846eaac9cf5396b7d367, type: 3}
-  placementTrack:
-  - {fileID: -782429154, guid: 700628e93b95b4ba194b31d1dc84999b, type: 3}
-  boatTrack:
-  - {fileID: -782429154, guid: 700628e93b95b4ba194b31d1dc84999b, type: 3}
-  healthyMovementAnimationNorth:
-  - {fileID: 791066126, guid: 91ce725d2b5884571bccf2472bf7b663, type: 3}
-  - {fileID: 1011349185, guid: 91ce725d2b5884571bccf2472bf7b663, type: 3}
-  - {fileID: 1734766495, guid: 91ce725d2b5884571bccf2472bf7b663, type: 3}
-  - {fileID: 937619206, guid: 91ce725d2b5884571bccf2472bf7b663, type: 3}
-  - {fileID: 147489485, guid: 91ce725d2b5884571bccf2472bf7b663, type: 3}
-  - {fileID: -1870920948, guid: 91ce725d2b5884571bccf2472bf7b663, type: 3}
-  damagedMovementAnimationNorth:
-  - {fileID: 10882378, guid: 91ce725d2b5884571bccf2472bf7b663, type: 3}
-  - {fileID: -709429662, guid: 91ce725d2b5884571bccf2472bf7b663, type: 3}
-  - {fileID: -475282603, guid: 91ce725d2b5884571bccf2472bf7b663, type: 3}
-  - {fileID: -2077322272, guid: 91ce725d2b5884571bccf2472bf7b663, type: 3}
-  - {fileID: -1974264453, guid: 91ce725d2b5884571bccf2472bf7b663, type: 3}
-  - {fileID: 389573860, guid: 91ce725d2b5884571bccf2472bf7b663, type: 3}
-  criticalMovementAnimationNorth:
-  - {fileID: 1235142255, guid: 91ce725d2b5884571bccf2472bf7b663, type: 3}
-  - {fileID: 896671063, guid: 91ce725d2b5884571bccf2472bf7b663, type: 3}
-  - {fileID: -2056673794, guid: 91ce725d2b5884571bccf2472bf7b663, type: 3}
-  - {fileID: 1396120435, guid: 91ce725d2b5884571bccf2472bf7b663, type: 3}
-  - {fileID: 809013180, guid: 91ce725d2b5884571bccf2472bf7b663, type: 3}
-  - {fileID: 1482097842, guid: 91ce725d2b5884571bccf2472bf7b663, type: 3}
-  healthyMovementAnimationEast:
-  - {fileID: -1543927664, guid: 5480cd86f075f46049bcdc8ce7dbe43f, type: 3}
-  - {fileID: -1909922341, guid: 5480cd86f075f46049bcdc8ce7dbe43f, type: 3}
-  - {fileID: -726514991, guid: 5480cd86f075f46049bcdc8ce7dbe43f, type: 3}
-  - {fileID: 1284194197, guid: 5480cd86f075f46049bcdc8ce7dbe43f, type: 3}
-  - {fileID: -101178407, guid: 5480cd86f075f46049bcdc8ce7dbe43f, type: 3}
-  - {fileID: -1003846721, guid: 5480cd86f075f46049bcdc8ce7dbe43f, type: 3}
-  damagedMovementAnimationEast:
-  - {fileID: -142281792, guid: 5480cd86f075f46049bcdc8ce7dbe43f, type: 3}
-  - {fileID: -1538874560, guid: 5480cd86f075f46049bcdc8ce7dbe43f, type: 3}
-  - {fileID: -894236306, guid: 5480cd86f075f46049bcdc8ce7dbe43f, type: 3}
-  - {fileID: 94146082, guid: 5480cd86f075f46049bcdc8ce7dbe43f, type: 3}
-  - {fileID: -2132733676, guid: 5480cd86f075f46049bcdc8ce7dbe43f, type: 3}
-  - {fileID: -538966846, guid: 5480cd86f075f46049bcdc8ce7dbe43f, type: 3}
-  criticalMovementAnimationEast:
-  - {fileID: -3642323, guid: 5480cd86f075f46049bcdc8ce7dbe43f, type: 3}
-  - {fileID: -683009435, guid: 5480cd86f075f46049bcdc8ce7dbe43f, type: 3}
-  - {fileID: 569622687, guid: 5480cd86f075f46049bcdc8ce7dbe43f, type: 3}
-  - {fileID: 2035911857, guid: 5480cd86f075f46049bcdc8ce7dbe43f, type: 3}
-  - {fileID: -807613212, guid: 5480cd86f075f46049bcdc8ce7dbe43f, type: 3}
-  - {fileID: 1263144387, guid: 5480cd86f075f46049bcdc8ce7dbe43f, type: 3}
-  healthyMovementAnimationSouth:
-  - {fileID: -1499300277, guid: f27456668643549238bbd780f6d27a92, type: 3}
-  - {fileID: -1267246534, guid: f27456668643549238bbd780f6d27a92, type: 3}
-  - {fileID: 1528113083, guid: f27456668643549238bbd780f6d27a92, type: 3}
-  - {fileID: 993444447, guid: f27456668643549238bbd780f6d27a92, type: 3}
-  - {fileID: 524739769, guid: f27456668643549238bbd780f6d27a92, type: 3}
-  - {fileID: -488176379, guid: f27456668643549238bbd780f6d27a92, type: 3}
-  damagedMovementAnimationSouth:
-  - {fileID: -1124233523, guid: f27456668643549238bbd780f6d27a92, type: 3}
-  - {fileID: 823162665, guid: f27456668643549238bbd780f6d27a92, type: 3}
-  - {fileID: 1523757411, guid: f27456668643549238bbd780f6d27a92, type: 3}
-  - {fileID: -1963246296, guid: f27456668643549238bbd780f6d27a92, type: 3}
-  - {fileID: 2019708124, guid: f27456668643549238bbd780f6d27a92, type: 3}
-  - {fileID: -805380148, guid: f27456668643549238bbd780f6d27a92, type: 3}
-  criticalMovementAnimationSouth:
-  - {fileID: 392942784, guid: f27456668643549238bbd780f6d27a92, type: 3}
-  - {fileID: -846517419, guid: f27456668643549238bbd780f6d27a92, type: 3}
-  - {fileID: 1400854335, guid: f27456668643549238bbd780f6d27a92, type: 3}
-  - {fileID: 1327735364, guid: f27456668643549238bbd780f6d27a92, type: 3}
-  - {fileID: 61428310, guid: f27456668643549238bbd780f6d27a92, type: 3}
-  - {fileID: 1867783311, guid: f27456668643549238bbd780f6d27a92, type: 3}
-  healthyMovementAnimationWest:
-  - {fileID: 663134078, guid: e8feaa630903a40179b4e8dcab2d9a25, type: 3}
-  - {fileID: 736876826, guid: e8feaa630903a40179b4e8dcab2d9a25, type: 3}
-  - {fileID: 750883287, guid: e8feaa630903a40179b4e8dcab2d9a25, type: 3}
-  - {fileID: -1121388095, guid: e8feaa630903a40179b4e8dcab2d9a25, type: 3}
-  - {fileID: -1185193571, guid: e8feaa630903a40179b4e8dcab2d9a25, type: 3}
-  - {fileID: -1211085011, guid: e8feaa630903a40179b4e8dcab2d9a25, type: 3}
-  damagedMovementAnimationWest:
-  - {fileID: 1748836217, guid: e8feaa630903a40179b4e8dcab2d9a25, type: 3}
-  - {fileID: -100835250, guid: e8feaa630903a40179b4e8dcab2d9a25, type: 3}
-  - {fileID: -1482178458, guid: e8feaa630903a40179b4e8dcab2d9a25, type: 3}
-  - {fileID: 1943923196, guid: e8feaa630903a40179b4e8dcab2d9a25, type: 3}
-  - {fileID: -1514656619, guid: e8feaa630903a40179b4e8dcab2d9a25, type: 3}
-  - {fileID: -2085749760, guid: e8feaa630903a40179b4e8dcab2d9a25, type: 3}
-  criticalMovementAnimationWest:
-  - {fileID: 1479561492, guid: e8feaa630903a40179b4e8dcab2d9a25, type: 3}
-  - {fileID: -1784899821, guid: e8feaa630903a40179b4e8dcab2d9a25, type: 3}
-  - {fileID: 1552519841, guid: e8feaa630903a40179b4e8dcab2d9a25, type: 3}
-  - {fileID: 1419857478, guid: e8feaa630903a40179b4e8dcab2d9a25, type: 3}
-  - {fileID: -1220635396, guid: e8feaa630903a40179b4e8dcab2d9a25, type: 3}
-  - {fileID: -542874303, guid: e8feaa630903a40179b4e8dcab2d9a25, type: 3}
-  healthyAttackAnimationNorth:
-  - {fileID: -1343140856, guid: 700628e93b95b4ba194b31d1dc84999b, type: 3}
-  damagedAttackAnimationNorth:
-  - {fileID: -97148030, guid: 700628e93b95b4ba194b31d1dc84999b, type: 3}
-  criticalAttackAnimationNorth:
-  - {fileID: -1176398698, guid: 700628e93b95b4ba194b31d1dc84999b, type: 3}
-  healthyAttackAnimationEast:
-  - {fileID: 1880635089, guid: 700628e93b95b4ba194b31d1dc84999b, type: 3}
-  damagedAttackAnimationEast:
-  - {fileID: -2132733961, guid: 700628e93b95b4ba194b31d1dc84999b, type: 3}
-  criticalAttackAnimationEast:
-  - {fileID: -885552227, guid: 700628e93b95b4ba194b31d1dc84999b, type: 3}
-  healthyAttackAnimationSouth:
-  - {fileID: -782429154, guid: 700628e93b95b4ba194b31d1dc84999b, type: 3}
-  damagedAttackAnimationSouth:
-  - {fileID: -581479506, guid: 700628e93b95b4ba194b31d1dc84999b, type: 3}
-  criticalAttackAnimationSouth:
-  - {fileID: -924319623, guid: 700628e93b95b4ba194b31d1dc84999b, type: 3}
-  healthyAttackAnimationWest:
-  - {fileID: 1764468842, guid: 700628e93b95b4ba194b31d1dc84999b, type: 3}
-  damagedAttackAnimationWest:
-  - {fileID: -257299618, guid: 700628e93b95b4ba194b31d1dc84999b, type: 3}
-  criticalAttackAnimationWest:
-  - {fileID: -482437411, guid: 700628e93b95b4ba194b31d1dc84999b, type: 3}
-  healthyIdleAnimationNorth: []
-  damagedIdleAnimationNorth: []
-  criticalIdleAnimationNorth: []
-  healthyIdleAnimationEast: []
-  damagedIdleAnimationEast: []
-  criticalIdleAnimationEast: []
-  healthyIdleAnimationSouth: []
-  damagedIdleAnimationSouth: []
-  criticalIdleAnimationSouth: []
-  healthyIdleAnimationWest: []
-  damagedIdleAnimationWest: []
 --- !u!1 &84069933
 GameObject:
   m_ObjectHideFlags: 0
@@ -794,7 +625,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1398493868}
-  m_RootOrder: 14
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &200278232
 MonoBehaviour:
@@ -1989,7 +1820,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1398493868}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &682140443
 MonoBehaviour:
@@ -2541,70 +2372,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1020421783}
   m_CullTransparentMesh: 1
---- !u!1 &1024582138
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1024582139}
-  - component: {fileID: 1024582140}
-  m_Layer: 0
-  m_Name: KnotwoodFactory
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1024582139
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1024582138}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1398493868}
-  m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1024582140
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1024582138}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c20be42c78774492a2b3829cd5632ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prefabs:
-  - {fileID: 7290264091372080636, guid: edbc2e2753c2e4bd1a26ce7d05b50c31, type: 3}
-  knotwoodAnimationSet:
-    placementTrack:
-    - {fileID: -1290064856, guid: 8c773ab25e01e41c6bb633d22a0266dc, type: 3}
-    attackAnimationNorth:
-    - {fileID: 1744313986, guid: 8c773ab25e01e41c6bb633d22a0266dc, type: 3}
-    attackAnimationEast:
-    - {fileID: 1793724346, guid: 8c773ab25e01e41c6bb633d22a0266dc, type: 3}
-    attackAnimationSouth:
-    - {fileID: 1172321847, guid: 8c773ab25e01e41c6bb633d22a0266dc, type: 3}
-    attackAnimationWest: []
-    idleAnimationNorth: []
-    idleAnimationEast: []
-    idleAnimationSouth: []
-    idleAnimationWest: []
-    movementAnimationNorth: []
-    movementAnimationEast: []
-    movementAnimationSouth: []
-    movementAnimationWest: []
 --- !u!1 &1044661149
 GameObject:
   m_ObjectHideFlags: 0
@@ -2847,7 +2614,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1398493868}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1060493664
 MonoBehaviour:
@@ -2973,7 +2740,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1398493868}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1130661422
 MonoBehaviour:
@@ -3353,9 +3120,8 @@ Transform:
   - {fileID: 920601835}
   - {fileID: 1549079118}
   - {fileID: 1545961770}
+  - {fileID: 2080927342}
   - {fileID: 1569954268}
-  - {fileID: 1024582139}
-  - {fileID: 49647443}
   - {fileID: 682140442}
   - {fileID: 1060493663}
   - {fileID: 1130661421}
@@ -3787,7 +3553,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1398493868}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1569954269
 MonoBehaviour:
@@ -4137,7 +3903,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1398493868}
-  m_RootOrder: 13
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1874219993
 MonoBehaviour:
@@ -4535,6 +4301,55 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2074973554}
   m_CullTransparentMesh: 1
+--- !u!1 &2080927341
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2080927342}
+  - component: {fileID: 2080927343}
+  m_Layer: 0
+  m_Name: EnemyFactory
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2080927342
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2080927341}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1398493868}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2080927343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2080927341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63f5b3028d719471aaa88f6f0c567ad0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabs:
+  - {fileID: 7290264091372080636, guid: 5fcaa2ef01e0846eaac9cf5396b7d367, type: 3}
+  - {fileID: 7290264091372080636, guid: edbc2e2753c2e4bd1a26ce7d05b50c31, type: 3}
+  knotwoodAnimationSet: {fileID: 11400000, guid: c4a97ccc6f5f745439868eecc5203a87, type: 2}
+  kudzuAnimationSet: {fileID: 11400000, guid: 424613322da4f46669fd8786dee9cb98, type: 2}
 --- !u!1 &2089459146
 GameObject:
   m_ObjectHideFlags: 0

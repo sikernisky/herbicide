@@ -21,12 +21,12 @@ public class Bear : Defender
     /// <summary>
     /// Damage a Bear deals over a bleed effect. 
     /// </summary>
-    public float BLEED_DAMAGE => 5;
+    public float BLEED_DAMAGE => 7;
 
     /// <summary>
     /// Damage a Bear deals over a bleed effect. 
     /// </summary>
-    public float BLEED_DURATION => 1;
+    public float BLEED_DURATION => .75f;
 
     /// <summary>
     /// The number of ticks a Bear's bleed effect deals.
@@ -51,7 +51,7 @@ public class Bear : Defender
     /// <summary>
     /// Starting attack cooldown of a Bear.
     /// </summary>
-    public override float BASE_ATTACK_SPEED => .5f;
+    public override float BASE_ATTACK_SPEED => .75f;
 
     /// <summary>
     /// Maximum attack cooldown of a Bear.
@@ -131,7 +131,7 @@ public class Bear : Defender
     /// </summary>
     /// <returns>an instantiated GameObject with a Bear component
     ///  attached.</returns>
-    public override GameObject Copy() { return BearFactory.GetBearPrefab(); }
+    public override GameObject Copy() { return DefenderFactory.GetDefenderPrefab(ModelType.BEAR); }
 
     /// <summary>
     /// Returns the animation track that represents this Bear when placing.
@@ -140,7 +140,7 @@ public class Bear : Defender
     /// </returns>
     public override Sprite[] GetPlacementTrack()
     {
-        return BearFactory.GetPlacementTrack();
+        return DefenderFactory.GetPlacementTrack(ModelType.BEAR, GetTier());
     }
 
     /// <summary>

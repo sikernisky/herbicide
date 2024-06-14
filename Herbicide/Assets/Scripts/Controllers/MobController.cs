@@ -25,9 +25,9 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     private List<Model> targets;
 
     /// <summary>
-    /// The list of targets the Mob is holding.
+    /// The list of Models the Mob is holding. 
     /// </summary>
-    private List<Model> targetsHolding;
+    private List<Model> modelsHolding;
 
     /// <summary>
     /// The color strength, from 0-1, of the damage flash animation.
@@ -85,7 +85,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     {
         Assert.IsNotNull(mob, "Mob cannot be null.");
         targets = new List<Model>();
-        targetsHolding = new List<Model>();
+        modelsHolding = new List<Model>();
         attackSpeedBuffMultipliers = new HashSet<float>();
         SpawnMob();
         NUM_MOBS++;
@@ -171,11 +171,6 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
 
         ClearTargets();
 
-        // Need to rework to give all possible targets, have specific subclass choose which one. 
-
-        // If can target, add to targets.
-        // GetTarget() needs to incorporate filtering logic to choose from the list. 
-
         foreach (Model targetable in nonTiles)
         {
             if (CanTarget(targetable) && NumTargets() < MAX_TARGETS)
@@ -191,6 +186,19 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
                 AddTarget(targetable);
             }
         }
+
+        SortTargets(targets);
+    }
+
+    /// <summary>
+    /// Sorts the list of targets this Mob has elected to target by
+    /// priority. This method is called after UpdateTargets() and
+    /// before the Mob acts on its targets.
+    /// </summary>
+    /// <param name="targets">The list of targets to sort.</param>
+    protected virtual void SortTargets(List<Model> targets)
+    {
+        return;
     }
 
     /// <summary>
@@ -278,22 +286,18 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
 
 
     /// <summary>
-    /// Returns true if the Mob can hold some PlaceableObject.
+    /// Returns true if the Mob can hold some Nexus.
     /// </summary>
-    /// <returns>true if the Mob can hold the PlaceableObject; otherwise,
+    /// <returns>true if the Mob can hold the Nexus; otherwise,
     /// false. </returns>
     /// <param name="target">The target to check. </param> 
-    protected virtual bool CanHoldTarget(PlaceableObject target)
+    protected virtual bool CanHoldTarget(Nexus target)
     {
-        Assert.IsNotNull(target, "Target is null.");
-
-        Nexus nexusTarget = target as Nexus;
-
-        if (!target.HOLDABLE) return false;
+        if (target == null) return false;
         if (!GetTargets().Contains(target)) return false; // Need to target before holding
         if (NumTargetsHolding() >= HOLDING_LIMIT) return false;
         if (target.PickedUp()) return false;
-        if (nexusTarget.CashedIn()) return false;
+        if (target.CashedIn()) return false;
 
         return true;
     }
@@ -302,13 +306,13 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// Adds a target to the list of targets the Mob is holding.
     /// </summary>
     /// <param name="target">The target to hold. </param> 
-    protected virtual void HoldTarget(PlaceableObject target)
+    protected virtual void HoldTarget(Nexus target)
     {
-        Assert.IsNotNull(targetsHolding, "List of holding targets is null.");
+        Assert.IsNotNull(modelsHolding, "List of holding targets is null.");
         Assert.IsTrue(CanHoldTarget(target), "Need to check holding validity.");
 
-        targetsHolding.Add(target);
-        target.PickUp(GetMob().GetTransform(), GetMob().HOLDER_OFFSET);
+        modelsHolding.Add(target);
+        target.SetPickedUp(GetMob(), GetMob().HOLDER_OFFSET);
 
     }
 
@@ -318,16 +322,19 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// <returns>the number of targets the Mob is currently holding.</returns>
     protected int NumTargetsHolding()
     {
-        Assert.IsNotNull(targetsHolding, "List of holding targets is null.");
+        Assert.IsNotNull(modelsHolding, "List of holding targets is null.");
 
-        return targetsHolding.Count;
+        return modelsHolding.Count;
     }
 
     /// <summary>
     /// Returns a copy of the list of targets the Mob is currently holding.
     /// </summary>
     /// <returns>a copy of the list of targets the Mob is currently holding.</returns>
-    protected List<Model> GetHeldTargets() { return new List<Model>(targetsHolding); }
+    protected List<Model> GetHeldTargets()
+    {
+        return new List<Model>(modelsHolding);
+    }
 
     /// <summary>
     /// Returns true if the Mob is holding some target.
@@ -335,7 +342,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// <returns>true if the Mob is holding the target; otherwise, false.</returns>
     protected bool IsHoldingTarget(PlaceableObject target)
     {
-        return targetsHolding.Contains(target);
+        return modelsHolding.Contains(target);
     }
 
 
@@ -454,7 +461,6 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     protected virtual void SetNextMovePos(Vector3? nextPos)
     {
         nextMovePos = nextPos;
-
 
         Vector3 newParabolicTarget = new Vector3(nextMovePos.Value.x, nextMovePos.Value.y, 1);
         float newParabolicScale = GetMob().GetMovementSpeed() /

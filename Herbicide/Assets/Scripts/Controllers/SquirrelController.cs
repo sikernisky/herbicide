@@ -83,9 +83,9 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     protected override void HandleCollision(Collider2D other) { throw new NotImplementedException(); }
 
     /// <summary>
-    /// Returns the Squirrel prefab to the SquirrelFactory singleton.
+    /// Returns the Squirrel prefab to the DefenderFactory singleton.
     /// </summary>
-    public override void DestroyModel() { SquirrelFactory.ReturnSquirrelPrefab(GetSquirrel().gameObject); }
+    public override void DestroyModel() { DefenderFactory.ReturnDefenderPrefab(GetSquirrel().gameObject); }
 
     //--------------------BEGIN STATE LOGIC----------------------//
 
@@ -164,7 +164,10 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
             FaceTarget();
         else GetSquirrel().FaceDirection(Direction.SOUTH);
 
-        SetAnimation(GetSquirrel().IDLE_ANIMATION_DURATION, SquirrelFactory.GetIdleTrack(GetSquirrel().GetDirection(), GetSquirrel().GetTier()));
+        SetAnimation(GetSquirrel().IDLE_ANIMATION_DURATION,
+            DefenderFactory.GetIdleTrack(
+                ModelType.SQUIRREL,
+                GetSquirrel().GetDirection(), GetSquirrel().GetTier()));
     }
 
     /// <summary>
@@ -250,7 +253,10 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
             Enemy target = GetTarget() as Enemy;
             if (target == null || !target.Targetable()) yield break; // Invalid target.
 
-            SetAnimation(GetSquirrel().ATTACK_ANIMATION_DURATION / numAcorns, SquirrelFactory.GetAttackTrack(GetSquirrel().GetDirection(), GetSquirrel().GetTier()));
+            SetAnimation(GetSquirrel().ATTACK_ANIMATION_DURATION / numAcorns,
+                DefenderFactory.GetAttackTrack(
+                    ModelType.SQUIRREL,
+                    GetSquirrel().GetDirection(), GetSquirrel().GetTier()));
 
             GameObject acornPrefab = AcornFactory.GetAcornPrefab();
             Assert.IsNotNull(acornPrefab);

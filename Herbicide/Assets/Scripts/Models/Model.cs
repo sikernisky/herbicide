@@ -27,11 +27,6 @@ public abstract class Model : MonoBehaviour
     public abstract ModelType TYPE { get; }
 
     /// <summary>
-    /// true if Mobs can hold this Model; otherwise, false.
-    /// </summary>
-    public virtual bool HOLDABLE => false;
-
-    /// <summary>
     /// This Model's active animation track.
     /// </summary>
     public Sprite[] CurrentAnimationTrack { get; private set; }
@@ -90,26 +85,19 @@ public abstract class Model : MonoBehaviour
     public virtual Vector2Int SIZE => new Vector2Int(1, 1);
 
     /// <summary>
-    /// The Transform of the Model that picked this Model up; null if
-    /// it is not picked up.
-    /// </summary>
-    private Transform holder;
-
-    /// <summary>
-    /// The HOLDER_OFFSET of the model that picked this Model up.
-    /// </summary>
-    private Vector2 holdingOffset;
-
-    /// <summary>
-    /// The offset of this Model's held objects. 
+    /// The offset of this Model's held Nexii. 
     /// </summary>
     public virtual Vector2 HOLDER_OFFSET => new Vector2(0, 0);
+
+    /// <summary>
+    /// true if this Model is holding a Nexus; otherwise, false. 
+    /// </summary>
+    private bool holdingNexus;
 
     /// <summary>
     /// The number of cycles of the current animation completed.
     /// </summary>
     private int numCyclesOfCurrentAnimationCompleted;
-
 
 
 
@@ -408,46 +396,6 @@ public abstract class Model : MonoBehaviour
     }
 
     /// <summary>
-    /// Informs this Model that it has been picked up.
-    /// </summary>
-    /// <param name="holder">The transform of the Model that picked it up.</param>
-    /// <param name="holdingOffset">The holder offset of the Model that picked it up.</param>
-    ///
-    public void PickUp(Transform holder, Vector3 holdingOffset)
-    {
-        Assert.IsNull(this.holder, "Already picked up.");
-        this.holder = holder;
-        this.holdingOffset = holdingOffset;
-        SetSortingLayer(SortingLayers.PICKEDUPITEMS);
-    }
-
-    /// <summary>
-    /// Informs this Model that it not picked up anymore.
-    /// </summary>
-    public void Drop()
-    {
-        Assert.IsNotNull(holder, "Not picked up.");
-        holder = null;
-        SetSortingLayer(SortingLayers.GROUNDMOBS);
-    }
-
-    /// <summary>
-    /// Returns true if this Model is picked up.
-    /// </summary>
-    /// <returns> true if this Model is picked up; otherwise, false.</returns>
-    public bool PickedUp() { return holder != null; }
-
-    /// <summary>
-    /// Returns the position of this Model when held. This is the position of
-    /// the Model holding it + the Model holding it's HOLDER_OFFSET.
-    /// </summary>
-    /// <returns>the HOLDER_OFFSET of the Model that picked this Model up.</returns>
-    public Vector2 GetHeldPosition()
-    {
-        return holder.position + new Vector3(holdingOffset.x, holdingOffset.y, 1);
-    }
-
-    /// <summary>
     /// Returns the GameObject that represents this Model on the grid.
     /// </summary>
     /// <returns>the GameObject that represents this Model on the grid.
@@ -481,4 +429,15 @@ public abstract class Model : MonoBehaviour
         Assert.IsNotNull(other, "Other model is null.");
         return Vector3.Distance(GetPosition(), other.GetPosition());
     }
+
+    /// <summary>
+    /// Called when a Nexus determines this Model has picked it up. 
+    /// </summary>
+    public void OnHoldNexus() { holdingNexus = true; }
+
+    /// <summary>
+    /// Returns true if this Model is currently holding a Nexus. 
+    /// </summary>
+    /// <returns></returns>
+    public bool IsHoldingNexus() { return holdingNexus; }
 }

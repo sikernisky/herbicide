@@ -51,7 +51,7 @@ public class Knotwood : Enemy
     /// <summary>
     /// Starting movement speed of a Knotwood.
     /// </summary>
-    public override float BASE_MOVEMENT_SPEED => 6f;
+    public override float BASE_MOVEMENT_SPEED => 4f;
 
     /// <summary>
     /// Maximum movement speed of a Knotwood.

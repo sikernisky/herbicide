@@ -99,15 +99,20 @@ public class Nexus : Structure
     public override float MIN_MOVEMENT_SPEED => 0f;
 
     /// <summary>
-    /// A Nexus can be held.
-    /// </summary>
-    public override bool HOLDABLE => true;
-
-    /// <summary>
     /// true if this Nexus was brought to the target position.
     /// </summary>
     private bool cashedIn;
 
+    /// <summary>
+    /// The Transform of the Model that picked this Nexus up; null if
+    /// it is not picked up.
+    /// </summary>
+    private Transform holder;
+
+    /// <summary>
+    /// The HOLDER_OFFSET of the model that picked this Model up.
+    /// </summary>
+    private Vector2 holdingOffset;
 
     /// <summary>
     /// Returns true if this Nexus is dead. This is when its
@@ -147,4 +152,46 @@ public class Nexus : Structure
     /// Informs this Nexus that it was brought to the target spot.
     /// </summary>
     public void CashIn() { cashedIn = true; }
+
+
+
+    /// <summary>
+    /// Informs this Model that it has been picked up.
+    /// </summary>
+    /// <param name="holder">The Model that picked it up.</param>
+    /// <param name="holdingOffset">The holder offset of the Model that picked it up.</param>
+    public void SetPickedUp(Model holder, Vector3 holdingOffset)
+    {
+        Assert.IsNull(this.holder, "Already picked up.");
+        this.holder = holder.transform;
+        this.holdingOffset = holdingOffset;
+        holder.OnHoldNexus();
+        SetSortingLayer(SortingLayers.PICKEDUPITEMS);
+    }
+
+    /// <summary>
+    /// Informs this Model that it not picked up anymore.
+    /// </summary>
+    public void SetDropped()
+    {
+        Assert.IsNotNull(holder, "Not picked up.");
+        holder = null;
+        SetSortingLayer(SortingLayers.GROUNDMOBS);
+    }
+
+    /// <summary>
+    /// Returns true if this Model is picked up.
+    /// </summary>
+    /// <returns> true if this Model is picked up; otherwise, false.</returns>
+    public bool PickedUp() { return holder != null; }
+
+    /// <summary>
+    /// Returns the position of this Model when held. This is the position of
+    /// the Model holding it + the Model holding it's HOLDER_OFFSET.
+    /// </summary>
+    /// <returns>the HOLDER_OFFSET of the Model that picked this Model up.</returns>
+    public Vector2 GetHeldPosition()
+    {
+        return holder.position + new Vector3(holdingOffset.x, holdingOffset.y, 1);
+    }
 }

@@ -19,12 +19,6 @@ public class DewFactory : Factory
     [SerializeField]
     private Sprite[] placementTrack;
 
-    /// <summary>
-    /// Animation track when on a boat.
-    /// </summary>
-    [SerializeField]
-    private Sprite[] boatTrack;
-
 
     /// <summary>
     /// Finds and sets the DewFactory singleton.
@@ -66,13 +60,6 @@ public class DewFactory : Factory
     /// <returns>the animation track that represents this Dew when placing. 
     /// </returns>
     public static Sprite[] GetPlacementTrack() { return instance.placementTrack; }
-
-    /// <summary>
-    /// Returns the animation track that represents this Dew when on a boat. 
-    /// </summary>
-    /// <returns>the animation track that represents this Dew when on a boat. 
-    /// </returns>
-    public static Sprite[] GetBoatTrack() { return instance.boatTrack; }
 
     /// <summary>
     /// Returns the Transform component of the DewFactory instance. 

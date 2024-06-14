@@ -87,6 +87,8 @@ public abstract class Enemy : Mob
         CRITICAL
     }
 
+
+
     /// <summary>
     /// Called when this Enemy appears on the TileGrid and is assigned
     /// an EnemyController (or a subclass of EnemyController).

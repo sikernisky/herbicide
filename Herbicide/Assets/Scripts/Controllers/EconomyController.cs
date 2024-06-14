@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using TMPro;
 using System;
+using UnityEngine.UI;
 
 /// <summary>
 /// Handles economy and currency related events.

@@ -144,7 +144,7 @@ public class LevelController : MonoBehaviour
     {
         AcornFactory.SetSingleton(instance);
         BasicTreeFactory.SetSingleton(instance);
-        BearFactory.SetSingleton(instance);
+        DefenderFactory.SetSingleton(instance);
         DewFactory.SetSingleton(instance);
         EdgeFactory.SetSingleton(instance);
         EmanationFactory.SetSingleton(instance);
@@ -153,7 +153,6 @@ public class LevelController : MonoBehaviour
         NexusFactory.SetSingleton(instance);
         NexusHoleFactory.SetSingleton(instance);
         ShopFactory.SetSingleton(instance);
-        SquirrelFactory.SetSingleton(instance);
         TileFactory.SetSingleton(instance);
         WallFactory.SetSingleton(instance);
     }

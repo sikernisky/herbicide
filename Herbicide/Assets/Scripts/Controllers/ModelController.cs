@@ -125,7 +125,6 @@ public abstract class ModelController
 
         UpdateTilePositions();
         ModelClickedUp();
-        if (GetModel().PickedUp()) GetModel().SetWorldPosition(GetModel().GetHeldPosition());
         FixSortingOrder();
         StepAnimation();
     }
