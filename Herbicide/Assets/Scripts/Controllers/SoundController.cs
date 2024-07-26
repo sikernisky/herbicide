@@ -102,4 +102,26 @@ public class SoundController : MonoBehaviour
         if (effectToPlay == null) return;
         instance.effectSource.PlayOneShot(effectToPlay, 1.0f);
     }
+
+    /// <summary>
+    /// Sets the music volume.
+    /// </summary>
+    /// <param name="volume">The volume to set.</param> 
+    public static void SetMusicVolume(float volume)
+    {
+        Assert.IsTrue(volume >= 0.0f && volume <= 1.0f, "Volume must be between 0 and 1.");
+
+        instance.musicSource.volume = volume;
+    }
+
+    /// <summary>
+    /// Sets the soundfx volume.
+    /// </summary>
+    /// <param name="volume">The volume to set.</param> 
+    public static void SetSoundFXVolume(float volume)
+    {
+        Assert.IsTrue(volume >= 0.0f && volume <= 1.0f, "Volume must be between 0 and 1.");
+
+        instance.effectSource.volume = volume;
+    }
 }

@@ -28,11 +28,6 @@ public class ShopSlot : MonoBehaviour
     private ShopCard occupant;
 
     /// <summary>
-    /// The position of this ShopSlot in the scene. 
-    /// </summary>
-    private Vector3 slotPosition;
-
-    /// <summary>
     /// true if the ShopManager has initialized this ShopSlot; otherwise, false.
     /// </summary>
     private bool setupByManager;
@@ -54,7 +49,7 @@ public class ShopSlot : MonoBehaviour
         RectTransform cardTransform = shopCard.GetCardTransform();
         cardTransform.SetParent(transform);
         cardTransform.localScale = Vector3.one;
-        cardTransform.position = slotPosition;
+        cardTransform.localPosition = Vector3.zero;
 
         occupant = shopCard;
 
@@ -68,7 +63,7 @@ public class ShopSlot : MonoBehaviour
         GameObject blankCard = ShopFactory.GetShopCardPrefab(ModelType.SHOP_CARD_BLANK);
         Assert.IsNotNull(blankCard);
         Fill(blankCard.GetComponent<ShopCard>());
-       occupant = null;
+        occupant = null;
     }
 
     /// <summary>
@@ -82,13 +77,11 @@ public class ShopSlot : MonoBehaviour
     /// Sets this ShopSlot's necessary attributes so that it
     /// can function in the scene.
     /// </summary>
-    /// <param name="slotPosition">The position the Slot should sit at.</param>
     /// <param name="slotIndex">The unique index of this ShopSlot.</param>
-    public void SetupSlot(Vector3 slotPosition, int slotIndex)
+    public void SetupSlot(int slotIndex)
     {
         Assert.IsFalse(IsSetup());
 
-        this.slotPosition = slotPosition;
         this.slotIndex = slotIndex;
         setupByManager = true;
     }

@@ -93,7 +93,7 @@ public class ShopCard : UIModel
     {
         Assert.IsNotNull(modelPrefab, "Model prefab is null.");
 
-        return Instantiate(modelPrefab); 
+        return Instantiate(modelPrefab);
     }
 
     /// <summary>
@@ -130,6 +130,7 @@ public class ShopCard : UIModel
     {
         cardBackgroundImage.color = darkenedColor;
         cardTitle.color = darkenedColor;
+        //   cardButton.enabled = false;
     }
 
     /// <summary>
@@ -139,5 +140,6 @@ public class ShopCard : UIModel
     {
         cardBackgroundImage.color = defaultColor;
         cardTitle.color = defaultColor;
+        //        cardButton.enabled = true;
     }
 }

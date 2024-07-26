@@ -217,9 +217,26 @@ public class ControllerController : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns the number of alive, active Enemies.
+    /// Returns the number of remaining and alive, active Enemies.
     /// </summary>
-    /// <returns>the number of alive, active Enemies.</returns>
+    /// <returns>the number of remaining and alive, active Enemies.</returns>
+    public static int NumEnemiesRemainingInclusive()
+    {
+        int counter = 0;
+        foreach (ModelController pc in instance.enemyControllers)
+        {
+            if (pc == null || !pc.ValidModel()) continue;
+            Enemy model = pc.GetModel() as Enemy;
+            if (model == null) continue;
+            if (!model.Dead() && !model.Exited()) counter++;
+        }
+        return counter;
+    }
+
+    /// <summary>
+    /// Returns the number of spawned and alive enemies.
+    /// </summary>
+    /// <returns> the number of spawned and alive enemies.</returns>
     public static int NumActiveEnemies()
     {
         int counter = 0;
@@ -228,7 +245,7 @@ public class ControllerController : MonoBehaviour
             if (pc == null || !pc.ValidModel()) continue;
             Enemy model = pc.GetModel() as Enemy;
             if (model == null) continue;
-            if (!model.Dead()) counter++;
+            if (!model.Dead() && !model.Exited() && model.Spawned()) counter++;
         }
         return counter;
     }
@@ -310,63 +327,42 @@ public class ControllerController : MonoBehaviour
     }
 
     /// <summary>
-    /// Informs all of this ControllerController's controller references
-    /// of the current GameState.
+    /// Updates the Model Controllers managed by the ControllerController.
     /// </summary>
-    private void InformControllersOfGameState()
+    /// <param name="gameState">Current game state</param>
+    public static void UpdateModelControllers(GameState gameState)
     {
-        enemyControllers.ForEach(ec => ec.InformOfGameState(gameState));
-        defenderControllers.ForEach(dc => dc.InformOfGameState(gameState));
-        treeControllers.ForEach(tc => tc.InformOfGameState(gameState));
-        projectileControllers.ForEach(pc => pc.InformOfGameState(gameState));
-        hazardControllers.ForEach(hc => hc.InformOfGameState(gameState));
-        collectableControllers.ForEach(cc => cc.InformOfGameState(gameState));
-        structureControllers.ForEach(sc => sc.InformOfGameState(gameState));
-    }
+        // Game state
+        instance.gameState = gameState;
 
-
-    /// <summary>
-    /// Updates all Controllers managed by the ControllerController.
-    /// </summary>
-    /// <param name="dt">Current game time</param>
-    public static void UpdateAllControllers()
-    {
         // General updates
         instance.TryRemoveControllers();
-        instance.InformControllersOfGameState();
         instance.UpdateModelCounts();
 
         // Update EnemyControllers
-        instance.enemyControllers.ForEach(ec => ec.UpdateController());
+        instance.enemyControllers.ForEach(ec => ec.UpdateController(gameState));
 
         // Update DefenderControllers
-        instance.defenderControllers.ForEach(dc => dc.UpdateController());
+        instance.defenderControllers.ForEach(dc => dc.UpdateController(gameState));
 
         // Update TreeControllers
-        instance.treeControllers.ForEach(tc => tc.UpdateController());
+        instance.treeControllers.ForEach(tc => tc.UpdateController(gameState));
 
         // Update ProjectileControllers
-        instance.projectileControllers.ForEach(pc => pc.UpdateController());
+        instance.projectileControllers.ForEach(pc => pc.UpdateController(gameState));
 
         // Update HazardControllers
-        instance.hazardControllers.ForEach(hc => hc.UpdateController());
+        instance.hazardControllers.ForEach(hc => hc.UpdateController(gameState));
 
         // Update CollectableControllers
-        instance.collectableControllers.ForEach(cc => cc.UpdateController());
+        instance.collectableControllers.ForEach(cc => cc.UpdateController(gameState));
 
         // Update StructureControllers
-        instance.structureControllers.ForEach(sc => sc.UpdateController());
+        instance.structureControllers.ForEach(sc => sc.UpdateController(gameState));
 
         // Update EmanationControllers
         instance.emanationControllers.ForEach(emc => emc.UpdateEmanation());
     }
-
-    /// <summary>
-    /// Informs the ControllerController of the most recent GameState
-    /// so that it knows how to update its sub controllers.
-    /// </summary>
-    /// <param name="state">The most recent game state. </param>
-    public static void InformOfGameState(GameState state) { instance.gameState = state; }
 
     /// <summary>
     /// Updates the number of active Models of each type.
@@ -477,4 +473,5 @@ public class ControllerController : MonoBehaviour
 
         return list;
     }
+
 }

@@ -51,7 +51,7 @@ public class NexusController : MobController<NexusController.NexusState>
     /// <param name="target">The Model to check for targetability.</param>
     /// <returns>true if the Nexus can target the Model passed
     /// into this method; otherwise, false.</returns>
-    protected override bool CanTarget(Model target) { return false; }
+    protected override bool CanTargetModel(Model target) { return false; }
 
     /// <summary>
     /// Returns true if the Nexus should be removed.

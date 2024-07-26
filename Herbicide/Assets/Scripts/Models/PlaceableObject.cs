@@ -171,7 +171,7 @@ public abstract class PlaceableObject : Model
     /// <summary>
     /// Resets this PlaceableObject's health to its starting health value.
     /// </summary>
-    public void ResetHealth() { health = BASE_HEALTH; }
+    public void ResetHealth() { health = Mathf.Clamp(BASE_HEALTH, MIN_HEALTH, MAX_HEALTH); }
 
     /// <summary>
     /// Resets this PlaceableObject's stats to their default values.

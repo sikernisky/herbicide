@@ -21,6 +21,16 @@ public class TiledData
     public int width;
 
     /// <summary>
+    /// The number of stages in this level.
+    /// </summary> 
+    private int numStages;
+
+    /// <summary>
+    /// All custom properties for this level. 
+    /// </summary>
+    public List<PropertiesData> properties;
+
+    /// <summary>
     /// All deserialized layers packed within this TiledData object.
     /// </summary>
     public List<LayerData> layers;
@@ -149,5 +159,32 @@ public class TiledData
     public int GetMapHeight()
     {
         return height;
+    }
+
+    /// <summary>
+    /// Returns the number of stages in this map.
+    /// </summary>
+    /// <returns> the number of stages in this map.</returns>
+    public int GetNumStages()
+    {
+        if (numStages == 0) FindNumStages();
+        Assert.IsFalse(numStages <= 0, "numStages is <= 0.");
+        return numStages;
+    }
+
+    /// <summary>
+    /// Searches for the numStages property in this TiledData object.
+    /// If found, sets the numStages field to the value of the property.
+    /// </summary>
+    private void FindNumStages()
+    {
+        foreach (PropertiesData pd in properties)
+        {
+            if (pd.name == "numStages")
+            {
+                numStages = int.Parse(pd.value);
+                return;
+            }
+        }
     }
 }

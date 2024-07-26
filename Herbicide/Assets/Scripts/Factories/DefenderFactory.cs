@@ -26,6 +26,12 @@ public class DefenderFactory : Factory
     private DefenderAnimationSet bearAnimationSet;
 
     /// <summary>
+    /// Animation set for a Porcupine.
+    /// </summary>
+    [SerializeField]
+    private DefenderAnimationSet porcupineAnimationSet;
+
+    /// <summary>
     /// Finds and sets the DefenderFactory singleton.
     /// </summary>
     /// <param name="levelController">The LevelController singleton.</param>

@@ -148,11 +148,13 @@ public class PlacementController : MonoBehaviour
     /// Also checks if the player pressed escape. If so, cancels any active placement
     /// and/or ghost placement events.
     /// </summary>
+    /// <param name="gameState">The current GameState.</param>  
     /// <param name="didEscape">true if the player pressed escape this frame; otherwise,
     /// false. </param>
-    public static void UpdatePlacementEvents(bool didEscape)
+    public static void UpdatePlacementEvents(GameState gameState, bool didEscape)
     {
         if (instance == null) return;
+        instance.gameState = gameState;
 
         if (instance.gameState == GameState.ONGOING)
         {
@@ -285,15 +287,6 @@ public class PlacementController : MonoBehaviour
         instance.dummyImage.color = PLACE_COLOR;
         instance.ghostSubject.GhostRemove();
         instance.ghostSubject = null;
-    }
-
-    /// <summary>
-    /// Informs the PlacementController of the most recent GameState.
-    /// </summary>
-    /// <param name="state">the most recent GameState.</param>
-    public static void InformOfGameState(GameState state)
-    {
-        instance.gameState = state;
     }
 
     /// <summary>

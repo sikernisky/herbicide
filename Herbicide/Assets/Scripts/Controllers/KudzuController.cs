@@ -61,7 +61,7 @@ public class KudzuController : EnemyController
         HashSet<EnemyState> immuneStates = new HashSet<EnemyState>()
         {
             EnemyState.INACTIVE,
-            EnemyState.SPAWNING,
+            EnemyState.ENTERING,
             EnemyState.EXITING,
             EnemyState.INVALID
         };
@@ -106,24 +106,18 @@ public class KudzuController : EnemyController
         bool withinAttackRange = targetExists && DistanceToTarget() <= GetKudzu().GetAttackRange();
         bool holdingTarget = NumTargetsHolding() > 0;
 
-        //Debug.Log(GetState());
-
-
-
         switch (GetState())
         {
             case EnemyState.INACTIVE:
-                if (GetKudzu().Spawned()) SetState(EnemyState.SPAWNING);
+                if (GetKudzu().Spawned()) SetState(EnemyState.ENTERING);
                 break;
 
-            case EnemyState.SPAWNING:
+            case EnemyState.ENTERING:
                 if (PoppedOutOfHole()) SetState(EnemyState.IDLE);
                 break;
 
             case EnemyState.IDLE:
                 if (!ReachedMovementTarget()) break;
-                if (idleAnimationCounter > 0) break;
-
                 if (!targetExists && carrierToProtect) SetState(EnemyState.PROTECT);
                 else if (targetExists && withinChaseRange) SetState(EnemyState.CHASE);
                 else if (holdingTarget) SetState(EnemyState.ESCAPE);
@@ -193,13 +187,13 @@ public class KudzuController : EnemyController
     }
 
     /// <summary>
-    /// Runs logic for the Kudzu model's Spawn state.
+    /// Runs logic for the Kudzu model's Entering state.
     /// </summary>
-    protected override void ExecuteSpawnState()
+    protected override void ExecuteEnteringState()
     {
-        if (GetState() != EnemyState.SPAWNING) return;
+        if (GetState() != EnemyState.ENTERING) return;
 
-        GetKudzu().SetSpawning(true);
+        GetKudzu().SetEntering(GetKudzu().GetSpawnPos());
         SetAnimation(GetKudzu().MOVE_ANIMATION_DURATION, EnemyFactory.GetSpawnTrack(
             GetKudzu().TYPE,
                                   GetKudzu().GetDirection(), GetKudzu().GetHealthState()));
@@ -220,6 +214,7 @@ public class KudzuController : EnemyController
     {
         if (GetState() != EnemyState.IDLE) return;
 
+        GetKudzu().SetEntered();
         SetAnimation(GetKudzu().IDLE_ANIMATION_DURATION, EnemyFactory.GetIdleTrack(
             GetKudzu().TYPE,
             GetKudzu().GetDirection(), GetKudzu().GetHealthState()));
@@ -369,7 +364,14 @@ public class KudzuController : EnemyController
 
         if (!ReachedMovementTarget()) return;
         if (GetKudzu().IsExiting() && GetKudzu().GetPosition() == jumpPosition)
+        {
             GetKudzu().SetExited();
+            foreach (Model target in GetHeldTargets())
+            {
+                Nexus nexusTarget = target as Nexus;
+                if (nexusTarget != null) nexusTarget.CashIn();
+            }
+        }
         Assert.IsTrue(NumTargetsHolding() > 0, "You need to hold targets to exit.");
     }
 
@@ -384,10 +386,12 @@ public class KudzuController : EnemyController
     /// <param name="target">The Model to check for targetability.</param>
     /// <returns>true if the Kudzu can target the Model passed
     /// into this method; otherwise, false. </returns>
-    protected override bool CanTarget(Model target)
+    protected override bool CanTargetModel(Model target)
     {
         if (!GetKudzu().Spawned()) return false;
-        if (GetState() == EnemyState.SPAWNING) return false;
+        if (GetState() == EnemyState.ENTERING ||
+            GetState() == EnemyState.INACTIVE) return false;
+
 
         Nexus nexusTarget = target as Nexus;
         NexusHole nexusHoleTarget = target as NexusHole;

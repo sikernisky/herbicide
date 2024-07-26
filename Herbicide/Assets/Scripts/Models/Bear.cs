@@ -16,7 +16,7 @@ public class Bear : Defender
     /// <summary>
     /// Damage a Bear deals each chomp.
     /// </summary>
-    public float CHOMP_DAMAGE => 10;
+    public float CHOMP_DAMAGE => 15;
 
     /// <summary>
     /// Damage a Bear deals over a bleed effect. 
@@ -51,7 +51,7 @@ public class Bear : Defender
     /// <summary>
     /// Starting attack cooldown of a Bear.
     /// </summary>
-    public override float BASE_ATTACK_SPEED => .75f;
+    public override float BASE_ATTACK_SPEED => .8f;
 
     /// <summary>
     /// Maximum attack cooldown of a Bear.

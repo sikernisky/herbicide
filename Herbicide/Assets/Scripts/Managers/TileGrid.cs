@@ -348,7 +348,7 @@ public class TileGrid : MonoBehaviour
                     GameObject spawnedStructure = instance.GetStructurePrefabFromString(obToSpawn.GetStructureName());
                     Assert.IsNotNull(spawnedStructure);
                     Mob mob = spawnedStructure.GetComponent<Mob>();
-                    if(mob as Nexus != null) instance.numNexii++;
+                    if (mob as Nexus != null) instance.numNexii++;
                     Vector3 spawnPos = new Vector3(obToSpawn.GetSpawnCoordinates(mapHeight).x, obToSpawn.GetSpawnCoordinates(mapHeight).y, 1);
                     mob.SetSpawnPos(spawnPos);
                     instance.objectPositions.Add(spawnPos);
@@ -1279,7 +1279,7 @@ public class TileGrid : MonoBehaviour
 
         if (instance.IsDebugging()) goalTile.SetColor(PATHFINDING_RED);
         if (startTile == null || goalTile == null) return startPos;
-        if(startPos == goalPos) return startPos;
+        if (startPos == goalPos) return startPos;
 
         //Initialize data structures.
         List<Tile> openList = new List<Tile> { startTile };
@@ -1481,9 +1481,9 @@ public class TileGrid : MonoBehaviour
         bool isReachable = nextTilePos != new Vector3(int.MinValue, int.MinValue, int.MinValue);
         PathfindingCache.UpdateCache(startPos, goalPos, isReachable, new Vector2Int((int)nextTilePos.x, (int)nextTilePos.y));
         return isReachable;
-/*
-        Vector3 minVector = new Vector3(float.MinValue, float.MinValue, float.MinValue);
-        return NextTilePosTowardsGoal(startPos, goalPos) != minVector;*/
+        /*
+                Vector3 minVector = new Vector3(float.MinValue, float.MinValue, float.MinValue);
+                return NextTilePosTowardsGoal(startPos, goalPos) != minVector;*/
     }
     //----------------------END PATHFINDING------------------------//
 }

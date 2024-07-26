@@ -40,7 +40,7 @@ public class NexusHoleController : MobController<NexusHoleController.NexusHoleSt
     /// </summary>
     /// <param name="target">The Placeable object to check for targetability.</param>
     /// <returns>true if the NexusHole can target the Model; otherwise, false. </returns>
-    protected override bool CanTarget(Model target) { return false; }
+    protected override bool CanTargetModel(Model target) { return false; }
 
     /// <summary>
     /// Returns true if the NexusHole should be removed.

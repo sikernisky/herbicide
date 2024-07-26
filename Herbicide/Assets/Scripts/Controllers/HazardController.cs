@@ -57,7 +57,7 @@ public abstract class HazardController<T> : MobController<T> where T : Enum
     /// <param name="target">The Modelto check for targetability.</param>
     /// <returns>true if the Hazard can target the Model passed
     /// into this method; otherwise, false. </returns>
-    protected override bool CanTarget(Model target)
+    protected override bool CanTargetModel(Model target)
     {
         Mob mobTarget = target as Mob;
         if (mobTarget == null) return false;

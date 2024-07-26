@@ -25,17 +25,17 @@ public class Kudzu : Enemy
     /// the Kudzu travels while hopping. This cooldown is how long the Kudzu
     /// must wait before hopping again.
     /// </summary>
-    public float HOP_COOLDOWN => 2f; //DEFAULT: 3f
+    public float HOP_COOLDOWN => 2.5f; //DEFAULT: 3f
 
     /// <summary>
     /// Base health of a Kudzu.
     /// </summary>
-    public override float BASE_HEALTH => 100;
+    public override float BASE_HEALTH => 100; // NORMAL VALUE: 100
 
     /// <summary>
     /// Upper bound of a Kudzu's health. 
     /// </summary>
-    public override float MAX_HEALTH => 100;
+    public override float MAX_HEALTH => 100; // NORMAL VALUE: 100
 
     /// <summary>
     /// Minimum health of a Kudzu

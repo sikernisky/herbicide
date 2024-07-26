@@ -8,7 +8,6 @@ using UnityEngine.Assertions;
 /// </summary>
 public class Squirrel : Defender
 {
-
     /// <summary>
     /// Starting health of a Squirrel
     /// </summary>
@@ -42,7 +41,7 @@ public class Squirrel : Defender
     /// <summary>
     /// Number of attacks per second a Squirrel starts with.
     /// </summary>
-    public override float BASE_ATTACK_SPEED => .3f;
+    public override float BASE_ATTACK_SPEED => .5f;
 
     /// <summary>
     /// Most amount of attack cooldown this Squirrel can have.

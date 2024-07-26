@@ -191,7 +191,7 @@ public class BearController : DefenderController<BearController.BearState>
         if (GetBear().GetTier() > 1)
         {
             float bleedDamage = GetBear().GetTier() == 2 ? GetBear().BLEED_DAMAGE :
-                GetBear().BLEED_DAMAGE * 3;
+                GetBear().BLEED_DAMAGE * 6;
             DamageOverTime chompBleed = new DamageOverTime(
                 bleedDamage,
                 GetBear().BLEED_DURATION,

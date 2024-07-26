@@ -33,21 +33,32 @@ public class EnemyManager : MonoBehaviour
     /// <summary>
     /// Gives the EnemyManager a dictionary of Enemy spawn marker locations
     /// and their unparsed spawn data. This method decodes the data and instantiates
-    /// Enemies to its specification.
-    /// </summary>
-    /// <param name="enemyLayers">All Enemy LayerData layers in the map.</param>
+    /// Enemies to its specification.<br></br>
+    /// 
+    /// In Tiled, an unparsed spawn data string looks like this:<br></br>
+    ///  
+    /// kudzu1-0.5,knotwood1-1.5<br></br>
+    /// 
+    /// This means that a Kudzu will spawn at stage 1 at 0.5 seconds into that stage,
+    /// not the entire level.
+    ///  </summary>
+    /// <param name="markers">All Enemy spawn markers.</param>
     /// <param name="mapHeight">The height, in tiles, of the map. </param>
     public static void PopulateWithEnemies(Dictionary<Vector2Int, string> markers, int mapHeight)
     {
         if (markers == null) return;
         Assert.IsFalse(Populated(), "Already populated.");
 
+        // Store a dictionary where the key is the stage and the value is the latest spawn time for that stage.
+        Dictionary<int, float> latestStageTimes = new Dictionary<int, float>();
+
         // Parse the data.
         foreach (KeyValuePair<Vector2Int, string> marker in markers)
         {
             Vector2Int spawnLocation = marker.Key;
             string unparsedData = marker.Value;
-            List<(string, float)> parsedData = instance.ParseMarkerData(unparsedData);
+            List<(string, int, float)> parsedData = instance.ParseMarkerData(unparsedData);
+            parsedData = parsedData.OrderBy(x => x.Item2).ThenBy(x => x.Item3).ToList();
 
             foreach (var enemyData in parsedData)
             {
@@ -59,39 +70,52 @@ public class EnemyManager : MonoBehaviour
                 float spawnX = TileGrid.CoordinateToPosition(marker.Key.x);
                 float spawnY = TileGrid.CoordinateToPosition(marker.Key.y);
                 Vector3 spawnWorldPos = new Vector3(spawnX, spawnY, 1);
-                float spawnTime = enemyData.Item2;
+                int spawnStage = enemyData.Item2;
+                float spawnTime = enemyData.Item3;
                 instance.spawnTimes.Add(spawnTime);
+                enemyComp.SetStage(spawnStage);
                 enemyComp.SetSpawnTime(spawnTime);
                 enemyComp.SetSpawnPos(spawnWorldPos);
                 ControllerController.MakeModelController(enemyComp);
+
+                // Store the latest spawn time for this stage.
+                if (latestStageTimes.ContainsKey(spawnStage))
+                {
+                    if (spawnTime > latestStageTimes[spawnStage]) latestStageTimes[spawnStage] = spawnTime;
+                }
+                else latestStageTimes.Add(spawnStage, spawnTime);
+
             }
         }
+
+        StageController.SetStageData(latestStageTimes);
 
         instance.spawnTimes.Sort();
         instance.populated = true;
     }
 
     /// <summary>
-    /// Returns a list of tuples of Enemy names to their spawn times.
+    /// Returns a list of tuples of Enemy names, their stages, and spawn times.
     /// </summary>
     /// <param name="input">A string of comma separated names followed
-    /// by their spawn times. </param>
-    /// <returns>a list of tuples of Enemy names to their spawn times.</returns>
-    private List<(string, float)> ParseMarkerData(string input)
+    /// by their stage and spawn times. </param>
+    /// <returns>a list of tuples of Enemy names, their stages, and spawn times.</returns>
+    private List<(string, int, float)> ParseMarkerData(string input)
     {
         Assert.IsNotNull(input);
 
         string[] sliced = input.Split(',');
-        List<(string, float)> result = new List<(string, float)>();
-        string pattern = @"([a-zA-Z]+)(\d+(\.\d+)?)";
+        List<(string, int, float)> result = new List<(string, int, float)>();
+        string pattern = @"([a-zA-Z]+)(\d+)-(\d+(\.\d+)?)";
 
         foreach (string item in sliced)
         {
             Match match = Regex.Match(item, pattern);
             if (!match.Success) continue;
-            string letters = match.Groups[1].Value;
-            string numbers = match.Groups[2].Value;
-            result.Add((letters, float.Parse(numbers)));
+            string enemyName = match.Groups[1].Value;
+            int stage = int.Parse(match.Groups[2].Value);
+            float spawnTime = float.Parse(match.Groups[3].Value);
+            result.Add((enemyName, stage, spawnTime));
         }
 
         return result;
@@ -102,15 +126,15 @@ public class EnemyManager : MonoBehaviour
     /// </summary>
     /// <returns>the number of Enemies that have yet to be spawned 
     /// in this level. </returns>
-    /// <param name="dt">Current game time. </param>
-    public static int EnemiesRemaining(float dt)
+    /// <param name="gameTime">Current game time. </param>
+    public static int EnemiesRemaining(float gameTime)
     {
         Assert.IsNotNull(instance.spawnTimes);
 
         int enemiesToGo = 0;
         foreach (float spawnTime in instance.spawnTimes)
         {
-            if (spawnTime > dt) enemiesToGo++;
+            if (spawnTime > gameTime) enemiesToGo++;
         }
         return enemiesToGo;
     }

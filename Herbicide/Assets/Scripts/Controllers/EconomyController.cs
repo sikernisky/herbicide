@@ -92,8 +92,10 @@ public class EconomyController : MonoBehaviour
     /// (1) Updates all active Currencies in the game.<br></br>
     /// (2) Displays the current currency to a text component.
     /// </summary>
-    public static void UpdateEconomy()
+    /// <param name="gameState">The most recent GameState.</param>
+    public static void UpdateEconomy(GameState gameState)
     {
+        instance.gameState = gameState;
         instance.UpdateCurrencyText();
         instance.PassiveIncome();
     }
@@ -105,8 +107,8 @@ public class EconomyController : MonoBehaviour
     private void UpdateCurrencyText()
     {
         currencyText.text = currentMoney.ToString();
-        if (GetBalance() > 999) currencyText.fontSize = 13;
-        else currencyText.fontSize = 16;
+        if (GetBalance() > 999) currencyText.fontSize = 8;
+        else currencyText.fontSize = 11;
     }
 
     /// <summary>
@@ -145,15 +147,6 @@ public class EconomyController : MonoBehaviour
     ///  </summary>
     /// <returns>how much money the player has.</returns>
     public static int GetBalance() { return currentMoney; }
-
-    /// <summary>
-    /// Informs the EconomyController of the most recent GameState.
-    /// </summary>
-    /// <param name="gameState">The most recent GameState.</param>
-    public static void InformOfGameState(GameState gameState)
-    {
-        instance.gameState = gameState;
-    }
 
     /// <summary>
     /// Updates the passive income counter and awards the player currency

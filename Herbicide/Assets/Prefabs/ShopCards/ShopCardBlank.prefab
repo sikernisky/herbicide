@@ -470,7 +470,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.39215687, g: 0.39215687, b: 0.39215687, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -627,7 +627,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 213fdd0cc2cae48b894da444a1616b7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modelType: 14
+  modelType: 15
   cardBackgroundImage: {fileID: 2861143171162560290}
   cardSplash: {fileID: 7838228846455706653}
   cardTitle: {fileID: 101354809318367112}
@@ -637,7 +637,7 @@ MonoBehaviour:
   cardTransform: {fileID: 6298932089853266912}
   modelPrefab: {fileID: 4258100568393254862, guid: 9a19eef9d372a4ae194ccfbc10988af8, type: 3}
   model: {fileID: 2448526251401559834, guid: 9a19eef9d372a4ae194ccfbc10988af8, type: 3}
-  cardButton: {fileID: 0}
+  cardButton: {fileID: 2507400078880901370}
 --- !u!114 &2507400078880901370
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -645,7 +645,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8243588634895102957}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 

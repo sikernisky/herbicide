@@ -42,9 +42,10 @@ public class DewController : CollectableController<DewController.DewState>
     /// <summary>
     /// Main update loop for the Dew.
     /// </summary>
-    public override void UpdateController()
+    /// <param name="gameState">The most recent GameState.</param>
+    public override void UpdateController(GameState gameState)
     {
-        base.UpdateController();
+        base.UpdateController(gameState);
         ExecuteBobbingState();
         ExecuteCollectingState();
     }

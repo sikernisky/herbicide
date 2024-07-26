@@ -63,13 +63,18 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
     protected float exitingAnimationCounter;
 
     /// <summary>
+    /// Enemies find targets.
+    /// </summary>
+    protected override bool FINDS_TARGETS => true;
+
+    /// <summary>
     /// All possible states of an Enemy. Not all Enemies need to define logic
     /// for each state. 
     /// </summary>
     public enum EnemyState
     {
         INACTIVE, // Not spawned yet.
-        SPAWNING, // Spawning in.
+        ENTERING, // Entering map.
         IDLE, // Static, nothing to do.
         CHASE, // Pursuing target.
         ATTACK, // Attacking target.
@@ -105,7 +110,7 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
         GetEnemy().ToggleHealthBar(SettingsController.SHOW_HEALTH_BARS);
 
         ExecuteInactiveState();
-        ExecuteSpawnState();
+        ExecuteEnteringState();
         ExecuteIdleState();
         ExecuteChaseState();
         ExecuteAttackState();
@@ -235,7 +240,6 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
     {
         poppedOutOfHole = true;
         GetEnemy().SetMaskInteraction(SpriteMaskInteraction.None);
-        GetEnemy().SetSpawning(false);
     }
 
     /// <summary>
@@ -365,7 +369,7 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
     public override void AgeAnimationCounter()
     {
         EnemyState state = GetState();
-        if (state == EnemyState.SPAWNING) spawnAnimationCounter += Time.deltaTime;
+        if (state == EnemyState.ENTERING) spawnAnimationCounter += Time.deltaTime;
         else if (state == EnemyState.IDLE) idleAnimationCounter += Time.deltaTime;
         else if (state == EnemyState.CHASE) chaseAnimationCounter += Time.deltaTime;
         else if (state == EnemyState.ATTACK) attackAnimationCounter += Time.deltaTime;
@@ -381,7 +385,7 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
     public override float GetAnimationCounter()
     {
         EnemyState state = GetState();
-        if (state == EnemyState.SPAWNING) return spawnAnimationCounter;
+        if (state == EnemyState.ENTERING) return spawnAnimationCounter;
         else if (state == EnemyState.IDLE) return idleAnimationCounter;
         else if (state == EnemyState.CHASE) return chaseAnimationCounter;
         else if (state == EnemyState.ATTACK) return attackAnimationCounter;
@@ -397,7 +401,7 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
     public override void ResetAnimationCounter()
     {
         EnemyState state = GetState();
-        if (state == EnemyState.SPAWNING) spawnAnimationCounter = 0;
+        if (state == EnemyState.ENTERING) spawnAnimationCounter = 0;
         else if (state == EnemyState.IDLE) idleAnimationCounter = 0;
         else if (state == EnemyState.CHASE) chaseAnimationCounter = 0;
         else if (state == EnemyState.ATTACK) attackAnimationCounter = 0;
@@ -412,9 +416,9 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
     protected abstract void ExecuteInactiveState();
 
     /// <summary>
-    /// Executes the logic for the SPAWNING state.
+    /// Executes the logic for the ENTERING state.
     /// </summary> 
-    protected abstract void ExecuteSpawnState();
+    protected abstract void ExecuteEnteringState();
 
     /// <summary>
     /// Executes the logic for the IDLE state.

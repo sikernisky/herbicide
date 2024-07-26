@@ -14,12 +14,16 @@ using UnityEngine.Assertions;
 /// <typeparam name="T">Enum to represent state of the Defender.</typeparam>
 public abstract class DefenderController<T> : MobController<T> where T : Enum
 {
-
     /// <summary>
     /// true if the Squirrel executed one call of its Spawn state;
     /// otherwise, false.
     /// </summary>
     private bool spawnStateDone;
+
+    /// <summary>
+    /// Defenders find targets.
+    /// </summary>
+    protected override bool FINDS_TARGETS => true;
 
 
     /// <summary>
@@ -57,7 +61,7 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     /// </summary>
     /// <param name="target">The Model object to check for targetability.</param>
     /// <returns></returns>
-    protected override bool CanTarget(Model target)
+    protected override bool CanTargetModel(Model target)
     {
         Enemy enemyTarget = target as Enemy;
 

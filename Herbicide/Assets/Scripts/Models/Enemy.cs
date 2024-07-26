@@ -29,6 +29,11 @@ public abstract class Enemy : Mob
     private float spawnTime;
 
     /// <summary>
+    /// The stage during which this Enemy spawns.
+    /// </summary>
+    private int stage;
+
+    /// <summary>
     /// Current health state of this Enemy.
     /// </summary>
     private EnemyHealthState healthState;
@@ -55,9 +60,19 @@ public abstract class Enemy : Mob
     public virtual int CURRENCY_VALUE_ON_DEATH => 25;
 
     /// <summary>
-    /// true if this Enemy is currently spawning; otherwise, false.
+    /// true if this Enemy is currently entering; otherwise, false.
     /// </summary>
-    private bool spawning;
+    private bool entering;
+
+    /// <summary>
+    /// true if the Enemy entered; otherwise, false.
+    /// </summary>
+    private bool entered;
+
+    /// <summary>
+    /// the position where the Enemy is entering towards
+    /// </summary>
+    private Vector3 enterPos;
 
     /// <summary>
     /// Set of active DamageOverTime effects on this Enemy.
@@ -107,7 +122,13 @@ public abstract class Enemy : Mob
     /// </summary>
     /// <returns>true if this Enemy is due to spawn and it has not yet spawned;
     /// otherwise, returns false. /// </returns>
-    public bool ReadyToSpawn() { return !Spawned() && SceneController.GetTimeElapsed() >= GetSpawnTime(); }
+    public bool ReadyToSpawn()
+    {
+        int currStage = StageController.GetCurrentStage();
+        float timeSinceLastStage = StageController.GetTimeSinceLastStageBegan();
+        bool timeToSpawn = GetStage() <= currStage && timeSinceLastStage >= GetSpawnTime();
+        return !Spawned() && timeToSpawn;
+    }
 
     /// <summary>
     /// Updates this Enemy's HealthState.
@@ -137,6 +158,56 @@ public abstract class Enemy : Mob
     /// </summary>
     /// <returns>this Enemy's SpawnTime.</returns>
     public float GetSpawnTime() { return spawnTime; }
+
+    /// <summary>
+    /// Sets the stage during which this Enemy spawns.
+    /// </summary>
+    /// <param name="stage">The stage during which this Enemy spawns.</param>
+    public void SetStage(int stage) { this.stage = stage; }
+
+    /// <summary>
+    /// Returns the stage during which this Enemy spawns.
+    /// </summary>
+    /// <returns>the stage during which this Enemy spawns.</returns>
+    public int GetStage() { return stage; }
+
+    /// <summary>
+    /// Sets the Enemy as entering.
+    /// </summary>
+    /// <param name="enterPos">The position where the Enemy is entering towards.</param>
+    public void SetEntering(Vector3 enterPos)
+    {
+        entered = false;
+        entering = true;
+        this.enterPos = enterPos;
+    }
+
+    /// <summary>
+    /// Sets the Enemy as entered. 
+    /// </summary>
+    public void SetEntered()
+    {
+        entering = false;
+        entered = true;
+    }
+
+    /// <summary>
+    /// Returns true if this Enemy is entering.
+    /// </summary>
+    /// <returns> true if this Enemy is entering; otherwise, false. </returns>
+    public bool IsEntering() { return entering; }
+
+    /// <summary>
+    /// Returns true if this Enemy has entered.
+    /// </summary>
+    /// <returns>true if this Enemy has entered; otherwise, false. </returns>
+    public bool IsEntered() { return entered; }
+
+    /// <summary>
+    /// Returns the position where the Enemy is entering towards.
+    /// </summary>
+    /// <returns>the position where the Enemy is entering towards.</returns>
+    public Vector3 GetEnterPos() { return enterPos; }
 
     /// <summary>
     /// Returns true if this Enemy exited.
@@ -171,6 +242,7 @@ public abstract class Enemy : Mob
     /// <returns>true if this Enemy is exiting; otherwise, false. </returns>
     public bool IsExiting() { return exiting; }
 
+
     /// <summary>
     /// Returns the position of the structure the Enemy is
     /// using to exit.
@@ -180,23 +252,19 @@ public abstract class Enemy : Mob
     public Vector3 GetExitPos() { return exitPos; }
 
     /// <summary>
-    /// Sets the Enemy as spawning.
+    /// Returns the position where Models attacking this
+    /// Enemy should aim.
     /// </summary>
-    public void SetSpawning(bool spawning) { this.spawning = spawning; }
-
-    /// <summary>
-    /// Returns true if this Enemy is currently spawning.
-    /// </summary>
-    /// <returns>true if this Enemy is currently spawning; otherwise, false. </returns>
-    public bool IsSpawning() { return spawning; }
-
-    /// <summary>
-    /// Returns true if this Enemy is targetable.
-    /// </summary>
-    /// <returns>true if this Enemy is targetable; otherwise, false. </returns>
-    public override bool Targetable()
+    /// <returns>the position where Models attacking this
+    /// Enemy should aim.</returns>
+    public override Vector3 GetAttackPosition()
     {
-        return base.Targetable() && !IsSpawning();
+        if (IsEntering())
+        {
+            Debug.Log("returning " + GetEnterPos());
+            return GetEnterPos();
+        }
+        return base.GetAttackPosition();
     }
 
     /// <summary>
@@ -254,7 +322,7 @@ public abstract class Enemy : Mob
         Assert.IsNotNull(healthBarBackground, "HealthBarBackground is null.");
         Assert.IsNotNull(healthBarFill, "HealthBarFill is null.");
 
-        if (showHealthBar)
+        if (showHealthBar && IsEntered())
         {
             healthBarBackground.enabled = true;
             healthBarFill.enabled = true;
@@ -264,6 +332,16 @@ public abstract class Enemy : Mob
             healthBarBackground.enabled = false;
             healthBarFill.enabled = false;
         }
+    }
+
+    /// <summary>
+    /// Returns true if this Enemy is targetable; otherwise, false.
+    /// </summary>
+    /// <returns>true if this Enemy is targetable; otherwise, false.</returns>
+    public override bool Targetable()
+    {
+        if (IsEntering() || !IsEntered()) return false;
+        return base.Targetable();
     }
 }
 

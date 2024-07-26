@@ -51,7 +51,7 @@ public class Knotwood : Enemy
     /// <summary>
     /// Starting movement speed of a Knotwood.
     /// </summary>
-    public override float BASE_MOVEMENT_SPEED => 4f;
+    public override float BASE_MOVEMENT_SPEED => 2.25f;
 
     /// <summary>
     /// Maximum movement speed of a Knotwood.
@@ -66,12 +66,12 @@ public class Knotwood : Enemy
     /// <summary>
     /// Starting health of a Knotwood.
     /// </summary>
-    public override float BASE_HEALTH => 50;
+    public override float BASE_HEALTH => 25;
 
     /// <summary>
     /// Maximum health of a Knotwood.
     /// </summary>
-    public override float MAX_HEALTH => 50;
+    public override float MAX_HEALTH => 25;
 
     /// <summary>
     /// Minimum health of a Knotwood.
@@ -87,7 +87,7 @@ public class Knotwood : Enemy
     /// How many seconds a Knotwood's move animation lasts,
     /// from start to finish. 
     /// </summary>
-    public float MOVE_ANIMATION_DURATION => .4f;
+    public float MOVE_ANIMATION_DURATION => .3f;
 
     /// <summary>
     /// How many seconds a Knotwood's idle animation lasts,

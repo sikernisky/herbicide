@@ -167,8 +167,10 @@ public class CanvasController : MonoBehaviour
     /// <summary>
     /// Main update loop for the CanvasController.
     /// </summary>
-    public static void UpdateCanvas()
+    /// <param name="gameState">The most recent GameState.</param>  
+    public static void UpdateCanvas(GameState gameState)
     {
+        instance.gameState = gameState;
         instance.UpdateFader();
 
         //Check to fade in after the player wins, loses, or ties
@@ -222,15 +224,6 @@ public class CanvasController : MonoBehaviour
     {
         instance.faderTargetAlpha = 0.0f;
         instance.fading = true;
-    }
-
-    /// <summary>
-    /// Informs the CanvasController of the most recent GameState.
-    /// </summary>
-    /// <param name="state">The most recent GameState.</param>
-    public static void InformOfGameState(GameState state)
-    {
-        instance.gameState = state;
     }
 
     /// <summary>

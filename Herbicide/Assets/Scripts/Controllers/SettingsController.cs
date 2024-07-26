@@ -4,10 +4,11 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
 
+// Disable warning for using SetActiveRecursively.
+#pragma warning disable CS0618
+
 /// <summary>
-/// Controls the settings of the game. This class
-/// should eventually be reworked because right now it
-/// is just a database for preliminary playtesting.
+/// Controls the settings of the game.
 /// </summary>
 public class SettingsController : MonoBehaviour
 {
@@ -15,6 +16,24 @@ public class SettingsController : MonoBehaviour
     /// Reference to the SettingsController singleton.
     /// </summary>
     private static SettingsController instance;
+
+    /// <summary>
+    /// Reference to the settings menu GameObject.
+    /// </summary>
+    [SerializeField]
+    private GameObject settingsMenu;
+
+    /// <summary>
+    /// Reference to the music volume slider.
+    /// </summary>
+    [SerializeField]
+    private Slider musicVolumeSlider;
+
+    /// <summary>
+    /// Reference to the soundfx volume slider.
+    /// </summary>
+    [SerializeField]
+    private Slider soundFXVolumeSlider;
 
     // -----------------BEGIN PLAYTESTING----------------- //
 
@@ -39,6 +58,16 @@ public class SettingsController : MonoBehaviour
         Assert.IsNotNull(settingsControllers, "Array of SettingsControllers is null.");
         Assert.AreEqual(1, settingsControllers.Length);
         instance = settingsControllers[0];
+        instance.CloseSettingsMenu();
+    }
+
+    /// <summary>
+    /// Main update loop for the SettingsController.
+    /// </summary>
+    public static void UpdateSettingsMenu()
+    {
+        if (InputController.DidEscapeDown()) OnEscape();
+        if (SettingsMenuOpen()) instance.UpdateSliders();
     }
 
     /// <summary>
@@ -51,6 +80,51 @@ public class SettingsController : MonoBehaviour
     {
         ToggleCheckmark(playtestButtonPrefab);
         SHOW_HEALTH_BARS = !SHOW_HEALTH_BARS;
+    }
+
+    /// <summary>
+    /// ### BUTTON EVENT ###
+    /// 
+    /// Opens/closes the settings menu.
+    /// </summary>
+    public void ClickSettingsButton()
+    {
+        if (SettingsMenuOpen()) CloseSettingsMenu();
+        else OpenSettingsMenu();
+    }
+
+    /// <summary>
+    /// Performs logic when the escape button is pressed.
+    /// </summary>
+    public static void OnEscape()
+    {
+        if (SettingsMenuOpen()) instance.CloseSettingsMenu();
+        else instance.OpenSettingsMenu();
+    }
+
+    /// <summary>
+    /// Opens the settings menu.
+    /// </summary>
+    private void OpenSettingsMenu()
+    {
+        settingsMenu.SetActiveRecursively(true);
+    }
+
+    /// <summary>
+    /// Closes the settings menu.
+    /// </summary>
+    private void CloseSettingsMenu()
+    {
+        settingsMenu.SetActiveRecursively(false);
+    }
+
+    /// <summary>
+    /// Returns true if the settings menu is open; false otherwise.
+    /// </summary>
+    /// <returns>true if the settings menu is open; false otherwise.</returns>
+    public static bool SettingsMenuOpen()
+    {
+        return instance.settingsMenu.activeSelf;
     }
 
     /// <summary>
@@ -68,5 +142,13 @@ public class SettingsController : MonoBehaviour
         image.enabled = !image.enabled;
     }
 
+    /// <summary>
+    /// Updates the sliders in the settings menu.
+    /// </summary>
+    private void UpdateSliders()
+    {
+        SoundController.SetMusicVolume(musicVolumeSlider.value);
+        SoundController.SetSoundFXVolume(soundFXVolumeSlider.value);
+    }
 
 }

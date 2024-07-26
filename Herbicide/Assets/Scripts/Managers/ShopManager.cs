@@ -19,7 +19,7 @@ public class ShopManager : MonoBehaviour
     /// <summary>
     /// The most recent GameState.
     /// </summary>
-    private static GameState gameState;
+    private GameState gameState;
 
     /// <summary>
     /// Reference to the Shop's timer bar background Image component.
@@ -111,8 +111,10 @@ public class ShopManager : MonoBehaviour
     /// <summary>
     /// Main update loop for the ShopManager.
     /// </summary>
-    public static void UpdateShop()
+    /// <param name="gameState">The most recent GameState.</param>
+    public static void UpdateShop(GameState gameState)
     {
+        instance.gameState = gameState;
         if (gameState != GameState.ONGOING) return;
 
         if (InputController.DidKeycodeDown(KeyCode.S)) { instance.Reroll(false); } // TEMP
@@ -138,11 +140,9 @@ public class ShopManager : MonoBehaviour
         // Update reroll timer
         float timePercentage = instance.timeSinceLastReroll / AUTOMATIC_REROLL_TIME;
         instance.timerBarFill.transform.localScale = new Vector3(timePercentage, 1, 1);
-
         if (instance.timeSinceLastReroll <= 0)
         {
             instance.Reroll(true);
-            instance.timeSinceLastReroll = AUTOMATIC_REROLL_TIME;
         }
         else instance.timeSinceLastReroll -= Time.deltaTime;
     }
@@ -161,7 +161,7 @@ public class ShopManager : MonoBehaviour
             int slotCounter = 0;
             foreach (ShopSlot shopSlot in instance.shopSlots)
             {
-                shopSlot.SetupSlot(shopSlot.GetComponent<RectTransform>().position, slotCounter);
+                shopSlot.SetupSlot(slotCounter);
                 slotCounter++;
             }
 
@@ -221,14 +221,9 @@ public class ShopManager : MonoBehaviour
             cardSlot.Fill(shopCardComp);
         }
 
+        instance.timeSinceLastReroll = AUTOMATIC_REROLL_TIME;
         instance.shopActive = true;
     }
-
-    /// <summary>
-    /// Informs the ShopManager of the most recent GameState.
-    /// </summary>
-    /// <param name="gameState">The most recent GameState.</param>
-    public static void InformOfGameState(GameState gameState) { ShopManager.gameState = gameState; }
 
     /// <summary>
     /// #BUTTON EVENT#
@@ -259,7 +254,6 @@ public class ShopManager : MonoBehaviour
         bool allSlotsEmpty = true;
         foreach (ShopSlot shopSlot in shopSlots) { if (!shopSlot.Empty()) allSlotsEmpty = false; }
         if (allSlotsEmpty) Reroll(true);
-
     }
 
     /// <summary>
@@ -268,9 +262,6 @@ public class ShopManager : MonoBehaviour
     private void OnFinishPlacing(Model m)
     {
         Assert.IsNotNull(m, "Placed model is null.");
-
-        /*        Defender defender = m as Defender;
-                if(defender != null && defender.NeedsUpgrade()) LoadUpgradesForPlacedDefender(defender);*/
     }
 
     /// <summary>

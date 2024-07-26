@@ -104,7 +104,7 @@ public class WallController : MobController<WallController.WallState>
     /// <param name="target">The Model to check. </param>
     /// <returns>true if the Wall can target the Model passed into this method;
     /// otherwise, false. </returns>
-    protected override bool CanTarget(Model target)
+    protected override bool CanTargetModel(Model target)
     {
         return false;
     }

@@ -119,9 +119,11 @@ public abstract class ModelController
     /// <summary>
     /// Main update loop for this Controller's model. 
     /// </summary>
-    public virtual void UpdateController()
+    /// <param name="gameState">The most recent GameState.</param>
+    public virtual void UpdateController(GameState gameState)
     {
         if (!ValidModel()) return;
+        this.gameState = gameState;
 
         UpdateTilePositions();
         ModelClickedUp();
@@ -245,13 +247,6 @@ public abstract class ModelController
     /// </summary>
     /// <returns>The number of active Models of each type.</returns>
     protected ModelCounts GetModelCounts() { return counts; }
-
-    /// <summary>
-    /// Informs this ModelController of the most recent GameState so
-    /// that it knows how to update its Model.
-    /// </summary>
-    /// <param name="state">The most recent GameState.</param>
-    public void InformOfGameState(GameState state) { gameState = state; }
 
     /// <summary>
     /// Returns the most recent GameState recognized by this ModelController.

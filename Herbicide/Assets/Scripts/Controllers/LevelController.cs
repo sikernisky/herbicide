@@ -29,7 +29,10 @@ public class LevelController : MonoBehaviour
     /// </summary>
     private bool debugOn;
 
-
+    /// <summary>
+    /// true if the game is paused; otherwise, false.
+    /// </summary>
+    private bool isPaused;
 
 
     /// <summary>
@@ -40,7 +43,6 @@ public class LevelController : MonoBehaviour
     /// (2) Parse all JSON data<br></br>
     /// (3) Spawns the TileGrid.<br></br>
     /// (4) Loads the Shop.<br></br>
-    /// (5) Loads the Synergies.
     /// </summary>
     void Start()
     {
@@ -62,14 +64,6 @@ public class LevelController : MonoBehaviour
 
         //(4) Load the Shop
         ShopManager.LoadShop();
-
-
-        //(5) Load the Synergies (TODO: Remove this static HashSet with dynamic one)
-        //HashSet<SynergyController.Synergy> synergies = new HashSet<SynergyController.Synergy>();
-        //synergies.Add(SynergyController.Synergy.TRIPLE_THREAT);
-        //SynergyController.LoadAllSynergies(synergies);
-
-
     }
 
     /// <summary>
@@ -77,42 +71,57 @@ public class LevelController : MonoBehaviour
     /// 
     /// (1) Update and inform controllers of game state.<br></br>
     /// (2) Update Scene.<br></br>
-    /// (3) Checks for input events.<br></br>
-    /// (4) Update the SynergyController.<br></br>
-    /// (5) Update Mob Controllers.<br></br>
-    /// (6) Update Currencies.<br></br>
-    /// (7) Update Balance.<br></br>
-    /// (8) Update TileGrid.<br></br>
-    /// (9) Update Canvas.<br></br>
+    /// (3) Updates placement and input events.<br></br>
+    /// (4) Update Mob Controllers.<br></br>
+    /// (5) Update Currencies.<br></br>
+    /// (6) Update Balance.<br></br>
+    /// (7) Update TileGrid.<br></br>
+    /// (8) Update Canvas.<br></br>
+    /// (9) Update StageController. <br></br>
+    /// (10) Update LevelCompletionController. 
     /// </summary>
     void Update()
     {
+        // Pause logic
+        if (SettingsController.SettingsMenuOpen()) isPaused = true;
+        else isPaused = false;
+
+        // Update Settings (immune to pausing)
+        SettingsController.UpdateSettingsMenu();
+        if (isPaused) return;
+
         //(1) Update and inform controllers of game state
-        if (DetermineGameState() == GameState.INVALID) return;
+        GameState gameState = DetermineGameState();
+        if (gameState == GameState.INVALID) return;
 
         //(2) Update Scene.
         SceneController.UpdateScene();
 
-        //(3) Check input events.
-        CheckInputEvents();
+        //(3) Update input and placement events.
+        PlacementController.UpdatePlacementEvents(gameState, InputController.DidEscapeDown());
+        PlacementController.UpdateCombinationEvents();
+        UpdateInputEvents();
 
-        //(4) Update SynergyController.
-        //SynergyController.UpdateSynergyController(ModelController.GetAllTargetableObjects());
+        //(4) Update Controllers.
+        ControllerController.UpdateModelControllers(gameState);
 
-        //(5) Update Controllers.
-        ControllerController.UpdateAllControllers();
+        //(5) Update the Economy.
+        EconomyController.UpdateEconomy(gameState);
 
-        //(6) Update the Economy.
-        EconomyController.UpdateEconomy();
+        //(6) Update Shop.
+        ShopManager.UpdateShop(gameState);
 
-        //(7) Update Shop.
-        ShopManager.UpdateShop();
-
-        //(8) Update TileGrid.
+        //(7) Update TileGrid.
         TileGrid.UpdateTiles();
 
-        //(9) Update Canvas.
-        CanvasController.UpdateCanvas();
+        //(8) Update Canvas.
+        CanvasController.UpdateCanvas(gameState);
+
+        //(9) Update StageController.
+        StageController.UpdateStageController(gameState);
+
+        //(10) Update LevelCompletionController.   
+        LevelCompletionController.UpdateLevelCompletionController(gameState);
     }
 
     /// <summary>
@@ -135,7 +144,8 @@ public class LevelController : MonoBehaviour
         CanvasController.SetSingleton(instance);
         SettingsController.SetSingleton(instance);
         SoundController.SetSingleton(instance);
-        //SynergyController.SetSingleton(instance);
+        LevelCompletionController.SetSingleton(instance);
+        StageController.SetSingleton(instance);
     }
 
     /// <summary>
@@ -179,7 +189,8 @@ public class LevelController : MonoBehaviour
     /// <return>The most updated GameState.</return>
     private GameState DetermineGameState()
     {
-        int activeEnemies = ControllerController.NumActiveEnemies();
+
+        int activeEnemies = ControllerController.NumEnemiesRemainingInclusive();
         int enemiesRemaining = EnemyManager.EnemiesRemaining(SceneController.GetTimeElapsed());
         bool enemiesPresent = (enemiesRemaining > 0 || activeEnemies > 0);
         bool nexusPresent = ControllerController.NumActiveNexii() > 0;
@@ -196,25 +207,14 @@ public class LevelController : MonoBehaviour
         // Something went wrong.
         else currentGameState = GameState.INVALID;
 
-        // Inform Controllers.
-        ControllerController.InformOfGameState(currentGameState);
-        CanvasController.InformOfGameState(currentGameState);
-        EconomyController.InformOfGameState(currentGameState);
-        PlacementController.InformOfGameState(currentGameState);
-        ShopManager.InformOfGameState(currentGameState);
-
         return currentGameState;
     }
 
     /// <summary>
     /// Checks for input events.
     /// </summary>
-    private void CheckInputEvents()
+    private void UpdateInputEvents()
     {
-        //Always check for these input events
-        PlacementController.UpdatePlacementEvents(InputController.DidEscapeDown());
-        PlacementController.UpdateCombinationEvents();
-
         //Debug Toggle
         debugOn = InputController.DidDebugDown() ? !debugOn : debugOn;
         TileGrid.SetDebug(instance, debugOn);
@@ -224,7 +224,6 @@ public class LevelController : MonoBehaviour
         if (InputController.HoveringOverUIElement())
         {
             //Put events here to trigger if we're hovering over a Canvas / UI element.
-
         }
         else
         {
@@ -233,6 +232,4 @@ public class LevelController : MonoBehaviour
             EconomyController.CheckCurrencyPickup();
         }
     }
-
-
 }

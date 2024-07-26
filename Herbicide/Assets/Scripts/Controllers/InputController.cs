@@ -58,7 +58,6 @@ public class InputController : MonoBehaviour
     /// </summary>
     private RaycastHit2D[] hitTemp;
 
-
     /// <summary>
     /// Results from a raycast.
     /// </summary>

@@ -5,8 +5,8 @@
     },
     "activeFile": "Tilemaps/level2.tmx",
     "expandedProjectPaths": [
-        "Tilemaps",
         "Tilesets",
+        "Tilemaps",
         "."
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
@@ -28,63 +28,100 @@
             }
         },
         "Tilemaps/level1.tmj": {
-            "scale": 2.273567708333333,
+            "scale": 1.8831,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 191.76908539029836,
-                "y": 112.1585247122158
+                "x": 169.9325580160374,
+                "y": 176.30502894163877
             }
         },
         "Tilemaps/level1.tmx": {
             "expandedObjectLayers": [
-                16,
-                13
+                13,
+                16
             ],
-            "scale": 4,
+            "scale": 2.8034,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 240,
-                "y": 160
+                "x": 240.06563458657342,
+                "y": 156.9522722408504
+            }
+        },
+        "Tilemaps/level2 copy.tmx": {
+            "scale": 2.3249,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 115.27377521613832,
+                "y": 111.40264097380532
             }
         },
         "Tilemaps/level2.tmx": {
             "expandedObjectLayers": [
+                13,
                 15,
-                16,
-                13
+                16
             ],
-            "scale": 2,
+            "scale": 1.2801,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 240,
-                "y": 160
+                "x": 252.32403718459497,
+                "y": 179.6734630107023
             }
         },
         "Tilemaps/level3.tmx": {
             "expandedObjectLayers": [
+                13,
                 15,
-                16,
-                13
+                16
             ],
-            "scale": 3,
+            "scale": 1.6635,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 208,
-                "y": 144
+                "x": 227.83288247670572,
+                "y": 198.37691614066725
             }
         },
         "Tilemaps/level4.tmx": {
             "expandedObjectLayers": [
-                16,
                 13,
-                15
+                15,
+                16
             ],
             "scale": 2,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 201.75,
+                "x": 201.5,
                 "y": 141
             }
+        },
+        "Tilemaps/level5.tmx": {
+            "scale": 2.28,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 120.17543859649123,
+                "y": 88.15789473684211
+            }
+        },
+        "Tilemaps/level5.tmx#Enemies": {
+            "scaleInDock": 1
+        },
+        "Tilemaps/level5.tmx#Grass": {
+            "scaleInDock": 1
+        },
+        "Tilemaps/level5.tmx#Placeables": {
+            "scaleInDock": 1
+        },
+        "Tilemaps/level5.tmx#Shore": {
+            "scaleInDock": 1
+        },
+        "Tilemaps/level5.tmx#Soil": {
+            "scaleInDock": 1
+        },
+        "Tilemaps/level5.tmx#Water": {
+            "scaleInDock": 1
+        },
+        "Tilemaps/level5.tmx#markers": {
+            "scaleInDock": 1
         },
         "Tilesets/Enemies.tsx": {
             "scaleInDock": 5.5
@@ -108,9 +145,12 @@
             "scaleInDock": 1
         }
     },
-    "last.exportedFilePath": "C:/Users/teddy/OneDrive/Documents/GitHub/herbicide/Herbicide/Assets/Levels",
+    "last.exportedFilePath": "/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Levels",
     "last.imagePath": "C:/Users/teddy/OneDrive/Desktop/Art/Herbicide Art/TileSets",
+    "map.height": 15,
     "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
+    "map.lastUsedFormat": "tmx",
+    "map.width": 10,
     "openFiles": [
         "Tilemaps/level1.json",
         "Tilemaps/level1.tmx",
@@ -120,6 +160,7 @@
     ],
     "project": "HerbicideTiled.tiled-project",
     "recentFiles": [
+        "Tilemaps/level5.tmx",
         "Tilemaps/level1.json",
         "Tilemaps/level1.tmx",
         "Tilemaps/level1.tmj",

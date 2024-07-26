@@ -105,9 +105,10 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
     /// <summary>
     /// Main update loop for the Collectable.
     /// </summary>
-    public override void UpdateController()
+    /// <param name="gameState">The most recent GameState.</param>
+    public override void UpdateController(GameState gameState)
     {
-        base.UpdateController();
+        base.UpdateController(gameState);
         UpdateStateFSM();
     }
 

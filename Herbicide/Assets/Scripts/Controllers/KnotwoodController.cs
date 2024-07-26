@@ -60,10 +60,10 @@ public class KnotwoodController : EnemyController
         switch (GetState())
         {
             case EnemyState.INACTIVE:
-                if (GetKnotwood().Spawned()) SetState(EnemyState.SPAWNING);
+                if (GetKnotwood().Spawned()) SetState(EnemyState.ENTERING);
                 break;
 
-            case EnemyState.SPAWNING:
+            case EnemyState.ENTERING:
                 if (PoppedOutOfHole()) SetState(EnemyState.IDLE);
                 break;
 
@@ -141,11 +141,11 @@ public class KnotwoodController : EnemyController
     /// <summary>
     /// Runs logic for the Kudzu model's Spawn state.
     /// </summary>
-    protected override void ExecuteSpawnState()
+    protected override void ExecuteEnteringState()
     {
-        if (GetState() != EnemyState.SPAWNING) return;
+        if (GetState() != EnemyState.ENTERING) return;
 
-        GetKnotwood().SetSpawning(true);
+        GetKnotwood().SetEntering(GetKnotwood().GetSpawnPos());
         SetAnimation(GetKnotwood().MOVE_ANIMATION_DURATION, EnemyFactory.GetSpawnTrack(
             GetKnotwood().TYPE,
                                   GetKnotwood().GetDirection(), GetKnotwood().GetHealthState()));
@@ -166,6 +166,7 @@ public class KnotwoodController : EnemyController
     {
         if (GetState() != EnemyState.IDLE) return;
 
+        GetKnotwood().SetEntered();
         SetAnimation(GetKnotwood().IDLE_ANIMATION_DURATION, EnemyFactory.GetIdleTrack(
             GetKnotwood().TYPE,
             GetKnotwood().GetDirection(), GetKnotwood().GetHealthState()));
@@ -300,7 +301,15 @@ public class KnotwoodController : EnemyController
 
         if (!ReachedMovementTarget()) return;
         if (GetKnotwood().IsExiting() && GetKnotwood().GetPosition() == jumpPosition)
+        {
             GetKnotwood().SetExited();
+            foreach (Model target in GetHeldTargets())
+            {
+                Nexus nexusTarget = target as Nexus;
+                if (nexusTarget != null) nexusTarget.CashIn();
+            }
+        }
+
         Assert.IsTrue(NumTargetsHolding() > 0, "You need to hold targets to exit.");
     }
 
@@ -325,10 +334,10 @@ public class KnotwoodController : EnemyController
     /// <param name="target">The Model to check for targetability.</param>
     /// <returns>true if the Knotwood can target the Model passed
     /// into this method; otherwise, false. </returns>
-    protected override bool CanTarget(Model target)
+    protected override bool CanTargetModel(Model target)
     {
         if (!GetKnotwood().Spawned()) return false;
-        if (GetState() == EnemyState.SPAWNING) return false;
+        if (GetState() == EnemyState.ENTERING) return false;
 
         Nexus nexusTarget = target as Nexus;
         NexusHole nexusHoleTarget = target as NexusHole;

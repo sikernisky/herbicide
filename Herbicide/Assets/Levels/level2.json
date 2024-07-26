@@ -1,30 +1,21 @@
 { "compressionlevel":-1,
- "height":20,
+ "height":11,
  "infinite":false,
  "layers":[
         {
          "class":"TileLayer",
-         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         "height":20,
+         "data":[3, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 3,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            3, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 3],
+         "height":11,
          "id":3,
          "name":"Water",
          "opacity":1,
@@ -36,32 +27,23 @@
                 }],
          "type":"tilelayer",
          "visible":true,
-         "width":30,
+         "width":15,
          "x":0,
          "y":0
         }, 
         {
-         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         "height":20,
+         "data":[0, 27, 24, 24, 24, 24, 31, 0, 27, 24, 24, 24, 24, 31, 0,
+            27, 33, 0, 0, 0, 0, 35, 24, 33, 0, 0, 0, 0, 35, 31,
+            25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28,
+            25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28,
+            25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28,
+            25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28,
+            25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28,
+            25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28,
+            25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28,
+            30, 34, 0, 0, 0, 0, 32, 29, 29, 34, 0, 0, 0, 32, 26,
+            0, 30, 29, 29, 29, 29, 26, 0, 0, 30, 29, 29, 29, 26, 0],
+         "height":11,
          "id":10,
          "name":"Shore",
          "opacity":1,
@@ -73,33 +55,24 @@
                 }],
          "type":"tilelayer",
          "visible":true,
-         "width":30,
+         "width":15,
          "x":0,
          "y":0
         }, 
         {
          "class":"TileLayer",
-         "data":[1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2,
-            2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1,
-            1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2,
-            2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1,
-            1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2,
-            2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1,
-            1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2,
-            2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1,
-            1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2,
-            2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1,
-            1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2,
-            2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1,
-            1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2,
-            2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1,
-            1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2,
-            2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1,
-            1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2,
-            2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1,
-            1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2,
-            2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1],
-         "height":20,
+         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 1, 2, 1, 2, 0, 0, 0, 2, 1, 2, 1, 0, 0,
+            0, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 0,
+            0, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 0,
+            0, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 0,
+            0, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 0,
+            0, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 0,
+            0, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 0,
+            0, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 0,
+            0, 0, 1, 2, 1, 2, 0, 0, 0, 0, 1, 2, 1, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         "height":11,
          "id":1,
          "name":"Grass",
          "opacity":1,
@@ -111,7 +84,7 @@
                 }],
          "type":"tilelayer",
          "visible":true,
-         "width":30,
+         "width":15,
          "x":0,
          "y":0
         }, 
@@ -121,27 +94,32 @@
          "name":"Flooring",
          "objects":[
                 {
-                 "gid":13,
+                 "gid":57,
                  "height":16,
-                 "id":657,
+                 "id":707,
                  "name":"",
                  "properties":[
                         {
-                         "name":"flooringName",
+                         "name":"enemySpawnData",
                          "type":"string",
-                         "value":"soilFlooring"
+                         "value":"kudzu1-8, kudzu2-4, knotwood2-10, kudzu3-2, kudzu3-5, knotwood3-8, kudzu4-2, knotwood4-3, knotwood4-7, kudzu4-9, kudzu4-10, kudzu5-1, knotwood5-2, kudzu5-3, kudzu5-4, knotwood5-5, kudzu5-6, knotwood5-6"
+                        }, 
+                        {
+                         "name":"markerName",
+                         "type":"string",
+                         "value":"enemySpawn"
                         }],
                  "rotation":0,
-                 "type":"Flooring",
+                 "type":"Marker",
                  "visible":true,
                  "width":16,
-                 "x":192,
-                 "y":208
+                 "x":48,
+                 "y":96
                 }, 
                 {
-                 "gid":13,
+                 "gid":4,
                  "height":16,
-                 "id":658,
+                 "id":742,
                  "name":"",
                  "properties":[
                         {
@@ -153,13 +131,13 @@
                  "type":"Flooring",
                  "visible":true,
                  "width":16,
-                 "x":304,
-                 "y":176
+                 "x":96,
+                 "y":96
                 }, 
                 {
-                 "gid":13,
+                 "gid":5,
                  "height":16,
-                 "id":659,
+                 "id":743,
                  "name":"",
                  "properties":[
                         {
@@ -171,13 +149,13 @@
                  "type":"Flooring",
                  "visible":true,
                  "width":16,
-                 "x":224,
-                 "y":128
+                 "x":112,
+                 "y":96
                 }, 
                 {
-                 "gid":13,
+                 "gid":6,
                  "height":16,
-                 "id":662,
+                 "id":744,
                  "name":"",
                  "properties":[
                         {
@@ -189,62 +167,8 @@
                  "type":"Flooring",
                  "visible":true,
                  "width":16,
-                 "x":144,
-                 "y":128
-                }, 
-                {
-                 "gid":19,
-                 "height":16,
-                 "id":696,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"flooringName",
-                         "type":"string",
-                         "value":"soilFlooring"
-                        }],
-                 "rotation":0,
-                 "type":"Flooring",
-                 "visible":true,
-                 "width":16,
-                 "x":320,
-                 "y":128
-                }, 
-                {
-                 "gid":19,
-                 "height":16,
-                 "id":702,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"flooringName",
-                         "type":"string",
-                         "value":"soilFlooring"
-                        }],
-                 "rotation":0,
-                 "type":"Flooring",
-                 "visible":true,
-                 "width":16,
-                 "x":192,
-                 "y":128
-                }, 
-                {
-                 "gid":19,
-                 "height":16,
-                 "id":704,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"flooringName",
-                         "type":"string",
-                         "value":"soilFlooring"
-                        }],
-                 "rotation":0,
-                 "type":"Flooring",
-                 "visible":true,
-                 "width":16,
-                 "x":192,
-                 "y":144
+                 "x":128,
+                 "y":96
                 }],
          "opacity":1,
          "properties":[
@@ -265,9 +189,587 @@
          "name":"Structures",
          "objects":[
                 {
+                 "gid":52,
+                 "height":16,
+                 "id":708,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":32,
+                 "y":80
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":709,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":32,
+                 "y":96
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":710,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":32,
+                 "y":112
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":711,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":48,
+                 "y":112
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":712,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":48,
+                 "y":80
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":713,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":64,
+                 "y":80
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":714,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":64,
+                 "y":112
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":715,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":80,
+                 "y":112
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":716,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":80,
+                 "y":80
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":722,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":96,
+                 "y":64
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":723,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":112,
+                 "y":64
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":724,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":128,
+                 "y":64
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":725,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":144,
+                 "y":80
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":727,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":80,
+                 "y":64
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":728,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":80,
+                 "y":128
+                },
+            
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":729,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":96,
+                 "y":128
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":730,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":112,
+                 "y":128
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":731,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":128,
+                 "y":128
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":732,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":144,
+                 "y":112
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":733,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":144,
+                 "y":128
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":734,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":144,
+                 "y":64
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":735,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":160,
+                 "y":80
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":736,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":176,
+                 "y":80
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":737,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":192,
+                 "y":80
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":738,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":192,
+                 "y":96
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":739,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":192,
+                 "y":112
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":740,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":176,
+                 "y":112
+                }, 
+                {
+                 "gid":52,
+                 "height":16,
+                 "id":741,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":160,
+                 "y":112
+                }, 
+                {
+                 "gid":51,
+                 "height":16,
+                 "id":745,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"BasicTree"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":112,
+                 "y":96
+                }, 
+                {
+                 "gid":51,
+                 "height":16,
+                 "id":746,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"BasicTree"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":96,
+                 "y":96
+                },
+            
+                {
+                 "gid":51,
+                 "height":16,
+                 "id":747,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"BasicTree"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":128,
+                 "y":96
+                }, 
+                {
+                 "gid":48,
+                 "height":16,
+                 "id":748,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"Nexus"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":176,
+                 "y":96
+                }, 
+                {
                  "gid":49,
                  "height":16,
-                 "id":589,
+                 "id":749,
                  "name":"",
                  "properties":[
                         {
@@ -279,1198 +781,8 @@
                  "type":"Structure",
                  "visible":true,
                  "width":16,
-                 "x":256,
-                 "y":176
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":590,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":256,
-                 "y":160
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":591,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":272,
-                 "y":160
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":592,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":272,
-                 "y":176
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":593,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":272,
-                 "y":192
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":594,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":256,
-                 "y":192
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":595,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":240,
-                 "y":192
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":596,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":224,
-                 "y":192
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":597,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":224,
-                 "y":176
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":598,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":224,
-                 "y":160
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":599,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":224,
-                 "y":144
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":601,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":240,
-                 "y":128
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":602,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":256,
-                 "y":128
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":603,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":272,
-                 "y":128
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":604,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":288,
-                 "y":128
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":605,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":304,
-                 "y":128
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":606,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":304,
-                 "y":144
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":607,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":304,
-                 "y":160
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":609,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":304,
-                 "y":192
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":610,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":304,
-                 "y":208
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":611,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":304,
-                 "y":224
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":612,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":288,
-                 "y":224
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":613,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":272,
-                 "y":224
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":614,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":256,
-                 "y":224
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":615,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":224,
-                 "y":224
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":616,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":240,
-                 "y":224
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":617,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":208,
-                 "y":224
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":618,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":192,
-                 "y":224
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":620,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":192,
-                 "y":192
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":621,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":192,
-                 "y":176
-                },
-            
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":622,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":192,
-                 "y":160
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":637,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":304,
+                 "x":48,
                  "y":96
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":638,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":304,
-                 "y":112
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":639,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":288,
-                 "y":96
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":640,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":272,
-                 "y":96
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":641,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":256,
-                 "y":96
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":643,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":208,
-                 "y":96
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":644,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":192,
-                 "y":96
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":645,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":176,
-                 "y":96
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":646,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":240,
-                 "y":96
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":647,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":160,
-                 "y":96
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":648,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":160,
-                 "y":112
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":649,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":160,
-                 "y":128
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":650,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":160,
-                 "y":144
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":651,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":160,
-                 "y":160
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":652,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":176,
-                 "y":160
-                }, 
-                {
-                 "gid":48,
-                 "height":16,
-                 "id":653,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"Nexus"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":176,
-                 "y":144
-                }, 
-                {
-                 "gid":51,
-                 "height":16,
-                 "id":664,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"BasicTree"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":304,
-                 "y":176
-                }, 
-                {
-                 "gid":51,
-                 "height":16,
-                 "id":665,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"BasicTree"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":224,
-                 "y":128
-                }, 
-                {
-                 "gid":51,
-                 "height":16,
-                 "id":667,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"BasicTree"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":144,
-                 "y":128
-                }, 
-                {
-                 "gid":51,
-                 "height":16,
-                 "id":668,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"BasicTree"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":192,
-                 "y":208
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":670,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":176,
-                 "y":224
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":671,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":176,
-                 "y":208
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":672,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":176,
-                 "y":192
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":674,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":320,
-                 "y":160
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":675,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":320,
-                 "y":176
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":676,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":320,
-                 "y":192
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":683,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":144,
-                 "y":144
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":685,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":128,
-                 "y":144
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":686,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":128,
-                 "y":128
-                },
-            
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":687,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":128,
-                 "y":112
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":688,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":144,
-                 "y":112
-                }, 
-                {
-                 "gid":48,
-                 "height":16,
-                 "id":694,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"Nexus"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":288,
-                 "y":112
-                }, 
-                {
-                 "gid":51,
-                 "height":16,
-                 "id":700,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"BasicTree"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":320,
-                 "y":128
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":701,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":224,
-                 "y":96
-                }, 
-                {
-                 "gid":51,
-                 "height":16,
-                 "id":703,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"BasicTree"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":192,
-                 "y":128
-                }, 
-                {
-                 "gid":51,
-                 "height":16,
-                 "id":705,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"BasicTree"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":192,
-                 "y":144
                 }],
          "opacity":1,
          "properties":[
@@ -1489,30 +801,7 @@
          "draworder":"topdown",
          "id":16,
          "name":"Markers",
-         "objects":[
-                {
-                 "gid":57,
-                 "height":16,
-                 "id":669,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"enemySpawnData",
-                         "type":"string",
-                         "value":"kudzu1, kudzu4, kudzu7"
-                        }, 
-                        {
-                         "name":"markerName",
-                         "type":"string",
-                         "value":"enemySpawn"
-                        }],
-                 "rotation":0,
-                 "type":"Marker",
-                 "visible":true,
-                 "width":16,
-                 "x":256,
-                 "y":176
-                }],
+         "objects":[],
          "opacity":1,
          "properties":[
                 {
@@ -1526,8 +815,14 @@
          "y":0
         }],
  "nextlayerid":17,
- "nextobjectid":707,
+ "nextobjectid":750,
  "orientation":"orthogonal",
+ "properties":[
+        {
+         "name":"numStages",
+         "type":"int",
+         "value":3
+        }],
  "renderorder":"right-down",
  "tiledversion":"1.10.1",
  "tileheight":16,
@@ -1719,7 +1014,8 @@
                          "value":"soilFlooring"
                         }],
                  "type":"Flooring"
-                }, 
+                },
+            
                 {
                  "id":15,
                  "properties":[
@@ -1886,5 +1182,5 @@
  "tilewidth":16,
  "type":"map",
  "version":"1.10",
- "width":30
+ "width":15
 }

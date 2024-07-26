@@ -185,7 +185,9 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
 
         // Calculate the number of acorns to fire based on the Squirrel's tier.
         int tier = GetSquirrel().GetTier();
-        int numAcornsToFire = (int)((0.5 * tier * tier) - (0.5 * tier) + 1);
+        int numAcornsToFire = 1;
+        if (tier == 2) numAcornsToFire = 2;
+        else if (tier >= 3) numAcornsToFire = 5;
         GetSquirrel().StartCoroutine(FireAcorns(numAcornsToFire));
 
         // Reset attack animation.

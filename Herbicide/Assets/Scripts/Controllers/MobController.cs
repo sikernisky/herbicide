@@ -67,14 +67,17 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     private Vector3? nextMovePos;
 
     /// <summary>
-    /// The number of occupying Models during the previous frame.
-    /// </summary>
-    private int blockingObjectsLastFrame;
-
-    /// <summary>
     /// All the attack speed buff multipliers currently affecting this Mob.
     /// </summary>
     private HashSet<float> attackSpeedBuffMultipliers;
+
+    /// <summary>
+    /// true if the Mob controlled by this MobController
+    /// needs to parse through all possible targets. This exists
+    /// so that we don't need to go through targeting logic for Mobs
+    /// that will never use them: StoneWall, for example.
+    /// </summary>
+    protected virtual bool FINDS_TARGETS => false;
 
 
     /// <summary>
@@ -94,9 +97,10 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// <summary>
     /// Main update loop for the MobController. Updates its model.
     /// </summary>
-    public override void UpdateController()
+    /// <param name="gameState">The most recent GameState.</param>
+    public override void UpdateController(GameState gameState)
     {
-        base.UpdateController();
+        base.UpdateController(gameState);
         UpdateDamageFlash();
         UpdateStateFSM();
         UpdateMob();
@@ -108,7 +112,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     protected virtual void UpdateMob()
     {
         if (!ValidModel()) return;
-        UpdateTargets(GetAllModels(), TileGrid.GetAllTiles());
+        if (FINDS_TARGETS) UpdateTargets(GetAllModels(), TileGrid.GetAllTiles());
         GetMob().StepAttackCooldown();
         CalculateAndApplyBuffs();
     }
@@ -154,7 +158,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
         Assert.IsNotNull(targetable, "Target cannot be null.");
         Assert.IsFalse(NumTargets() >= MAX_TARGETS, GetMob() +
             " already has " + NumTargets() + " targets.");
-        Assert.IsTrue(CanTarget(targetable), "Not a valid target.");
+        Assert.IsTrue(CanTargetModel(targetable), "Not a valid target.");
 
         targets.Add(targetable);
     }
@@ -173,7 +177,13 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
 
         foreach (Model targetable in nonTiles)
         {
-            if (CanTarget(targetable) && NumTargets() < MAX_TARGETS)
+            // bool result = CanTarget(targetable);
+            // if (targetable as Kudzu != null)
+            // {
+            //     //Debug.Log("can target kudzu: " + result);
+            // }
+
+            if (CanTargetModel(targetable) && NumTargets() < MAX_TARGETS)
             {
                 AddTarget(targetable);
             }
@@ -181,7 +191,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
 
         foreach (Model targetable in tiles)
         {
-            if (CanTarget(targetable) && NumTargets() < MAX_TARGETS)
+            if (CanTargetModel(targetable) && NumTargets() < MAX_TARGETS)
             {
                 AddTarget(targetable);
             }
@@ -208,7 +218,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// <param name="target">A potential target.</param>
     /// <returns>true if the Mob is allowed to target a Model; otherwise,
     /// false.</returns>
-    protected abstract bool CanTarget(Model target);
+    protected abstract bool CanTargetModel(Model target);
 
     /// <summary>
     /// Returns the current number of targets the Mob has
@@ -545,4 +555,5 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
 
         // Put other buffs here
     }
+
 }

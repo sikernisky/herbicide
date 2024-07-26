@@ -20,11 +20,6 @@ public class CollectionMenuController : MonoBehaviour
     private CollectionMenuController instance;
 
     /// <summary>
-    /// The game state.
-    /// </summary>
-    private GameState currentGameState;
-
-    /// <summary>
     /// The SkillSlot controllers to update.
     /// </summary>
     private List<SkillSlotController> skillSlotControllers;
@@ -69,13 +64,14 @@ public class CollectionMenuController : MonoBehaviour
     void Update()
     {
         //(1) Updates Game State.
-        if (DetermineGameState() == GameState.INVALID) return;
+        GameState gameState = DetermineGameState();
+        if (gameState == GameState.INVALID) return;
 
         //(2) Check input events.
         CheckInputEvents();
 
         //(3) Update Canvas.
-        CanvasController.UpdateCanvas();
+        CanvasController.UpdateCanvas(gameState);
 
         //(4) Update SkillSlotControllers.
         instance.skillSlotControllers.ForEach(ssc => ssc.UpdateSlot(instance.unlockedSkills));
@@ -135,8 +131,6 @@ public class CollectionMenuController : MonoBehaviour
     /// <returns>the current GameState.</returns>
     private GameState DetermineGameState()
     {
-        currentGameState = GameState.MENU;
-        CanvasController.InformOfGameState(currentGameState);
         return GameState.MENU;
     }
 }
