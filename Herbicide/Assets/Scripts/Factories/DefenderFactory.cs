@@ -70,8 +70,9 @@ public class DefenderFactory : Factory
     /// Returns the animation track that represents the Defender attacking.
     /// </summary>
     /// <returns>the animation track that represents the Defender attacking.</returns>
-    /// <param name="d">The Defender's Direction. </param>
-    /// <param name="tier">The Defender's tier. </param>
+    /// <param name="m">The ModelType of the Defender.</param>
+    /// <param name="d">The Defender's Direction.</param>
+    /// <param name="tier">The Defender's tier.</param>
     public static Sprite[] GetAttackTrack(ModelType m, Direction d, int tier)
     {
         Assert.IsTrue(tier >= Defender.MIN_TIER && tier <= Defender.MAX_TIER, "Invalid tier.");
@@ -82,6 +83,8 @@ public class DefenderFactory : Factory
                 return instance.squirrelAnimationSet.GetAttackAnimation(d, tier);
             case ModelType.BEAR:
                 return instance.bearAnimationSet.GetAttackAnimation(d, tier);
+            case ModelType.PORCUPINE:
+                return instance.porcupineAnimationSet.GetAttackAnimation(d, tier);
             default:
                 throw new System.Exception("Invalid ModelType");
         }
@@ -91,8 +94,9 @@ public class DefenderFactory : Factory
     /// Returns the animation track that represents the Defender when Idle.
     /// </summary>
     /// <returns>the animation track that represents the Defender when Idle.</returns>
-    /// <param name="d">The Defender's Direction. </param>
-    /// <param name="tier">The Defender's tier. </param>
+    /// <param name="m">The ModelType of the Defender.</param>
+    /// <param name="d">The Defender's Direction.</param>
+    /// <param name="tier">The Defender's tier.</param>
     public static Sprite[] GetIdleTrack(ModelType m, Direction d, int tier)
     {
         Assert.IsTrue(tier >= Defender.MIN_TIER && tier <= Defender.MAX_TIER, "Invalid tier.");
@@ -103,6 +107,8 @@ public class DefenderFactory : Factory
                 return instance.squirrelAnimationSet.GetIdleAnimation(d, tier);
             case ModelType.BEAR:
                 return instance.bearAnimationSet.GetIdleAnimation(d, tier);
+            case ModelType.PORCUPINE:
+                return instance.porcupineAnimationSet.GetIdleAnimation(d, tier);
             default:
                 throw new System.Exception("Invalid ModelType");
         }
@@ -122,10 +128,13 @@ public class DefenderFactory : Factory
                 return instance.squirrelAnimationSet.GetPlacementAnimation(tier);
             case ModelType.BEAR:
                 return instance.bearAnimationSet.GetPlacementAnimation(tier);
+            case ModelType.PORCUPINE:
+                return instance.porcupineAnimationSet.GetPlacementAnimation(tier);
             default:
                 throw new System.Exception("Invalid ModelType");
         }
     }
+
 
     /// <summary>
     /// Returns the DefenderFactory's transform component.

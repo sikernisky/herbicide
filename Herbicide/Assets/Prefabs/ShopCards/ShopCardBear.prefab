@@ -621,7 +621,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 213fdd0cc2cae48b894da444a1616b7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modelType: 14
+  modelType: 13
   cardBackgroundImage: {fileID: 2861143171162560290}
   cardSplash: {fileID: 7838228846455706653}
   cardTitle: {fileID: 101354809318367112}

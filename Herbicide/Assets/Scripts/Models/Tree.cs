@@ -9,16 +9,6 @@ using UnityEngine.Assertions;
 public abstract class Tree : Mob, ISurface
 {
     /// <summary>
-    /// How far to push a hosted Defender horizontally
-    /// </summary>
-    public virtual float DEFENDER_OFFSET_X => 0f;
-
-    /// <summary>
-    /// How far to push a hosted Defender vertically
-    /// </summary>
-    public virtual float DEFENDER_OFFSET_Y => .75f;
-
-    /// <summary>
     /// Starting number of Collectable Prefabs this Tree drops each second.
     /// </summary>
     public virtual float BASE_RESOURCE_DROP_RATE => 0f;
@@ -100,17 +90,15 @@ public abstract class Tree : Mob, ISurface
         Assert.IsNotNull(neighbors, "Placement candidate's neighbors can't be null.");
         Assert.IsTrue(CanPlace(candidate, neighbors), "Need to make sure placement is valid.");
 
-
-        SpriteRenderer prefabRenderer = candidate.GetComponent<SpriteRenderer>();
-
         defender = candidate.GetComponent<Defender>();
 
         string placeName = defender.NAME.ToLower() + "Place";
         SoundController.PlaySoundEffect(placeName);
         defender.SetTreePosition(GetPosition());
         candidate.transform.SetParent(transform);
+        Vector2 defenderOffset = GetOffsetOfDefenderOnTree(candidate.TYPE);
         candidate.transform.localPosition =
-            new Vector3(DEFENDER_OFFSET_X, DEFENDER_OFFSET_Y, 1);
+            new Vector3(defenderOffset.x, defenderOffset.y, 1);
         candidate.transform.localScale = defender.GetPlacementScale();
         candidate.OnPlace(new Vector2Int(GetX(), GetY()));
     }
@@ -131,7 +119,7 @@ public abstract class Tree : Mob, ISurface
         {
             ModelType.SQUIRREL,
             ModelType.BEAR,
-            ModelType.HEDGEHOG
+            ModelType.PORCUPINE
         };
 
         if (candidate == null || neighbors == null) return false;
@@ -237,8 +225,8 @@ public abstract class Tree : Mob, ISurface
         hollowRenderer.sortingOrder = GetSortingOrder() + 1;
         hollowRenderer.color = new Color32(255, 255, 255, 200);
         hollowCopy.transform.SetParent(transform);
-        hollowCopy.transform.localPosition =
-            new Vector3(DEFENDER_OFFSET_X, DEFENDER_OFFSET_Y, 1);
+        Vector2 defenderOffset = GetOffsetOfDefenderOnTree(ghost.TYPE);
+        hollowCopy.transform.localPosition = new Vector3(defenderOffset.x, defenderOffset.y, 1);
         hollowCopy.transform.localScale = Vector3.one;
         hollowCopy.transform.SetParent(transform);
 
@@ -321,4 +309,24 @@ public abstract class Tree : Mob, ISurface
     /// </summary>
     /// <returns>this Tree's current resource drop rate.</returns>
     public float GetResourceDropRate() { return resourceDropRate; }
+
+    /// <summary>
+    /// Returns the offset of a Defender on this Tree.
+    /// </summary>
+    /// <param name="type">The type of Defender</param>
+    /// <returns>the offset of a Defender on this Tree.</returns>
+    private Vector2 GetOffsetOfDefenderOnTree(ModelType type)
+    {
+        switch (type)
+        {
+            case ModelType.SQUIRREL:
+                return new Vector2(0, .75f);
+            case ModelType.BEAR:
+                return new Vector2(0, .75f);
+            case ModelType.PORCUPINE:
+                return new Vector2(0, .35f);
+            default:
+                return Vector2.zero;
+        }
+    }
 }

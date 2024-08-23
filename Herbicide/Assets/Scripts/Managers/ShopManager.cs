@@ -169,7 +169,8 @@ public class ShopManager : MonoBehaviour
             {
                 modelTypes = new HashSet<ModelType>(){
                 ModelType.SHOP_CARD_SQUIRREL,
-                ModelType.SHOP_CARD_BEAR
+                ModelType.SHOP_CARD_BEAR,
+                ModelType.SHOP_CARD_PORCUPINE
             };
             }
 
