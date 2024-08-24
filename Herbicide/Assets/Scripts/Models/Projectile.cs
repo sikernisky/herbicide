@@ -226,19 +226,6 @@ public abstract class Projectile : Model
     private void ResetAge() { age = 0; }
 
     /// <summary>
-    /// Returns this Projectile's animation curve component for
-    /// a lob shot. Throws an exception if this projectile does
-    /// not support lobbing.
-    /// </summary>
-    /// <returns>this Projectile's animation curve component for
-    /// a lob shot.</returns>
-    public AnimationCurve GetLobCurve()
-    {
-        if (lobCurve == null) throw new System.Exception("This projectile cannot lob.");
-        return lobCurve;
-    }
-
-    /// <summary>
     /// Resets this Projectile's stats to their starting
     /// values.
     /// </summary>

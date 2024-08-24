@@ -152,7 +152,6 @@ public class LevelController : MonoBehaviour
     /// Sets up all Factories.
     private void MakeFactories()
     {
-        AcornFactory.SetSingleton(instance);
         BasicTreeFactory.SetSingleton(instance);
         DefenderFactory.SetSingleton(instance);
         DewFactory.SetSingleton(instance);
@@ -162,6 +161,7 @@ public class LevelController : MonoBehaviour
         FlooringFactory.SetSingleton(instance);
         NexusFactory.SetSingleton(instance);
         NexusHoleFactory.SetSingleton(instance);
+        ProjectileFactory.SetSingleton(instance);
         ShopFactory.SetSingleton(instance);
         TileFactory.SetSingleton(instance);
         WallFactory.SetSingleton(instance);

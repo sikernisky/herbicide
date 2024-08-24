@@ -1995,9 +1995,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 498469192}
-  - component: {fileID: 498469193}
+  - component: {fileID: 498469194}
   m_Layer: 0
-  m_Name: AcornFactory
+  m_Name: ProjectileFactory
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2018,7 +2018,7 @@ Transform:
   m_Father: {fileID: 1398493868}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &498469193
+--- !u!114 &498469194
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2027,13 +2027,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 498469191}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3b98ff18c1454785b4b1d48273aac68, type: 3}
+  m_Script: {fileID: 11500000, guid: 54e660c0bc57668428e49d85731dfd99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   prefabs:
   - {fileID: 8079875932440872871, guid: ec999ae8a85bc44aa8bf5fd8f9a7acc9, type: 3}
-  placementTrack:
-  - {fileID: 21300000, guid: e0305b50b903247c7a3b4ab22191094c, type: 3}
 --- !u!1 &503143294
 GameObject:
   m_ObjectHideFlags: 0
@@ -3895,6 +3893,7 @@ MonoBehaviour:
   prefabs:
   - {fileID: 8243588634895102957, guid: 33d6f0d91cf424ab6a78a2a83a02d4d2, type: 3}
   - {fileID: 8243588634895102957, guid: 2fd948259679640fc87149ce1291f5ed, type: 3}
+  - {fileID: 8243588634895102957, guid: 45e5c8c7b3e2f244dbefe0abcefd9c95, type: 3}
   - {fileID: 8243588634895102957, guid: 87bb6a3f14829144cbb232dc73ef9e98, type: 3}
 --- !u!1 &1139417026
 GameObject:

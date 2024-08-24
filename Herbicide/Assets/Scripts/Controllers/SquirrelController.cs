@@ -260,7 +260,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
                     ModelType.SQUIRREL,
                     GetSquirrel().GetDirection(), GetSquirrel().GetTier()));
 
-            GameObject acornPrefab = AcornFactory.GetAcornPrefab();
+            GameObject acornPrefab = ProjectileFactory.GetProjectilePrefab(ModelType.ACORN);
             Assert.IsNotNull(acornPrefab);
             Acorn acornComp = acornPrefab.GetComponent<Acorn>();
             Assert.IsNotNull(acornComp);

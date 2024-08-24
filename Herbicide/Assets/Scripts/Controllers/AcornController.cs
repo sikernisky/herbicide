@@ -44,7 +44,7 @@ public class AcornController : ProjectileController<AcornController.AcornState>
     /// <summary>
     /// Returns the Acorn prefab to the AcornFactory singleton.
     /// </summary>
-    public override void DestroyModel() { AcornFactory.ReturnAcornPrefab(GetAcorn().gameObject); }
+    public override void DestroyModel() { ProjectileFactory.ReturnProjectilePrefab(GetAcorn().gameObject); }
 
     //-----------------------STATE LOGIC------------------------//
 

@@ -19,6 +19,7 @@ public enum ModelType
     NEXUS,
     NEXUS_HOLE,
     PORCUPINE,
+    QUILL,
     SEED_TOKEN,
     SHOP_CARD_BEAR,
     SHOP_CARD_BLANK,
