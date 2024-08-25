@@ -33,6 +33,11 @@ public class Quill : Projectile
     public override int BASE_DAMAGE => 3; //default: 3
 
     /// <summary>
+    /// How much damage an Quill does to the targets behind the first target.
+    /// </summary>
+    public int PIERCING_DAMAGE => 3;
+
+    /// <summary>
     /// Maximum damage of an Quill.
     /// </summary>
     public override int MAX_DAMAGE => int.MaxValue;
@@ -53,6 +58,13 @@ public class Quill : Projectile
     /// </summary>
     public override float MOVE_ANIMATION_DURATION => 0f;
 
+    /// <summary>
+    /// The Quill after it hits a target. Used to start
+    /// the explosion. 
+    /// </summary>
+    [SerializeField]
+    public GameObject piercingQuill;
+
 
     /// <summary>
     /// Returns the GameObject that represents this Quill on the grid.
@@ -68,4 +80,17 @@ public class Quill : Projectile
     /// <returns> a Sprite that represents this Quill when it is
     /// being placed.</returns>
     public override Sprite[] GetPlacementTrack() { return ProjectileFactory.GetPlacementTrack(TYPE); }
+
+    /// <summary>
+    /// Returns the GameObject that represents this Quill when it is
+    /// piercing a target.
+    /// </summary>
+    /// <returns>the GameObject that represents this Quill when it is
+    /// piercing a target.</returns>
+    public GameObject GetPiercingQuill() 
+    {
+        GameObject piercingQuillCopy= Instantiate(piercingQuill);
+        piercingQuillCopy.SetActive(true);
+        return piercingQuillCopy;     
+    }
 }

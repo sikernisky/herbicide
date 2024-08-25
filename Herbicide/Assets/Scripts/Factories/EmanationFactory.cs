@@ -19,6 +19,12 @@ public class EmanationFactory : MonoBehaviour
     [SerializeField]
     private Sprite[] bearChompTrack;
 
+    /// <summary>
+    /// Animation track for the Quill Pierce emanation.
+    /// </summary>
+    [SerializeField]
+    private Sprite[] quillPierceTrack;
+
 
     /// <summary>
     /// Finds and sets the EmanationFactory singleton.
@@ -46,6 +52,8 @@ public class EmanationFactory : MonoBehaviour
         {
             case EmanationController.EmanationType.BEAR_CHOMP:
                 return instance.bearChompTrack;
+            case EmanationController.EmanationType.QUILL_PIERCE:
+                return instance.quillPierceTrack;
             default:
                 break;
         }
@@ -65,7 +73,9 @@ public class EmanationFactory : MonoBehaviour
         switch (emanationType)
         {
             case EmanationController.EmanationType.BEAR_CHOMP:
-                return .075f;
+                return 0.075f;
+            case EmanationController.EmanationType.QUILL_PIERCE:
+                return 0.200f;
             default:
                 break;
         }

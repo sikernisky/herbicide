@@ -81,6 +81,7 @@ public class EmanationController
     public enum EmanationType
     {
         BEAR_CHOMP,
+        QUILL_PIERCE
     }
 
     /// <summary>
@@ -90,7 +91,8 @@ public class EmanationController
     /// <param name="numCycles">The number of cycles the EmanationController must
     /// run before removing its Emanation.</param>
     /// <param name="target">Where the Emanation should be.</param> 
-    public EmanationController(EmanationType emanationType, int numCycles, Vector3 target)
+    /// <param name="rotation">The rotation of the Emanation.</param>
+    public EmanationController(EmanationType emanationType, int numCycles, Vector3 target, Quaternion rotation)
     {
         Assert.IsTrue(numCycles > 0);
 
@@ -100,7 +102,12 @@ public class EmanationController
         requiredCycles = numCycles;
         spawnPos = target;
 
-        MakeEmanationDummy();
+        GameObject emanation = new GameObject(TYPE.ToString());
+        emanationDummy = emanation;
+        emanationRenderer = emanation.AddComponent<SpriteRenderer>();
+        emanationRenderer.sortingLayerName = SortingLayers.EMANATIONS.ToString().ToLower();
+        emanationDummy.transform.position = spawnPos;
+        emanationDummy.transform.rotation = rotation;
     }
 
     /// <summary>
@@ -115,6 +122,8 @@ public class EmanationController
             return;
         }
         if (DoneAnimating()) return;
+
+        // Debug.Log("here");
 
 
         counter += Time.deltaTime;
@@ -156,18 +165,6 @@ public class EmanationController
     /// <returns>true if the EmanationController has completed its required number
     /// of animation cycles; otherwise, false. </returns>
     private bool DoneAnimating() { return cyclesCompleted >= requiredCycles; }
-
-    /// <summary>
-    /// Creates the Emanation GameObject and attaches a SpriteRender component.
-    /// </summary>
-    private void MakeEmanationDummy()
-    {
-        GameObject emanation = new GameObject(TYPE.ToString());
-        emanationDummy = emanation;
-        emanationRenderer = emanation.AddComponent<SpriteRenderer>();
-        emanationRenderer.sortingLayerName = SortingLayers.EMANATIONS.ToString().ToLower();
-        emanationDummy.transform.position = spawnPos;
-    }
 
     /// <summary>
     /// TODO: Let the Controller who created the Emanation move it around

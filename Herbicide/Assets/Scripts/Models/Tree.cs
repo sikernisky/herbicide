@@ -216,7 +216,7 @@ public abstract class Tree : Mob, ISurface
     {
         if (!CanGhostPlace(ghost)) return false;
 
-        GameObject hollowCopy = (ghost as PlaceableObject).MakeHollowObject();
+        GameObject hollowCopy = ghost.MakeHollowObject();
         Assert.IsNotNull(hollowCopy);
         SpriteRenderer hollowRenderer = hollowCopy.GetComponent<SpriteRenderer>();
         Assert.IsNotNull(hollowRenderer);
@@ -229,6 +229,7 @@ public abstract class Tree : Mob, ISurface
         hollowCopy.transform.localPosition = new Vector3(defenderOffset.x, defenderOffset.y, 1);
         hollowCopy.transform.localScale = Vector3.one;
         hollowCopy.transform.SetParent(transform);
+        hollowCopy.name = "Ghost " + ghost.NAME;
 
         ghostDefender = hollowCopy;
         return true;

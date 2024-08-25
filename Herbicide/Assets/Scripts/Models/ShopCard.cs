@@ -93,7 +93,7 @@ public class ShopCard : UIModel
     {
         Assert.IsNotNull(modelPrefab, "Model prefab is null.");
 
-        return Instantiate(modelPrefab);
+        return model.Copy();
     }
 
     /// <summary>

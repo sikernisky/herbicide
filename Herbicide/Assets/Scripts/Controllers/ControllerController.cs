@@ -167,6 +167,12 @@ public class ControllerController : MonoBehaviour
                 NexusHoleController nhc = new NexusHoleController(nexusHole);
                 instance.structureControllers.Add(nhc);
                 break;
+            case ModelType.PORCUPINE:
+                Porcupine porcupine = model as Porcupine;
+                Assert.IsNotNull(porcupine, "Porcupine is null.");
+                PorcupineController pc = new PorcupineController(porcupine);
+                instance.defenderControllers.Add(pc);
+                break;
             case ModelType.SOIL_FLOORING:
                 SoilFlooring soilFlooring = model as SoilFlooring;
                 Assert.IsNotNull(soilFlooring);

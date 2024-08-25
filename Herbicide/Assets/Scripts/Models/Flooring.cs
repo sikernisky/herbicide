@@ -390,7 +390,7 @@ public abstract class Flooring : Model, ISurface
     /// <summary>
     /// Resets this Tile's stats to their starting values.
     /// </summary>
-    public override void ResetModel() { return; }
+    public override void ResetModel() => base.ResetModel();
 
     /// <summary>
     /// Sets the 2D Collider properties of this Tile.

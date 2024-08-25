@@ -2032,6 +2032,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabs:
   - {fileID: 8079875932440872871, guid: ec999ae8a85bc44aa8bf5fd8f9a7acc9, type: 3}
+  - {fileID: 8079875932440872871, guid: f82c63b07c37ae54fa13c953ef62f46c, type: 3}
+  acornAnimationSet: {fileID: 11400000, guid: e05583944e8bb454ea20cf5db7ac8ffc, type: 2}
+  quillAnimationSet: {fileID: 11400000, guid: 982e2fad998e003449bb1dcdfbbd9ed7, type: 2}
 --- !u!1 &503143294
 GameObject:
   m_ObjectHideFlags: 0

@@ -61,6 +61,12 @@ public abstract class Projectile : Model
     /// </summary>
     private float age;
 
+    /// <summary>
+    /// The duration of the animation that plays when this Projectile
+    /// is mid-air.
+    /// </summary>
+    public virtual float MID_AIR_ANIMATION_DURATION => .2f;
+
     //----------------------------------------------//
 
     /// <summary>
@@ -126,11 +132,11 @@ public abstract class Projectile : Model
     }
 
     /// <summary>
-    /// Returns the Model that this Projectile hit. This 
-    /// returns null if it hasn't hit anything.  
+    /// Returns true if this Projectile has collided with something.
     /// </summary>
-    /// <returns>the Model that this Projectile hit</returns>
-    public Model GetVictim() { return victim; }
+    /// <returns>true if this Projectile has collided with something;
+    /// otherwise, false.</returns>
+    public bool Collided() { return victim != null; } 
 
     /// <summary>
     /// Sets this Projectile's properties such that it has not collided
@@ -231,6 +237,7 @@ public abstract class Projectile : Model
     /// </summary>
     public override void ResetModel()
     {
+        base.ResetModel();
         ResetSpeed();
         ResetDamage();
         SetUncollided();

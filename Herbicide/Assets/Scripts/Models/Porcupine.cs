@@ -27,7 +27,7 @@ public class Porcupine : Defender
     /// <summary>
     /// Starting attack speed of a Porcupine.
     /// </summary>
-    public override float BASE_ATTACK_SPEED => .5f;
+    public override float BASE_ATTACK_SPEED => .6f;
 
     /// <summary>
     /// Maximum attack speed of a Porcupine.
@@ -80,9 +80,23 @@ public class Porcupine : Defender
     public override float MIN_HEALTH => 0f;
 
     /// <summary>
+    /// How many seconds a Porcupine's attack animation lasts,
+    /// from start to finish. 
+    /// </summary>
+    public float ATTACK_ANIMATION_DURATION => .2f;
+
+    /// <summary>
+    /// How many seconds a Porcupine's idle animation lasts,
+    /// from start to finish. 
+    /// </summary>
+    public float IDLE_ANIMATION_DURATION => Mathf.Clamp(GetAttackCooldown(), 0.0001f, float.MaxValue);
+
+    /// <summary>
     /// Type of a Porcupine.
     /// </summary>
     public override ModelType TYPE => ModelType.PORCUPINE;
+
+
 
     /// <summary>
     /// Returns a new copy of a Porcupine prefab. 

@@ -23,16 +23,16 @@
             "scale": 4,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 192,
-                "y": 110.5
+                "x": 191.875,
+                "y": 112
             }
         },
         "Tilemaps/level1.tmj": {
             "scale": 1.8831,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 169.9325580160374,
-                "y": 176.30502894163877
+                "x": 192.50172587754233,
+                "y": 112.04928044182466
             }
         },
         "Tilemaps/level1.tmx": {
@@ -43,8 +43,8 @@
             "scale": 2.8034,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 240.06563458657342,
-                "y": 156.9522722408504
+                "x": 239.530570022116,
+                "y": 156.5955625312121
             }
         },
         "Tilemaps/level2 copy.tmx": {
@@ -58,40 +58,40 @@
         "Tilemaps/level2.tmx": {
             "expandedObjectLayers": [
                 13,
-                15,
-                16
+                16,
+                15
             ],
-            "scale": 1.2801,
+            "scale": 5.5,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 252.32403718459497,
-                "y": 179.6734630107023
+                "x": 254.0909090909091,
+                "y": 179.63636363636363
             }
         },
         "Tilemaps/level3.tmx": {
             "expandedObjectLayers": [
                 13,
-                15,
-                16
+                16,
+                15
             ],
             "scale": 1.6635,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 227.83288247670572,
-                "y": 198.37691614066725
+                "x": 227.53231139164416,
+                "y": 197.775773970544
             }
         },
         "Tilemaps/level4.tmx": {
             "expandedObjectLayers": [
                 13,
-                15,
-                16
+                16,
+                15
             ],
             "scale": 2,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 201.5,
-                "y": 141
+                "x": 201.25,
+                "y": 140.5
             }
         },
         "Tilemaps/level5.tmx": {

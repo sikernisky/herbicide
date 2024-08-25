@@ -16,7 +16,14 @@ public class ProjectileFactory : Factory
     /// <summary>
     /// The animation set for an Acorn.
     /// </summary>
+    [SerializeField]
     private ProjectileAnimationSet acornAnimationSet;
+
+    /// <summary>
+    /// The animation set for a Quill.
+    /// </summary>
+    [SerializeField]
+    private ProjectileAnimationSet quillAnimationSet;
 
     /// <summary>
     /// Finds and sets the ProjectileFactory singleton.
@@ -52,7 +59,6 @@ public class ProjectileFactory : Factory
     /// Returns the animation track that represents this Projectile when placing.
     /// </summary>
     /// <param name="m">The ModelType of the Projectile to get</param>
-    /// <param name="tier">The tier of the Projectile to get</param>
     /// <returns>the animation track that represents this Projectile when placing.</returns>
     public static Sprite[] GetPlacementTrack(ModelType m)
     {
@@ -60,6 +66,26 @@ public class ProjectileFactory : Factory
         {
             case ModelType.ACORN:
                 return instance.acornAnimationSet.GetPlacementAnimation();
+            case ModelType.QUILL:
+                return instance.quillAnimationSet.GetPlacementAnimation();
+            default:
+                throw new System.Exception("Invalid ModelType");
+        }
+    }
+
+    /// <summary>
+    /// Returns the animation track that represents this Projectile when mid air.
+    /// </summary>
+    /// <param name="m">The ModelType of the Projectile to get</param>
+    /// <returns>the animation track that represents this Projectile when mid air.</returns>
+    public static Sprite[] GetMidAirAnimationTrack(Model m)
+    {
+        switch (m.TYPE)
+        {
+            case ModelType.ACORN:
+                return instance.acornAnimationSet.GetMidAirAnimation();
+            case ModelType.QUILL:
+                return instance.quillAnimationSet.GetMidAirAnimation();
             default:
                 throw new System.Exception("Invalid ModelType");
         }

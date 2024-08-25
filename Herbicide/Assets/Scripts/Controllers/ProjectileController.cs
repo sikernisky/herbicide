@@ -55,12 +55,18 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// </summary>
     private float parabolicStep;
 
+
     /// <summary>
-    /// true if the Projectile hit its target and deployed its effect;
-    /// otherwise, false. If the projectile does not apply an effect,
-    /// this is irrelevant.
+    /// Counts the number of seconds in the mid air animation; resets
+    /// on step.
     /// </summary>
-    private bool effectApplied;
+    protected float midAirAnimationCounter;
+
+    /// <summary>
+    /// True if the Projectile should angle towards its target; otherwise,
+    /// false.
+    /// </summary>
+    protected abstract bool angleTowardsTarget { get; }
 
 
     /// <summary>
@@ -76,7 +82,13 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
         this.start = start;
         this.destination = destination;
         projectile.transform.position = start;
-        linearDirection = (destination - GetProjectile().GetPosition()).normalized;
+        linearDirection = (destination - start).normalized;
+        if (angleTowardsTarget)
+        {
+            float angle = Mathf.Atan2(linearDirection.y, linearDirection.x) * Mathf.Rad2Deg;
+            if(linearDirection.x < 0) angle += 180;
+            projectile.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+        }
         NUM_PROJECTILES++;
     }
 
@@ -105,29 +117,10 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     protected Projectile GetProjectile() { return GetModel() as Projectile; }
 
     /// <summary>
-    /// Handles a collision between the Projectile and some other Collider2D.
-    /// </summary>
-    /// <param name="other">Some other Collider2D.</param>
-    protected override void HandleCollision(Collider2D other) { return; }
-
-    /// <summary>
     /// Returns the position to where the Projectile should go.
     /// </summary>
     /// <returns>the position to where the Projectile should go.</returns>
     protected Vector3 GetDestination() { return destination; }
-
-    /// <summary>
-    /// Returns true if the projectile applied its effect.
-    /// </summary>
-    /// <returns>true if the projectile applied its effect; otherwise,
-    /// false.</returns>
-    protected virtual bool AppliedEffect() { return effectApplied; }
-
-    /// <summary>
-    /// Informs the ProjectileController that it applied its effect, if
-    /// it has one.
-    /// </summary>
-    protected virtual void ApplyEffect() { effectApplied = true; }
 
     /// <summary>
     /// Returns true if this controller's Projectile should be destoyed and
@@ -137,7 +130,7 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// set to null; otherwise, false.</returns>
     public override bool ValidModel()
     {
-        if (GetProjectile().GetVictim() != null) return false;
+        if (GetProjectile().Collided()) return false;
         if (GetProjectile().Expired()) return false;
         if (!GetProjectile().IsActive()) return false;
 
@@ -151,6 +144,12 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// <returns>the distance between the Projectile's starting position
     /// to its target position.</returns>
     protected float GetInitialTargetDistance() { return Vector3.Distance(start, destination); }
+
+    /// <summary>
+    /// Returns the linear direction of the Projectile.
+    /// </summary>
+    /// <returns>the linear direction of the Projectile.</returns>
+    protected Vector3 GetLinearDirection() { return linearDirection; }
 
     //-----------------------STATE LOGIC------------------------//
 

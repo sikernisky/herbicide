@@ -83,6 +83,7 @@ public abstract class Collectable : Model
     /// </summary>
     public override void ResetModel()
     {
+        base.ResetModel();
         collected = false;
     }
 

@@ -79,6 +79,17 @@ public abstract class Model : MonoBehaviour
     public event CollisionHandler OnCollision;
 
     /// <summary>
+    /// Event triggered by a ProjectileController when
+    /// it hits this model. <br></br>
+    /// 
+    /// This is different than the OnCollision event because
+    /// this event is manually triggered by the ProjectileController
+    /// when it detects a collision with this model and its Projectile,
+    /// where OnCollision is triggered by Unity's physics engine.
+    /// </summary>
+    public event Action<Projectile> OnProjectileImpact;
+
+    /// <summary>
     /// The (X, Y) dimensions of this Model.
     /// </summary>
     /// <value></value>
@@ -348,13 +359,33 @@ public abstract class Model : MonoBehaviour
     }
 
     /// <summary>
+    /// Subscribes a handler to the ProjectileCollision event.
+    /// </summary>
+    /// <param name="handler">The collision handler to subscribe.</param>
+    public void SubscribeToProjectileCollisionEvent(Action<Projectile> handler)
+    {
+        OnProjectileImpact += handler;
+    }
+
+    /// <summary>
+    /// Invokes the OnProjectileImpact event, which is handled by the
+    /// controller. We do this to avoid circular dependencies.
+    /// </summary>
+    /// <param name="projectile">The Projectile that hit this Model. </param>
+    public void TriggerProjectileCollision(Projectile projectile)
+    {
+        if (projectile == null) return;
+        OnProjectileImpact?.Invoke(projectile);
+    }
+
+    /// <summary>
     /// Called when this Model's collider bumps into
     /// some other collider.
     /// </summary>
     /// <param name="other">The other collider.</param>
     public void OnTriggerEnter2D(Collider2D other)
     {
-        //!! Ignore 0 references, this is an event. 
+        //!! Ignore 0 references, this is an event.
         OnCollision?.Invoke(other);
     }
 
@@ -373,7 +404,11 @@ public abstract class Model : MonoBehaviour
     /// <summary>
     /// Resets this Model's state.
     /// </summary>
-    public abstract void ResetModel();
+    public virtual void ResetModel()
+    {
+        OnCollision = null;
+        OnProjectileImpact = null;
+    }
 
     /// <summary>
     /// Sets this Model's sorting layer.

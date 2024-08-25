@@ -173,14 +173,32 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
     protected override void HandleCollision(Collider2D other)
     {
         if (other == null) return;
+    }
 
-        Acorn acorn = other.gameObject.GetComponent<Acorn>();
+    /// <summary>
+    /// Responds to a collision with a Projectile.
+    /// </summary>
+    /// <param name="projectile">the Projectile that hit this Enemy. </param>
+    protected override void HandleProjectileCollision(Projectile projectile)
+    {
+        base.HandleProjectileCollision(projectile);
+        if(projectile == null) return;
+        switch (projectile.TYPE) {
 
-        if (acorn != null && acorn.GetVictim() == null)
-        {
-            SoundController.PlaySoundEffect("kudzuHit");
-            GetEnemy().AdjustHealth(-acorn.GetDamage());
-            acorn.SetCollided(GetEnemy());
+            case ModelType.ACORN:
+                Acorn acorn = projectile as Acorn;
+                if(acorn == null) return;
+                GetEnemy().AdjustHealth(-acorn.GetDamage());
+                SoundController.PlaySoundEffect("kudzuHit");
+                break;
+            case ModelType.QUILL:
+                Quill quill = projectile as Quill;
+                if(quill == null) return;
+                GetEnemy().AdjustHealth(-quill.GetDamage());
+                SoundController.PlaySoundEffect("kudzuHit");
+                break; 
+            default:
+                break;
         }
     }
 

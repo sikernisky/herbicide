@@ -34,18 +34,6 @@ public abstract class ModelController
     private static List<Model> ALL_MODELS = new List<Model>();
 
     /// <summary>
-    /// All ModelControllers this ModelController has not yet passed
-    /// to the ControllerController.
-    /// </summary>
-    private List<ModelController> volatileModelControllers = new List<ModelController>();
-
-    /// <summary>
-    /// All EmanationControllers this ModelController has not yet passed
-    /// to the ControllerController.
-    /// </summary>
-    private List<EmanationController> volatileEmanationControllers = new List<EmanationController>();
-
-    /// <summary>
     /// Number of active Models of each ModelType.
     /// </summary>
     private ModelCounts counts;
@@ -96,6 +84,7 @@ public abstract class ModelController
         SetModel(model);
         GetModel().ResetModel();
         GetModel().SubscribeToCollision(HandleCollision);
+        GetModel().SubscribeToProjectileCollisionEvent(HandleProjectileCollision);
         id = ALL_MODELS.Count;
         ALL_MODELS.Add(model);
     }
@@ -234,6 +223,14 @@ public abstract class ModelController
     /// </summary>
     /// <param name="other">the other collider.</param>
     protected abstract void HandleCollision(Collider2D other);
+
+    /// <summary>
+    /// Handles a collision between this controller's model and
+    /// a Projectile.
+    /// </summary>
+    /// <param name="projectile">The Projectile that collided with
+    /// this controller's Model. </param>
+    protected virtual void HandleProjectileCollision(Projectile projectile) { return; }
 
     /// <summary>
     /// Informs this ModelController of the number of active Models of
