@@ -1,13 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 /// <summary>
-/// Represents a Squirrel Defender. It Bites Enemies.
+/// Represents a Bear Defender.
 /// </summary>
 public class Bear : Defender
 {
+    #region Fields
+
+    #endregion
+
+    #region Stats
+
     /// <summary>
     /// Bears are Maulers.
     /// </summary>
@@ -125,6 +128,9 @@ public class Bear : Defender
     /// </summary>
     public override int COST => 75;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Returns an instantiated GameObject with a Bear component attached.
@@ -156,4 +162,6 @@ public class Bear : Defender
     /// Sets this Bear's 2D Collider properties.
     /// </summary>
     public override void SetColliderProperties() { return; }
+
+    #endregion
 }

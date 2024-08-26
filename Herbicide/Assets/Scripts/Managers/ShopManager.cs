@@ -5,21 +5,16 @@ using UnityEngine.Assertions;
 using UnityEngine.UI;
 
 /// <summary>
-/// Manages the Shop: decides when to spawn ShopBoats and which
-/// Models will be on them, interacts with EconomyController for
-/// purchasing, interacts with PlacementController for placing.
+/// Manages the Shop and its ShopCards.
 /// </summary>
 public class ShopManager : MonoBehaviour
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the ShopManager singleton.
     /// </summary>
     private static ShopManager instance;
-
-    /// <summary>
-    /// The most recent GameState.
-    /// </summary>
-    private GameState gameState;
 
     /// <summary>
     /// Reference to the Shop's timer bar background Image component.
@@ -89,6 +84,9 @@ public class ShopManager : MonoBehaviour
     /// </summary>
     private bool shopActive;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Finds and sets the ShopManager singleton.
@@ -107,14 +105,12 @@ public class ShopManager : MonoBehaviour
         PlacementController.SubscribeToFinishPlacingDelegate(instance.OnFinishPlacing);
     }
 
-
     /// <summary>
     /// Main update loop for the ShopManager.
     /// </summary>
     /// <param name="gameState">The most recent GameState.</param>
     public static void UpdateShop(GameState gameState)
     {
-        instance.gameState = gameState;
         if (gameState != GameState.ONGOING) return;
 
         if (InputController.DidKeycodeDown(KeyCode.S)) { instance.Reroll(false); } // TEMP
@@ -192,7 +188,6 @@ public class ShopManager : MonoBehaviour
         instance.shopLoaded = true;
         instance.shopActive = true;
     }
-
 
     /// <summary>
     /// Rerolls the shop, replacing every ShopSlot with a new ShopCard
@@ -283,4 +278,6 @@ public class ShopManager : MonoBehaviour
         Assert.IsNotNull(handler, "Handler is null.");
         instance.OnBuyModel += handler;
     }
+
+    #endregion
 }

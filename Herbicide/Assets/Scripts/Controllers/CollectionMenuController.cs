@@ -1,36 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// The heart of view mode where the Player unlocks and chooses
-/// Defenders. Responsible for <br></br>
-/// 
-/// (1) Setting up the collection menu and singletons<br></br>
-/// (2) Running the main update loop <br></br>
-/// (3) Detecting input and switching to main game (with
-/// help of scene controller)
+/// Controls the Collection Menu scene.
 /// </summary>
 public class CollectionMenuController : MonoBehaviour
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the CollectionMenuController singleton.
     /// </summary>
     private CollectionMenuController instance;
 
-    /// <summary>
-    /// The SkillSlot controllers to update.
-    /// </summary>
-    private List<SkillSlotController> skillSlotControllers;
+    #endregion
 
-    /// <summary>
-    /// TEMPORARY field for unlocked skills while we wait for development of
-    /// save data. 
-    /// </summary>
-    private List<SkillSlotScriptable.SkillSlotType> unlockedSkills;
-
-
+    #region Methods
 
     /// <summary>
     /// Sets up the Main Menu: <br></br>
@@ -46,11 +31,6 @@ public class CollectionMenuController : MonoBehaviour
         //(1) Instantiate all factories and singletons
         SetSingleton();
         MakeSingletons();
-
-        //(2) Load Skill Slots
-        skillSlotControllers = SkillTreeManager.LoadSkillSlots();
-        unlockedSkills = new List<SkillSlotScriptable.SkillSlotType>();
-        unlockedSkills.Add(SkillSlotScriptable.SkillSlotType.SQUIRREL);
     }
 
     /// <summary>
@@ -72,9 +52,6 @@ public class CollectionMenuController : MonoBehaviour
 
         //(3) Update Canvas.
         CanvasController.UpdateCanvas(gameState);
-
-        //(4) Update SkillSlotControllers.
-        instance.skillSlotControllers.ForEach(ssc => ssc.UpdateSlot(instance.unlockedSkills));
     }
 
 
@@ -90,7 +67,6 @@ public class CollectionMenuController : MonoBehaviour
         CanvasController.SetSingleton(instance);
         InputController.SetSingleton(instance);
         SceneController.SetSingleton(instance);
-        SkillTreeManager.SetSingleton(instance);
         SoundController.SetSingleton(instance);
     }
 
@@ -133,4 +109,6 @@ public class CollectionMenuController : MonoBehaviour
     {
         return GameState.MENU;
     }
+
+    #endregion
 }

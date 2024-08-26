@@ -1,18 +1,26 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 /// <summary>
-/// Abstract class to represent controllers of Trees.
+/// Controls a Tree. <br></br>
+/// 
+/// The TreeController is responsible for manipulating its Tree and bringing
+/// it to life. This includes moving it, choosing targets, playing animations,
+/// and more.
 /// </summary>
+/// <![CDATA[<param name="TreeState">]]>
 public abstract class TreeController<T> : MobController<T> where T : Enum
 {
+    #region Fields
+
     /// <summary>
     /// The maximum number of targets a Tree can select at once.
     /// </summary>
     protected override int MAX_TARGETS => 0;
+
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Makes a new TreeController for a Tree.
@@ -59,4 +67,6 @@ public abstract class TreeController<T> : MobController<T> where T : Enum
         if (GetTree().Occupied()) layer -= 1;
         GetModel().SetSortingOrder(layer);
     }
+
+    #endregion
 }

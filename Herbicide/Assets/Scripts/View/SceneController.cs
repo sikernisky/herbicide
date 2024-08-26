@@ -1,17 +1,15 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Assertions;
-using System;
 
 /// <summary>
-/// Responsible for switching between scenes, maintaining
-/// information about the current scene, and loading
-/// scenes.
+/// Controls scene transitions and scene-related events.
 /// </summary>
 public class SceneController : MonoBehaviour
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the SceneController singleton.
     /// </summary>
@@ -27,6 +25,9 @@ public class SceneController : MonoBehaviour
     /// </summary>
     private bool loadingScene;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Main update loop for the SceneController.
@@ -155,4 +156,6 @@ public class SceneController : MonoBehaviour
         Assert.IsNotNull(reference, "Reference to Coroutine is null.");
         instance.StopCoroutine(reference);
     }
+
+    #endregion
 }

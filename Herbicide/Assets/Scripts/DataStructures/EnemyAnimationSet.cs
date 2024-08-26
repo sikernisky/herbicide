@@ -1,22 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Holds all animations for an Enemy. This is necessary
-/// because Enemies might have multiple skins, and declaring
-/// a field for each skin would be cumbersome.
+/// DataStructure to hold all animations for an Enemy.
 /// </summary>
 [CreateAssetMenu(fileName = "New Enemy Animation Set", menuName = "Enemy Animation Set")]
 [System.Serializable]
 public class EnemyAnimationSet : ScriptableObject
 {
+    #region Placement Tracks
+
     /// <summary>
     /// Animation track for placing the Enemy.
     /// </summary>
     public Sprite[] placementTrack;
 
-    // -- Attack -- //
+    #endregion
+
+    #region Attack Tracks
 
     /// <summary>
     /// Attack animations for the healthy Enemy facing north.
@@ -78,7 +78,9 @@ public class EnemyAnimationSet : ScriptableObject
     /// </summary>
     public Sprite[] attackAnimationWestCritical;
 
-    // -- Idle -- //
+    #endregion
+
+    #region Idle Tracks
 
     /// <summary>
     /// Idle animations for the healthy Enemy facing north.
@@ -140,7 +142,9 @@ public class EnemyAnimationSet : ScriptableObject
     /// </summary>
     public Sprite[] idleAnimationWestCritical;
 
-    // -- Movement -- //
+    #endregion
+
+    #region Movement Tracks
 
     /// <summary>
     /// Movement animations for the healthy Enemy facing north.
@@ -202,7 +206,9 @@ public class EnemyAnimationSet : ScriptableObject
     /// <summary>
     public Sprite[] movementAnimationWestCritical;
 
-    // -- Spawn -- //
+    #endregion
+
+    #region Spawn Tracks
 
     /// <summary>
     /// Spawn animations for the healthy Enemy facing north.
@@ -264,6 +270,9 @@ public class EnemyAnimationSet : ScriptableObject
     /// <summary>
     public Sprite[] spawnAnimationWestCritical;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Returns the attack animation track for the given direction.
@@ -475,4 +484,6 @@ public class EnemyAnimationSet : ScriptableObject
     /// </summary>
     /// <returns>the placement animation track </returns>
     public Sprite[] GetPlacementAnimation() { return placementTrack; }
+
+    #endregion
 }

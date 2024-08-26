@@ -1,13 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 /// <summary>
-/// Controller for a BasicTree.
+/// Controls a BasicTree. <br></br>
+/// 
+/// The BasicTreeController is responsible for manipulating its BasicTree and bringing
+/// it to life. This includes moving it, choosing targets, playing animations,
+/// and more.
 /// </summary>
+/// <![CDATA[<param name="BasicTreeState">]]>
 public class BasicTreeController : TreeController<BasicTreeController.BasicTreeState>
 {
+    #region Fields 
+    
     /// <summary>
     /// State of a BasicTree.
     /// </summary>
@@ -18,22 +22,15 @@ public class BasicTreeController : TreeController<BasicTreeController.BasicTreeS
         INVALID
     }
 
-    /// <summary>
-    /// Number of BasicTrees spawned since the scene began.
-    /// </summary>
-    private static int NUM_BASIC_TREES;
+    #endregion
 
-
+    #region Methods
 
     /// <summary>
     /// Makes a new BasicTreeController.
     /// </summary>
     /// <param name="basicTree">The BasicTree model.</param>
-    public BasicTreeController(BasicTree basicTree) : base(basicTree)
-    {
-        Assert.IsNotNull(basicTree, "Basic Tree cannot be null.");
-        NUM_BASIC_TREES++;
-    }
+    public BasicTreeController(BasicTree basicTree) : base(basicTree) { }
 
     /// <summary>
     /// Main update loop for the BasicTree.
@@ -70,7 +67,9 @@ public class BasicTreeController : TreeController<BasicTreeController.BasicTreeS
         BasicTreeFactory.ReturnBasicTreePrefab(GetBasicTree().gameObject);
     }
 
-    //--------------------BEGIN STATE LOGIC----------------------//
+    #endregion
+
+    #region State Logic
 
     /// <summary>
     /// Returns true if two BasicTreeStates are equal.
@@ -112,6 +111,10 @@ public class BasicTreeController : TreeController<BasicTreeController.BasicTreeS
         if (!ValidModel()) return;
     }
 
+    #endregion
+
+    #region Animation Logic
+
     /// <summary>
     /// Adds one chunk of Time.deltaTime to the animation
     /// counter that tracks the current state.
@@ -129,5 +132,5 @@ public class BasicTreeController : TreeController<BasicTreeController.BasicTreeS
     /// </summary>
     public override void ResetAnimationCounter() { throw new System.NotImplementedException(); }
 
-    //---------------------END STATE LOGIC-----------------------//
+    #endregion
 }

@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -10,6 +8,26 @@ using UnityEngine.Assertions;
 /// </summary>
 public abstract class Tile : Model, ISurface
 {
+    #region Fields
+
+    /// <summary>
+    /// Represents a Type of Tile.
+    /// </summary>
+    public enum TileType
+    {
+        GRASS,
+        WATER,
+        SHORE
+    }
+
+    /// <summary>
+    /// The Sprite above the Tile that is invisible by default
+    /// but can highlight to show attack ranges and other 
+    /// information.
+    /// </summary>
+    [SerializeField]
+    private SpriteRenderer highlighter;
+
     /// <summary>
     /// The PlaceableObject on this Tile; null if Tile is unoccupied.
     /// </summary>
@@ -50,54 +68,18 @@ public abstract class Tile : Model, ISurface
     /// </summary>
     protected abstract TileType type { get; }
 
-    /// <summary>
-    /// The Sprite above the Tile that is invisible by default
-    /// but can highlight to show attack ranges and other 
-    /// information.
-    /// </summary>
-    [SerializeField]
-    private SpriteRenderer highlighter;
+    #endregion
 
-    /// <summary>
-    /// Represents a Type of Tile.
-    /// </summary>
-    public enum TileType
-    {
-        GRASS,
-        WATER,
-        SHORE
-    }
-
-    //-------------PATHFINDING-------------
-
-    /// <summary>
-    /// A* pathfinding G-cost of moving to this Tile
-    /// </summary>
-    private int movementCost;
-
-    /// <summary>
-    /// A* pathfinding H-cost of moving to this Tile
-    /// </summary>
-    private int heuristicCost;
-
-    /// <summary>
-    /// A* pathfinding F-cost (G + H) of moving to this Tile
-    /// </summary>
-    private int totalCost;
-
-    /// <summary>
-    /// A* pathfinding Tile from which this Tile was reached
-    /// </summary>
-    private Tile pathfindParent;
+    #region Stats
 
     /// <summary>
     /// true if an Enemy can walk on this Tile
     /// </summary>
     public virtual bool WALKABLE => true;
 
+    #endregion
 
-    //-------------PATHFINDING-------------
-
+    #region Methods
 
     /// <summary>
     /// Defines this Tile to be within a TileGrid at coordinates (x, y).
@@ -320,40 +302,6 @@ public abstract class Tile : Model, ISurface
     }
 
     /// <summary>
-    /// Returns true if an Model can be used on this Tile.
-    /// If it can, uses the Model.
-    /// </summary>
-    /// <param name="candidate">The Model to use.</param>
-    /// <param name="neighbors">This Tile's neighbors.</param>
-    /// <returns>true if an Model can be used on this Tile;
-    /// otherwise, false.</returns>
-    public virtual bool Use(Model candidate, ISurface[] neighbors)
-    {
-        //Safety check
-        AssertDefined();
-
-        //TODO: Implement in future sprint
-
-        return false;
-    }
-
-    /// <summary>
-    /// Returns true if an Model can be used on this Tile.
-    /// </summary>
-    /// <param name="candidate">The Model to use.</param>
-    /// <param name="neighbors">This Tile's neighbors.</param>
-    /// <returns>true if an Model can be placed on this Tile;
-    /// otherwise, false.</returns>
-    public virtual bool CanUse(Model candidate, ISurface[] neighbors)
-    {
-        AssertDefined();
-        if (candidate == null || neighbors == null) return false;
-        if (Occupied()) return false;
-
-        return true;
-    }
-
-    /// <summary>
     /// Removes the PlaceableObject on this Tile. This does not
     /// destroy the occupant; that is the responsibility of its controller. 
     /// </summary>
@@ -481,104 +429,6 @@ public abstract class Tile : Model, ISurface
     public void AssertDefined()
     {
         Assert.IsTrue(defined, "Tile not defined.");
-    }
-
-
-    /// <summary>
-    /// Returns the string representation of this Tile:<br></br>
-    /// 
-    /// "(X, Y)"
-    /// </summary>
-    /// <returns>the string representation of this Tile</returns>
-    public override string ToString()
-    {
-        return "(" + GetX() + ", " + GetY() + ")";
-    }
-
-    /// <summary>
-    /// Returns the pathfinding movement cost of this Tile.
-    /// </summary>
-    /// <returns>the Pathfinding movement cost of this Tile.</returns>
-    public int GetMovementCost()
-    {
-        return movementCost;
-    }
-
-    /// <summary>
-    /// Sets the pathfinding movement cost of this Tile.
-    /// </summary>
-    /// <param name="newCost">the updated movement cost</param>
-    public void SetMovementCost(int newCost)
-    {
-        if (newCost >= 0) movementCost = newCost;
-    }
-
-    /// <summary>
-    /// Returns the pathfinding heuristic cost of this Tile.
-    /// </summary>
-    /// <returns>the pathfinding heuristic cost of this Tile</returns>
-    public int GetHeuristicCost()
-    {
-        return heuristicCost;
-    }
-
-    /// <summary>
-    /// Sets the pathfinding heuristic cost of this Tile.
-    /// </summary>
-    /// <param name="newCost">the new heuristic cost of this Tile</param>
-    public void SetHeuristicCost(int newCost)
-    {
-        if (newCost >= 0) heuristicCost = newCost;
-    }
-
-    /// <summary>
-    /// Returns this Tile's pathfinding parent.
-    /// </summary>
-    /// <returns>this Tile's pathfinding parent.</returns>
-    public Tile GetPathfindingParent()
-    {
-        return pathfindParent;
-    }
-
-    /// <summary>
-    /// Sets this Tile's pathfinding parent.
-    /// </summary>
-    /// <param name="newParent">this Tile's pathfinding parent.</param>
-    public void SetPathfindingParent(Tile newParent)
-    {
-        pathfindParent = newParent;
-    }
-
-    /// <summary>
-    /// Returns this Tile's pathfinding movement and heuristic cost, combined.
-    /// </summary>
-    /// <returns>this Tile's pathfinding movement and heuristic cost, combined.</returns>
-    public int GetTotalPathfindingCost()
-    {
-        return GetMovementCost() + GetHeuristicCost();
-    }
-
-    /// <summary>
-    /// Returns the Manhattan Tile distance from this Tile to another.
-    /// </summary>
-    /// <param name="other">the other Tile.</param>
-    /// <returns>the Manhattan Tile distance from this Tile to another.</returns>
-    public int GetManhattanDistance(Tile other)
-    {
-        return GetManhattanDistance(other.GetX(), other.GetY());
-    }
-
-    /// <summary>
-    /// Returns the Manhattan Tile distance from this Tile to an (X, Y) coordinate.
-    /// </summary>
-    /// <param name="x">the X-coordinate.</param>
-    /// <param name="y">the Y-coordinate.</param>
-    /// <returns>the Manhattan Tile distance from this Tile to an (X, Y) coordinate.</returns>
-    public int GetManhattanDistance(int x, int y)
-    {
-        int xDistance = Mathf.Abs(GetX() - x);
-        int yDistance = Mathf.Abs(GetY() - y);
-        return xDistance + yDistance;
     }
 
     /// <summary>
@@ -723,6 +573,8 @@ public abstract class Tile : Model, ISurface
     /// <returns>true if there is a NexusHole on this Tile; otherwise,
     /// false. </returns>
     public bool HostsNexusHole() { return nexusHoleOccupant != null; }
+
+    #endregion
 }
 
 

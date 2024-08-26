@@ -1,23 +1,16 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Assertions;
-using static EnemyController;
 
 /// <summary>
-/// Controls an Acorn Projectile.
+/// Controls an Acorn. <br></br>
 /// 
 /// The AcornController is responsible for manipulating its Acorn and bringing
 /// it to life. This includes moving it, choosing targets, playing animations,
 /// and more.
 /// </summary>
+/// <![CDATA[<param name="AcornState">]]>
 public class AcornController : ProjectileController<AcornController.AcornState>
 {
-    /// <summary>
-    /// Acorns do not angle towards their target.
-    /// </summary>
-    protected override bool angleTowardsTarget => false;
+    #region Fields
 
     /// <summary>
     /// Possible states of an Acorn over its lifetime.
@@ -30,6 +23,14 @@ public class AcornController : ProjectileController<AcornController.AcornState>
         DEAD
     }
 
+    /// <summary>
+    /// Acorns do not angle towards their target.
+    /// </summary>
+    protected override bool angleTowardsTarget => false;
+
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Gives an Acorn an AcornController.
@@ -38,9 +39,7 @@ public class AcornController : ProjectileController<AcornController.AcornState>
     /// <param name="destination">Where the acorn started.</param>
     /// <param name="destination">Where the acorn should go.</param>
     public AcornController(Acorn acorn, Vector3 start, Vector3 destination) :
-        base(acorn, start, destination)
-    {
-    }
+        base(acorn, start, destination) { }
 
     /// <summary>
     /// Returns the Acorn model.
@@ -66,7 +65,9 @@ public class AcornController : ProjectileController<AcornController.AcornState>
         GetProjectile().SetCollided(model);
     }
 
-    //-----------------------STATE LOGIC------------------------//
+    #endregion
+
+    #region State Logic
 
     /// <summary>
     /// Updates the state of this AcornController's Acorn model.
@@ -127,7 +128,9 @@ public class AcornController : ProjectileController<AcornController.AcornState>
     /// </summary>
     public override void ExecuteDeadState() { return; }
 
-    //---------------------ANIMATION LOGIC----------------------//
+    #endregion
+
+    #region Animation Logic
 
     /// <summary>
     /// Adds one chunk of Time.deltaTime to the animation
@@ -158,4 +161,6 @@ public class AcornController : ProjectileController<AcornController.AcornState>
         AcornState state = GetState();
         if (state == AcornState.MOVING) midAirAnimationCounter = 0;
     }
+
+    #endregion
 }

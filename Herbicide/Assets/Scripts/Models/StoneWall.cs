@@ -1,13 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Represents a Stone Wall. These are the most basic type of Wall:
-/// they have infinite health, are immovable, and are impassable.
+/// Represents an impassable Stone Wall.
 /// </summary>
 public class StoneWall : Wall
 {
+    #region Fields
+
+    #endregion
+
+    #region Stats
+
     /// <summary>
     /// Type of a Stone Wall.
     /// </summary>
@@ -68,6 +71,10 @@ public class StoneWall : Wall
     /// </summary>
     public override float MIN_MOVEMENT_SPEED => 0f;
 
+    #endregion
+
+    #region Methods
+
     /// <summary>
     /// Returns the GameObject that represents this StoneWall on the grid.
     /// </summary>
@@ -123,4 +130,6 @@ public class StoneWall : Wall
         if (!hasEast && hasWest && !hasSouth && hasNorth) return 14;
         return 15; // has no neighbors
     }
+
+    #endregion
 }

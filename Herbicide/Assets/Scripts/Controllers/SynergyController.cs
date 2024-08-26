@@ -1,15 +1,22 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// A controller to track the current ITargetables in the
-/// scene and determine whether the player has any active synergies.
-/// Also responsible for defining said synergies.
+/// Controls synergies and their effects among Defenders.
 /// </summary>
 public class SynergyController : MonoBehaviour
 {
+    #region Fields
+
+    /// <summary>
+    /// All synergies.
+    /// </summary>
+    public enum Synergy
+    {
+        TRIPLE_THREAT
+    }
+
     /// <summary>
     /// Reference to the SynergyController singleton.
     /// </summary>
@@ -33,18 +40,13 @@ public class SynergyController : MonoBehaviour
     private AnimationCurve lerpCurve;
 
     /// <summary>
-    /// All synergies.
-    /// </summary>
-    public enum Synergy
-    {
-        TRIPLE_THREAT
-    }
-
-    /// <summary>
     /// The Player's selected synergies for this level.
     /// </summary>
     private HashSet<Synergy> chosenSynergies;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Gives the SynergyController the set of Synergies chosen by the player
@@ -142,4 +144,6 @@ public class SynergyController : MonoBehaviour
             slot.UpdateSynergySlot(tier, hovering, instance.lerpCurve);
         }
     }
+
+    #endregion
 }

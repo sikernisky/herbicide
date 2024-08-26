@@ -1,13 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Security.Cryptography;
 using UnityEngine;
 
 /// <summary>
-/// Represents a collectable currency.
+/// Represents a Collectable, that when collected, gives the player
+/// a form of currency.
 /// </summary>
 public abstract class Currency : Collectable
 {
+    #region Fields
+
+    /// <summary>
+    /// Current value of this Currency.
+    /// </summary>
+    private int value;
+
+    #endregion
+
+    #region Stats
+
     /// <summary>
     /// Starting value of this currency.
     /// </summary>
@@ -23,11 +32,9 @@ public abstract class Currency : Collectable
     /// </summary>
     public virtual int MIN_VALUE => int.MinValue;
 
-    /// <summary>
-    /// Current value of this Currency.
-    /// </summary>
-    private int value;
+    #endregion
 
+    #region Methods
 
     /// <summary>
     /// Performs actions when this Currency spawns in game. Sets the
@@ -60,4 +67,6 @@ public abstract class Currency : Collectable
     /// Sets this Currency's 2D Collider properties.
     /// </summary>
     public override void SetColliderProperties() { return; }
+
+    #endregion
 }

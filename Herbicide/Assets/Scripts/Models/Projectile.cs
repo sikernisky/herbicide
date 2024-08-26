@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -9,22 +7,7 @@ using UnityEngine.Assertions;
 /// </summary>
 public abstract class Projectile : Model
 {
-    //--------------------STATS---------------------//
-
-    /// <summary>
-    /// Starting speed of this Projectile.
-    /// </summary>
-    public abstract float BASE_SPEED { get; }
-
-    /// <summary>
-    /// Maximum speed of this Projectile.
-    /// </summary>
-    public abstract float MAX_SPEED { get; }
-
-    /// <summary>
-    /// Minimum speed of this Projectile.
-    /// </summary>
-    public abstract float MIN_SPEED { get; }
+    #region Fields
 
     /// <summary>
     /// Current speed of this Projectile.
@@ -32,48 +15,14 @@ public abstract class Projectile : Model
     private float speed;
 
     /// <summary>
-    /// Starting damage of this Projectile.
-    /// </summary>
-    public abstract int BASE_DAMAGE { get; }
-
-    /// <summary>
-    /// Maximum damage of this Projectile.
-    /// </summary>
-    public abstract int MAX_DAMAGE { get; }
-
-    /// <summary>
-    /// Minimum damage of this Projectile.
-    /// </summary>
-    public abstract int MIN_DAMAGE { get; }
-
-    /// <summary>
     /// Current damage of this Projectile.
     /// </summary>
     private int damage;
 
     /// <summary>
-    /// How many seconds this Projectile can last in the scene.
-    /// </summary>
-    public abstract float LIFESPAN { get; }
-
-    /// <summary>
     /// How long this Projectile has been active
     /// </summary>
     private float age;
-
-    /// <summary>
-    /// The duration of the animation that plays when this Projectile
-    /// is mid-air.
-    /// </summary>
-    public virtual float MID_AIR_ANIMATION_DURATION => .2f;
-
-    //----------------------------------------------//
-
-    /// <summary>
-    /// How many seconds a Projectile's move animation lasts,
-    /// from start to finish. 
-    /// </summary>
-    public abstract float MOVE_ANIMATION_DURATION { get; }
 
     /// <summary>
     /// true if this Projectile is active in the scene.
@@ -111,14 +60,61 @@ public abstract class Projectile : Model
     /// </summary>
     private bool reachedTarget;
 
+    #endregion
+
+    #region Stats
+
     /// <summary>
-    /// Types of Projectiles.
+    /// Starting speed of this Projectile.
     /// </summary>
-    public enum ProjectileType
-    {
-        ACORN,
-        BOMB
-    }
+    public abstract float BASE_SPEED { get; }
+
+    /// <summary>
+    /// Maximum speed of this Projectile.
+    /// </summary>
+    public abstract float MAX_SPEED { get; }
+
+    /// <summary>
+    /// Minimum speed of this Projectile.
+    /// </summary>
+    public abstract float MIN_SPEED { get; }
+
+
+    /// <summary>
+    /// Starting damage of this Projectile.
+    /// </summary>
+    public abstract int BASE_DAMAGE { get; }
+
+    /// <summary>
+    /// Maximum damage of this Projectile.
+    /// </summary>
+    public abstract int MAX_DAMAGE { get; }
+
+    /// <summary>
+    /// Minimum damage of this Projectile.
+    /// </summary>
+    public abstract int MIN_DAMAGE { get; }
+
+    /// <summary>
+    /// How many seconds this Projectile can last in the scene.
+    /// </summary>
+    public abstract float LIFESPAN { get; }
+
+    /// <summary>
+    /// The duration of the animation that plays when this Projectile
+    /// is mid-air.
+    /// </summary>
+    public virtual float MID_AIR_ANIMATION_DURATION => .2f;
+
+    /// <summary>
+    /// How many seconds a Projectile's move animation lasts,
+    /// from start to finish. 
+    /// </summary>
+    public abstract float MOVE_ANIMATION_DURATION { get; }
+
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Informs this Projectile that it collided with some Model.
@@ -255,4 +251,6 @@ public abstract class Projectile : Model
     /// </summary>
     /// <param name="position">The position to set the shadow to.</param>
     public void SetShadowPosition(Vector3 position) { shadow.transform.position = position; }
+
+    #endregion
 }

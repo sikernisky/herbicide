@@ -1,16 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Manages assets for Tile components. With a factory,
-/// we save tremendous amounts of memory -- each Tile object
-/// can access its needed Sprite here rather than instantiating its own
-/// array of possible Sprites.
+/// Produces assets related to Tiles.
 /// </summary>
 public class TileFactory : MonoBehaviour
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the TileFactory singleton.
     /// </summary>
@@ -26,6 +23,10 @@ public class TileFactory : MonoBehaviour
     /// </summary>
     [SerializeField]
     private Sprite[] grassTileSprites;
+
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Finds and sets the TileFactory singleton.
@@ -70,4 +71,6 @@ public class TileFactory : MonoBehaviour
 
         return null;
     }
+
+    #endregion
 }

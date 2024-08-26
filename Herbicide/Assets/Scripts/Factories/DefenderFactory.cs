@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -8,6 +6,8 @@ using UnityEngine.Assertions;
 /// </summary>
 public class DefenderFactory : Factory
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the DefenderFactory singleton.
     /// </summary>
@@ -30,6 +30,10 @@ public class DefenderFactory : Factory
     /// </summary>
     [SerializeField]
     private DefenderAnimationSet porcupineAnimationSet;
+
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Finds and sets the DefenderFactory singleton.
@@ -145,5 +149,5 @@ public class DefenderFactory : Factory
         return instance.transform;
     }
 
-
+    #endregion
 }

@@ -1,13 +1,18 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Controls a Porcupoine.
+/// Controls a Porcupine. <br></br>
+/// 
+/// The PorcupineController is responsible for manipulating its Porcupine and bringing
+/// it to life. This includes moving it, choosing targets, playing animations,
+/// and more.
 /// </summary>
+/// <![CDATA[<param name="AcornState">]]>
 public class PorcupineController : DefenderController<PorcupineController.PorcupineState>
 {
+    #region Fields
 
     /// <summary>
     /// States of a Porcupine.
@@ -32,14 +37,6 @@ public class PorcupineController : DefenderController<PorcupineController.Porcup
     /// </summary>
     private float attackAnimationCounter;
 
-
-    /// <summary>
-    /// Creates a PorcupineController reference.
-    /// </summary>
-    /// <param name="porcupine">The Porcupine defender.</param>
-    /// <returns>a new PorcupineController reference.</returns>
-    public PorcupineController(Porcupine porcupine) : base(porcupine) { }
-
     /// <summary>
     /// Maximum number of targets a Porcupine can have at once.
     /// </summary>
@@ -50,6 +47,16 @@ public class PorcupineController : DefenderController<PorcupineController.Porcup
     /// </summary>
     private const float delayBetweenQuills = 0.05f;
 
+    #endregion
+
+    #region Methods
+
+    /// <summary>
+    /// Creates a PorcupineController reference.
+    /// </summary>
+    /// <param name="porcupine">The Porcupine defender.</param>
+    /// <returns>a new PorcupineController reference.</returns>
+    public PorcupineController(Porcupine porcupine) : base(porcupine) { }
 
     /// <summary>
     /// Main update loop for the Porcupine.
@@ -74,6 +81,65 @@ public class PorcupineController : DefenderController<PorcupineController.Porcup
     /// </summary>
     /// <returns>this PorcupineController's Porcupine.</returns>
     private Porcupine GetPorcupine() { return GetMob() as Porcupine; }
+
+    /// <summary>
+    /// Queues a quill to be fired at the Porcupine's target.
+    /// </summary>
+    /// <returns>A reference to the coroutine.</returns>
+    /// <param name="numQuills">The number of quills to fire.</param>
+    private IEnumerator FireQuills(int numQuills)
+    {
+        Assert.IsTrue(delayBetweenQuills >= 0, "Delay needs to be non-negative");
+
+        for (int i = 0; i < numQuills; i++)
+        {
+            Enemy target = GetTarget() as Enemy;
+            if (target == null || !target.Targetable()) yield break; // Invalid target.
+
+            SetAnimation(GetPorcupine().ATTACK_ANIMATION_DURATION / numQuills,
+                DefenderFactory.GetAttackTrack(
+                    ModelType.PORCUPINE,
+                    GetPorcupine().GetDirection(), GetPorcupine().GetTier()));
+
+            GameObject quillPrefab = ProjectileFactory.GetProjectilePrefab(ModelType.QUILL);
+            Assert.IsNotNull(quillPrefab);
+            Quill quillComp = quillPrefab.GetComponent<Quill>();
+            Assert.IsNotNull(quillComp);
+            Vector3 targetPosition = GetTarget().GetAttackPosition();
+            QuillController quillController = new QuillController(quillComp, GetPorcupine().GetPosition(), targetPosition);
+            ControllerController.AddModelController(quillController);
+
+            if (i < numQuills - 1) // Wait for the delay between shots unless it's the last one
+            {
+                yield return new WaitForSeconds(delayBetweenQuills);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Returns true if the Porcupine can shoot an quill.
+    /// </summary>
+    /// <returns>true if the Porcupine can shoot an quill; otherwise,
+    /// false.</returns>
+    public override bool CanAttack()
+    {
+        if (!base.CanAttack()) return false; //Cooldown
+        if (GetState() != PorcupineState.ATTACK) return false; //Not in the attack state.
+        Enemy target = GetTarget() as Enemy;
+        if (target == null || !target.Targetable()) return false; //Invalid target.
+        return true;
+    }
+
+    /// <summary>
+    /// Handles all collisions between this controller's Porcupine
+    /// model and some other collider.
+    /// </summary>
+    /// <param name="other">the other collider.</param>
+    protected override void HandleCollision(Collider2D other) { throw new System.NotImplementedException(); }
+
+    #endregion
+
+    #region State Logic
 
     /// <summary>
     /// Returns true if two PorcupineStates are equal.
@@ -177,27 +243,9 @@ public class PorcupineController : DefenderController<PorcupineController.Porcup
         GetPorcupine().RestartAttackCooldown();
     }
 
-    /// <summary>
-    /// Returns true if the Porcupine can shoot an quill.
-    /// </summary>
-    /// <returns>true if the Porcupine can shoot an quill; otherwise,
-    /// false.</returns>
-    public override bool CanAttack()
-    {
-        if (!base.CanAttack()) return false; //Cooldown
-        if (GetState() != PorcupineState.ATTACK) return false; //Not in the attack state.
-        Enemy target = GetTarget() as Enemy;
-        if (target == null || !target.Targetable()) return false; //Invalid target.
-        return true;
-    }
+    #endregion
 
-    /// <summary>
-    /// Handles all collisions between this controller's Porcupine
-    /// model and some other collider.
-    /// </summary>
-    /// <param name="other">the other collider.</param>
-    protected override void HandleCollision(Collider2D other) { throw new System.NotImplementedException(); }
-
+    #region Animation Logic
 
     /// <summary>
     /// Adds one chunk of Time.deltaTime to the animation
@@ -232,37 +280,5 @@ public class PorcupineController : DefenderController<PorcupineController.Porcup
         else if (state == PorcupineState.ATTACK) attackAnimationCounter = 0;
     }
 
-    /// <summary>
-    /// Queues a quill to be fired at the Porcupine's target.
-    /// </summary>
-    /// <returns>A reference to the coroutine.</returns>
-    /// <param name="numQuills">The number of quills to fire.</param>
-    private IEnumerator FireQuills(int numQuills)
-    {
-        Assert.IsTrue(delayBetweenQuills >= 0, "Delay needs to be non-negative");
-
-        for (int i = 0; i < numQuills; i++)
-        {
-            Enemy target = GetTarget() as Enemy;
-            if (target == null || !target.Targetable()) yield break; // Invalid target.
-
-            SetAnimation(GetPorcupine().ATTACK_ANIMATION_DURATION / numQuills,
-                DefenderFactory.GetAttackTrack(
-                    ModelType.PORCUPINE,
-                    GetPorcupine().GetDirection(), GetPorcupine().GetTier()));
-
-            GameObject quillPrefab = ProjectileFactory.GetProjectilePrefab(ModelType.QUILL);
-            Assert.IsNotNull(quillPrefab);
-            Quill quillComp = quillPrefab.GetComponent<Quill>();
-            Assert.IsNotNull(quillComp);
-            Vector3 targetPosition = GetTarget().GetAttackPosition();
-            QuillController quillController = new QuillController(quillComp, GetPorcupine().GetPosition(), targetPosition);
-            ControllerController.AddModelController(quillController);
-
-            if (i < numQuills - 1) // Wait for the delay between shots unless it's the last one
-            {
-                yield return new WaitForSeconds(delayBetweenQuills);
-            }
-        }
-    }
+    #endregion
 }

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -8,6 +6,8 @@ using UnityEngine.Assertions;
 /// </summary>
 public class NexusFactory : Factory
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the NexusFactory singleton.
     /// </summary>
@@ -25,6 +25,9 @@ public class NexusFactory : Factory
     [SerializeField]
     private Sprite[] boatTrack;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Finds and sets the NexusFactory singleton.
@@ -71,4 +74,6 @@ public class NexusFactory : Factory
     /// </summary>
     /// <returns>the Transform component of the NexusFactory instance.</returns>
     protected override Transform GetTransform() { return instance.transform; }
+
+    #endregion
 }

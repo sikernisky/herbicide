@@ -1,13 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Represents a Damage Over Time effect.
+/// Data Structure for a Damage Over Time effect.
 /// </summary>
 public class DamageOverTime
 {
+    #region Fields
+
+    /// <summary>
+    /// Type of DamageOverTime effect.
+    /// </summary>
+    public enum DOTType
+    {
+        BEAR_CHOMP
+    }
+
     /// <summary>
     /// Total damage the effect will deal.
     /// </summary>
@@ -38,14 +46,9 @@ public class DamageOverTime
     /// </summary>
     private DOTType dotType;
 
-    /// <summary>
-    /// Type of DamageOverTime effect.
-    /// </summary>
-    public enum DOTType
-    {
-        BEAR_CHOMP
-    }
+    #endregion
 
+    #region Methods
 
     /// <summary>
     /// Constructs a new DamageOverTime effect.
@@ -119,4 +122,5 @@ public class DamageOverTime
     /// <returns>the type of DamageOverTime effect.</returns>
     public DOTType GetDOTType() { return dotType; }
 
+    #endregion
 }

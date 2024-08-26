@@ -1,17 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System;
 
 /// <summary>
-/// Abstract class to represent controllers of Collectables.
+/// Controls a Collectable. <br></br>
 /// 
-/// The CollectableController is responsible for manipulating its Defender and bringing
-/// it to life. This includes moving it, playing animations, and more.
+/// The CollectableController is responsible for manipulating its Collectable and bringing
+/// it to life. This includes moving it, choosing targets, playing animations,
+/// and more.
 /// </summary>
 /// <typeparam name="T">Enum to represent state of the Collectable.</typeparam>
 public abstract class CollectableController<T> : ModelController, IStateTracker<T> where T : Enum
 {
+    #region Fields
+
     /// <summary>
     /// Current state of the Collectable.
     /// </summary>
@@ -87,6 +88,10 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
     /// complete its homing movement. 
     /// </summary>
     private bool isHoming;
+
+    #endregion
+
+    #region Methods
 
 
     /// <summary>
@@ -164,50 +169,6 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
         return Vector3.Distance(mousePos, GetCollectable().GetPosition())
         < collectionRange;
     }
-
-
-    //----------------------STATE LOGIC--------------------------//
-
-    /// <summary>
-    /// Sets the state of the Collectable.
-    /// </summary>
-    /// <param name="state">The state to set to.</param>
-    public void SetState(T state) { this.state = state; }
-
-    /// <summary>
-    /// Returns true if two states are equal.
-    /// </summary>
-    /// <param name="stateA">The first state.</param>
-    /// <param name="stateB">The second state.</param>
-    /// <returns>true if two states are equal; otherwise, false.</returns>
-    public abstract bool StateEquals(T stateA, T stateB);
-
-    /// <summary>
-    /// Returns the state of the Collectable.
-    /// </summary>
-    /// <returns>the state of the Collectable.</returns>
-    public T GetState() { return state; }
-
-    /// <summary>
-    /// Updates the state of this CollectableController's Collectable model.
-    /// </summary>
-    public abstract void UpdateStateFSM();
-
-    //---------------------ANIMATION LOGIC-----------------------//
-
-    /// <summary>
-    /// Returns the Collectable's current animation state.
-    /// </summary>
-    /// <returns>the Collectable's current animation state.</returns>
-    public T GetAnimationState() { return animationState; }
-
-    /// <summary>
-    /// Sets the Collectable's current animation state.
-    /// </summary>
-    /// <param name="animationState">The animation state to set.</param>
-    public void SetAnimationState(T animationState) { this.animationState = animationState; }
-
-    //---------------------BOBBING LOGIC-----------------------//
 
     /// <summary>
     /// Bobs the Collectable up and down.
@@ -291,4 +252,51 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
             GetCollectable().SetWorldPosition(newPosition);
         }
     }
+
+    #endregion
+
+    #region State Logic
+
+    /// <summary>
+    /// Sets the state of the Collectable.
+    /// </summary>
+    /// <param name="state">The state to set to.</param>
+    public void SetState(T state) { this.state = state; }
+
+    /// <summary>
+    /// Returns true if two states are equal.
+    /// </summary>
+    /// <param name="stateA">The first state.</param>
+    /// <param name="stateB">The second state.</param>
+    /// <returns>true if two states are equal; otherwise, false.</returns>
+    public abstract bool StateEquals(T stateA, T stateB);
+
+    /// <summary>
+    /// Returns the state of the Collectable.
+    /// </summary>
+    /// <returns>the state of the Collectable.</returns>
+    public T GetState() { return state; }
+
+    /// <summary>
+    /// Updates the state of this CollectableController's Collectable model.
+    /// </summary>
+    public abstract void UpdateStateFSM();
+
+    #endregion
+
+    #region Animation Logic
+
+    /// <summary>
+    /// Returns the Collectable's current animation state.
+    /// </summary>
+    /// <returns>the Collectable's current animation state.</returns>
+    public T GetAnimationState() { return animationState; }
+
+    /// <summary>
+    /// Sets the Collectable's current animation state.
+    /// </summary>
+    /// <param name="animationState">The animation state to set.</param>
+    public void SetAnimationState(T animationState) { this.animationState = animationState; }
+
+    #endregion
 }

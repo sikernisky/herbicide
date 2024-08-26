@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
@@ -9,15 +7,16 @@ using UnityEngine.Assertions;
 /// </summary>
 public class ModelCounts
 {
+    #region Fields
+
     /// <summary>
     /// Current number of each ModelType.
     /// </summary>
     private Dictionary<ModelType, int> data;
 
-    /// <summary>
-    /// The number of each tier of ModelType (Defenders).
-    /// </summary>
-    private Dictionary<ModelType, int> tierCounts;
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Creates a new MobCounts object. Initializes the
@@ -37,7 +36,6 @@ public class ModelCounts
         data[type] = count;
     }
 
-
     /// <summary>
     /// Returns the number of active Models of some ModelType.
     /// </summary>
@@ -48,13 +46,5 @@ public class ModelCounts
         return data.TryGetValue(type, out int count) ? count : 0;
     }
 
-    /// <summary>
-    /// Sets the number of all active Models to 0.
-    /// </summary>
-    /// <param name="controller">ControllerController reference.</param>
-    public void WipeCounts(ControllerController controller)
-    {
-        Assert.IsNotNull(controller);
-        data.Clear();
-    }
+    #endregion
 }

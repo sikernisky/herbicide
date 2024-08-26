@@ -1,13 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Produces assets related to Enemies. 
+/// Produces assets related to Projectiles. 
 /// </summary>
 public class ProjectileFactory : Factory
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the ProjectileFactory singleton.
     /// </summary>
@@ -24,6 +24,10 @@ public class ProjectileFactory : Factory
     /// </summary>
     [SerializeField]
     private ProjectileAnimationSet quillAnimationSet;
+
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Finds and sets the ProjectileFactory singleton.
@@ -53,7 +57,6 @@ public class ProjectileFactory : Factory
     /// </summary>
     /// <param name="prefab">the prefab to accept.</param>
     public static void ReturnProjectilePrefab(GameObject prefab) => instance.ReturnObject(prefab);
-
 
     /// <summary>
     /// Returns the animation track that represents this Projectile when placing.
@@ -100,4 +103,6 @@ public class ProjectileFactory : Factory
     {
         return instance.transform;
     }
+
+    #endregion
 }

@@ -1,17 +1,15 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Represents an object deserialized from a Tiled JSON
-/// file. This is abstract; subclasses implement more
-/// specific variations, such as enemies, defenders, etc.
+/// Represents an object within a Tiled JSON file, deserialized.
 /// </summary>
 [SerializeField]
 public class ObjectData
 {
+    #region Fields
+
     /// <summary>
     /// All of this object's custom properties.
     /// </summary>
@@ -65,6 +63,10 @@ public class ObjectData
     /// The (X, Y) coordinates where this ObjectData should spawn.
     /// </summary>
     private Vector2Int spawnCoords;
+
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Returns true if this ObjectData is a deserialized enemy.
@@ -252,4 +254,6 @@ public class ObjectData
         spawnCoords.Set(x / width, mapHeight - (y / height));
         return spawnCoords;
     }
+
+    #endregion
 }

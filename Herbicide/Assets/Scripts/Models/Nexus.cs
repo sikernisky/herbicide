@@ -1,13 +1,33 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Represents something the Enemies are trying to destroy.
+/// Represents a Structure that Enemies target.
 /// </summary>
-public class Nexus : Structure
+public class Nexus : Mob
 {
+    #region Fields
+
+    /// <summary>
+    /// true if this Nexus was brought to the target position.
+    /// </summary>
+    private bool cashedIn;
+
+    /// <summary>
+    /// The Transform of the Model that picked this Nexus up; null if
+    /// it is not picked up.
+    /// </summary>
+    private Transform holder;
+
+    /// <summary>
+    /// The HOLDER_OFFSET of the model that picked this Model up.
+    /// </summary>
+    private Vector2 holdingOffset;
+
+    #endregion
+
+    #region Stats
+
     /// <summary>
     /// The StructureType of a Nexus.
     /// </summary>
@@ -98,21 +118,9 @@ public class Nexus : Structure
     /// </summary>
     public override float MIN_MOVEMENT_SPEED => 0f;
 
-    /// <summary>
-    /// true if this Nexus was brought to the target position.
-    /// </summary>
-    private bool cashedIn;
+    #endregion
 
-    /// <summary>
-    /// The Transform of the Model that picked this Nexus up; null if
-    /// it is not picked up.
-    /// </summary>
-    private Transform holder;
-
-    /// <summary>
-    /// The HOLDER_OFFSET of the model that picked this Model up.
-    /// </summary>
-    private Vector2 holdingOffset;
+    #region Methods
 
     /// <summary>
     /// Returns true if this Nexus is dead. This is when its
@@ -153,8 +161,6 @@ public class Nexus : Structure
     /// </summary>
     public void CashIn() { cashedIn = true; }
 
-
-
     /// <summary>
     /// Informs this Model that it has been picked up.
     /// </summary>
@@ -194,4 +200,6 @@ public class Nexus : Structure
     {
         return holder.position + new Vector3(holdingOffset.x, holdingOffset.y, 1);
     }
+
+    #endregion
 }

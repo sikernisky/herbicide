@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using TMPro;
@@ -9,6 +7,8 @@ using TMPro;
 /// </summary>
 public class LevelCompletionController : MonoBehaviour
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the LevelCompletionController singleton.
     /// </summary>
@@ -30,6 +30,10 @@ public class LevelCompletionController : MonoBehaviour
     /// </summary>
     [SerializeField]
     private TMP_Text resultText;
+
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Finds and sets the LevelCompletionController singleton.
@@ -94,4 +98,6 @@ public class LevelCompletionController : MonoBehaviour
             resultText.text = "You Tied!";
         }
     }
+
+    #endregion
 }

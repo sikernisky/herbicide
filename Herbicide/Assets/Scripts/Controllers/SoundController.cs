@@ -1,13 +1,14 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Plays, queues, and stops all sound effects and music.
+/// Controls the sound in the game.
 /// </summary>
 public class SoundController : MonoBehaviour
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the SoundController singleton.
     /// </summary>
@@ -37,6 +38,9 @@ public class SoundController : MonoBehaviour
     [SerializeField]
     private List<Sound> musicSounds;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Finds and sets the SoundController singleton for a level.
@@ -124,4 +128,6 @@ public class SoundController : MonoBehaviour
 
         instance.effectSource.volume = volume;
     }
+
+    #endregion
 }

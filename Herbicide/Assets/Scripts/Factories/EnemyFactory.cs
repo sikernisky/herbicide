@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -8,6 +6,8 @@ using UnityEngine.Assertions;
 /// </summary>
 public class EnemyFactory : Factory
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the EnemyFactory singleton.
     /// </summary>
@@ -25,6 +25,9 @@ public class EnemyFactory : Factory
     [SerializeField]
     private EnemyAnimationSet kudzuAnimationSet;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Finds and sets the EnemyFactory singleton.
@@ -124,8 +127,6 @@ public class EnemyFactory : Factory
         // FOR NOW, WE USE MOVEMENT
 
         return GetMovementTrack(e, d, s);
-
-        // throw new System.Exception("Enemy " + e + " not supported.");
     }
 
     /// <summary>
@@ -145,8 +146,6 @@ public class EnemyFactory : Factory
         //     case ModelType.KUDZU:
         //         return instance.kudzuAnimationSet.GetSpawnAnimation(d, s);
         // }
-
-        // throw new System.Exception("Enemy " + e + " not supported.");
 
         // FOR NOW, WE USE MOVEMENT
 
@@ -179,4 +178,6 @@ public class EnemyFactory : Factory
     {
         return instance.transform;
     }
+
+    #endregion
 }

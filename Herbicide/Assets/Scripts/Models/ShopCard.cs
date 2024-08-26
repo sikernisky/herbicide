@@ -5,11 +5,12 @@ using UnityEngine.Assertions;
 using UnityEngine.UI;
 
 /// <summary>
-/// Represents a card in the Shop. Cards hold information
-/// and art related to something the player can buy. 
+/// Represents a card in the Shop for sale.
 /// </summary>
 public class ShopCard : UIModel
 {
+    #region Fields
+
     /// <summary>
     /// Image that represents the ShopCard's background.
     /// </summary>
@@ -43,12 +44,6 @@ public class ShopCard : UIModel
     private RectTransform cardTransform;
 
     /// <summary>
-    /// The prefab of the Model this ShopCard produces
-    /// </summary>
-    [SerializeField]
-    private GameObject modelPrefab;
-
-    /// <summary>
     /// The Model this ShopCard produces
     /// </summary>
     [SerializeField]
@@ -76,6 +71,31 @@ public class ShopCard : UIModel
     /// </summary>
     private readonly Color32 defaultColor = new Color32(255, 255, 255, 255);
 
+    #endregion
+
+    #region Methods
+
+    /// <summary>
+    /// Returns the ModelType of this ShopCard. To do this, examines
+    /// the Model attached to this ShopCard. We need to do this
+    /// in order to not make a class for each ShopCard type.
+    /// </summary>
+    /// <returns> the ModelType of this ShopCard</returns>
+    public override ModelType GetModelType()
+    {
+        if(model == null) return ModelType.SHOP_CARD_BLANK;
+        switch (model.TYPE)
+        {
+            case ModelType.BEAR:
+                return ModelType.SHOP_CARD_BEAR;
+            case ModelType.PORCUPINE:
+                return ModelType.SHOP_CARD_PORCUPINE;
+            case ModelType.SQUIRREL:
+                return ModelType.SHOP_CARD_SQUIRREL;
+            default:
+                return ModelType.SHOP_CARD_BLANK;
+        }
+    }
 
     /// <summary>
     /// Returns this ShopCard's RectTransform component.
@@ -91,8 +111,7 @@ public class ShopCard : UIModel
     /// attached.</returns>
     public GameObject GetShopCardModelPrefab()
     {
-        Assert.IsNotNull(modelPrefab, "Model prefab is null.");
-
+        Assert.IsNotNull(model, "Model is null.");
         return model.Copy();
     }
 
@@ -130,7 +149,6 @@ public class ShopCard : UIModel
     {
         cardBackgroundImage.color = darkenedColor;
         cardTitle.color = darkenedColor;
-        //   cardButton.enabled = false;
     }
 
     /// <summary>
@@ -140,6 +158,7 @@ public class ShopCard : UIModel
     {
         cardBackgroundImage.color = defaultColor;
         cardTitle.color = defaultColor;
-        //        cardButton.enabled = true;
     }
+
+    #endregion
 }

@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -10,6 +8,8 @@ using UnityEngine.Assertions;
 /// </summary>
 public class ObjectPool
 {
+    #region Fields
+
     /// <summary>
     /// The type of Model that occupies this ObjectPool.
     /// </summary>
@@ -35,6 +35,9 @@ public class ObjectPool
     /// </summary>
     private HashSet<int> objectIds;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Creates a new ObjectPool, spawning a finite number of the GameObject prefab.
@@ -109,4 +112,6 @@ public class ObjectPool
     /// </summary>
     /// <returns>the ModelType of GameObject prefabs that occupy this ObjectPool.</returns>
     public ModelType GetPoolType() { return poolType; }
+
+    #endregion
 }

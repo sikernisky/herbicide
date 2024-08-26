@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
@@ -8,10 +6,12 @@ using UnityEngine.UI;
 #pragma warning disable CS0618
 
 /// <summary>
-/// Controls the settings of the game.
+/// Controls the settings menu and stores settings data.
 /// </summary>
 public class SettingsController : MonoBehaviour
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the SettingsController singleton.
     /// </summary>
@@ -35,16 +35,14 @@ public class SettingsController : MonoBehaviour
     [SerializeField]
     private Slider soundFXVolumeSlider;
 
-    // -----------------BEGIN PLAYTESTING----------------- //
-
     /// <summary>
     /// true if health bars should be shown; otherwise, false.
     /// </summary>
     public static bool SHOW_HEALTH_BARS { get; private set; } = true;
 
+    #endregion
 
-    // -----------------END PLAYTESTING----------------- //
-
+    #region Methods
 
     /// <summary>
     /// Finds and sets the SettingsController singleton for a level.
@@ -151,4 +149,5 @@ public class SettingsController : MonoBehaviour
         SoundController.SetSoundFXVolume(soundFXVolumeSlider.value);
     }
 
+    #endregion
 }

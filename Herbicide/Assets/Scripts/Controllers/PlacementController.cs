@@ -1,15 +1,15 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
 
 /// <summary>
-/// Handles selecting and placing items. This may happen in regards to the
-/// Inventory or Tiles.
+/// Controls placement events.
 /// </summary>
 public class PlacementController : MonoBehaviour
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the PlacementController singleton.
     /// </summary>
@@ -117,6 +117,9 @@ public class PlacementController : MonoBehaviour
     /// </summary>
     private int newTier;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Finds and sets the PlacementController singleton.
@@ -428,4 +431,5 @@ public class PlacementController : MonoBehaviour
         instance.OnFinishPlacing += handler;
     }
 
+    #endregion
 }

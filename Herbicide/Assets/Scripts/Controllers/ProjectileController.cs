@@ -1,24 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using System;
 
 /// <summary>
-/// Abstract class to represent controllers of Projectiles.
+/// Controls a Projectile. <br></br>
 /// 
 /// The ProjectileController is responsible for manipulating its Projectile and bringing
-/// it to life. This includes moving it, firing in a specific way, playing animations,
+/// it to life. This includes moving it, choosing targets, playing animations,
 /// and more.
 /// </summary>
 /// <typeparam name="T">Enum to represent state of the Projectile.</typeparam>
 public abstract class ProjectileController<T> : ModelController, IStateTracker<T> where T : Enum
 {
-    /// <summary>
-    /// The number of Projectiles assigned to ProjectileControllers since
-    /// this scene began.
-    /// </summary>
-    private static int NUM_PROJECTILES;
+    #region Fields
 
     /// <summary>
     /// The Projectile's state.
@@ -55,7 +49,6 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// </summary>
     private float parabolicStep;
 
-
     /// <summary>
     /// Counts the number of seconds in the mid air animation; resets
     /// on step.
@@ -68,6 +61,9 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// </summary>
     protected abstract bool angleTowardsTarget { get; }
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Makes a new ProjectileController for this Projectile.
@@ -89,7 +85,6 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
             if(linearDirection.x < 0) angle += 180;
             projectile.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
         }
-        NUM_PROJECTILES++;
     }
 
     /// <summary>
@@ -151,7 +146,9 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// <returns>the linear direction of the Projectile.</returns>
     protected Vector3 GetLinearDirection() { return linearDirection; }
 
-    //-----------------------STATE LOGIC------------------------//
+    #endregion
+
+    #region State Logic
 
     /// <summary>
     /// Sets the State of this ProjectileController. This helps keep track of
@@ -220,8 +217,9 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// <param name="animationState">the animation state to set.</param>
     public void SetAnimationState(T animationState) { this.animationState = animationState; }
 
+    #endregion
 
-    //------------------------SHOT/MOVEMENT TYPES------------------------//
+    #region Movement Logic
 
     /// <summary>
     /// Called each frame: moves the Projectile towards its target in a lobbing
@@ -276,4 +274,6 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
         // Check if the projectile has reached the destination
         if (currentPosition == targetPosition) { }
     }
+
+    #endregion
 }

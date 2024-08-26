@@ -1,18 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// The most basic type of Flooring: soil. Gets placed on a base
-/// Tile and can host different growables.
+/// Represents a Soil Flooring. 
 /// </summary>
 public class SoilFlooring : Flooring
 {
+    #region Fields
+
+    #endregion
+
+    #region Stats
+
     /// <summary>
     /// Type of a SoilFlooring.
     /// </summary>
     public override ModelType TYPE => ModelType.SOIL_FLOORING;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Returns the index representing the correct Sprite in this 
@@ -56,4 +62,6 @@ public class SoilFlooring : Flooring
     {
         return FlooringFactory.GetFlooringPrefab(ModelType.SOIL_FLOORING);
     }
+
+    #endregion
 }

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -7,6 +5,12 @@ using UnityEngine;
 /// </summary>
 public class Acorn : Projectile
 {
+    #region Fields
+
+    #endregion
+
+    #region Stats
+
     /// <summary>
     /// ModelType of an Acorn.
     /// </summary>
@@ -30,7 +34,7 @@ public class Acorn : Projectile
     /// <summary>
     /// Starting damage of an Acorn.
     /// </summary>
-    public override int BASE_DAMAGE => 5; //default: 5
+    public override int BASE_DAMAGE => 100; //default: 5
 
     /// <summary>
     /// Maximum damage of an Acorn.
@@ -53,6 +57,9 @@ public class Acorn : Projectile
     /// </summary>
     public override float MOVE_ANIMATION_DURATION => 0f;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Returns the GameObject that represents this Acorn on the grid.
@@ -68,4 +75,6 @@ public class Acorn : Projectile
     /// <returns> a Sprite that represents this Acorn when it is
     /// being placed.</returns>
     public override Sprite[] GetPlacementTrack() { return ProjectileFactory.GetPlacementTrack(TYPE); }
+
+    #endregion
 }

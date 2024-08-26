@@ -1,13 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// A serializable class to store Sound data.
+/// DataStructure to hold Sound information.
 /// </summary>
 [System.Serializable]
 public class Sound
 {
+    #region Fields
+
     /// <summary>
     /// true if this Sound is a music clip; otherwise, it's a 
     /// sound effect.
@@ -26,6 +26,10 @@ public class Sound
     /// </summary>
     [SerializeField]
     private string soundName;
+
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Returns the AudioClip associated with this Sound.
@@ -55,4 +59,6 @@ public class Sound
     {
         return isMusic;
     }
+
+    #endregion
 }

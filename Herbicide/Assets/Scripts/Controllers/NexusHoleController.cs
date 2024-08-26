@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 /// <summary>
 /// Controls a NexusHole.
@@ -10,8 +7,11 @@ using UnityEngine.Assertions;
 /// it to life. This includes moving it, choosing targets, playing animations,
 /// and more.
 /// </summary>
+/// <![CDATA[<param name="NexusHoleState">]]>
 public class NexusHoleController : MobController<NexusHoleController.NexusHoleState>
 {
+    #region Fields
+
     /// <summary>
     /// States of a NexusHole.
     /// </summary>
@@ -27,6 +27,9 @@ public class NexusHoleController : MobController<NexusHoleController.NexusHoleSt
     /// </summary>
     protected override int MAX_TARGETS => 0;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Assigns a NexusHole to a controller.
@@ -62,23 +65,6 @@ public class NexusHoleController : MobController<NexusHoleController.NexusHoleSt
     protected override void HandleCollision(Collider2D other) { return; }
 
     /// <summary>
-    /// Adds one chunk of Time.deltaTime to the animation
-    /// counter that tracks the current state.
-    /// </summary>
-    public override void AgeAnimationCounter() { throw new System.NotImplementedException(); }
-
-    /// <summary>
-    /// Returns the animation counter for the current state.
-    /// </summary>
-    /// <returns>the animation counter for the current state.</returns>
-    public override float GetAnimationCounter() { throw new System.NotImplementedException(); }
-
-    /// <summary>
-    /// Sets the animation counter for the current state to 0.
-    /// </summary>
-    public override void ResetAnimationCounter() { throw new System.NotImplementedException(); }
-
-    /// <summary>
     /// Returns the NexusHole prefab to the NexusHoleFactory singleton.
     /// </summary>
     public override void DestroyModel()
@@ -86,7 +72,10 @@ public class NexusHoleController : MobController<NexusHoleController.NexusHoleSt
         NexusHoleFactory.ReturnNexusHolePrefab(GetNexusHole().gameObject);
     }
 
-    //--------------------- STATE LOGIC-----------------------//
+
+    #endregion
+
+    #region State Logic
 
     /// <summary>
     /// Updates the state of the NexusHole. The transitions are: <br></br>
@@ -119,4 +108,27 @@ public class NexusHoleController : MobController<NexusHoleController.NexusHoleSt
     {
         return stateA == stateB;
     }
+
+    #endregion
+
+    #region Animation Logic
+
+    /// <summary>
+    /// Adds one chunk of Time.deltaTime to the animation
+    /// counter that tracks the current state.
+    /// </summary>
+    public override void AgeAnimationCounter() { throw new System.NotImplementedException(); }
+
+    /// <summary>
+    /// Returns the animation counter for the current state.
+    /// </summary>
+    /// <returns>the animation counter for the current state.</returns>
+    public override float GetAnimationCounter() { throw new System.NotImplementedException(); }
+
+    /// <summary>
+    /// Sets the animation counter for the current state to 0.
+    /// </summary>
+    public override void ResetAnimationCounter() { throw new System.NotImplementedException(); }
+
+    #endregion
 }

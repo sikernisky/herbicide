@@ -1,13 +1,18 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Initiates and handles explosions. Different classes
-/// call this class to create an explosion.
+/// Controls explosions and area of effect events. 
 /// </summary>
 public class ExplosionController
 {
+    #region Fields
+
+    #endregion
+
+    #region Methods
+
     /// <summary>
     /// Detonates an explosion at the given GameObject's position. The
     /// explosion will deal damage to all PlaceableObjects within the
@@ -19,7 +24,7 @@ public class ExplosionController
     /// within the explosion area. </param>
     /// <param name="immuneObjects">List of PlaceableObjects that are immune to
     /// the explosion's damage. </param>
-    public static void DetonateExplosion(GameObject explosionArea, float damage, HashSet<PlaceableObject> immuneObjects)
+    public static void DetonateExplosion(GameObject explosionArea, float damage, HashSet<PlaceableObject> immuneObjects, HashSet<Type> immuneTypes)
     {
         BoxCollider2D boxCollider = explosionArea.GetComponent<BoxCollider2D>();
         if (boxCollider != null)
@@ -36,8 +41,11 @@ public class ExplosionController
             {
                 PlaceableObject damageable = hit.GetComponent<PlaceableObject>();
                 if (immuneObjects != null && immuneObjects.Contains(damageable)) continue;
+                if(immuneTypes != null && immuneTypes.Contains(damageable.GetType())) continue;
                 if(damageable != null) damageable.AdjustHealth(-damage);
             }
         }
     }
+
+    #endregion
 }

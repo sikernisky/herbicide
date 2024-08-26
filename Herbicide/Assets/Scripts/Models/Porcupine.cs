@@ -1,9 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Represents a Porcupine Defender.
+/// </summary>
 public class Porcupine : Defender
 {
+    #region Fields
+
+    #endregion
+
+    #region Stats
+
     /// <summary>
     /// DefenderClass of a Porcupine.
     /// </summary>
@@ -96,7 +103,9 @@ public class Porcupine : Defender
     /// </summary>
     public override ModelType TYPE => ModelType.PORCUPINE;
 
+    #endregion
 
+    #region Methods
 
     /// <summary>
     /// Returns a new copy of a Porcupine prefab. 
@@ -129,4 +138,6 @@ public class Porcupine : Defender
     {
         return; // no box collider
     }
+
+    #endregion
 }

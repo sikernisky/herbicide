@@ -1,27 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Represents something that the player can click on
-/// to aquire/collect. 
+/// Represents a Model that can be collected.
 /// </summary>
 public abstract class Collectable : Model
 {
-    /// <summary>
-    /// Seconds to complete a bob cycle.
-    /// </summary>
-    public virtual float BOB_SPEED => 3f;
-
-    /// <summary>
-    /// How "tall" this Currency bobs.
-    /// </summary>
-    public virtual float BOB_HEIGHT => .15f;
-
-    /// <summary>
-    /// How fast this Collectable moves towards the cursor.
-    /// </summary>
-    public virtual float HOME_SPEED => 12f;
+    #region Fields
 
     /// <summary>
     /// true if the player collected this Collectable; false otherwise
@@ -40,14 +24,28 @@ public abstract class Collectable : Model
     [SerializeField]
     private AnimationCurve homingCurve;
 
+    #endregion
+
+    #region Stats
+
     /// <summary>
-    /// Types of Collectables.
+    /// Seconds to complete a bob cycle.
     /// </summary>
-    public enum CollectableType
-    {
-        SEED_TOKEN,
-        DEW
-    }
+    public virtual float BOB_SPEED => 3f;
+
+    /// <summary>
+    /// How "tall" this Currency bobs.
+    /// </summary>
+    public virtual float BOB_HEIGHT => .15f;
+
+    /// <summary>
+    /// How fast this Collectable moves towards the cursor.
+    /// </summary>
+    public virtual float HOME_SPEED => 12f;
+
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Does something when the player collects this Collectable.
@@ -87,4 +85,5 @@ public abstract class Collectable : Model
         collected = false;
     }
 
+    #endregion
 }

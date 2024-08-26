@@ -1,16 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Manages assets for Edge components. With a factory,
-/// we save tremendous amounts of memory -- each Edge object
-/// can access its needed Sprite here rather than instantiating its own
-/// array of possible Sprites.
+/// Produces assets related to Edge sprites.
 /// </summary>
 public class EdgeFactory : MonoBehaviour
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the EdgeFactory singleton.
     /// </summary>
@@ -26,6 +23,10 @@ public class EdgeFactory : MonoBehaviour
     /// </summary>
     [SerializeField]
     private Sprite[] shoreEdgeSprites;
+
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Finds and sets the EdgeFactory singleton.
@@ -66,4 +67,6 @@ public class EdgeFactory : MonoBehaviour
 
         return null;
     }
+
+    #endregion
 }

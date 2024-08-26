@@ -1,15 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Abstract class to represent controllers of Mobs. The T generic Enum
-/// represents the Controller's Mob's State. These Enums are defined in
-/// inheriting classes. <br></br>
+/// Controls a Mob. The T generic Enum represents the Mob's State. 
+/// These Enums are defined in inheriting controller classes. <br></br>
 /// 
 /// The MobController is responsible for manipulating its Mob and bringing
 /// it to life. This includes moving it, choosing targets, playing animations,
@@ -18,6 +14,8 @@ using UnityEngine.Assertions;
 /// <typeparam name="T">Enum to represent state of the Mob.</typeparam>
 public abstract class MobController<T> : ModelController, IStateTracker<T> where T : Enum
 {
+    #region Fields
+
     /// <summary>
     /// The list of current targets. Mobs will interperet a "target"
     /// in their own way.  
@@ -56,12 +54,6 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     private T state;
 
     /// <summary>
-    /// The number of Mobs assigned to MobControllers since
-    /// this scene began.
-    /// </summary>
-    private static int NUM_MOBS;
-
-    /// <summary>
     /// Where this Mob moves next.
     /// </summary>
     private Vector3? nextMovePos;
@@ -79,6 +71,9 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// </summary>
     protected virtual bool FINDS_TARGETS => false;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Makes a new MobController for a Mob.
@@ -91,7 +86,6 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
         modelsHolding = new List<Model>();
         attackSpeedBuffMultipliers = new HashSet<float>();
         SpawnMob();
-        NUM_MOBS++;
     }
 
     /// <summary>
@@ -102,8 +96,8 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     {
         base.UpdateController(gameState);
         UpdateDamageFlash();
-        UpdateStateFSM();
         UpdateMob();
+        UpdateStateFSM();
     }
 
     /// <summary>
@@ -124,109 +118,6 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// </summary>
     /// <returns>this MobController's Mob model.</returns>
     protected Mob GetMob() { return GetModel() as Mob; }
-
-    /// <summary>
-    /// Returns a copy of the list of this MobController's current targets. Mobs interperet
-    /// targets differently; for example, a Squirrel will attack its target,
-    /// but some other Mob might heal its target.
-    /// 
-    /// TODO: Add priority logic, put the most prio targets at the front of the list.
-    /// This works with mobs who have multiple targets. 
-    /// 
-    /// 
-    /// </summary>
-    /// <returns>this MobController's target.</returns>
-    protected List<Model> GetTargets() { return new List<Model>(targets); }
-
-    /// <summary>
-    /// Returns the Mob's most pressing target.
-    /// </summary>
-    /// <returns>the Mob's most pressing target.</returns>
-    protected virtual Model GetTarget() { return targets.Count == 0 ? null : targets[0]; }
-
-    /// <summary>
-    /// Clears the Mob's list of targets.
-    /// </summary>
-    private void ClearTargets() { targets.Clear(); }
-
-    /// <summary>
-    /// Adds a Model to this Mob's list of targets.
-    /// </summary>
-    /// <param name="targetable">The target to add.</param>
-    private void AddTarget(Model targetable)
-    {
-        Assert.IsNotNull(targetable, "Target cannot be null.");
-        Assert.IsFalse(NumTargets() >= MAX_TARGETS, GetMob() +
-            " already has " + NumTargets() + " targets.");
-        Assert.IsTrue(CanTargetModel(targetable), "Not a valid target.");
-
-        targets.Add(targetable);
-    }
-
-    /// <summary>
-    /// Runs through all targetable Models and adds each one
-    /// this Mob can target to its targets list.
-    /// </summary>
-    /// <param name="nonTiles">All targetable Models that are not Tiles..</param>
-    /// <param name="tiles">All targetable Models that are Tiles.</param>
-    private void UpdateTargets(IReadOnlyList<Model> nonTiles, IReadOnlyList<Model> tiles)
-    {
-        Assert.IsNotNull(nonTiles, "List of targets is null.");
-
-        ClearTargets();
-
-        foreach (Model targetable in nonTiles)
-        {
-            // bool result = CanTarget(targetable);
-            // if (targetable as Kudzu != null)
-            // {
-            //     //Debug.Log("can target kudzu: " + result);
-            // }
-
-            if (CanTargetModel(targetable) && NumTargets() < MAX_TARGETS)
-            {
-                AddTarget(targetable);
-            }
-        }
-
-        foreach (Model targetable in tiles)
-        {
-            if (CanTargetModel(targetable) && NumTargets() < MAX_TARGETS)
-            {
-                AddTarget(targetable);
-            }
-        }
-
-        SortTargets(targets);
-    }
-
-    /// <summary>
-    /// Sorts the list of targets this Mob has elected to target by
-    /// priority. This method is called after UpdateTargets() and
-    /// before the Mob acts on its targets.
-    /// </summary>
-    /// <param name="targets">The list of targets to sort.</param>
-    protected virtual void SortTargets(List<Model> targets)
-    {
-        return;
-    }
-
-    /// <summary>
-    /// Returns true if the Mob is allowed to target a Model passed
-    /// into this method.
-    /// </summary>
-    /// <param name="target">A potential target.</param>
-    /// <returns>true if the Mob is allowed to target a Model; otherwise,
-    /// false.</returns>
-    protected abstract bool CanTargetModel(Model target);
-
-    /// <summary>
-    /// Returns the current number of targets the Mob has
-    /// elected. 
-    /// </summary>
-    /// <returns>the current number of targets the Mob has
-    /// elected.</returns>
-    protected int NumTargets() { return targets.Count; }
 
     /// <summary>
     /// Animates this Controller's model's damage flash effect if it is
@@ -294,6 +185,188 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
         return new Vector3(closestPosition.x, closestPosition.y, 1);
     }
 
+    /// <summary>
+    /// Brings this Controller's Mob into life by calling its OnSpawn()
+    /// method. 
+    /// </summary>
+    protected virtual void SpawnMob()
+    {
+        GetMob().RefreshRenderer();
+        GetMob().OnSpawn();
+        GetMob().gameObject.SetActive(true);
+        GetMob().SubscribeToCollision(HandleCollision);
+    }
+
+    /// <summary>
+    /// Adds an attack speed multiplier to the Mob.
+    /// </summary>
+    /// <param name="multiplier">The attack speed multiplier.</param>
+    protected void BuffAttackSpeed(float multiplier)
+    {
+        Assert.IsTrue(multiplier > 0, "Multiplier must be positive.");
+        attackSpeedBuffMultipliers.Add(multiplier);
+    }
+
+    /// <summary>
+    /// Calculates the combined multiplier for each buff type and applies it to the Mob.
+    /// Clears each list of multipliers after applying them.
+    /// </summary>
+    private void CalculateAndApplyBuffs()
+    {
+        // Attack speed
+        float combinedAttackSpeedBuff = 1f;
+        foreach (float multiplier in attackSpeedBuffMultipliers)
+        {
+            combinedAttackSpeedBuff *= multiplier;
+        }
+        GetMob().SetAttackSpeed(GetMob().BASE_ATTACK_SPEED * combinedAttackSpeedBuff);
+        attackSpeedBuffMultipliers.Clear();
+
+        // Put other buffs here
+    }
+
+    /// <summary>
+    /// Returns true if the Mob can attack this frame.
+    /// </summary>
+    /// <returns>true if the Mob can attack this frame; 
+    /// otherwise, false. </returns>
+    public virtual bool CanAttack() { return GetMob().GetAttackCooldown() <= 0; }
+
+    #endregion
+
+    #region State Logic
+
+    /// <summary>
+    /// Sets the State of this MobController. This helps keep track of
+    /// what its Mob should do and what it is doing, and it is essential
+    /// for the FSM logic. 
+    /// </summary>
+    /// <param name="state">The State to set.</param>
+    public void SetState(T state) { this.state = state; }
+
+    /// <summary>
+    /// Returns the State of this MobController. This helps keep track of
+    /// what its Mob should do and what it is doing, and it is essential
+    /// for the FSM logic. 
+    /// </summary>
+    /// <returns>The State of this MobController. </returns>
+    public T GetState() { return state; }
+
+    /// <summary>
+    /// Processes this MobController's state FSM to determine the
+    /// correct state. Takes the current state and chooses whether
+    /// or not to switch to another based on game conditions. /// 
+    /// </summary>
+    public abstract void UpdateStateFSM();
+
+    /// <summary>
+    /// Returns true if two states are equal.
+    /// </summary>
+    /// <param name="stateA">The first state.</param>
+    /// <param name="stateB">The second state</param>
+    /// <returns>true if two states are equal; otherwise, false. </returns>
+    public abstract bool StateEquals(T stateA, T stateB);
+
+    #endregion
+
+    #region Targeting Logic
+
+    /// <summary>
+    /// Returns a copy of the list of this MobController's current targets. Mobs interperet
+    /// targets differently; for example, a Squirrel will attack its target,
+    /// but some other Mob might heal its target.
+    /// 
+    /// TODO: Add priority logic, put the most prio targets at the front of the list.
+    /// This works with mobs who have multiple targets. 
+    /// 
+    /// 
+    /// </summary>
+    /// <returns>this MobController's target.</returns>
+    protected List<Model> GetTargets() { return new List<Model>(targets); }
+
+    /// <summary>
+    /// Returns the Mob's most pressing target.
+    /// </summary>
+    /// <returns>the Mob's most pressing target.</returns>
+    protected virtual Model GetTarget() { return targets.Count == 0 ? null : targets[0]; }
+
+    /// <summary>
+    /// Clears the Mob's list of targets.
+    /// </summary>
+    private void ClearTargets() { targets.Clear(); }
+
+    /// <summary>
+    /// Adds a Model to this Mob's list of targets.
+    /// </summary>
+    /// <param name="targetable">The target to add.</param>
+    private void AddTarget(Model targetable)
+    {
+        Assert.IsNotNull(targetable, "Target cannot be null.");
+        Assert.IsFalse(NumTargets() >= MAX_TARGETS, GetMob() +
+            " already has " + NumTargets() + " targets.");
+        Assert.IsTrue(CanTargetModel(targetable), "Not a valid target.");
+
+        targets.Add(targetable);
+    }
+
+    /// <summary>
+    /// Runs through all targetable Models and adds each one
+    /// this Mob can target to its targets list.
+    /// </summary>
+    /// <param name="nonTiles">All targetable Models that are not Tiles..</param>
+    /// <param name="tiles">All targetable Models that are Tiles.</param>
+    private void UpdateTargets(IReadOnlyList<Model> nonTiles, IReadOnlyList<Model> tiles)
+    {
+        Assert.IsNotNull(nonTiles, "List of targets is null.");
+
+        ClearTargets();
+
+        foreach (Model targetable in nonTiles)
+        {
+            if (CanTargetModel(targetable) && NumTargets() < MAX_TARGETS)
+            {
+                AddTarget(targetable);
+            }
+        }
+
+        foreach (Model targetable in tiles)
+        {
+            if (CanTargetModel(targetable) && NumTargets() < MAX_TARGETS)
+            {
+                AddTarget(targetable);
+            }
+        }
+
+        SortTargets(targets);
+    }
+
+    /// <summary>
+    /// Sorts the list of targets this Mob has elected to target by
+    /// priority. This method is called after UpdateTargets() and
+    /// before the Mob acts on its targets.
+    /// </summary>
+    /// <param name="targets">The list of targets to sort.</param>
+    protected virtual void SortTargets(List<Model> targets)
+    {
+        return;
+    }
+
+    /// <summary>
+    /// Returns true if the Mob is allowed to target a Model passed
+    /// into this method.
+    /// </summary>
+    /// <param name="target">A potential target.</param>
+    /// <returns>true if the Mob is allowed to target a Model; otherwise,
+    /// false.</returns>
+    protected abstract bool CanTargetModel(Model target);
+
+    /// <summary>
+    /// Returns the current number of targets the Mob has
+    /// elected. 
+    /// </summary>
+    /// <returns>the current number of targets the Mob has
+    /// elected.</returns>
+    protected int NumTargets() { return targets.Count; }
 
     /// <summary>
     /// Returns true if the Mob can hold some Nexus.
@@ -347,81 +420,31 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     }
 
     /// <summary>
-    /// Returns true if the Mob is holding some target.
+    /// Returns the distance from this Controller's Mob to its first target.
     /// </summary>
-    /// <returns>true if the Mob is holding the target; otherwise, false.</returns>
-    protected bool IsHoldingTarget(PlaceableObject target)
+    /// <returns>the distance from this Controller's Mob to its first target. </returns>
+    protected float DistanceToTarget()
     {
-        return modelsHolding.Contains(target);
+        Assert.IsNotNull(GetTargets());
+        Model target = GetTargets()[0];
+        Assert.IsNotNull(target);
+
+        return Vector2.Distance(GetModel().GetPosition(), target.GetPosition());
     }
 
-
-    //--------------------BEGIN STATE LOGIC----------------------//
-
     /// <summary>
-    /// Sets the State of this MobController. This helps keep track of
-    /// what its Mob should do and what it is doing, and it is essential
-    /// for the FSM logic. 
+    /// Makes the Mob face its first target.
     /// </summary>
-    /// <param name="state">The State to set.</param>
-    public void SetState(T state) { this.state = state; }
-
-    /// <summary>
-    /// Returns the State of this MobController. This helps keep track of
-    /// what its Mob should do and what it is doing, and it is essential
-    /// for the FSM logic. 
-    /// </summary>
-    /// <returns>The State of this MobController. </returns>
-    public T GetState() { return state; }
-
-    /// <summary>
-    /// Processes this MobController's state FSM to determine the
-    /// correct state. Takes the current state and chooses whether
-    /// or not to switch to another based on game conditions. /// 
-    /// </summary>
-    public abstract void UpdateStateFSM();
-
-    /// <summary>
-    /// Returns true if the Mob can attack this frame.
-    /// </summary>
-    /// <returns>true if the Mob can attack this frame; 
-    /// otherwise, false. </returns>
-    public virtual bool CanAttack() { return GetMob().GetAttackCooldown() <= 0; }
-
-    /// <summary>
-    /// Returns true if two states are equal.
-    /// </summary>
-    /// <param name="stateA">The first state.</param>
-    /// <param name="stateB">The second state</param>
-    /// <returns>true if two states are equal; otherwise, false. </returns>
-    public abstract bool StateEquals(T stateA, T stateB);
-
-    //----------------------END STATE LOGIC----------------------//
-
-    /// <summary>
-    /// Returns where the Mob should move next.
-    /// </summary>
-    /// <returns>where the Mob should move next.</returns>
-    protected Vector3? GetNextMovePos() { return nextMovePos; }
-
-    /// <summary>
-    /// Returns true if the Mob's position is at the spot it
-    /// is trying to move towards.
-    /// </summary>
-    /// <returns>true if the Mob made it to its movement destination;
-    /// otherwise, false. </returns>
-    protected bool ReachedMovementTarget()
+    protected void FaceTarget()
     {
-        if (GetNextMovePos() == null) return true;
-
-        Vector3 nextMovePos = new Vector3(
-            GetNextMovePos().Value.x,
-            GetNextMovePos().Value.y,
-            1
-        );
-
-        return Vector3.Distance(GetMob().GetPosition(), nextMovePos) < 0.1f;
+        if (GetTargets().Count == 0) return;
+        Model target = GetTarget();
+        if (target != null) GetMob().FaceDirection(target.GetPosition());
     }
+
+    #endregion
+
+    #region Movement Logic
 
     /// <summary>
     /// Moves the Mob towards the next movement position in a linear manner.
@@ -480,80 +503,29 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     }
 
     /// <summary>
-    /// Brings this Controller's Mob into life by calling its OnSpawn()
-    /// method. 
+    /// Returns where the Mob should move next.
     /// </summary>
-    protected virtual void SpawnMob()
-    {
-        GetMob().RefreshRenderer();
-        GetMob().OnSpawn();
-        GetMob().gameObject.SetActive(true);
-        GetMob().SubscribeToCollision(HandleCollision);
-    }
+    /// <returns>where the Mob should move next.</returns>
+    protected Vector3? GetNextMovePos() { return nextMovePos; }
 
     /// <summary>
-    /// Returns the distance from this Controller's Mob to its first target.
+    /// Returns true if the Mob's position is at the spot it
+    /// is trying to move towards.
     /// </summary>
-    /// <returns>the distance from this Controller's Mob to its first target. </returns>
-    protected float DistanceToTarget()
+    /// <returns>true if the Mob made it to its movement destination;
+    /// otherwise, false. </returns>
+    protected bool ReachedMovementTarget()
     {
-        Assert.IsNotNull(GetTargets());
-        Model target = GetTargets()[0];
-        Assert.IsNotNull(target);
+        if (GetNextMovePos() == null) return true;
 
-        return Vector2.Distance(GetModel().GetPosition(), target.GetPosition());
+        Vector3 nextMovePos = new Vector3(
+            GetNextMovePos().Value.x,
+            GetNextMovePos().Value.y,
+            1
+        );
+
+        return Vector3.Distance(GetMob().GetPosition(), nextMovePos) < 0.1f;
     }
 
-
-    /// <summary>
-    /// Returns the distance from this Controller's Mob to one of its targets.
-    /// </summary>
-    /// <param name="target">The target to get the distance to</param>
-    /// <returns>the distance to the target</returns>
-    protected float DistanceToTarget(Model target)
-    {
-        Assert.IsNotNull(target);
-        Assert.IsTrue(GetTargets().Contains(target), "Target is not in the list of targets.");
-
-        return Vector2.Distance(GetModel().GetPosition(), target.GetPosition());
-    }
-
-    /// <summary>
-    /// Makes the Mob face its first target.
-    /// </summary>
-    protected void FaceTarget()
-    {
-        if (GetTargets().Count == 0) return;
-        Model target = GetTarget();
-        if (target != null) GetMob().FaceDirection(target.GetPosition());
-    }
-
-    /// <summary>
-    /// Adds an attack speed multiplier to the Mob.
-    /// </summary>
-    /// <param name="multiplier">The attack speed multiplier.</param>
-    protected void BuffAttackSpeed(float multiplier)
-    {
-        Assert.IsTrue(multiplier > 0, "Multiplier must be positive.");
-        attackSpeedBuffMultipliers.Add(multiplier);
-    }
-
-    /// <summary>
-    /// Calculates the combined multiplier for each buff type and applies it to the Mob.
-    /// Clears each list of multipliers after applying them.
-    /// </summary>
-    private void CalculateAndApplyBuffs()
-    {
-        // Attack speed
-        float combinedAttackSpeedBuff = 1f;
-        foreach (float multiplier in attackSpeedBuffMultipliers)
-        {
-            combinedAttackSpeedBuff *= multiplier;
-        }
-        GetMob().SetAttackSpeed(GetMob().BASE_ATTACK_SPEED * combinedAttackSpeedBuff);
-        attackSpeedBuffMultipliers.Clear();
-
-        // Put other buffs here
-    }
-
+    #endregion
 }

@@ -1,28 +1,18 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 using System;
-using UnityEngine.UIElements;
-using System.IO.Compression;
-using UnityEditor.Timeline;
-
 
 /// <summary>
-/// Represents the board of Tile objects. This board is spawned using
-/// data from a Tiled2D JSON file.
-/// 
-/// Main responsibilies of the TileGrid singleton include:<br></br>
-/// 
-/// (1) Instantiating and defining Tiles<br></br>
-/// (2) Getting information about Tiles<br></br>
-/// (3) Passing click events to Tiles<br></br>
-/// (4) Flooring and placing on Tiles<br></br>
-/// (5) Pathfinding between Tiles
+/// Manages the board of Tile objects. Responsible for spawning
+/// the current map from Tiled JSON, pathfinding, and tracking
+/// where Models are on the board.
 /// </summary>
 public class TileGrid : MonoBehaviour
 {
+    #region Fields
+
     /// <summary>
     /// Width and height of a Tile in the TileGrid
     /// </summary>
@@ -86,11 +76,6 @@ public class TileGrid : MonoBehaviour
     private List<Tile> tiles;
 
     /// <summary>
-    /// All Floorings in this TileGrid.
-    /// </summary>
-    private HashSet<Flooring> floorings;
-
-    /// <summary>
     /// All GrassTiles in this TileGrid.
     /// </summary>
     private HashSet<Tile> grassTiles;
@@ -137,12 +122,16 @@ public class TileGrid : MonoBehaviour
     /// </summary>
     private List<Vector3> objectPositions;
 
+    #endregion
+
+    #region Methods
+
     /// <summary>
     /// Main update loop for the TileGrid; updates its Tiles.
     /// </summary>
     public static void UpdateTiles()
     {
-        // TEMPORARY: We only need to update Grass Tiles.
+        // Update GrassTiles
         foreach (Tile t in instance.grassTiles)
         {
             t.UpdateTile();
@@ -195,7 +184,6 @@ public class TileGrid : MonoBehaviour
         }
     }
 
-
     /// <summary>
     /// Detects any player input on a Tile and handles it based on the type
     /// of input.
@@ -238,201 +226,6 @@ public class TileGrid : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns the correct position of the Camera after generating
-    /// the TileGrid and the Tiles within it.
-    /// </summary>
-    /// <param name="levelController">the LevelController spawning the grid.</param>
-    /// <param name="data">the TiledData object containing grid layer information.</param>
-    /// <returns>the position for the Camera, that if set to, represents the center
-    /// of the TileGrid.</returns>
-    public static Vector2 SpawnGrid(LevelController levelController, TiledData data)
-    {
-        //Safety checks
-        if (levelController == null) return Vector2.zero;
-        if (instance.IsGenerated()) return Vector2.zero;
-        if (data == null) return Vector2.zero;
-
-        //Clear all collections
-        instance.tileMap.Clear();
-        instance.edgeTiles.Clear();
-
-        //Set the center
-        instance.SetCenterCoordinates(data.GetLayerDimensions());
-
-        //Gather Tile IDs
-        instance.FindGIDs(data);
-
-        //Spawn our layers: Tiles first, Edges second, Flooring last.
-        int layerWidth = data.GetLayerDimensions().x;
-        int layerHeight = data.GetLayerDimensions().y;
-        data.GetWaterLayers().ForEach(l => SpawnLayer(l, layerWidth, layerHeight));
-        data.GetGrassLayers().ForEach(l => SpawnLayer(l, layerWidth, layerHeight));
-        data.GetShoreLayers().ForEach(l => SpawnLayer(l, layerWidth, layerHeight));
-        data.GetObjectLayers().ForEach(l => SpawnObjectLayer(l, data.GetMapHeight()));
-
-        // Assert we have everything we need
-        Assert.IsTrue(instance.nexusHoleHosts.Count > 0, "No NexusHoles found in TileGrid.");
-        Assert.IsTrue(instance.numEnemySpawnMarkers > 0, "No enemy spawn markers found in TileGrid.");
-        Assert.IsTrue(instance.numNexii > 0, "No Nexii found in TileGrid.");
-
-        // For pathfinding, give tiles their neighbors
-        instance.SetNeighbors(layerWidth, layerHeight);
-
-        //Finishing touches
-        instance.SetGenerated();
-        return instance.GetCameraPositionAtCenterOfObjects();
-    }
-
-    /// <summary>
-    /// Spawns a layer of Tiles or Flooring from a LayerData object.
-    /// </summary>
-    /// <param name="layer">The LayerData object to spawn.</param>
-    /// <param name="layerWidth">The width, in Tiles, of the layer to spawn.</param>
-    /// <param name="layerHeight">The height, in Tiles, of the layer to spawn.</param>
-    private static void SpawnLayer(LayerData layer, int layerWidth, int layerHeight)
-    {
-        Assert.IsNotNull(layer, "LayerData `layer` is null");
-        Assert.IsTrue(layerHeight > 0, "Layer height must be positive.");
-        Assert.IsTrue(layerWidth > 0, "Layer width must be positive.");
-        Assert.IsFalse(layer.IsObjectLayer(), "Cannot spawn object layers.");
-        Assert.IsFalse(layer.IsEnemyLayer(), "Enemy Layers should not be handled by TileGrids.");
-        Assert.IsFalse(layer.IsPlaceableLayer(), "Use SpawnPlaceableLayer().");
-
-
-        if (layer.IsTileLayer() || layer.IsEdgeLayer())
-        {
-            int currRow = layerHeight - 1;
-            int currCol = 0;
-            string layerName = layer.GetLayerName();
-            Vector2Int coords = new Vector2Int();
-            foreach (int tileInt in layer.GetTileData())
-            {
-                if (tileInt > 0)
-                {
-                    coords.Set(currCol, currRow);
-                    int localId = instance.FindLocalTileId(tileInt);
-                    if (layer.IsTileLayer()) instance.MakeTile(layerName, coords, localId);
-                    else if (layer.IsEdgeLayer()) instance.MakeEdge(layerName, coords, localId);
-                }
-
-                currCol = (currCol + 1) % layerWidth;
-                currRow = currCol == 0 ? currRow - 1 : currRow;
-            }
-        }
-        else
-        {
-            //Future layer types go here.
-        }
-    }
-
-    /// <summary>
-    /// Spawns a layer of Objects from a LayerData object.
-    /// </summary>
-    /// <param name="layer">The LayerData object to spawn.</param>
-    /// <param name="mapHeight">The height of the LayerData layer.</param>
-    private static void SpawnObjectLayer(LayerData layer, int mapHeight)
-    {
-        Assert.IsNotNull(layer, "LayerData `layer` is null");
-        Assert.IsTrue(layer.IsObjectLayer(), "Cannot spawn tile layers.");
-
-        string layerName = layer.GetLayerName();
-        if (layerName.ToLower() == "enemies") return;
-        switch (layerName.ToLower())
-        {
-            case "structures":
-                List<ObjectData> structures = new List<ObjectData>();
-                structures.AddRange(layer.GetStructureObjectData());
-
-                foreach (ObjectData obToSpawn in structures)
-                {
-                    GameObject spawnedStructure = instance.GetStructurePrefabFromString(obToSpawn.GetStructureName());
-                    Assert.IsNotNull(spawnedStructure);
-                    Mob mob = spawnedStructure.GetComponent<Mob>();
-                    if (mob as Nexus != null) instance.numNexii++;
-                    Vector3 spawnPos = new Vector3(obToSpawn.GetSpawnCoordinates(mapHeight).x, obToSpawn.GetSpawnCoordinates(mapHeight).y, 1);
-                    mob.SetSpawnPos(spawnPos);
-                    instance.objectPositions.Add(spawnPos);
-                    Tile targetTile = instance.TileExistsAt(obToSpawn.GetSpawnCoordinates(mapHeight).x, obToSpawn.GetSpawnCoordinates(mapHeight).y);
-                    ControllerController.MakeModelController(mob);
-                    PlaceOnTile(targetTile, mob);
-                }
-                break;
-            case "markers":
-                List<ObjectData> markers = new List<ObjectData>();
-                markers.AddRange(layer.GetMarkerObjectData());
-                Dictionary<Vector2Int, string> enemySpawnMarkers = new Dictionary<Vector2Int, string>();
-                foreach (ObjectData markToSpawn in markers)
-                {
-                    if (markToSpawn.GetMarkerName().ToLower() == "enemyspawn")
-                    {
-                        int x = markToSpawn.GetSpawnCoordinates(mapHeight).x;
-                        int y = markToSpawn.GetSpawnCoordinates(mapHeight).y;
-                        string unparsedData = markToSpawn.GetEnemySpawnData();
-                        enemySpawnMarkers.Add(new Vector2Int(x, y), unparsedData);
-                        instance.objectPositions.Add(new Vector3(x, y, 1));
-                        instance.numEnemySpawnMarkers++;
-                    }
-                }
-                EnemyManager.PopulateWithEnemies(enemySpawnMarkers, mapHeight);
-                break;
-            case "flooring":
-                List<ObjectData> floorings = new List<ObjectData>();
-                floorings.AddRange(layer.GetFlooringObjectData());
-                foreach (ObjectData obToSpawn in floorings)
-                {
-                    GameObject spawnedFlooring = instance.GetFlooringPrefabFromString(obToSpawn.GetFlooringName());
-                    Assert.IsNotNull(spawnedFlooring);
-                    Flooring flooring = spawnedFlooring.GetComponent<Flooring>();
-                    Assert.IsNotNull(flooring);
-                    int flooringX = obToSpawn.GetSpawnCoordinates(mapHeight).x;
-                    int flooringY = obToSpawn.GetSpawnCoordinates(mapHeight).y;
-                    instance.objectPositions.Add(new Vector3(flooringX, flooringY, 1));
-                    Tile tileOn = instance.TileExistsAt(flooringX, flooringY);
-                    Assert.IsNotNull(tileOn);
-                    FloorTile(tileOn, flooring);
-                }
-                break;
-        }
-    }
-
-
-    /// <summary>
-    /// Finds all first Global Tile IDs from all tilesets used in this TileGrid
-    /// and adds them to the `firstGIDs` field. If the field is already set,
-    /// does nothing.
-    /// </summary>
-    /// <param name="data">The parsed Tiled JSON file.</param>
-    private void FindGIDs(TiledData data)
-    {
-        Assert.IsNotNull(data, "TiledData `data` is null.");
-
-        if (firstGIDs != null) return;
-        firstGIDs = data.GetAllFirstGIDs();
-    }
-
-    /// <summary>
-    /// Returns the local ID of a Tile in its tileset.
-    /// </summary>
-    /// <param name="globalTileId">the Tile's global Tile Id.</param>
-    /// <returns>the local ID of the Tile.</returns>
-    private int FindLocalTileId(int globalTileId)
-    {
-        //Access a list of first GIDs, sorted in ascending order
-        //Find out, through an algorithm, which two `globalTileId` falls between
-        //Subtract the first GID from `globalTileId`
-
-        for (int i = 0; i < firstGIDs.Count; i++)
-        {
-            if (i == firstGIDs.Count - 1) return globalTileId - firstGIDs[i];
-            bool greater = globalTileId >= firstGIDs[i];
-            bool lesser = globalTileId < firstGIDs[i + 1];
-            if (greater && lesser) return globalTileId - firstGIDs[i];
-        }
-
-        throw new System.ArgumentException("Invalid global tile Id.", "globalTileId");
-    }
-
-    /// <summary>
     /// Returns the Camera's position at the center of all objects in the TileGrid.
     /// </summary>
     /// <returns>the position for the Camera, that if set to, represents the center</returns>
@@ -461,69 +254,6 @@ public class TileGrid : MonoBehaviour
     }
 
     /// <summary>
-    /// Creates a Tile of a certain type and adds it to the collection
-    /// of Tiles in this TileGrid.
-    /// </summary>
-    /// <param name="type">The Tile's type, in string form.</param>
-    /// <param name="coords">The (X, Y) coordinates at which to make the Tile.</param>
-    /// <param name="tiledId">The edge tile's local ID, in Tiled.</param>
-    private void MakeTile(string type, Vector2Int coords, int tiledId)
-    {
-        Assert.IsNotNull(type);
-        Tile existCheck = TileExistsAt(coords.x, coords.y);
-        if (existCheck != null) return;
-
-        float xWorldPos = CoordinateToPosition(coords.x);
-        float yWorldPos = CoordinateToPosition(coords.y);
-
-        switch (type.ToLower())
-        {
-            case "grass":
-                GrassTile grass = MakeTile(xWorldPos, yWorldPos, Tile.TileType.GRASS) as GrassTile;
-                Assert.IsNotNull(grass);
-                grass.Define(coords.x, coords.y, tiledId);
-                AddTile(grass);
-                break;
-            case "water":
-                WaterTile water = MakeTile(xWorldPos, yWorldPos, Tile.TileType.WATER) as WaterTile;
-                water.Define(coords.x, coords.y);
-                AddTile(water);
-                break;
-            default:
-                throw new System.Exception("Reached default case in MakeTile().");
-        }
-    }
-
-    /// <summary>
-    /// Creates an Edge Tile of a certain type and adds it to the collection
-    /// of Tiles in this TileGrid.
-    /// </summary>
-    /// <param name="type">The Edge Tile's type, in string form.</param>
-    /// <param name="coords">The (X, Y) coordinates at which to make the Edge Tile.</param>
-    /// <param name="tiledId">The edge tile's local ID, in Tiled.</param>
-    private void MakeEdge(string type, Vector2Int coords, int tiledId)
-    {
-        Assert.IsNotNull(type);
-        Tile existCheck = TileExistsAt(coords.x, coords.y);
-        if (existCheck != null) return;
-
-        float xWorldPos = CoordinateToPosition(coords.x);
-        float yWorldPos = CoordinateToPosition(coords.y);
-
-        switch (type.ToLower())
-        {
-            case "shore":
-                ShoreTile shore = MakeTile(xWorldPos, yWorldPos, Tile.TileType.SHORE) as ShoreTile;
-                Assert.IsNotNull(shore);
-                shore.Define(coords.x, coords.y, tiledId);
-                AddTile(shore);
-                break;
-            default:
-                throw new System.Exception("Reached default case in MakeEdge().");
-        }
-    }
-
-    /// <summary>
     /// Assigns all Tiles and Edges in this TileGrid their adjacent
     /// neighbors.
     /// </summary>
@@ -539,33 +269,6 @@ public class TileGrid : MonoBehaviour
                 if (t != null) t.UpdateSurfaceNeighbors(GetNeighbors(t));
             }
         }
-    }
-
-
-    /// <summary>
-    /// Returns the closest edge Tile to a given coordinate.
-    /// </summary>
-    /// <param name="x">The X-coordinate from which to find the
-    /// closest edge Tile.</param>
-    /// <param name="y">The Y-coordinate from which to find the
-    /// closest edge Tile.</param>
-    /// <returns>The (X, Y) coordinates of the closest edge Tile to
-    /// a given coordinate.</returns>
-    public static Vector2Int NearestEdgeCoordinate(int x, int y)
-    {
-        float closestPosition = float.MaxValue;
-        Tile closestTile = null;
-        foreach (Tile t in instance.edgeTiles)
-        {
-            float distance = t.GetManhattanDistance(x, y);
-            if (distance < closestPosition)
-            {
-                closestTile = t;
-                closestPosition = distance;
-            }
-        }
-        if (closestTile == null) return Vector2Int.zero;
-        return new Vector2Int(closestTile.GetX(), closestTile.GetY());
     }
 
     /// <summary>
@@ -621,28 +324,6 @@ public class TileGrid : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns a Tile that should be in the TileGrid. Instantiates that
-    /// Tile.
-    /// </summary>
-    /// <param name="xPos">The X-world position of the Tile.</param>
-    /// <param name="yPos">The Y-world position of the Tile.</param>
-    /// <param name="type">The TileType of the Tile prefab.</param>
-    /// <returns>The instantiated Tile that should be in the TileGrid.
-    /// </returns>
-    private Tile MakeTile(float xPos, float yPos, Tile.TileType type)
-    {
-        GameObject prefab = TileTypeToPrefab(type);
-        Tile tile = Instantiate(prefab).GetComponent<Tile>();
-        Transform tileTransform = tile.transform;
-        tile.name = type.ToString();
-        tileTransform.position = new Vector3(xPos, yPos, 1);
-        tileTransform.localScale = Vector2.one * TILE_SIZE * 1.0001f; // This multiplier prevents tiny gaps
-        tileTransform.SetParent(instance.transform);
-
-        return tile;
-    }
-
-    /// <summary>
     /// Adds a Tile to this TileGrid's collections.
     /// </summary>
     /// <param name="t">the Tile to add</param>
@@ -656,16 +337,6 @@ public class TileGrid : MonoBehaviour
         tileMap.Add(key, t);
         tiles.Add(t);
         if (t.GetTileType() == Tile.TileType.GRASS) grassTiles.Add(t);
-    }
-
-    /// <summary>
-    /// Returns the Tile-coordinates of the center-most tile in the TileGrid.
-    /// </summary>
-    /// <returns>the Tile-coordinates of the center-most tile in the 
-    /// TileGrid.</returns>
-    private Vector2Int GetCenterCoordinates()
-    {
-        return center;
     }
 
     /// <summary>
@@ -1043,6 +714,7 @@ public class TileGrid : MonoBehaviour
         target.Remove(neighbors);
         return true;
     }
+
     /// <summary>
     /// Returns true if trying to remove something from a Tile will actually
     /// remove something. If so, removes it. Otherwise, does nothing and returns false.
@@ -1242,8 +914,294 @@ public class TileGrid : MonoBehaviour
         return debugOn;
     }
 
-    //---------------------BEGIN PATHFINDING-----------------------//
+    #endregion
 
+    #region Board Generation
+
+    /// <summary>
+    /// Returns the correct position of the Camera after generating
+    /// the TileGrid and the Tiles within it.
+    /// </summary>
+    /// <param name="levelController">the LevelController spawning the grid.</param>
+    /// <param name="data">the TiledData object containing grid layer information.</param>
+    /// <returns>the position for the Camera, that if set to, represents the center
+    /// of the TileGrid.</returns>
+    public static Vector2 SpawnGrid(LevelController levelController, TiledData data)
+    {
+        //Safety checks
+        if (levelController == null) return Vector2.zero;
+        if (instance.IsGenerated()) return Vector2.zero;
+        if (data == null) return Vector2.zero;
+
+        //Clear all collections
+        instance.tileMap.Clear();
+        instance.edgeTiles.Clear();
+
+        //Set the center
+        instance.SetCenterCoordinates(data.GetLayerDimensions());
+
+        //Gather Tile IDs
+        instance.FindGIDs(data);
+
+        //Spawn our layers: Tiles first, Edges second, Flooring last.
+        int layerWidth = data.GetLayerDimensions().x;
+        int layerHeight = data.GetLayerDimensions().y;
+        data.GetWaterLayers().ForEach(l => SpawnLayer(l, layerWidth, layerHeight));
+        data.GetGrassLayers().ForEach(l => SpawnLayer(l, layerWidth, layerHeight));
+        data.GetShoreLayers().ForEach(l => SpawnLayer(l, layerWidth, layerHeight));
+        data.GetObjectLayers().ForEach(l => SpawnObjectLayer(l, data.GetMapHeight()));
+
+        // Assert we have everything we need
+        Assert.IsTrue(instance.nexusHoleHosts.Count > 0, "No NexusHoles found in TileGrid.");
+        Assert.IsTrue(instance.numEnemySpawnMarkers > 0, "No enemy spawn markers found in TileGrid.");
+        Assert.IsTrue(instance.numNexii > 0, "No Nexii found in TileGrid.");
+
+        // For pathfinding, give tiles their neighbors
+        instance.SetNeighbors(layerWidth, layerHeight);
+
+        //Finishing touches
+        instance.SetGenerated();
+        return instance.GetCameraPositionAtCenterOfObjects();
+    }
+
+    /// <summary>
+    /// Spawns a layer of Tiles or Flooring from a LayerData object.
+    /// </summary>
+    /// <param name="layer">The LayerData object to spawn.</param>
+    /// <param name="layerWidth">The width, in Tiles, of the layer to spawn.</param>
+    /// <param name="layerHeight">The height, in Tiles, of the layer to spawn.</param>
+    private static void SpawnLayer(LayerData layer, int layerWidth, int layerHeight)
+    {
+        Assert.IsNotNull(layer, "LayerData `layer` is null");
+        Assert.IsTrue(layerHeight > 0, "Layer height must be positive.");
+        Assert.IsTrue(layerWidth > 0, "Layer width must be positive.");
+        Assert.IsFalse(layer.IsObjectLayer(), "Cannot spawn object layers.");
+        Assert.IsFalse(layer.IsEnemyLayer(), "Enemy Layers should not be handled by TileGrids.");
+        Assert.IsFalse(layer.IsPlaceableLayer(), "Use SpawnPlaceableLayer().");
+
+
+        if (layer.IsTileLayer() || layer.IsEdgeLayer())
+        {
+            int currRow = layerHeight - 1;
+            int currCol = 0;
+            string layerName = layer.GetLayerName();
+            Vector2Int coords = new Vector2Int();
+            foreach (int tileInt in layer.GetTileData())
+            {
+                if (tileInt > 0)
+                {
+                    coords.Set(currCol, currRow);
+                    int localId = instance.FindLocalTileId(tileInt);
+                    if (layer.IsTileLayer()) instance.MakeTile(layerName, coords, localId);
+                    else if (layer.IsEdgeLayer()) instance.MakeEdge(layerName, coords, localId);
+                }
+
+                currCol = (currCol + 1) % layerWidth;
+                currRow = currCol == 0 ? currRow - 1 : currRow;
+            }
+        }
+        else
+        {
+            //Future layer types go here.
+        }
+    }
+
+    /// <summary>
+    /// Spawns a layer of Objects from a LayerData object.
+    /// </summary>
+    /// <param name="layer">The LayerData object to spawn.</param>
+    /// <param name="mapHeight">The height of the LayerData layer.</param>
+    private static void SpawnObjectLayer(LayerData layer, int mapHeight)
+    {
+        Assert.IsNotNull(layer, "LayerData `layer` is null");
+        Assert.IsTrue(layer.IsObjectLayer(), "Cannot spawn tile layers.");
+
+        string layerName = layer.GetLayerName();
+        if (layerName.ToLower() == "enemies") return;
+        switch (layerName.ToLower())
+        {
+            case "structures":
+                List<ObjectData> structures = new List<ObjectData>();
+                structures.AddRange(layer.GetStructureObjectData());
+
+                foreach (ObjectData obToSpawn in structures)
+                {
+                    GameObject spawnedStructure = instance.GetStructurePrefabFromString(obToSpawn.GetStructureName());
+                    Assert.IsNotNull(spawnedStructure);
+                    Mob mob = spawnedStructure.GetComponent<Mob>();
+                    if (mob as Nexus != null) instance.numNexii++;
+                    Vector3 spawnPos = new Vector3(obToSpawn.GetSpawnCoordinates(mapHeight).x, obToSpawn.GetSpawnCoordinates(mapHeight).y, 1);
+                    mob.SetSpawnPos(spawnPos);
+                    instance.objectPositions.Add(spawnPos);
+                    Tile targetTile = instance.TileExistsAt(obToSpawn.GetSpawnCoordinates(mapHeight).x, obToSpawn.GetSpawnCoordinates(mapHeight).y);
+                    ControllerController.MakeModelController(mob);
+                    PlaceOnTile(targetTile, mob);
+                }
+                break;
+            case "markers":
+                List<ObjectData> markers = new List<ObjectData>();
+                markers.AddRange(layer.GetMarkerObjectData());
+                Dictionary<Vector2Int, string> enemySpawnMarkers = new Dictionary<Vector2Int, string>();
+                foreach (ObjectData markToSpawn in markers)
+                {
+                    if (markToSpawn.GetMarkerName().ToLower() == "enemyspawn")
+                    {
+                        int x = markToSpawn.GetSpawnCoordinates(mapHeight).x;
+                        int y = markToSpawn.GetSpawnCoordinates(mapHeight).y;
+                        string unparsedData = markToSpawn.GetEnemySpawnData();
+                        enemySpawnMarkers.Add(new Vector2Int(x, y), unparsedData);
+                        instance.objectPositions.Add(new Vector3(x, y, 1));
+                        instance.numEnemySpawnMarkers++;
+                    }
+                }
+                EnemyManager.PopulateWithEnemies(enemySpawnMarkers, mapHeight);
+                break;
+            case "flooring":
+                List<ObjectData> floorings = new List<ObjectData>();
+                floorings.AddRange(layer.GetFlooringObjectData());
+                foreach (ObjectData obToSpawn in floorings)
+                {
+                    GameObject spawnedFlooring = instance.GetFlooringPrefabFromString(obToSpawn.GetFlooringName());
+                    Assert.IsNotNull(spawnedFlooring);
+                    Flooring flooring = spawnedFlooring.GetComponent<Flooring>();
+                    Assert.IsNotNull(flooring);
+                    int flooringX = obToSpawn.GetSpawnCoordinates(mapHeight).x;
+                    int flooringY = obToSpawn.GetSpawnCoordinates(mapHeight).y;
+                    instance.objectPositions.Add(new Vector3(flooringX, flooringY, 1));
+                    Tile tileOn = instance.TileExistsAt(flooringX, flooringY);
+                    Assert.IsNotNull(tileOn);
+                    FloorTile(tileOn, flooring);
+                }
+                break;
+        }
+    }
+
+
+    /// <summary>
+    /// Finds all first Global Tile IDs from all tilesets used in this TileGrid
+    /// and adds them to the `firstGIDs` field. If the field is already set,
+    /// does nothing.
+    /// </summary>
+    /// <param name="data">The parsed Tiled JSON file.</param>
+    private void FindGIDs(TiledData data)
+    {
+        Assert.IsNotNull(data, "TiledData `data` is null.");
+
+        if (firstGIDs != null) return;
+        firstGIDs = data.GetAllFirstGIDs();
+    }
+
+    /// <summary>
+    /// Returns the local ID of a Tile in its tileset.
+    /// </summary>
+    /// <param name="globalTileId">the Tile's global Tile Id.</param>
+    /// <returns>the local ID of the Tile.</returns>
+    private int FindLocalTileId(int globalTileId)
+    {
+        //Access a list of first GIDs, sorted in ascending order
+        //Find out, through an algorithm, which two `globalTileId` falls between
+        //Subtract the first GID from `globalTileId`
+
+        for (int i = 0; i < firstGIDs.Count; i++)
+        {
+            if (i == firstGIDs.Count - 1) return globalTileId - firstGIDs[i];
+            bool greater = globalTileId >= firstGIDs[i];
+            bool lesser = globalTileId < firstGIDs[i + 1];
+            if (greater && lesser) return globalTileId - firstGIDs[i];
+        }
+
+        throw new System.ArgumentException("Invalid global tile Id.", "globalTileId");
+    }
+
+
+    /// <summary>
+    /// Creates a Tile of a certain type and adds it to the collection
+    /// of Tiles in this TileGrid.
+    /// </summary>
+    /// <param name="type">The Tile's type, in string form.</param>
+    /// <param name="coords">The (X, Y) coordinates at which to make the Tile.</param>
+    /// <param name="tiledId">The edge tile's local ID, in Tiled.</param>
+    private void MakeTile(string type, Vector2Int coords, int tiledId)
+    {
+        Assert.IsNotNull(type);
+        Tile existCheck = TileExistsAt(coords.x, coords.y);
+        if (existCheck != null) return;
+
+        float xWorldPos = CoordinateToPosition(coords.x);
+        float yWorldPos = CoordinateToPosition(coords.y);
+
+        switch (type.ToLower())
+        {
+            case "grass":
+                GrassTile grass = MakeTile(xWorldPos, yWorldPos, Tile.TileType.GRASS) as GrassTile;
+                Assert.IsNotNull(grass);
+                grass.Define(coords.x, coords.y, tiledId);
+                AddTile(grass);
+                break;
+            case "water":
+                WaterTile water = MakeTile(xWorldPos, yWorldPos, Tile.TileType.WATER) as WaterTile;
+                water.Define(coords.x, coords.y);
+                AddTile(water);
+                break;
+            default:
+                throw new System.Exception("Reached default case in MakeTile().");
+        }
+    }
+
+    /// <summary>
+    /// Creates an Edge Tile of a certain type and adds it to the collection
+    /// of Tiles in this TileGrid.
+    /// </summary>
+    /// <param name="type">The Edge Tile's type, in string form.</param>
+    /// <param name="coords">The (X, Y) coordinates at which to make the Edge Tile.</param>
+    /// <param name="tiledId">The edge tile's local ID, in Tiled.</param>
+    private void MakeEdge(string type, Vector2Int coords, int tiledId)
+    {
+        Assert.IsNotNull(type);
+        Tile existCheck = TileExistsAt(coords.x, coords.y);
+        if (existCheck != null) return;
+
+        float xWorldPos = CoordinateToPosition(coords.x);
+        float yWorldPos = CoordinateToPosition(coords.y);
+
+        switch (type.ToLower())
+        {
+            case "shore":
+                ShoreTile shore = MakeTile(xWorldPos, yWorldPos, Tile.TileType.SHORE) as ShoreTile;
+                Assert.IsNotNull(shore);
+                shore.Define(coords.x, coords.y, tiledId);
+                AddTile(shore);
+                break;
+            default:
+                throw new System.Exception("Reached default case in MakeEdge().");
+        }
+    }
+
+    /// <summary>
+    /// Returns a Tile that should be in the TileGrid. Instantiates that
+    /// Tile.
+    /// </summary>
+    /// <param name="xPos">The X-world position of the Tile.</param>
+    /// <param name="yPos">The Y-world position of the Tile.</param>
+    /// <param name="type">The TileType of the Tile prefab.</param>
+    /// <returns>The instantiated Tile that should be in the TileGrid.
+    /// </returns>
+    private Tile MakeTile(float xPos, float yPos, Tile.TileType type)
+    {
+        GameObject prefab = TileTypeToPrefab(type);
+        Tile tile = Instantiate(prefab).GetComponent<Tile>();
+        Transform tileTransform = tile.transform;
+        tile.name = type.ToString();
+        tileTransform.position = new Vector3(xPos, yPos, 1);
+        tileTransform.localScale = Vector2.one * TILE_SIZE * 1.0001f; // This multiplier prevents tiny gaps
+        tileTransform.SetParent(instance.transform);
+
+        return tile;
+    }
+
+    #endregion
+
+    #region Pathfinding
 
     /// <summary>
     /// Returns the position of the next Tile in the path from a starting
@@ -1485,5 +1443,6 @@ public class TileGrid : MonoBehaviour
                 Vector3 minVector = new Vector3(float.MinValue, float.MinValue, float.MinValue);
                 return NextTilePosTowardsGoal(startPos, goalPos) != minVector;*/
     }
-    //----------------------END PATHFINDING------------------------//
+
+    #endregion
 }

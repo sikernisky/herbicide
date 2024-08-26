@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -8,15 +6,17 @@ using UnityEngine;
 /// </summary>
 public abstract class UIModel : MonoBehaviour
 {
-    /// <summary>
-    /// ModelType of this UIModel.
-    /// </summary>
-    [SerializeField]
-    protected ModelType modelType;
+    #region Fields
+
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Returns this UIModel's ModelType.
     /// </summary>
     /// <returns>this UIModel's ModelType.</returns>
-    public ModelType GetModelType() { return modelType; } //TODO -- Is this good idk
+    public abstract ModelType GetModelType();
+
+    #endregion
 }

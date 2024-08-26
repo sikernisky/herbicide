@@ -3,11 +3,11 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "Tilemaps/level2.tmx",
+    "activeFile": "Tilemaps/level5.tmx",
     "expandedProjectPaths": [
+        ".",
         "Tilesets",
-        "Tilemaps",
-        "."
+        "Tilemaps"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -88,18 +88,21 @@
                 15
             ],
             "scale": 2,
-            "selectedLayer": 4,
+            "selectedLayer": 5,
             "viewCenter": {
                 "x": 201.25,
-                "y": 140.5
+                "y": 140
             }
         },
         "Tilemaps/level5.tmx": {
-            "scale": 2.28,
-            "selectedLayer": 0,
+            "expandedObjectLayers": [
+                16
+            ],
+            "scale": 2,
+            "selectedLayer": 5,
             "viewCenter": {
-                "x": 120.17543859649123,
-                "y": 88.15789473684211
+                "x": 214.75,
+                "y": 83.5
             }
         },
         "Tilemaps/level5.tmx#Enemies": {
@@ -156,16 +159,19 @@
         "Tilemaps/level1.tmx",
         "Tilemaps/level1.tmj",
         "Tilemaps/level2.tmx",
-        "Tilemaps/level3.tmx"
+        "Tilemaps/level3.tmx",
+        "Tilemaps/level4.tmx",
+        "Tilemaps/level5.tmx"
     ],
     "project": "HerbicideTiled.tiled-project",
     "recentFiles": [
-        "Tilemaps/level5.tmx",
         "Tilemaps/level1.json",
         "Tilemaps/level1.tmx",
         "Tilemaps/level1.tmj",
+        "Tilemaps/level2.tmx",
         "Tilemaps/level3.tmx",
-        "Tilemaps/level2.tmx"
+        "Tilemaps/level4.tmx",
+        "Tilemaps/level5.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

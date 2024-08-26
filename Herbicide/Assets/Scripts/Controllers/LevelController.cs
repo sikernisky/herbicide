@@ -1,19 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.UI;
 
 /// <summary>
-/// The heart of a level. Responsible for <br></br>
-/// 
-/// (1) Setting up the level and singletons<br></br>
-/// (2) Running the main update loop <br></br>
-/// (3) Tracking game state <br></br>
-/// (4) Closing a level and cleaning up
+/// Controls the game loop and updates
+/// all other controllers. The heart of a level. 
 /// </summary>
 public class LevelController : MonoBehaviour
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the LevelController singleton.
     /// </summary>
@@ -34,6 +29,9 @@ public class LevelController : MonoBehaviour
     /// </summary>
     private bool isPaused;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Sets up the level: <br></br>
@@ -232,4 +230,6 @@ public class LevelController : MonoBehaviour
             EconomyController.CheckCurrencyPickup();
         }
     }
+
+    #endregion
 }

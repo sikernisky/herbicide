@@ -1,8 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System;
-
 /// <summary>
 /// Contract for a controller that implements states.
 /// </summary>

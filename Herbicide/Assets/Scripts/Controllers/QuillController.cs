@@ -1,14 +1,18 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
+/// <summary>
+/// Controls a Quill. <br></br>
+/// 
+/// The QuillController is responsible for manipulating its Quill and bringing
+/// it to life. This includes moving it, choosing targets, playing animations,
+/// and more.
+/// </summary>
+/// <![CDATA[<param name="QuillState">]]>
 public class QuillController : ProjectileController<QuillController.QuillState>
 {
-    /// <summary>
-    /// Quills angle towards their target.
-    /// </summary>
-    protected override bool angleTowardsTarget => true;
+    #region Fields
 
     /// <summary>
     /// Possible states of a Quill over its lifetime.
@@ -20,6 +24,15 @@ public class QuillController : ProjectileController<QuillController.QuillState>
         COLLIDING,
         DEAD
     }
+
+    /// <summary>
+    /// Quills angle towards their target.
+    /// </summary>
+    protected override bool angleTowardsTarget => true;
+
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Gives an Quill an QuillController.
@@ -74,10 +87,17 @@ public class QuillController : ProjectileController<QuillController.QuillState>
         ControllerController.AddEmanationController(piercingQuillEmanationController);
         PlaceableObject initialTarget = model as PlaceableObject;
         HashSet<PlaceableObject> immuneObjects = new HashSet<PlaceableObject>() { initialTarget };
-        ExplosionController.DetonateExplosion(piercingQuill, GetQuill().PIERCING_DAMAGE, immuneObjects);
+        HashSet<Type> immuneTypes = new HashSet<Type>
+        {
+            // typeof(Structure),
+            typeof(Defender)
+        };
+        ExplosionController.DetonateExplosion(piercingQuill, GetQuill().PIERCING_DAMAGE, immuneObjects, immuneTypes);
     }
 
-    //-----------------------STATE LOGIC------------------------//
+    #endregion
+
+    #region State Logic
 
     /// <summary>
     /// Updates the state of this QuillController's Quill model.
@@ -138,7 +158,9 @@ public class QuillController : ProjectileController<QuillController.QuillState>
     /// </summary>
     public override void ExecuteDeadState() { return; }
 
-    //---------------------ANIMATION LOGIC----------------------//
+    #endregion
+
+    #region Animation Logic
 
     /// <summary>
     /// Adds one chunk of Time.deltaTime to the animation
@@ -169,4 +191,6 @@ public class QuillController : ProjectileController<QuillController.QuillState>
         QuillState state = GetState();
         if (state == QuillState.MOVING) midAirAnimationCounter = 0;
     }
+
+    #endregion
 }

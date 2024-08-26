@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -7,11 +6,12 @@ using System.Linq;
 using UnityEngine.UI;
 
 /// <summary>
-/// Controls the flow and display of stages
-/// throughout the game.
+/// Controls the flow and display of stages throughout the game.
 /// </summary>
 public class StageController : MonoBehaviour
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the StageController singleton.
     /// </summary> 
@@ -70,6 +70,9 @@ public class StageController : MonoBehaviour
     [SerializeField]
     private Image intermissionTimerBarFill;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Finds and sets the StageController singleton for a level.
@@ -154,4 +157,6 @@ public class StageController : MonoBehaviour
     /// <returns>the number of seconds that have elapsed since the
     /// last stage began. </returns> 
     public static float GetTimeSinceLastStageBegan() { return instance.timeSinceLastStage; }
+
+    #endregion
 }

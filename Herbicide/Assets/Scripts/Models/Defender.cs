@@ -1,38 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Represents something that is placed on the TileGrid
-/// and helps the player win.
+/// Represents a Model that can be placed on a Tree
+/// to defend the player from enemies.
 /// </summary>
 public abstract class Defender : Mob
 {
-    /// <summary>
-    /// Class of this Defender.
-    /// </summary>
-    public abstract DefenderClass CLASS { get; }
-
-    /// <summary>
-    /// The position of the tree on which this Defender sits.
-    /// </summary>
-    private Vector3 treePos;
-
-    /// <summary>
-    /// Current tier of this Defender.
-    /// </summary>
-    private int tier = MIN_TIER;
-
-    /// <summary>
-    /// Maximum tier of this Defender.
-    /// </summary>
-    public static readonly int MAX_TIER = 3;
-
-    /// <summary>
-    /// Lowest/starting tier of this Defender.
-    /// </summary>
-    public static readonly int MIN_TIER = 1;
+    #region Fields
 
     /// <summary>
     /// Class of this Defender.
@@ -46,6 +21,38 @@ public abstract class Defender : Mob
         WHISPERER
     }
 
+    /// <summary>
+    /// The position of the tree on which this Defender sits.
+    /// </summary>
+    private Vector3 treePos;
+
+    /// <summary>
+    /// Current tier of this Defender.
+    /// </summary>
+    private int tier = MIN_TIER;
+
+    #endregion
+
+    #region Stats
+
+    /// <summary>
+    /// Class of this Defender.
+    /// </summary>
+    public abstract DefenderClass CLASS { get; }
+
+    /// <summary>
+    /// Maximum tier of this Defender.
+    /// </summary>
+    public static readonly int MAX_TIER = 3;
+
+    /// <summary>
+    /// Lowest/starting tier of this Defender.
+    /// </summary>
+    public static readonly int MIN_TIER = 1;
+
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Gets the position of the tree on which this Defender sits.
@@ -92,4 +99,6 @@ public abstract class Defender : Mob
         base.ResetModel();
         ResetTier();
     }
+
+    #endregion
 }

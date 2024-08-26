@@ -1,15 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
-using Newtonsoft.Json;
-using UnityEditor.VersionControl;
 
 /// <summary>
-/// Parses JSON files into data.
+/// Controls JSON events. Parses JSON files from Tiled into game data.
 /// </summary>
 public class JSONController : MonoBehaviour
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the JSONController singleton.
     /// </summary>
@@ -29,6 +27,9 @@ public class JSONController : MonoBehaviour
     /// </summary>
     private static TiledData translatedTiledJson;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Finds and sets the JSONController singleton for a level.
@@ -81,9 +82,9 @@ public class JSONController : MonoBehaviour
     private void SetTranslatedJson(TiledData translatedJson)
     {
         if (translatedJson == null) return;
-        if (JSONController.translatedTiledJson != null) return;
+        if (translatedTiledJson != null) return;
 
-        JSONController.translatedTiledJson = translatedJson;
+        translatedTiledJson = translatedJson;
     }
 
     /// <summary>
@@ -94,8 +95,10 @@ public class JSONController : MonoBehaviour
     /// file. </returns>
     public static TiledData GetTiledData()
     {
-        Assert.IsNotNull(JSONController.translatedTiledJson);
+        Assert.IsNotNull(translatedTiledJson);
 
-        return JSONController.translatedTiledJson;
+        return translatedTiledJson;
     }
+
+    #endregion
 }

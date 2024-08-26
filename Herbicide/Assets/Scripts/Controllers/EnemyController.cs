@@ -1,20 +1,38 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
-using System.Linq;
-using System;
 
 /// <summary>
-/// Abstract class to represent controllers of Enemies.
+/// Controls an Enemy. <br></br>
 /// 
 /// The EnemyController is responsible for manipulating its Enemy and bringing
 /// it to life. This includes moving it, choosing targets, playing animations,
 /// and more.
 /// </summary>
-/// <typeparam name="T">Enum to represent state of the Enemy.</typeparam>
+/// <typeparam name="T">The type of enum that represents distinct states or attributes
+/// of the Enemy.</typeparam>
 public abstract class EnemyController : MobController<EnemyController.EnemyState>
 {
+    #region Fields
+
+    /// <summary>
+    /// All possible states of an Enemy. In the future,
+    /// enemies will define their own states just like
+    /// Defenders do.
+    /// </summary>
+    public enum EnemyState
+    {
+        INACTIVE, // Not spawned yet.
+        ENTERING, // Entering map.
+        IDLE, // Static, nothing to do.
+        CHASE, // Pursuing target.
+        ATTACK, // Attacking target.
+        ESCAPE, // Running back to start.
+        PROTECT, // Protecting other escaping enemies.
+        EXITING, // Leaving map.
+        DEAD, // Dead.
+        INVALID // Something went wrong.
+    }
+
     /// <summary>
     /// true if the Enemy has popped out of a NexusHole and is fully spawned.
     /// </summary>
@@ -67,24 +85,9 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
     /// </summary>
     protected override bool FINDS_TARGETS => true;
 
-    /// <summary>
-    /// All possible states of an Enemy. Not all Enemies need to define logic
-    /// for each state. 
-    /// </summary>
-    public enum EnemyState
-    {
-        INACTIVE, // Not spawned yet.
-        ENTERING, // Entering map.
-        IDLE, // Static, nothing to do.
-        CHASE, // Pursuing target.
-        ATTACK, // Attacking target.
-        ESCAPE, // Running back to start.
-        PROTECT, // Protecting other escaping enemies.
-        EXITING, // Leaving map.
-        DEAD, // Dead.
-        INVALID // Something went wrong.
-    }
+    #endregion
 
+    #region Methods
 
     /// <summary>
     /// Initializes this EnemyController with the Enemy it controls.
@@ -369,6 +372,10 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
         EnemyFactory.ReturnEnemyPrefab(GetEnemy().gameObject);
     }
 
+    #endregion
+
+    #region State Logic
+
     /// <summary>
     /// Returns true if two EnemyStates are equal.
     /// </summary>
@@ -379,6 +386,50 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
     {
         return stateA == stateB;
     }
+
+    /// <summary>
+    /// Executes the logic for the INACTIVE state.
+    /// </summary>
+    protected abstract void ExecuteInactiveState();
+
+    /// <summary>
+    /// Executes the logic for the ENTERING state.
+    /// </summary> 
+    protected abstract void ExecuteEnteringState();
+
+    /// <summary>
+    /// Executes the logic for the IDLE state.
+    /// </summary> 
+    protected abstract void ExecuteIdleState();
+
+    /// <summary>
+    /// Executes the logic for the CHASE state.
+    /// </summary> 
+    protected abstract void ExecuteChaseState();
+
+    /// <summary>
+    /// Executes the logic for the ATTACK state.
+    /// </summary> 
+    protected abstract void ExecuteAttackState();
+
+    /// <summary>
+    /// Executes the logic for the PROTECT state.
+    /// </summary> 
+    protected abstract void ExecuteProtectState();
+
+    /// <summary>
+    /// Executes the logic for the ESCAPE state.
+    /// </summary> 
+    protected abstract void ExecuteEscapeState();
+
+    /// <summary>
+    /// Executes the logic for the EXIT state.
+    /// </summary> 
+    protected abstract void ExecuteExitState();
+
+    #endregion
+
+    #region Animation Logic
 
     /// <summary>
     /// Adds one chunk of Time.deltaTime to the animation
@@ -428,43 +479,5 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
         else if (state == EnemyState.EXITING) exitingAnimationCounter = 0;
     }
 
-    /// <summary>
-    /// Executes the logic for the INACTIVE state.
-    /// </summary>
-    protected abstract void ExecuteInactiveState();
-
-    /// <summary>
-    /// Executes the logic for the ENTERING state.
-    /// </summary> 
-    protected abstract void ExecuteEnteringState();
-
-    /// <summary>
-    /// Executes the logic for the IDLE state.
-    /// </summary> 
-    protected abstract void ExecuteIdleState();
-
-    /// <summary>
-    /// Executes the logic for the CHASE state.
-    /// </summary> 
-    protected abstract void ExecuteChaseState();
-
-    /// <summary>
-    /// Executes the logic for the ATTACK state.
-    /// </summary> 
-    protected abstract void ExecuteAttackState();
-
-    /// <summary>
-    /// Executes the logic for the PROTECT state.
-    /// </summary> 
-    protected abstract void ExecuteProtectState();
-
-    /// <summary>
-    /// Executes the logic for the ESCAPE state.
-    /// </summary> 
-    protected abstract void ExecuteEscapeState();
-
-    /// <summary>
-    /// Executes the logic for the EXIT state.
-    /// </summary> 
-    protected abstract void ExecuteExitState();
+    #endregion
 }

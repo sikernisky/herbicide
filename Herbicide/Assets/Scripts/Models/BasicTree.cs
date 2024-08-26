@@ -1,12 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Represents a Tree that can host a Defender.
+/// Represents a Basic Tree that holds Defenders.
 /// </summary>
 public class BasicTree : Tree
 {
+    #region Fields
+
+    #endregion
+
+    #region Stats
+
     /// <summary>
     /// How much currency it takes to place a BasicTree
     /// </summary>
@@ -87,6 +91,10 @@ public class BasicTree : Tree
     /// </summary>
     public override float MIN_MOVEMENT_SPEED => 0f;
 
+    #endregion
+
+    #region Methods
+
     /// <summary>
     /// Returns the animation track that represents this BasicTree when placing.
     /// </summary>
@@ -105,4 +113,6 @@ public class BasicTree : Tree
     /// Sets this BasicTree's 2D Collider's properties.
     /// </summary>
     public override void SetColliderProperties() { return; }
+
+    #endregion
 }

@@ -1,15 +1,14 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
 /// Represents a layer within a Tiled JSON file, deserialized.
-/// This layer contains information about 
 /// </summary>
 [System.Serializable]
 public class LayerData
 {
+    #region Fields
+
     /// <summary>
     /// All objects within this layer; null if this is not an 
     /// object layer.
@@ -39,6 +38,9 @@ public class LayerData
     /// </summary>
     private string layerClass;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Returns true if this LayerData layer stores objects.
@@ -204,4 +206,6 @@ public class LayerData
         Assert.IsNotNull(layerClass);
         return layerClass;
     }
+
+    #endregion
 }

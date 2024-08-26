@@ -1,30 +1,14 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using System;
-using System.Linq;
 
 /// <summary>
-/// Represents something tangible and physical in the game. All
-/// GameObjects inherit from this: Mobs, Projectiles, Tiles, etc.
+/// Represents something Physical in the game.
 /// </summary>
 public abstract class Model : MonoBehaviour
 {
-    /// <summary>
-    /// How much currency is required to buy this Model.
-    /// </summary>
-    public virtual int COST => 100;
-
-    /// <summary>
-    /// Name of this Model.
-    /// </summary>
-    public string NAME => TYPE.ToString();
-
-    /// <summary>
-    /// Type of this Model.
-    /// </summary>
-    public abstract ModelType TYPE { get; }
+    #region Fields
 
     /// <summary>
     /// This Model's active animation track.
@@ -69,6 +53,50 @@ public abstract class Model : MonoBehaviour
     private Direction direction;
 
     /// <summary>
+    /// true if this Model is holding a Nexus; otherwise, false. 
+    /// </summary>
+    private bool holdingNexus;
+
+    /// <summary>
+    /// The number of cycles of the current animation completed.
+    /// </summary>
+    private int numCyclesOfCurrentAnimationCompleted;
+
+    #endregion
+
+    #region Stats
+
+    /// <summary>
+    /// How much currency is required to buy this Model.
+    /// </summary>
+    public virtual int COST => 100;
+
+    /// <summary>
+    /// Name of this Model.
+    /// </summary>
+    public string NAME => TYPE.ToString();
+
+    /// <summary>
+    /// Type of this Model.
+    /// </summary>
+    public abstract ModelType TYPE { get; }
+
+    /// <summary>
+    /// The (X, Y) dimensions of this Model.
+    /// </summary>
+    /// <value></value>
+    public virtual Vector2Int SIZE => new Vector2Int(1, 1);
+
+    /// <summary>
+    /// The offset of this Model's held Nexii. 
+    /// </summary>
+    public virtual Vector2 HOLDER_OFFSET => new Vector2(0, 0);
+
+    #endregion
+
+    #region Events
+
+    /// <summary>
     /// Delegate for handling collision events.
     /// </summary>
     public delegate void CollisionHandler(Collider2D other);
@@ -89,29 +117,9 @@ public abstract class Model : MonoBehaviour
     /// </summary>
     public event Action<Projectile> OnProjectileImpact;
 
-    /// <summary>
-    /// The (X, Y) dimensions of this Model.
-    /// </summary>
-    /// <value></value>
-    public virtual Vector2Int SIZE => new Vector2Int(1, 1);
+    #endregion
 
-    /// <summary>
-    /// The offset of this Model's held Nexii. 
-    /// </summary>
-    public virtual Vector2 HOLDER_OFFSET => new Vector2(0, 0);
-
-    /// <summary>
-    /// true if this Model is holding a Nexus; otherwise, false. 
-    /// </summary>
-    private bool holdingNexus;
-
-    /// <summary>
-    /// The number of cycles of the current animation completed.
-    /// </summary>
-    private int numCyclesOfCurrentAnimationCompleted;
-
-
-
+    #region Methods
 
     /// <summary>
     /// Sets this Model's SpriteRenderer to its most up-to date
@@ -475,4 +483,6 @@ public abstract class Model : MonoBehaviour
     /// </summary>
     /// <returns></returns>
     public bool IsHoldingNexus() { return holdingNexus; }
+
+    #endregion
 }

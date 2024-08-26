@@ -1,14 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
-
 
 /// <summary>
 /// Controls the level's singular, orthographic Camera component.
 /// </summary>
 public class CameraController : MonoBehaviour
 {
+    #region Fields
+
     /// <summary>
     /// The one Camera in the scene
     /// </summary>
@@ -18,6 +17,10 @@ public class CameraController : MonoBehaviour
     /// Reference to the CameraController singleton.
     /// </summary>
     private static CameraController instance;
+
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Finds and sets the CameraController singleton for a level. Also finds and sets
@@ -98,4 +101,6 @@ public class CameraController : MonoBehaviour
     {
         return cam;
     }
+
+    #endregion
 }

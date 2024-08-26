@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -8,6 +6,8 @@ using UnityEngine.Assertions;
 /// </summary>
 public class DewFactory : Factory
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the DewFactory singleton.
     /// </summary>
@@ -19,6 +19,9 @@ public class DewFactory : Factory
     [SerializeField]
     private Sprite[] placementTrack;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Finds and sets the DewFactory singleton.
@@ -66,4 +69,6 @@ public class DewFactory : Factory
     /// </summary>
     /// <returns>the Transform component of the DewFactory instance. </returns>
     protected override Transform GetTransform() { return instance.transform; }
+
+    #endregion
 }

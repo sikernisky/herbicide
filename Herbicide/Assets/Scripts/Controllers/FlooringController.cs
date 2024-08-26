@@ -1,13 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 /// <summary>
 /// Controls ALL Flooring objects in the scene.
 /// </summary>
 public class FlooringController : ModelController
 {
+    #region Fields
+
+    #endregion
+
+    #region Methods
+
     /// <summary>
     /// Gives a Flooring Model a controller.
     /// </summary>
@@ -56,4 +59,6 @@ public class FlooringController : ModelController
     {
         FlooringFactory.ReturnFlooringPrefab(GetFlooring().gameObject);
     }
+
+    #endregion
 }

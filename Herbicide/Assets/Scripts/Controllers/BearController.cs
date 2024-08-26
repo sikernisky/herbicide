@@ -1,17 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System;
 
 /// <summary>
-/// Controls a Bear.
+/// Controls a Bear. <br></br>
 /// 
 /// The BearController is responsible for manipulating its Bear and bringing
 /// it to life. This includes moving it, choosing targets, playing animations,
 /// and more.
 /// </summary>
+/// <![CDATA[<param name="BearState">]]>
 public class BearController : DefenderController<BearController.BearState>
 {
+    #region Fields
+
     /// <summary>
     /// Different states of a Bear Model.
     /// </summary>
@@ -39,6 +40,10 @@ public class BearController : DefenderController<BearController.BearState>
     /// Maximum number of targets a Bear can have.
     /// </summary>
     protected override int MAX_TARGETS => 1;
+
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Makes a new BearController.
@@ -78,7 +83,23 @@ public class BearController : DefenderController<BearController.BearState>
     /// </summary>
     public override void DestroyModel() { DefenderFactory.ReturnDefenderPrefab(GetBear().gameObject); }
 
-    //--------------------BEGIN STATE LOGIC----------------------//
+    /// <summary>
+    /// Returns true if the Bear can swipe its target.
+    /// </summary>
+    /// <returns>true if the Bear can swipe its target; otherwise,
+    /// false.</returns>
+    public override bool CanAttack()
+    {
+        if (!base.CanAttack()) return false; //Cooldown
+        if (GetState() != BearState.ATTACK) return false; //Not in the attack state.
+        Enemy target = GetTarget() as Enemy;
+        if (GetTarget() == null || !target.Targetable()) return false; //Invalid target.
+        return true;
+    }
+
+    #endregion
+
+    #region State Logic
 
     /// <summary>
     /// Returns true if two BearStates are equal.
@@ -206,19 +227,9 @@ public class BearController : DefenderController<BearController.BearState>
         GetBear().RestartAttackCooldown();
     }
 
-    /// <summary>
-    /// Returns true if the Bear can swipe its target.
-    /// </summary>
-    /// <returns>true if the Bear can swipe its target; otherwise,
-    /// false.</returns>
-    public override bool CanAttack()
-    {
-        if (!base.CanAttack()) return false; //Cooldown
-        if (GetState() != BearState.ATTACK) return false; //Not in the attack state.
-        Enemy target = GetTarget() as Enemy;
-        if (GetTarget() == null || !target.Targetable()) return false; //Invalid target.
-        return true;
-    }
+    #endregion
+
+    #region Animation Logic
 
     /// <summary>
     /// Adds one chunk of Time.deltaTime to the animation
@@ -253,4 +264,5 @@ public class BearController : DefenderController<BearController.BearState>
         else if (state == BearState.ATTACK) attackAnimationCounter = 0;
     }
 
+    #endregion
 }

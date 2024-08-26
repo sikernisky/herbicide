@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 /// <summary>
-/// Every type of non-abstract Model in the game.
+/// Every type of non-abstract ModeL.
 /// </summary>
 public enum ModelType
 {

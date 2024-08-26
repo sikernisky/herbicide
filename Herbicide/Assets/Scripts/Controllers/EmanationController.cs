@@ -1,15 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System;
 using UnityEngine.Assertions;
 
-
 /// <summary>
-/// Abstract class to represent controllers of Emanations.
+/// Controls an Emanation. <br></br>
 /// 
-/// The EmanationController is responsible for positioning its Emanation
-/// and playing its animation track. Then, it destroys it. <br></br>
+/// The EmanationController is responsible for manipulating its Emanation
+/// and bringing it to life. This includes moving it playing animations,
+/// and more. <br></br>
 /// 
 /// The EmanationController does not follow the Animation infrastructure
 /// used by all other models. This is because it only needs one track and
@@ -17,6 +14,17 @@ using UnityEngine.Assertions;
 /// implementing unused code. </summary>
 public class EmanationController
 {
+    #region Fields
+
+    /// <summary>
+    /// Different types of Emanations. 
+    /// </summary>
+    public enum EmanationType
+    {
+        BEAR_CHOMP,
+        QUILL_PIERCE
+    }
+
     /// <summary>
     /// Type of Emanation this controller is animating.
     /// </summary>
@@ -75,14 +83,9 @@ public class EmanationController
     /// </summary>
     private bool scheduledForDestruction;
 
-    /// <summary>
-    /// Different types of Emanations. 
-    /// </summary>
-    public enum EmanationType
-    {
-        BEAR_CHOMP,
-        QUILL_PIERCE
-    }
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Makes a new EmanationController.
@@ -167,16 +170,6 @@ public class EmanationController
     private bool DoneAnimating() { return cyclesCompleted >= requiredCycles; }
 
     /// <summary>
-    /// TODO: Let the Controller who created the Emanation move it around
-    /// if it wants to. Needs to be called in an update method.
-    /// </summary>
-    /// <param name="targetPos">Where to move the Emanation</param>
-    public void MoveEmanation(Vector3 targetPos)
-    {
-        if (ScheduledForDestruction()) return;
-    }
-
-    /// <summary>
     /// Destroys and detatches the Model from this Controller.
     /// </summary>
     protected virtual void DestroyAndRemoveModel()
@@ -204,4 +197,6 @@ public class EmanationController
     /// <returns>true if the Emanation is scheduled for destruction;
     /// otherwise, false.</returns>
     protected bool ScheduledForDestruction() { return scheduledForDestruction; }
+
+    #endregion
 }

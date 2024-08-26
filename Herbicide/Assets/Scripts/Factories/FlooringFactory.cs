@@ -1,16 +1,14 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Manages assets for Flooring components. With a factory,
-/// we save tremendous amounts of memory -- each Flooring object
-/// can access its needed Sprite here rather than instantiating its own
-/// array of possible Sprites.
+/// Produces assets related to Flooring. 
 /// </summary>
 public class FlooringFactory : Factory
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the FlooringFactory singleton.
     /// </summary>
@@ -27,6 +25,9 @@ public class FlooringFactory : Factory
     [SerializeField]
     private Sprite[] soilFlooringSprites;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Finds and sets the FlooringFactory singleton.
@@ -104,4 +105,6 @@ public class FlooringFactory : Factory
     /// </summary>
     /// <returns>the Transform component of the FlooringFactory instance.</returns>
     protected override Transform GetTransform() { return instance.transform; }
+
+    #endregion
 }

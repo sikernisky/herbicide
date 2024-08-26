@@ -1,23 +1,14 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Represents a GameObject that can be placed on a Tile to expand its
+/// Represents a Model that can place on a Tile to expand its
 /// behavior and complexity. 
 /// </summary>
 public abstract class Flooring : Model, ISurface
 {
-    /// <summary>
-    /// Index of the Sprite in tile set this Flooring takes on
-    /// </summary>
-    private int tilingIndex;
-
-    /// <summary>
-    /// Type of Tile this flooring is on
-    /// </summary>
-    private Tile.TileType typeOn;
+    #region Fields
 
     /// <summary>
     /// This Flooring's four neighbors.
@@ -49,6 +40,9 @@ public abstract class Flooring : Model, ISurface
     /// </summary>
     private bool defined;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Defines this Flooring on a Tile, setting its Sprite based on an
@@ -66,7 +60,6 @@ public abstract class Flooring : Model, ISurface
         SetTileCoordinates(x, y);
         name = TYPE.ToString() + " (" + GetX() + ", " + GetY() + ")";
         UpdateSurfaceNeighbors(neighbors);
-        this.typeOn = typeOn;
     }
 
     /// <summary>
@@ -125,7 +118,6 @@ public abstract class Flooring : Model, ISurface
         if (!FlooringFactory.ValidFlooringIndex(newIndex)) return;
         if (flooringRenderer == null) flooringRenderer = GetComponent<SpriteRenderer>();
         flooringRenderer.sprite = FlooringFactory.GetFlooringSprite(TYPE, newIndex);
-        tilingIndex = newIndex;
     }
 
     /// <summary>
@@ -138,7 +130,6 @@ public abstract class Flooring : Model, ISurface
         AssertDefined();
         return occupant != null;
     }
-
 
     /// <summary>
     /// Places a PlaceableObject on this Flooring.
@@ -177,7 +168,6 @@ public abstract class Flooring : Model, ISurface
         candidate.OnPlace(new Vector2Int(GetX(), GetY()));
         SetTilingIndex(GetTilingIndex(neighbors));
     }
-
 
     /// <summary>
     /// Sets the color of this Tile's SpriteRenderer. If it's floored, passes
@@ -329,7 +319,6 @@ public abstract class Flooring : Model, ISurface
         return true;
     }
 
-
     /// <summary>
     /// Removes all visual simulations of placing an IPlaceable on this
     /// Flooring. If there are none, does nothing.
@@ -407,4 +396,6 @@ public abstract class Flooring : Model, ISurface
     {
         throw new System.NotSupportedException("Tile placing not supported.");
     }
+
+    #endregion
 }

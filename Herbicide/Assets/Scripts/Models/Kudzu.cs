@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -8,6 +6,17 @@ using UnityEngine.Assertions;
 /// </summary>
 public class Kudzu : Enemy
 {
+    #region Fields
+
+    /// <summary>
+    /// How many seconds remain before this Kudzu can hop.
+    /// </summary>
+    private float hopCooldownTimer;
+
+    #endregion
+
+    #region Stats
+
     /// <summary>
     /// Cost of placing a Kudzu from the inventory. 
     /// </summary>
@@ -125,17 +134,9 @@ public class Kudzu : Enemy
     /// </summary>
     public override Vector2 HOLDER_OFFSET => new Vector2(0, .25f);
 
-    /// <summary>
-    /// How many seconds remain before this Kudzu can hop.
-    /// </summary>
-    private float hopCooldownTimer;
+    #endregion
 
-
-    /// <summary>
-    /// Returns the number of seconds before this Kudzu can hop again.
-    /// </summary>
-    /// <returns>the number of seconds before this Kudzu can hop again. </returns>
-    public float GetHopCooldown() { return hopCooldownTimer; }
+    #region Methods
 
     /// <summary>
     /// Sets this Kudzu's Collider2D properties.
@@ -170,4 +171,6 @@ public class Kudzu : Enemy
     /// <returns>the GameObject that represents this Kudzu on the grid.
     /// </returns>
     public override GameObject Copy() { return EnemyFactory.GetEnemyPrefab(TYPE); }
+
+    #endregion
 }

@@ -1,10 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
+/// <summary>
+/// Produces assets related to NexusHoles. 
+/// </summary>
 public class NexusHoleFactory : Factory
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the NexusHoleFactory singleton.
     /// </summary>
@@ -22,6 +25,9 @@ public class NexusHoleFactory : Factory
     [SerializeField]
     private Sprite[] boatTrack;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Finds and sets the NexusHoleFactory singleton.
@@ -75,4 +81,6 @@ public class NexusHoleFactory : Factory
     /// </summary>
     /// <returns>the Transform component of the NexusHoleFactory instance.</returns>
     protected override Transform GetTransform() { return instance.transform; }
+
+    #endregion
 }

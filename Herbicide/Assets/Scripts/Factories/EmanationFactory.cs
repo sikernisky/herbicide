@@ -8,6 +8,8 @@ using UnityEngine.Assertions;
 /// </summary>
 public class EmanationFactory : MonoBehaviour
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the EmanationFactory singleton.
     /// </summary>
@@ -25,6 +27,9 @@ public class EmanationFactory : MonoBehaviour
     [SerializeField]
     private Sprite[] quillPierceTrack;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Finds and sets the EmanationFactory singleton.
@@ -82,4 +87,6 @@ public class EmanationFactory : MonoBehaviour
 
         throw new System.NotSupportedException(emanationType + " not supported.");
     }
+
+    #endregion
 }

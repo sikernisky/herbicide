@@ -1,18 +1,50 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 /// <summary>
-/// Abstract class to represent a reactive entity in the game. Mobs
-/// implement attack functionality, but they don't need to represent
-/// things that can attack. 
+/// Represents a living, reactive PlaceableObject.
 /// </summary>
 public abstract class Mob : PlaceableObject
 {
+    #region Fields
 
-    //--------------------BEGIN STATS----------------------//
+    /// <summary>
+    /// This Mob's current attack range. 
+    /// </summary>
+    private float attackRange;
+
+    /// <summary>
+    /// Current number of attacks this Mob can make per second.
+    /// </summary>
+    private float attackSpeed;
+
+    /// <summary>
+    /// How many seconds this Mob has to wait before attacking again.
+    /// </summary>
+    private float attackCooldownTimer;
+
+    /// <summary>
+    /// This Mob's current chase range. 
+    /// </summary>
+    private float chaseRange;
+
+    /// <summary>
+    /// This Mob's current movement speed.
+    /// </summary>
+    private float movementSpeed;
+
+    /// <summary>
+    /// true if this Mob is spawned in the scene.
+    /// </summary>
+    private bool spawned;
+
+    /// <summary>
+    /// Where this mob spawned.
+    /// </summary>
+    private Vector3 spawnPos;
+
+    #endregion
+
+    #region Stats
 
     /// <summary>
     /// Amount of attack range this Mob starts with.
@@ -30,11 +62,6 @@ public abstract class Mob : PlaceableObject
     public abstract float MIN_ATTACK_RANGE { get; }
 
     /// <summary>
-    /// This Mob's current attack range. 
-    /// </summary>
-    private float attackRange;
-
-    /// <summary>
     /// Starting number of attacks this Mob can make per second.
     /// </summary>
     public abstract float BASE_ATTACK_SPEED { get; }
@@ -48,16 +75,6 @@ public abstract class Mob : PlaceableObject
     /// Min number of attacks this Mob can make per second.
     /// </summary>
     public float MIN_ATTACK_SPEED => 0f;
-
-    /// <summary>
-    /// Current number of attacks this Mob can make per second.
-    /// </summary>
-    private float attackSpeed;
-
-    /// <summary>
-    /// How many seconds this Mob has to wait before attacking again.
-    /// </summary>
-    private float attackCooldownTimer;
 
     /// <summary>
     /// Amount of chase range this Mob starts with.
@@ -75,11 +92,6 @@ public abstract class Mob : PlaceableObject
     public abstract float MIN_CHASE_RANGE { get; }
 
     /// <summary>
-    /// This Mob's current chase range. 
-    /// </summary>
-    private float chaseRange;
-
-    /// <summary>
     /// Amount of movement speed this Mob starts with.
     /// </summary>
     public abstract float BASE_MOVEMENT_SPEED { get; }
@@ -95,27 +107,13 @@ public abstract class Mob : PlaceableObject
     public abstract float MIN_MOVEMENT_SPEED { get; }
 
     /// <summary>
-    /// This Mob's current movement speed.
-    /// </summary>
-    private float movementSpeed;
-
-    //---------------------END STATS-----------------------//
-
-    /// <summary>
     /// By default, Mobs do not occupy Tiles.
     /// </summary>
     public override bool OCCUPIER => false;
 
-    /// <summary>
-    /// true if this Mob is spawned in the scene.
-    /// </summary>
-    private bool spawned;
+    #endregion
 
-    /// <summary>
-    /// Where this mob spawned.
-    /// </summary>
-    private Vector3 spawnPos;
-
+    #region Methods
 
     /// <summary>
     /// Called when this Mob activates in the scene.
@@ -239,4 +237,6 @@ public abstract class Mob : PlaceableObject
         ResetMovementSpeed();
         ResetAttackSpeed();
     }
+
+    #endregion
 }

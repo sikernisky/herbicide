@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -8,25 +7,7 @@ using UnityEngine.Assertions;
 /// </summary>
 public abstract class Tree : Mob, ISurface
 {
-    /// <summary>
-    /// Starting number of Collectable Prefabs this Tree drops each second.
-    /// </summary>
-    public virtual float BASE_RESOURCE_DROP_RATE => 0f;
-
-    /// <summary>
-    /// Maximum number of Collectable Prefabs this Tree can drop each second.
-    /// </summary>
-    public virtual float MIN_RESOURCE_DROP_RATE => 0f;
-
-    /// <summary>
-    /// Minimum number of Collectable Prefabs this Tree can drop each second.
-    /// </summary>
-    public virtual float MAX_RESOURCE_DROP_RATE => float.MaxValue;
-
-    /// <summary>
-    /// This Tree's current resource drop rate.
-    /// </summary>
-    private float resourceDropRate;
+    #region Fields
 
     /// <summary>
     /// This Tree's neighboring ISurfaces.
@@ -43,20 +24,33 @@ public abstract class Tree : Mob, ISurface
     /// </summary>
     private GameObject ghostDefender;
 
+    #endregion
+
+    #region Stats
+
+    /// <summary>
+    /// Starting number of Collectable Prefabs this Tree drops each second.
+    /// </summary>
+    public virtual float BASE_RESOURCE_DROP_RATE => 0f;
+
+    /// <summary>
+    /// Maximum number of Collectable Prefabs this Tree can drop each second.
+    /// </summary>
+    public virtual float MIN_RESOURCE_DROP_RATE => 0f;
+
+    /// <summary>
+    /// Minimum number of Collectable Prefabs this Tree can drop each second.
+    /// </summary>
+    public virtual float MAX_RESOURCE_DROP_RATE => float.MaxValue;
+
     /// <summary>
     /// Trees occupy Tiles & Flooring.
     /// </summary>
     public override bool OCCUPIER => true;
 
+    #endregion
 
-    /// <summary>
-    /// Resets this Tree's stats to their starting values.
-    /// </summary>
-    public override void ResetModel()
-    {
-        base.ResetModel();
-        ResetResourceDropRate();
-    }
+    #region Methods
 
     /// <summary>
     /// If this Tree is not occupied, adjusts its health by amount.
@@ -290,28 +284,6 @@ public abstract class Tree : Mob, ISurface
     public bool IsWalkable() { return false; }
 
     /// <summary>
-    /// Resets this Tree's resource drop rate to its base value.
-    /// </summary>
-    protected void ResetResourceDropRate() { resourceDropRate = BASE_RESOURCE_DROP_RATE; }
-
-    /// <summary>
-    /// Adds some amount to this Tree's resource drop rate.
-    /// </summary>
-    /// <param name="amount">The amount to add.</param>
-    public void AdjustResourceDropRate(float amount)
-    {
-        resourceDropRate = Mathf.Clamp(resourceDropRate + amount,
-         MIN_RESOURCE_DROP_RATE,
-         MAX_RESOURCE_DROP_RATE);
-    }
-
-    /// <summary>
-    /// Returns this Tree's current resource drop rate.
-    /// </summary>
-    /// <returns>this Tree's current resource drop rate.</returns>
-    public float GetResourceDropRate() { return resourceDropRate; }
-
-    /// <summary>
     /// Returns the offset of a Defender on this Tree.
     /// </summary>
     /// <param name="type">The type of Defender</param>
@@ -330,4 +302,6 @@ public abstract class Tree : Mob, ISurface
                 return Vector2.zero;
         }
     }
+
+    #endregion
 }

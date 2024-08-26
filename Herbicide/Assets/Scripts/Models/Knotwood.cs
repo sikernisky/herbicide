@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -8,6 +6,12 @@ using UnityEngine.Assertions;
 /// </summary>
 public class Knotwood : Enemy
 {
+    #region Fields
+
+    #endregion
+
+    #region Stats
+
     /// <summary>
     /// Starting attack range of a Knotwood. 
     /// </summary>
@@ -106,6 +110,10 @@ public class Knotwood : Enemy
     /// </summary>
     public float KICK_DAMAGE => 20f;
 
+    #endregion
+
+    #region Methods
+
     /// <summary>
     /// Returns a copy of a Knotwood.
     /// </summary>
@@ -138,4 +146,6 @@ public class Knotwood : Enemy
         float adjustedY = transform.position.y + .25f;
         return new Vector3(transform.position.x, adjustedY, transform.position.z);
     }
+
+    #endregion
 }

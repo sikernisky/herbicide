@@ -1,16 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using TMPro;
 using System;
-using UnityEngine.UI;
 
 /// <summary>
-/// Handles economy and currency related events.
+/// Controls player balance and currency related events.
 /// </summary>
 public class EconomyController : MonoBehaviour
 {
+    #region Fields
 
     /// <summary>
     /// Upper bound of how much money the player can have at once.
@@ -64,6 +62,10 @@ public class EconomyController : MonoBehaviour
     /// The most recent GameState.
     /// </summary>
     private GameState gameState;
+
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Finds and sets the EconomyController singleton.
@@ -164,4 +166,6 @@ public class EconomyController : MonoBehaviour
             Deposit(PASSIVE_INCOME_AMOUNT);
         }
     }
+
+    #endregion
 }

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -8,6 +6,8 @@ using UnityEngine.Assertions;
 /// </summary>
 public class BasicTreeFactory : Factory
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the BasicTreeFactory singleton.
     /// </summary>
@@ -25,6 +25,9 @@ public class BasicTreeFactory : Factory
     [SerializeField]
     private Sprite[] boatTrack;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Finds and sets the BasicTreeFactory singleton.
@@ -82,4 +85,6 @@ public class BasicTreeFactory : Factory
     /// </summary>
     /// <returns>the Transform component of the BasicTreeFactory instance. </returns>
     protected override Transform GetTransform() { return instance.transform; }
+
+    #endregion
 }

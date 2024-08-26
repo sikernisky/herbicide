@@ -1,13 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 /// <summary>
 /// Represents a Squirrel Defender.
 /// </summary>
 public class Squirrel : Defender
 {
+    #region Fields
+
+    #endregion
+
+    #region Stats
+
     /// <summary>
     /// Starting health of a Squirrel
     /// </summary>
@@ -105,6 +108,9 @@ public class Squirrel : Defender
     /// </summary>
     public override DefenderClass CLASS => DefenderClass.TREBUCHET;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Sets this Squirrel's 2D Collider's properties.
@@ -143,5 +149,7 @@ public class Squirrel : Defender
     {
         return new Vector2Int(16, 20);
     }
+
+    #endregion
 }
 

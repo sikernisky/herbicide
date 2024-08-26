@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 
 /// <summary>
 /// Controls a Wall.
@@ -10,12 +7,10 @@ using UnityEngine;
 /// it to life. This includes moving it, choosing targets, playing animations,
 /// and more.
 /// </summary>
+/// <![CDATA[<param name="WallState">]]>]]>
 public class WallController : MobController<WallController.WallState>
 {
-    /// <summary>
-    /// Maximum number of targets a Wall is allowed to have.
-    /// </summary>
-    protected override int MAX_TARGETS => 0;
+    #region Fields
 
     /// <summary>
     /// Different states of a Wall.
@@ -26,6 +21,14 @@ public class WallController : MobController<WallController.WallState>
         IDLE
     }
 
+    /// <summary>
+    /// Maximum number of targets a Wall is allowed to have.
+    /// </summary>
+    protected override int MAX_TARGETS => 0;
+
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Assigns a Wall to this WallController.
@@ -40,27 +43,39 @@ public class WallController : MobController<WallController.WallState>
     protected Wall GetWall() { return GetMob() as Wall; }
 
     /// <summary>
-    /// Adds one chunk of Time.deltaTime to the animation
-    /// counter that tracks the current state.
+    /// Returns true if the Wall should be removed.
     /// </summary>
-    public override void AgeAnimationCounter() { throw new System.NotImplementedException(); }
+    /// <returns>true if the Wall should be removed; otherwise, false.</returns>
+    public override bool ValidModel() { return true; }
 
     /// <summary>
-    /// Returns the animation counter for the current state.
+    /// Returns true if the Wall can target the Model passed into this method.
     /// </summary>
-    /// <returns>the animation counter for the current state.</returns>
-    public override float GetAnimationCounter() { throw new System.NotImplementedException(); }
+    /// <param name="target">The Model to check. </param>
+    /// <returns>true if the Wall can target the Model passed into this method;
+    /// otherwise, false. </returns>
+    protected override bool CanTargetModel(Model target)
+    {
+        return false;
+    }
 
     /// <summary>
-    /// Sets the animation counter for the current state to 0.
+    /// Handles a collision between the Wall and some other Collider2D.
     /// </summary>
-    public override void ResetAnimationCounter() { throw new System.NotImplementedException(); }
+    /// <param name="other">The other Collider2D.</param>
+    protected override void HandleCollision(Collider2D other)
+    {
+        return;
+    }
 
     /// <summary>
     /// Returns the Wall prefab to the WallFactory singleton.
     /// </summary>
     public override void DestroyModel() { WallFactory.ReturnWallPrefab(GetWall().gameObject); }
 
+    #endregion
+
+    #region State Logic
 
     /// <summary>
     /// Returns true if two WallStates are equal.
@@ -92,29 +107,26 @@ public class WallController : MobController<WallController.WallState>
         }
     }
 
-    /// <summary>
-    /// Returns true if the Wall should be removed.
-    /// </summary>
-    /// <returns>true if the Wall should be removed; otherwise, false.</returns>
-    public override bool ValidModel() { return true; }
+    #endregion
+
+    #region Animation Logic
 
     /// <summary>
-    /// Returns true if the Wall can target the Model passed into this method.
+    /// Adds one chunk of Time.deltaTime to the animation
+    /// counter that tracks the current state.
     /// </summary>
-    /// <param name="target">The Model to check. </param>
-    /// <returns>true if the Wall can target the Model passed into this method;
-    /// otherwise, false. </returns>
-    protected override bool CanTargetModel(Model target)
-    {
-        return false;
-    }
+    public override void AgeAnimationCounter() { throw new System.NotImplementedException(); }
 
     /// <summary>
-    /// Handles a collision between the Wall and some other Collider2D.
+    /// Returns the animation counter for the current state.
     /// </summary>
-    /// <param name="other">The other Collider2D.</param>
-    protected override void HandleCollision(Collider2D other)
-    {
-        return;
-    }
+    /// <returns>the animation counter for the current state.</returns>
+    public override float GetAnimationCounter() { throw new System.NotImplementedException(); }
+
+    /// <summary>
+    /// Sets the animation counter for the current state to 0.
+    /// </summary>
+    public override void ResetAnimationCounter() { throw new System.NotImplementedException(); }
+
+    #endregion
 }

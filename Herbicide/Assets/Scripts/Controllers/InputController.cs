@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -11,6 +10,8 @@ using UnityEngine.UI;
 /// </summary>
 public class InputController : MonoBehaviour
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the InputController singleton.
     /// </summary>
@@ -63,6 +64,9 @@ public class InputController : MonoBehaviour
     /// </summary>
     private List<RaycastResult> raycastResults;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Finds and sets the InputController singleton for a level. Also instantiates the
@@ -422,4 +426,6 @@ public class InputController : MonoBehaviour
         if (Input.GetMouseButtonUp(0)) return true;
         return false;
     }
+
+    #endregion
 }

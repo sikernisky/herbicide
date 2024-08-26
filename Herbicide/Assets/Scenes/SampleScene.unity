@@ -5155,6 +5155,17 @@ MonoBehaviour:
   - {fileID: 548215758, guid: b17245f72fdfb4e3b9931cbaf086310c, type: 3}
   - {fileID: 521704097, guid: b17245f72fdfb4e3b9931cbaf086310c, type: 3}
   - {fileID: 140122250, guid: b17245f72fdfb4e3b9931cbaf086310c, type: 3}
+  quillPierceTrack:
+  - {fileID: 1578779845, guid: 75aef1c37dc759942a30a346b851b3e6, type: 3}
+  - {fileID: -2002935581, guid: 75aef1c37dc759942a30a346b851b3e6, type: 3}
+  - {fileID: -350840417, guid: 75aef1c37dc759942a30a346b851b3e6, type: 3}
+  - {fileID: -177517971, guid: 75aef1c37dc759942a30a346b851b3e6, type: 3}
+  - {fileID: 107342155, guid: 75aef1c37dc759942a30a346b851b3e6, type: 3}
+  - {fileID: -1377869091, guid: 75aef1c37dc759942a30a346b851b3e6, type: 3}
+  - {fileID: 1597401548, guid: 75aef1c37dc759942a30a346b851b3e6, type: 3}
+  - {fileID: -1468365903, guid: 75aef1c37dc759942a30a346b851b3e6, type: 3}
+  - {fileID: 1202231844, guid: 75aef1c37dc759942a30a346b851b3e6, type: 3}
+  - {fileID: -725687816, guid: 75aef1c37dc759942a30a346b851b3e6, type: 3}
 --- !u!1 &1549079117
 GameObject:
   m_ObjectHideFlags: 0

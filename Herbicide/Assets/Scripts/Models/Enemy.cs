@@ -1,16 +1,24 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
-using System;
-using System.Linq;
 
 /// <summary>
-/// Represents some entity whose goal is to make the player
-/// lose the current level.
+/// Represents a Model who works to make the player lose the game.
 /// </summary>
 public abstract class Enemy : Mob
 {
+    #region Fields
+
+    /// <summary>
+    /// State of an Enemy based on its health.
+    /// </summary>
+    public enum EnemyHealthState
+    {
+        HEALTHY,
+        DAMAGED,
+        CRITICAL
+    }
+
     /// <summary>
     /// Reference to the Enemy's health bar background SpriteRenderer component.
     /// </summary>
@@ -54,12 +62,6 @@ public abstract class Enemy : Mob
     private Vector3 exitPos;
 
     /// <summary>
-    /// How much a currency collectable dropped by this Enemy on death
-    /// is worth.
-    /// </summary>
-    public virtual int CURRENCY_VALUE_ON_DEATH => 25;
-
-    /// <summary>
     /// true if this Enemy is currently entering; otherwise, false.
     /// </summary>
     private bool entering;
@@ -84,25 +86,19 @@ public abstract class Enemy : Mob
     /// </summary>
     private HashSet<DamageOverTime.DOTType> appliedDOTsThisCycle;
 
-    /// <summary>
-    /// Type of this Enemy.
-    /// </summary>
-    public enum EnemyType
-    {
-        KUDZU
-    }
+    #endregion
+
+    #region Stats
 
     /// <summary>
-    /// State of an Enemy based on its health.
+    /// How much a currency collectable dropped by this Enemy on death
+    /// is worth.
     /// </summary>
-    public enum EnemyHealthState
-    {
-        HEALTHY,
-        DAMAGED,
-        CRITICAL
-    }
+    public virtual int CURRENCY_VALUE_ON_DEATH => 25;
 
+    #endregion
 
+    #region Methods
 
     /// <summary>
     /// Called when this Enemy appears on the TileGrid and is assigned
@@ -343,5 +339,7 @@ public abstract class Enemy : Mob
         if (IsEntering() || !IsEntered()) return false;
         return base.Targetable();
     }
+
+    #endregion
 }
 

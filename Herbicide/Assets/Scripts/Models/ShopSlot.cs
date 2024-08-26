@@ -1,15 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
 
 /// <summary>
-/// Represents a place in the Shop that fills up
-/// with a ShopCard. 
+/// Holds a ShopCard in the Shop.
 /// </summary>
 public class ShopSlot : MonoBehaviour
 {
+    #region Fields
+
     /// <summary>
     /// This ShopSlot's background component.
     /// </summary>
@@ -32,6 +31,9 @@ public class ShopSlot : MonoBehaviour
     /// </summary>
     private bool setupByManager;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Fills the ShopSlot with a ShopCard.
@@ -95,7 +97,6 @@ public class ShopSlot : MonoBehaviour
     public GameObject GetCardPrefab()
     {
         Assert.IsTrue(IsSetup(), "Not setup.");
-
         return occupant.GetShopCardModelPrefab();
     }
 
@@ -182,4 +183,6 @@ public class ShopSlot : MonoBehaviour
     {
         gameObject.SetActive(true);
     }
+
+    #endregion
 }

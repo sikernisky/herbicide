@@ -1,19 +1,40 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.UI;
 
 /// <summary>
-/// Controller that controls the scene's controllers. Handles
-/// upgrading units.
+/// Controls and updates sub-controller classes.
 /// </summary>
 public class ControllerController : MonoBehaviour
 {
+    #region Fields
+
+    /// <summary>
+    /// Reference to the ControllerController singleton.
+    /// </summary>
+    private static ControllerController instance;
+
+    /// <summary>
+    /// Number of active Models of each ModelType.
+    /// </summary>
+    private ModelCounts counts;
+
+    /// <summary>
+    /// The most recent GameState.
+    /// </summary>
+    private GameState gameState;
+
+    /// <summary>
+    /// ModelTypes that can be upgraded. 
+    /// </summary>
+    private HashSet<ModelType> upgradeableTypes;
+
+    #endregion
+
+    #region Controller Lists
+
     /// <summary>
     /// List of active DefenderControllers.
     /// </summary>
@@ -54,28 +75,9 @@ public class ControllerController : MonoBehaviour
     /// </summary>
     private List<EmanationController> emanationControllers;
 
-    /// <summary>
-    /// Reference to the ControllerController singleton.
-    /// </summary>
-    private static ControllerController instance;
+    #endregion
 
-    /// <summary>
-    /// Number of active Models of each ModelType.
-    /// </summary>
-    private ModelCounts counts;
-
-    /// <summary>
-    /// The most recent GameState.
-    /// </summary>
-    private GameState gameState;
-
-    /// <summary>
-    /// ModelTypes that can be upgraded. 
-    /// </summary>
-    private HashSet<ModelType> upgradeableTypes;
-
-
-
+    #region Methods
 
     /// <summary>
     /// Finds and sets the ControllerController singleton. Also initializes the
@@ -480,4 +482,5 @@ public class ControllerController : MonoBehaviour
         return list;
     }
 
+    #endregion
 }

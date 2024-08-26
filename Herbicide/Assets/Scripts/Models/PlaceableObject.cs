@@ -1,20 +1,43 @@
 using UnityEngine;
-using System.Linq;
 using UnityEngine.Assertions;
-using System.Collections.Generic;
-using System;
 
 /// <summary>
-/// Abstract class for something unreactive that can be placed on the
-/// TileGrid. These objects can be targeted, but only have
-/// one base animation / state. <br></br>
-/// 
-/// If the PlaceableObject should
-/// react to the world and update its animation based off
-/// game events, please inherit from Mob. 
+/// Represents a static Model that has a health value and can be
+/// placed on the TileGrid. <br></br>
 /// </summary>
 public abstract class PlaceableObject : Model
 {
+    #region Fields
+
+    /// <summary>
+    /// This PlaceableObject's four neighbors.
+    /// </summary>
+    private PlaceableObject[] neighbors;
+
+    /// <summary>
+    /// Current amount of health.
+    /// </summary>
+    private float health;
+
+    /// <summary>
+    /// The tile coordinates where this PlaceableObject is placed.
+    /// </summary>
+    private Vector2Int placedCoords;
+
+    /// <summary>
+    /// true if this PlaceableObject is placed; otherwise, false.
+    /// </summary>
+    private bool placed;
+
+    /// <summary>
+    /// How much time remains in the current Damage Flash animation.
+    /// </summary>
+    private float remainingFlashAnimationTime;
+
+    #endregion
+
+    #region Stats
+
     /// <summary>
     /// Amount of health this PlaceableObject starts with.
     /// </summary>
@@ -31,29 +54,9 @@ public abstract class PlaceableObject : Model
     public abstract float MIN_HEALTH { get; }
 
     /// <summary>
-    /// This PlaceableObject's four neighbors.
-    /// </summary>
-    private PlaceableObject[] neighbors;
-
-    /// <summary>
-    /// Current amount of health.
-    /// </summary>
-    private float health;
-
-    /// <summary>
     /// The scale of this PlaceableObject when placed.
     /// </summary>
     protected virtual Vector3 PLACEMENT_SCALE => Vector3.one;
-
-    /// <summary>
-    /// The tile coordinates where this PlaceableObject is placed.
-    /// </summary>
-    private Vector2Int placedCoords;
-
-    /// <summary>
-    /// true if this PlaceableObject is placed; otherwise, false.
-    /// </summary>
-    private bool placed;
 
     /// <summary>
     /// true if this PlaceableObject occupies a Tile, preventing
@@ -65,11 +68,9 @@ public abstract class PlaceableObject : Model
     /// </summary>
     public virtual float DAMAGE_FLASH_TIME => 0.5f;
 
-    /// <summary>
-    /// How much time remains in the current Damage Flash animation.
-    /// </summary>
-    private float remainingFlashAnimationTime;
+    #endregion
 
+    #region Methods
 
     /// <summary>
     /// Returns this PlaceableObject's placement scale.
@@ -200,4 +201,6 @@ public abstract class PlaceableObject : Model
     /// Returns the Tile coordinates where this PlaceableObject is placed.
     /// </summary>
     public Vector2Int GetPlacedCoords() { return placedCoords; }
+
+    #endregion
 }

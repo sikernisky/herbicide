@@ -1,12 +1,18 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
-using System.Linq;
-using static KudzuController;
 
+/// <summary>
+/// Controls a Model. <br></br>
+/// 
+/// The ModelController is responsible for manipulating its Model and bringing
+/// it to life. This includes moving it, choosing targets, playing animations,
+/// and more.
+/// </summary>
 public abstract class ModelController
 {
+    #region Fields
+
     /// <summary>
     /// This Controller's Model.
     /// </summary>
@@ -16,17 +22,6 @@ public abstract class ModelController
     /// Most recent GameState.
     /// </summary>
     private GameState gameState;
-
-    /// <summary>
-    /// The Controller's ID. 
-    /// </summary>
-    private int id;
-
-    /// <summary>
-    /// true if the player clicked on the Model since it was
-    /// assigned to this ModelController; otherwise, false.
-    /// </summary>
-    private bool clicked;
 
     /// <summary>
     /// All active Models in the scene.
@@ -73,6 +68,9 @@ public abstract class ModelController
     /// </summary>
     Vector3 parabolaStartPos;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Makes a new ModelController for a Model.
@@ -85,7 +83,6 @@ public abstract class ModelController
         GetModel().ResetModel();
         GetModel().SubscribeToCollision(HandleCollision);
         GetModel().SubscribeToProjectileCollisionEvent(HandleProjectileCollision);
-        id = ALL_MODELS.Count;
         ALL_MODELS.Add(model);
     }
 
@@ -115,7 +112,6 @@ public abstract class ModelController
         this.gameState = gameState;
 
         UpdateTilePositions();
-        ModelClickedUp();
         FixSortingOrder();
         StepAnimation();
     }
@@ -252,6 +248,36 @@ public abstract class ModelController
     protected GameState GetGameState() { return gameState; }
 
     /// <summary>
+    /// Returns a list of all active Models.
+    /// </summary>
+    /// <returns>a list of all Models in the scene.</returns>
+    public static IReadOnlyList<Model> GetAllModels() { return ALL_MODELS.AsReadOnly(); }
+
+    /// <summary>
+    /// Checks if the player clicked on this Model this frame.
+    /// </summary>
+    protected bool ModelClickedUp()
+    {
+        if (!ValidModel()) return false;
+        return InputController.ModelClickedUp(GetModel());
+    }
+
+    /// <summary>
+    /// Destroys the model. This should be done by a sub class, who gives
+    /// the prefab back to the correct Factory.
+    /// </summary>
+    public abstract void DestroyModel();
+
+    /// <summary>
+    /// Performs logic right before this Model is destroyed.
+    /// </summary>
+    protected virtual void OnDestroyModel() { return; }
+
+    #endregion
+
+    #region Animation Logic
+
+    /// <summary>
     /// Adds one chunk of Time.deltaTime to the animation
     /// counter that tracks the current state.
     /// </summary>
@@ -310,41 +336,9 @@ public abstract class ModelController
         return GetAnimationCounter() - stepTime > 0;
     }
 
-    /// <summary>
-    /// Returns a list of all active Models.
-    /// </summary>
-    /// <returns>a list of all Models in the scene.</returns>
-    public static IReadOnlyList<Model> GetAllModels() { return ALL_MODELS.AsReadOnly(); }
+    #endregion
 
-    /// <summary>
-    /// Checks if the player clicked on this Model.
-    /// </summary>
-    protected bool ModelClickedUp()
-    {
-        if (!ValidModel()) return false;
-        bool clickedUp = InputController.ModelClickedUp(GetModel());
-        clicked = false ? clickedUp : true;
-        return clickedUp;
-    }
-
-    /// <summary>
-    /// Returns true if the player has clicked on this Model since the
-    /// scene began.
-    /// </summary>
-    /// <returns>true if the player has clicked on this Model since the
-    /// scene began; otherwise, false.</returns>
-    protected bool ClickedOnSinceSceneBegan() { return clicked; }
-
-    /// <summary>
-    /// Destroys the model. This should be done by a sub class, who gives
-    /// the prefab back to the correct Factory.
-    /// </summary>
-    public abstract void DestroyModel();
-
-    /// <summary>
-    /// Performs logic right before this Model is destroyed.
-    /// </summary>
-    protected virtual void OnDestroyModel() { return; }
+    #region Movement Logic
 
     /// <summary>
     /// Moves the Model towards a target position in a linear manner.
@@ -447,4 +441,6 @@ public abstract class ModelController
         Vector3 newScale = Vector3.Lerp(new Vector3(0.1f, 0.1f, 0.1f), Vector3.one, scaleFraction);
         GetModel().transform.localScale = newScale;
     }
+
+    #endregion
 }

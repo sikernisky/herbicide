@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -7,6 +5,19 @@ using UnityEngine;
 /// </summary>
 public class Quill : Projectile
 {
+    #region Fields
+
+    /// <summary>
+    /// The Quill after it hits a target. Used to start
+    /// the explosion. 
+    /// </summary>
+    [SerializeField]
+    public GameObject piercingQuill;
+
+    #endregion
+
+    #region Stats
+
     /// <summary>
     /// ModelType of an Quill.
     /// </summary>
@@ -58,13 +69,9 @@ public class Quill : Projectile
     /// </summary>
     public override float MOVE_ANIMATION_DURATION => 0f;
 
-    /// <summary>
-    /// The Quill after it hits a target. Used to start
-    /// the explosion. 
-    /// </summary>
-    [SerializeField]
-    public GameObject piercingQuill;
+    #endregion
 
+    #region Methods
 
     /// <summary>
     /// Returns the GameObject that represents this Quill on the grid.
@@ -93,4 +100,6 @@ public class Quill : Projectile
         piercingQuillCopy.SetActive(true);
         return piercingQuillCopy;     
     }
+
+    #endregion
 }

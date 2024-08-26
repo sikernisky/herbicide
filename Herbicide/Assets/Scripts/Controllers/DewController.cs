@@ -1,20 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 /// <summary>
-/// Controls a Dew Collectable.
+/// Controls a Dew. <br></br>
 /// 
 /// The DewController is responsible for manipulating its Dew and bringing
 /// it to life. This includes moving it playing animations, and more.
 /// </summary>
+/// <![CDATA[<param name="Dew">]]>
 public class DewController : CollectableController<DewController.DewState>
 {
-    /// <summary>
-    /// Number of Dew assigned since the scene began.
-    /// </summary>
-    private static int NUM_DEW;
+    #region Fields
 
     /// <summary>
     /// State of a Dew.
@@ -26,6 +21,10 @@ public class DewController : CollectableController<DewController.DewState>
         COLLECTING
     }
 
+    #endregion
+
+    #region Methods
+
     /// <summary>
     /// Assigns a Dew to a DewController.
     /// </summary>
@@ -34,7 +33,6 @@ public class DewController : CollectableController<DewController.DewState>
     /// <param name="value">How much the Dew collectable is worth..</param>
     public DewController(Dew dew, Vector3 dropPos, int value) : base(dew, dropPos)
     {
-        NUM_DEW++;
         GetDew().SetWorldPosition(dropPos);
         GetDew().AdjustValue(value);
     }
@@ -61,7 +59,9 @@ public class DewController : CollectableController<DewController.DewState>
     /// </summary>
     public override void DestroyModel() { DewFactory.ReturnDewPrefab(GetDew().gameObject); }
 
-    //-----------------------STATE LOGIC----------------------//
+    #endregion
+
+    #region State Logic
 
     /// <summary>
     /// Returns true if two DewStates are equal.
@@ -106,7 +106,6 @@ public class DewController : CollectableController<DewController.DewState>
         if (GetState() != DewState.BOBBING) return;
 
         BobUpAndDown();
-
     }
 
     /// <summary>
@@ -122,14 +121,12 @@ public class DewController : CollectableController<DewController.DewState>
             EconomyController.CashIn(GetDew());
             GetDew().OnCollect();
         }
-        else
-        {
-            MoveTowardsCursor();
-
-        }
+        else MoveTowardsCursor();
     }
 
-    //-----------------------ANIM LOGIC----------------------//
+    #endregion
+
+    #region Animation Logic
 
     /// <summary>
     /// Adds one chunk of Time.deltaTime to the animation
@@ -146,4 +143,6 @@ public class DewController : CollectableController<DewController.DewState>
     /// Sets the animation counter for the current state to 0.
     /// </summary>
     public override void ResetAnimationCounter() { return; }
+
+    #endregion
 }

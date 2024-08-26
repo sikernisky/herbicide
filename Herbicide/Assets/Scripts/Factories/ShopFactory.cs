@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -8,6 +6,8 @@ using UnityEngine.Assertions;
 /// </summary>
 public class ShopFactory : Factory
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the ShopFactory singleton.
     /// </summary>
@@ -18,6 +18,9 @@ public class ShopFactory : Factory
     /// </summary>
     protected override int poolStartingCount => 4;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Finds and sets the ShopFactory singleton.
@@ -60,4 +63,6 @@ public class ShopFactory : Factory
     /// </summary>
     /// <returns></returns>
     protected override Transform GetTransform() { return instance.transform; }
+
+    #endregion
 }
