@@ -251,7 +251,7 @@ public class BearController : DefenderController<BearController.BearState>
         BearState state = GetState();
         if (state == BearState.IDLE) return idleAnimationCounter;
         else if (state == BearState.ATTACK) return attackAnimationCounter;
-        else throw new System.Exception("State " + state + " has no counter.");
+        else return 0;
     }
 
     /// <summary>

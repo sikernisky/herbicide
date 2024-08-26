@@ -108,7 +108,8 @@ public class ControllerController : MonoBehaviour
         instance.upgradeableTypes = new HashSet<ModelType>
         {
             ModelType.SQUIRREL,
-            ModelType.BEAR
+            ModelType.BEAR,
+            ModelType.PORCUPINE
         };
 
         ShopManager.SubscribeToBuyDefenderDelegate(instance.OnPurchaseModelFromShop);
@@ -461,11 +462,11 @@ public class ControllerController : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns a list of all Defenders of the given type and tier.
+    /// Returns a list of all placed Defenders of the given type and tier.
     /// </summary>
     /// <param name="defenderType">The type of Defender to get</param>
     /// <param name="tier">The tier of Defender to get</param>
-    /// <returns>a list of all Defenders of the given type and tier</returns>
+    /// <returns>a list of all placed Defenders of the given type and tier</returns>
     private List<Model> GetAllDefendersAtTier(ModelType defenderType, int tier)
     {
         List<Model> list = new List<Model>();
@@ -476,7 +477,8 @@ public class ControllerController : MonoBehaviour
             Defender defender = defenderController.GetModel() as Defender;
             if (defender == null) continue;
 
-            if (defender.TYPE == defenderType && defender.GetTier() == tier) list.Add(defender);
+            if (defender.TYPE == defenderType && defender.GetTier() == tier
+                && defender.IsPlaced()) list.Add(defender);
         }
 
         return list;

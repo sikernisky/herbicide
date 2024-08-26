@@ -112,7 +112,9 @@ public class ShopCard : UIModel
     public GameObject GetShopCardModelPrefab()
     {
         Assert.IsNotNull(model, "Model is null.");
-        return model.Copy();
+        GameObject modelCopy = model.Copy();
+        modelCopy.transform.position = new Vector3(-1000, -1000, 1);
+        return modelCopy;
     }
 
     /// <summary>

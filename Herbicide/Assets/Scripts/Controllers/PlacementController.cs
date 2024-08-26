@@ -293,20 +293,6 @@ public class PlacementController : MonoBehaviour
     }
 
     /// <summary>
-    /// Upgrades the model that is currently being placed. If the model
-    /// cannot be upgraded or the player is not currently placing,
-    /// nothing happens.
-    /// </summary>
-    public static void UpgradeModelPlacing()
-    {
-        if (!Placing()) return;
-        Defender placingDefender = instance.subject as Defender;
-        if (placingDefender == null) return;
-
-        placingDefender.Upgrade();
-    }
-
-    /// <summary>
     /// Triggers a combination event with the given Defenders.
     /// </summary>
     /// <param name="defendersToCombine">The Defenders to combine.</param>
@@ -404,6 +390,7 @@ public class PlacementController : MonoBehaviour
             instance.OnFinishCombining?.Invoke(defenderSubject);
         }
     }
+
     /// <summary>
     /// Returns true if there is an active combination event.
     /// </summary>

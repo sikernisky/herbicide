@@ -271,7 +271,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         SquirrelState state = GetState();
         if (state == SquirrelState.IDLE) return idleAnimationCounter;
         else if (state == SquirrelState.ATTACK) return attackAnimationCounter;
-        else throw new System.Exception("State " + state + " has no counter.");
+        else return 0;
     }
 
     /// <summary>

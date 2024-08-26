@@ -24,7 +24,7 @@ public class ExplosionController
     /// within the explosion area. </param>
     /// <param name="immuneObjects">List of PlaceableObjects that are immune to
     /// the explosion's damage. </param>
-    public static void DetonateExplosion(GameObject explosionArea, float damage, HashSet<PlaceableObject> immuneObjects, HashSet<Type> immuneTypes)
+    public static void DetonateExplosion(GameObject explosionArea, float damage, HashSet<PlaceableObject> immuneObjects)
     {
         BoxCollider2D boxCollider = explosionArea.GetComponent<BoxCollider2D>();
         if (boxCollider != null)
@@ -41,7 +41,6 @@ public class ExplosionController
             {
                 PlaceableObject damageable = hit.GetComponent<PlaceableObject>();
                 if (immuneObjects != null && immuneObjects.Contains(damageable)) continue;
-                if(immuneTypes != null && immuneTypes.Contains(damageable.GetType())) continue;
                 if(damageable != null) damageable.AdjustHealth(-damage);
             }
         }

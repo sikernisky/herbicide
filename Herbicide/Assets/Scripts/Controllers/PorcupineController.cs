@@ -267,7 +267,7 @@ public class PorcupineController : DefenderController<PorcupineController.Porcup
         PorcupineState state = GetState();
         if (state == PorcupineState.IDLE) return idleAnimationCounter;
         else if (state == PorcupineState.ATTACK) return attackAnimationCounter;
-        else throw new System.Exception("State " + state + " has no counter.");
+        else return 0;
     }
 
     /// <summary>

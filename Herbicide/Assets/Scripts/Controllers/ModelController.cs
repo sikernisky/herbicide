@@ -100,6 +100,7 @@ public abstract class ModelController
     {
         Assert.IsNotNull(model, "Cannot set Model as null.");
         this.model = model;
+        this.model.gameObject.SetActive(true);
     }
 
     /// <summary>

@@ -87,12 +87,7 @@ public class QuillController : ProjectileController<QuillController.QuillState>
         ControllerController.AddEmanationController(piercingQuillEmanationController);
         PlaceableObject initialTarget = model as PlaceableObject;
         HashSet<PlaceableObject> immuneObjects = new HashSet<PlaceableObject>() { initialTarget };
-        HashSet<Type> immuneTypes = new HashSet<Type>
-        {
-            // typeof(Structure),
-            typeof(Defender)
-        };
-        ExplosionController.DetonateExplosion(piercingQuill, GetQuill().PIERCING_DAMAGE, immuneObjects, immuneTypes);
+        ExplosionController.DetonateExplosion(piercingQuill, GetQuill().PIERCING_DAMAGE, immuneObjects);
     }
 
     #endregion

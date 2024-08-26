@@ -2155,7 +2155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e39eb794ddd14e1c9cc16d535114f3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tiledJSON: {fileID: 4900000, guid: 520b006a5dd254f25870efaef98a31b5, type: 3}
+  tiledJSON: {fileID: 4900000, guid: d10a4859447e158499fa65f67ae286de, type: 3}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -6599,7 +6599,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currencyText: {fileID: 1344936708}
-  startingMoney: 200
+  startingMoney: 100000
 --- !u!1 &2054696374
 GameObject:
   m_ObjectHideFlags: 0

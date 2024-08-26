@@ -11,6 +11,35 @@
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
+        "Tilemaps/labryinth.tmx": {
+            "scale": 3,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 162.5,
+                "y": 74.33333333333331
+            }
+        },
+        "Tilemaps/labryinth.tmx#Enemies": {
+            "scaleInDock": 1
+        },
+        "Tilemaps/labryinth.tmx#Grass": {
+            "scaleInDock": 1
+        },
+        "Tilemaps/labryinth.tmx#Placeables": {
+            "scaleInDock": 1
+        },
+        "Tilemaps/labryinth.tmx#Shore": {
+            "scaleInDock": 1
+        },
+        "Tilemaps/labryinth.tmx#Soil": {
+            "scaleInDock": 1
+        },
+        "Tilemaps/labryinth.tmx#Water": {
+            "scaleInDock": 1
+        },
+        "Tilemaps/labryinth.tmx#markers": {
+            "scaleInDock": 1
+        },
         "Tilemaps/level0.tmx": {
             "scale": 3,
             "selectedLayer": 0,
@@ -43,8 +72,8 @@
             "scale": 2.8034,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 239.530570022116,
-                "y": 156.5955625312121
+                "x": 239.8872797317543,
+                "y": 160.16265962759508
             }
         },
         "Tilemaps/level2 copy.tmx": {
@@ -57,41 +86,41 @@
         },
         "Tilemaps/level2.tmx": {
             "expandedObjectLayers": [
+                15,
                 13,
-                16,
-                15
+                16
             ],
             "scale": 5.5,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 254.0909090909091,
-                "y": 179.63636363636363
+                "x": 231.9090909090909,
+                "y": 160
             }
         },
         "Tilemaps/level3.tmx": {
             "expandedObjectLayers": [
+                15,
                 13,
-                16,
-                15
+                16
             ],
             "scale": 1.6635,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 227.53231139164416,
-                "y": 197.775773970544
+                "x": 208.29576194770064,
+                "y": 144.27412082957616
             }
         },
         "Tilemaps/level4.tmx": {
             "expandedObjectLayers": [
+                15,
                 13,
-                16,
-                15
+                16
             ],
             "scale": 2,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 201.25,
-                "y": 140
+                "x": 231.75,
+                "y": 160
             }
         },
         "Tilemaps/level5.tmx": {
@@ -101,8 +130,8 @@
             "scale": 2,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 214.75,
-                "y": 83.5
+                "x": 165.75,
+                "y": 155
             }
         },
         "Tilemaps/level5.tmx#Enemies": {
@@ -148,7 +177,7 @@
             "scaleInDock": 1
         }
     },
-    "last.exportedFilePath": "/Users/teddysiker/Desktop/Coding/GitHub/herbicide/Herbicide/Assets/Levels",
+    "last.exportedFilePath": "C:/Users/teddy/OneDrive/Documents/GitHub/herbicide/Herbicide/Assets/Levels",
     "last.imagePath": "C:/Users/teddy/OneDrive/Desktop/Art/Herbicide Art/TileSets",
     "map.height": 15,
     "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",

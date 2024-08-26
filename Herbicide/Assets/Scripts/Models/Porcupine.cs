@@ -19,7 +19,7 @@ public class Porcupine : Defender
     /// <summary>
     /// Starting attack range of a Porcupine.
     /// </summary>
-    public override float BASE_ATTACK_RANGE => 3f;
+    public override float BASE_ATTACK_RANGE => 5f;
 
     /// <summary>
     /// Maximum attack range of a Porcupine.
@@ -111,7 +111,9 @@ public class Porcupine : Defender
     /// Returns a new copy of a Porcupine prefab. 
     /// </summary>
     /// <returns>a new copy of a Porcupine prefab. </returns>
-    public override GameObject Copy() { return DefenderFactory.GetDefenderPrefab(TYPE); }
+    public override GameObject Copy() {
+        return DefenderFactory.GetDefenderPrefab(TYPE); 
+    }
 
     /// <summary>
     /// Returns the Porcupine's animation track when placing.
