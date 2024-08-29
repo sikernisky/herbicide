@@ -147,10 +147,7 @@ public class PorcupineController : DefenderController<PorcupineController.Porcup
     /// <param name="stateA">The first state.</param>
     /// <param name="stateB">The second state.</param>
     /// <returns>true if two PorcupineStates are equal; otherwise, false.</returns>
-    public override bool StateEquals(PorcupineState stateA, PorcupineState stateB)
-    {
-        return stateA == stateB;
-    }
+    public override bool StateEquals(PorcupineState stateA, PorcupineState stateB) => stateA == stateB;
 
     /// <summary>
     /// Updates the state of this PorcupineController's Porcupine model.

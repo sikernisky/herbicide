@@ -43,7 +43,7 @@ public class DewFactory : Factory
     /// Returns a fresh Dew prefab from the object pool.
     /// </summary>
     /// <returns>a GameObject with a Dew component attached to it</returns>
-    public static GameObject GetDewPrefab() { return instance.RequestObject(ModelType.DEW); }
+    public static GameObject GetDewPrefab() => instance.RequestObject(ModelType.DEW);
 
     /// <summary>
     /// Accepts a Dew prefab that the caller no longer needs. Adds it back
@@ -62,13 +62,13 @@ public class DewFactory : Factory
     /// </summary>
     /// <returns>the animation track that represents this Dew when placing. 
     /// </returns>
-    public static Sprite[] GetPlacementTrack() { return instance.placementTrack; }
+    public static Sprite[] GetPlacementTrack() => instance.placementTrack;
 
     /// <summary>
     /// Returns the Transform component of the DewFactory instance. 
     /// </summary>
     /// <returns>the Transform component of the DewFactory instance. </returns>
-    protected override Transform GetTransform() { return instance.transform; }
+    protected override Transform GetTransform() => instance.transform;
 
     #endregion
 }

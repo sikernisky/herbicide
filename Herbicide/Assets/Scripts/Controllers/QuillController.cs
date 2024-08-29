@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 /// <summary>
 /// Controls a Quill. <br></br>
@@ -48,12 +47,12 @@ public class QuillController : ProjectileController<QuillController.QuillState>
     /// Returns the Quill model.
     /// </summary>
     /// <returns>the Quill model.</returns>
-    protected Quill GetQuill() { return GetProjectile() as Quill; }
+    protected Quill GetQuill() => GetProjectile() as Quill;
 
     /// <summary>
     /// Returns the Quill prefab to the QuillFactory singleton.
     /// </summary>
-    public override void DestroyModel() { ProjectileFactory.ReturnProjectilePrefab(GetQuill().gameObject); }
+    public override void DestroyModel() => ProjectileFactory.ReturnProjectilePrefab(GetQuill().gameObject);
 
     /// <summary>
     /// Handles a collision between the Quill and some other Collider2D.
@@ -85,9 +84,9 @@ public class QuillController : ProjectileController<QuillController.QuillState>
             piercingQuill.transform.position,
             piercingQuill.transform.rotation);
         ControllerController.AddEmanationController(piercingQuillEmanationController);
-        PlaceableObject initialTarget = model as PlaceableObject;
-        HashSet<PlaceableObject> immuneObjects = new HashSet<PlaceableObject>() { initialTarget };
-        ExplosionController.DetonateExplosion(piercingQuill, GetQuill().PIERCING_DAMAGE, immuneObjects);
+        Enemy initialTarget = model as Enemy;
+        HashSet<Enemy> immuneObjects = new HashSet<Enemy>() { initialTarget };
+        ExplosionController.ExplodeOnEnemies(piercingQuill, GetQuill().PIERCING_DAMAGE, immuneObjects);
     }
 
     #endregion
@@ -126,10 +125,7 @@ public class QuillController : ProjectileController<QuillController.QuillState>
     /// <param name="stateA">The first state.</param>
     /// <param name="stateB">The second state.</param>
     /// <returns>true if two QuillStates are equal; otherwise, false.</returns>
-    public override bool StateEquals(QuillState stateA, QuillState stateB)
-    {
-        return stateA == stateB;
-    }
+    public override bool StateEquals(QuillState stateA, QuillState stateB) => stateA == stateB;
 
     /// <summary>
     /// Runs logic relevant to the Quill's MOVING state.

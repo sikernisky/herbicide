@@ -97,7 +97,7 @@ public class SynergySlot : MonoBehaviour
     /// Returns this SynergySlot's synergy.
     /// </summary>
     /// <returns>this SynergySlot's synergy.</returns>
-    public SynergyController.Synergy GetSynergy() { return synergy; }
+    public SynergyController.Synergy GetSynergy() => synergy;
 
     #endregion
 }

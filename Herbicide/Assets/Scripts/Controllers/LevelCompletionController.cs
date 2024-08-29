@@ -73,7 +73,7 @@ public class LevelCompletionController : MonoBehaviour
     /// </summary>
     /// <returns>true if the Level Completion panel is open;
     /// otherwise, false. </returns>
-    private bool LevelCompletePanelOpen() { return levelCompletionPanel.activeSelf; }
+    private bool LevelCompletePanelOpen() => levelCompletionPanel.activeSelf;
 
     /// <summary>
     /// Opens the Level Completion panel and populates it

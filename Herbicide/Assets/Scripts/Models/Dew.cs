@@ -40,7 +40,7 @@ public class Dew : Currency
     /// </summary>
     /// <returns>the GameObject that represents this Dew on the grid.
     /// </returns>
-    public override GameObject Copy() { return DewFactory.GetDewPrefab(); }
+    public override GameObject Copy() => DewFactory.GetDewPrefab();
 
     /// <summary>
     /// Returns a Sprite that represents this Dew when it is
@@ -48,7 +48,7 @@ public class Dew : Currency
     /// </summary>
     /// <returns> a Sprite that represents this Dew when it is
     /// being placed.</returns>
-    public override Sprite[] GetPlacementTrack() { return DewFactory.GetPlacementTrack(); }
+    public override Sprite[] GetPlacementTrack() => DewFactory.GetPlacementTrack();
 
     #endregion
 }

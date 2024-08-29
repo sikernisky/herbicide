@@ -26,10 +26,7 @@ public class AnimationImporter : EditorWindow
     /// Shows the Animation Importer window.
     /// </summary>
     [MenuItem("Window/Animation Importer")]
-    public static void ShowWindow()
-    {
-        GetWindow<AnimationImporter>("Animation Importer");
-    }
+    public static void ShowWindow() => GetWindow<AnimationImporter>("Animation Importer");
 
     /// <summary>
     /// Called when the window is opened.

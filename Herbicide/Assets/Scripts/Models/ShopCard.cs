@@ -101,7 +101,7 @@ public class ShopCard : UIModel
     /// Returns this ShopCard's RectTransform component.
     /// </summary>
     /// <returns>this ShopCard's RectTransform component.</returns>
-    public RectTransform GetCardTransform() { return cardTransform; }
+    public RectTransform GetCardTransform() => cardTransform;
 
     /// <summary>
     /// Returns an instantiated GameObject with this ShopCard's Model
@@ -123,7 +123,7 @@ public class ShopCard : UIModel
     /// </summary>
     /// <returns>the price of this ShopCard's Model, or 0 if this is
     /// an upgrade card.</returns>
-    public int GetPrice() { return model.COST; }
+    public int GetPrice() => model.COST;
 
     /// <summary>
     /// #BUTTON EVENT#
@@ -142,7 +142,7 @@ public class ShopCard : UIModel
     /// </summary>
     /// <returns>true if the player clicked this ShopCard;
     /// otherwise, false. /// </returns>
-    public bool ClickedOn() { return clicked; }
+    public bool ClickedOn() => clicked;
 
     /// <summary>
     /// Turns the ShopCard's background a darker color.

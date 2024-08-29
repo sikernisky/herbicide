@@ -103,27 +103,18 @@ public class SettingsController : MonoBehaviour
     /// <summary>
     /// Opens the settings menu.
     /// </summary>
-    private void OpenSettingsMenu()
-    {
-        settingsMenu.SetActiveRecursively(true);
-    }
+    private void OpenSettingsMenu() => settingsMenu.SetActiveRecursively(true);
 
     /// <summary>
     /// Closes the settings menu.
     /// </summary>
-    private void CloseSettingsMenu()
-    {
-        settingsMenu.SetActiveRecursively(false);
-    }
+    private void CloseSettingsMenu() => settingsMenu.SetActiveRecursively(false);
 
     /// <summary>
     /// Returns true if the settings menu is open; false otherwise.
     /// </summary>
     /// <returns>true if the settings menu is open; false otherwise.</returns>
-    public static bool SettingsMenuOpen()
-    {
-        return instance.settingsMenu.activeSelf;
-    }
+    public static bool SettingsMenuOpen() => instance.settingsMenu.activeSelf;
 
     /// <summary>
     /// Toggles the checkmark on the playtest button.

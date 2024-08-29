@@ -224,38 +224,26 @@ public class PlacementController : MonoBehaviour
     /// </summary>
     /// <returns>the Model that is currently being placed; null if no Model
     /// is being placed.</returns>
-    public static Model GetObjectPlacing()
-    {
-        return instance.subject;
-    }
+    public static Model GetObjectPlacing() => instance.subject;
 
     /// <summary>
     /// Returns true if there is an item being placed.
     /// </summary>
     /// <returns>true if there is an item being placed; otherwise, false.</returns>
-    public static bool Placing()
-    {
-        return instance.placing;
-    }
+    public static bool Placing() => instance.placing;
 
     /// <summary>
     /// Returns true if the player is ghost placing.
     /// </summary>
     /// <returns>true if the player is ghost placing; otherwise, false.
     /// </returns>
-    public static bool GhostPlacing()
-    {
-        return instance.ghostSubject != null;
-    }
+    public static bool GhostPlacing() => instance.ghostSubject != null;
 
     /// <summary>
     /// Transforms the subject of an active place event such that it is centered on
     /// the player's mouse.
     /// </summary>
-    private void GlueSubjectToMouse()
-    {
-        dummy.transform.position = InputController.GetUIMousePosition();
-    }
+    private void GlueSubjectToMouse() => dummy.transform.position = InputController.GetUIMousePosition();
 
     /// <summary>
     /// Starts a ghost place.
@@ -396,7 +384,7 @@ public class PlacementController : MonoBehaviour
     /// </summary>
     /// <returns>true if there is an active combination event; otherwise,
     /// false. </returns>
-    public static bool IsCombining() { return instance.combining; }
+    public static bool IsCombining() => instance.combining;
 
     /// <summary>
     /// Subscribes a handler (the ControllerController) to the finish combining event.

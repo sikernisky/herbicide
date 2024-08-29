@@ -117,7 +117,7 @@ public abstract class Tile : Model, ISurface
     /// </summary>
     /// <returns>true if this Tile has an Enemy on it; otherwise, false.
     /// </returns>
-    public bool OccupiedByEnemy() { return occupiedByEnemy; }
+    public bool OccupiedByEnemy() => occupiedByEnemy;
 
     /// <summary>
     /// Returns true if this Tile is occupied.
@@ -134,7 +134,7 @@ public abstract class Tile : Model, ISurface
     /// Sets this Tile's occupant.
     /// </summary>
     /// <param name="occupant">The occupant.</param>
-    public void SetOccupant(PlaceableObject occupant) { this.occupant = occupant; }
+    public void SetOccupant(PlaceableObject occupant) => this.occupant = occupant;
 
     /// <summary>
     /// Returns this Tile's TileType.
@@ -342,7 +342,7 @@ public abstract class Tile : Model, ISurface
     /// Returns this Tile's occupant.
     /// </summary>
     /// <returns>this Tile's occupant; null if there is none. </returns>
-    private PlaceableObject GetOccupant() { return occupant; }
+    private PlaceableObject GetOccupant() => occupant;
 
     /// <summary>
     /// Updates this Tile's array of neighbors. If it has a Flooring component,
@@ -426,10 +426,7 @@ public abstract class Tile : Model, ISurface
     /// Asserts that this Tile has been formally defined with a type and coordinates
     /// by the TileGrid.
     /// </summary>
-    public void AssertDefined()
-    {
-        Assert.IsTrue(defined, "Tile not defined.");
-    }
+    public void AssertDefined() => Assert.IsTrue(defined, "Tile not defined.");
 
     /// <summary>
     /// Returns true if a pathfinder can walk across this Tile. They
@@ -545,10 +542,7 @@ public abstract class Tile : Model, ISurface
     /// </summary>
     /// <returns>the GameObject that represents this Tile on the grid.
     /// </returns>
-    public override GameObject Copy()
-    {
-        throw new System.NotSupportedException("Tile placing not supported.");
-    }
+    public override GameObject Copy() => throw new System.NotSupportedException("Not allowed to copy Tiles");
 
     /// <summary>
     /// Returns a Sprite that represents this Tile when it is
@@ -556,23 +550,20 @@ public abstract class Tile : Model, ISurface
     /// </summary>
     /// <returns> a Sprite that represents this Tile when it is
     /// being placed.</returns>
-    public override Sprite[] GetPlacementTrack()
-    {
-        throw new System.NotSupportedException("Tile placing not supported.");
-    }
+    public override Sprite[] GetPlacementTrack() => throw new System.NotSupportedException("Tile placing not supported.");
 
     /// <summary>
     /// Sets the color of this Tile's highlighter.
     /// </summary>
     /// <param name="color">The color to set to.</param>
-    public void SetHighlighterColor(Color32 color) { highlighter.color = color; }
+    public void SetHighlighterColor(Color32 color) => highlighter.color = color;
 
     /// <summary>
     /// Returns true if there is a NexusHole on this Tile.
     /// </summary>
     /// <returns>true if there is a NexusHole on this Tile; otherwise,
     /// false. </returns>
-    public bool HostsNexusHole() { return nexusHoleOccupant != null; }
+    public bool HostsNexusHole() => nexusHoleOccupant != null;
 
     #endregion
 }

@@ -35,19 +35,13 @@ public class Sound
     /// Returns the AudioClip associated with this Sound.
     /// </summary>
     /// <returns>this Sound's AudioClip.</returns>
-    public AudioClip GetClip()
-    {
-        return clip;
-    }
+    public AudioClip GetClip() => clip;
 
     /// <summary>
     /// Returns this Sound's name.
     /// </summary>
     /// <returns>the name of this Sound.</returns>
-    public string GetName()
-    {
-        return soundName;
-    }
+    public string GetName() => soundName;
 
     /// <summary>
     /// Returns true if this Sound is a music clip or false
@@ -55,10 +49,7 @@ public class Sound
     /// </summary>
     /// <returns>true if this Sound is music; false if it is a
     /// sound effect. </returns>
-    public bool IsMusic()
-    {
-        return isMusic;
-    }
+    public bool IsMusic() => isMusic;
 
     #endregion
 }

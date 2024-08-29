@@ -90,7 +90,7 @@ public abstract class ModelController
     /// Returns this ModelController's Model.
     /// </summary>
     /// <returns>this ModelController's Model.</returns>
-    public Model GetModel() { return model; }
+    public Model GetModel() => model;
 
     /// <summary>
     /// Sets this Controller's Model.
@@ -163,14 +163,14 @@ public abstract class ModelController
     /// <summary>
     /// Drops loot from this Mob when it dies. 
     /// </summary>
-    protected virtual void DropDeathLoot() { droppedDeathLoot = true; }
+    protected virtual void DropDeathLoot() => droppedDeathLoot = true;
 
     /// <summary>
     /// Returns true if this Model dropped its death loot.
     /// </summary>
     /// <returns>true if this Model dropped its death loot; otherwise,
     /// false. </returns>
-    protected bool DroppedDeathLoot() { return droppedDeathLoot; }
+    protected bool DroppedDeathLoot() => droppedDeathLoot;
 
     /// <summary>
     /// Updates the Model's sorting order so that it appears behind Models
@@ -212,7 +212,7 @@ public abstract class ModelController
     /// <summary>
     /// Removes this Controller, destroying its Model.
     /// </summary>
-    public void RemoveController() { DestroyAndRemoveModel(); }
+    public void RemoveController() => DestroyAndRemoveModel();
 
     /// <summary>
     /// Handles a collision between this controller's model and
@@ -227,32 +227,32 @@ public abstract class ModelController
     /// </summary>
     /// <param name="projectile">The Projectile that collided with
     /// this controller's Model. </param>
-    protected virtual void HandleProjectileCollision(Projectile projectile) { return; }
+    protected virtual void HandleProjectileCollision(Projectile projectile) { }
 
     /// <summary>
     /// Informs this ModelController of the number of active Models of
     /// each type.
     /// </summary>
     /// <param name="counts">The number of active Models of each ModelType.</param>
-    public void InformOfModelCounts(ModelCounts counts) { this.counts = counts; }
+    public void InformOfModelCounts(ModelCounts counts) => this.counts = counts;
 
     /// <summary>
     /// Returns the number of active Models of each type.
     /// </summary>
     /// <returns>The number of active Models of each type.</returns>
-    protected ModelCounts GetModelCounts() { return counts; }
+    protected ModelCounts GetModelCounts() => counts;
 
     /// <summary>
     /// Returns the most recent GameState recognized by this ModelController.
     /// </summary>
     /// <returns>the most recent GameState.</returns>
-    protected GameState GetGameState() { return gameState; }
+    protected GameState GetGameState() => gameState;
 
     /// <summary>
     /// Returns a list of all active Models.
     /// </summary>
     /// <returns>a list of all Models in the scene.</returns>
-    public static IReadOnlyList<Model> GetAllModels() { return ALL_MODELS.AsReadOnly(); }
+    public static IReadOnlyList<Model> GetAllModels() => ALL_MODELS.AsReadOnly();
 
     /// <summary>
     /// Checks if the player clicked on this Model this frame.
@@ -272,7 +272,7 @@ public abstract class ModelController
     /// <summary>
     /// Performs logic right before this Model is destroyed.
     /// </summary>
-    protected virtual void OnDestroyModel() { return; }
+    protected virtual void OnDestroyModel() { }
 
     #endregion
 

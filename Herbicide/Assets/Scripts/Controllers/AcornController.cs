@@ -45,12 +45,12 @@ public class AcornController : ProjectileController<AcornController.AcornState>
     /// Returns the Acorn model.
     /// </summary>
     /// <returns>the Acorn model.</returns>
-    protected Acorn GetAcorn() { return GetProjectile() as Acorn; }
+    protected Acorn GetAcorn() => GetProjectile() as Acorn;
 
     /// <summary>
     /// Returns the Acorn prefab to the AcornFactory singleton.
     /// </summary>
-    public override void DestroyModel() { ProjectileFactory.ReturnProjectilePrefab(GetAcorn().gameObject); }
+    public override void DestroyModel() => ProjectileFactory.ReturnProjectilePrefab(GetAcorn().gameObject);
 
     /// <summary>
     /// Handles a collision between the Projectile and some other Collider2D.
@@ -101,10 +101,7 @@ public class AcornController : ProjectileController<AcornController.AcornState>
     /// <param name="stateA">The first state.</param>
     /// <param name="stateB">The second state.</param>
     /// <returns>true if two AcornStates are equal; otherwise, false.</returns>
-    public override bool StateEquals(AcornState stateA, AcornState stateB)
-    {
-        return stateA == stateB;
-    }
+    public override bool StateEquals(AcornState stateA, AcornState stateB) => stateA == stateB;
 
     /// <summary>
     /// Runs logic relevant to the Acorn's MOVING state.
@@ -121,12 +118,12 @@ public class AcornController : ProjectileController<AcornController.AcornState>
     /// <summary>
     /// Runs logic relevant to the Acorn's COLLIDING state.
     /// </summary>
-    public override void ExecuteCollidingState() { return; }
+    public override void ExecuteCollidingState() { }
 
     /// <summary>
     /// Runs logic relevant to the Acorn's DEAD state.
     /// </summary>
-    public override void ExecuteDeadState() { return; }
+    public override void ExecuteDeadState() { }
 
     #endregion
 

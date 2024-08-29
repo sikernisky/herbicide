@@ -60,34 +60,31 @@ public class NexusController : MobController<NexusController.NexusState>
     /// <param name="target">The Model to check for targetability.</param>
     /// <returns>true if the Nexus can target the Model passed
     /// into this method; otherwise, false.</returns>
-    protected override bool CanTargetModel(Model target) { return false; }
+    protected override bool CanTargetModel(Model target) => false;
 
     /// <summary>
     /// Returns true if the Nexus should be removed.
     /// </summary>
     /// <returns>true if the Nexus should be removed; otherwise, false.</returns>
-    public override bool ValidModel() { return !GetNexus().CashedIn(); }
+    public override bool ValidModel() => !GetNexus().CashedIn();
 
     /// <summary>
     /// Returns the Nexus model.
     /// </summary>
     /// <returns>the Nexus model.</returns>
-    private Nexus GetNexus() { return GetMob() as Nexus; }
+    private Nexus GetNexus() => GetMob() as Nexus;
 
     /// <summary>
     /// Handles a collision between the Nexus model and some other
     /// collider.
     /// </summary>
     /// <param name="other">The other 2D Collider.</param>
-    protected override void HandleCollision(Collider2D other) { return; }
+    protected override void HandleCollision(Collider2D other) { }
 
     /// <summary>
     /// Returns the Nexus prefab to the NexusFactory singleton.
     /// </summary>
-    public override void DestroyModel()
-    {
-        NexusFactory.ReturnNexusPrefab(GetNexus().gameObject);
-    }
+    public override void DestroyModel() => NexusFactory.ReturnNexusPrefab(GetNexus().gameObject);
 
     #endregion
 
@@ -124,10 +121,7 @@ public class NexusController : MobController<NexusController.NexusState>
     /// <param name="stateA">The first NexusState.</param>
     /// <param name="stateB">The second NexusState.</param>
     /// <returns>true if the two NexusStates are equal.</returns>
-    public override bool StateEquals(NexusState stateA, NexusState stateB)
-    {
-        return stateA == stateB;
-    }
+    public override bool StateEquals(NexusState stateA, NexusState stateB) => stateA == stateB;
 
     /// <summary>
     /// Executes logic for the Nexus' spawn state.

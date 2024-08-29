@@ -67,40 +67,28 @@ public class CameraController : MonoBehaviour
     /// <summary>
     /// Sets the camera's position.
     /// </summary>
-    public static void MoveCamera(Vector2 pos)
-    {
-        instance.GetCamera().transform.position = pos;
-    }
+    public static void MoveCamera(Vector2 pos) => instance.GetCamera().transform.position = pos;
 
     /// <summary>
     /// Converts a position from screen coordinates to world coordinates.
     /// </summary>
     /// <param name="pos">The position in screen coordinates to convert.</param>
     /// <returns>The corresponding position in world coordinates.</returns>
-    public static Vector2 ScreenToWorldPoint(Vector2 pos)
-    {
-        return instance.GetCamera().ScreenToWorldPoint(pos);
-    }
+    public static Vector2 ScreenToWorldPoint(Vector2 pos) => instance.GetCamera().ScreenToWorldPoint(pos);
 
     /// <summary>
     /// Converts a position from world coordinates to screen coordinates.
     /// </summary>
     /// <param name="pos">The position in world coordinates to convert.</param>
     /// <returns>The corresponding position in screen coordinates.</returns>
-    public static Vector3 WorldToScreenPoint(Vector2 pos)
-    {
-        return instance.GetCamera().WorldToScreenPoint(pos);
-    }
+    public static Vector3 WorldToScreenPoint(Vector2 pos) => instance.GetCamera().WorldToScreenPoint(pos);
 
     /// <summary>
     /// Returns the Camera controlled by the CameraController singleton.
     /// </summary>
     /// <returns>the Camera controlled by the CameraController 
     /// singleton.</returns>
-    private Camera GetCamera()
-    {
-        return cam;
-    }
+    private Camera GetCamera() => cam;
 
     #endregion
 }

@@ -125,50 +125,44 @@ public abstract class Model : MonoBehaviour
     /// Sets this Model's SpriteRenderer to its most up-to date
     /// (attached) component.
     /// </summary>
-    public void RefreshRenderer() { modelRenderer = GetComponent<SpriteRenderer>(); }
+    public void RefreshRenderer() => modelRenderer = GetComponent<SpriteRenderer>();
 
     /// <summary>
     /// Sets this Model's sprite mask interaction.
     /// </summary>
     /// <param name="interaction">the interaction to set to.</param>
-    public void SetMaskInteraction(SpriteMaskInteraction interaction)
-    {
-        modelRenderer.maskInteraction = interaction;
-    }
+    public void SetMaskInteraction(SpriteMaskInteraction interaction) => modelRenderer.maskInteraction = interaction;
 
     /// <summary>
     /// Returns the Sprite occupying this Model's SpriteRenderer
     /// component.
     /// </summary>
     /// <returns>this Model's current Sprite.</returns>
-    public Sprite GetSprite() { return modelRenderer.sprite; }
+    public Sprite GetSprite() => modelRenderer.sprite;
 
     /// <summary>
     /// Sets the Sprite component of this Model.
     /// </summary>
     /// <param name="s">the Sprite to set to</param>
-    public virtual void SetSprite(Sprite s) { if (s != null) modelRenderer.sprite = s; }
+    public virtual void SetSprite(Sprite s) => modelRenderer.sprite = s != null ? s : modelRenderer.sprite;
 
     /// <summary>
     /// Sets this Model's SpriteRenderer's color.
     /// </summary>
     /// <param name="color">the color to set to.</param>
-    public virtual void SetColor(Color32 newColor)
-    {
-        if (modelRenderer != null) modelRenderer.color = newColor;
-    }
+    public virtual void SetColor(Color32 newColor) => modelRenderer.color = modelRenderer != null ? newColor : modelRenderer.color;
 
     /// <summary>
     /// Sets this Model's SpriteRenderer component's sorting
     /// order (order in layer).
     /// </summary>
-    public void SetSortingOrder(int layer) { modelRenderer.sortingOrder = layer; }
+    public void SetSortingOrder(int layer) => modelRenderer.sortingOrder = layer;
 
     /// <summary>
     /// Returns this Model's sorting order.
     /// </summary>
     /// <returns>this Model's sorting order.</returns>
-    public int GetSortingOrder() { return modelRenderer.sortingOrder; }
+    public int GetSortingOrder() => modelRenderer.sortingOrder;
 
     /// <summary>
     /// Sets this Model's current animation track.
@@ -189,19 +183,19 @@ public abstract class Model : MonoBehaviour
     /// Returns the number of cycles of the current animation completed.
     /// </summary>
     /// <returns>the number of cycles of the current animation completed. </returns>
-    public int GetNumCyclesOfCurrentAnimationCompleted() { return numCyclesOfCurrentAnimationCompleted; }
+    public int GetNumCyclesOfCurrentAnimationCompleted() => numCyclesOfCurrentAnimationCompleted;
 
     /// <summary>
     /// Increments the number of cycles of the current animation completed.
     /// </summary>
-    public void IncrementNumCyclesOfCurrentAnimationCompleted() { numCyclesOfCurrentAnimationCompleted++; }
+    public void IncrementNumCyclesOfCurrentAnimationCompleted() => numCyclesOfCurrentAnimationCompleted++;
 
     /// <summary>
     /// Returns true if this Model has a valid animation track set up.
     /// </summary>
     /// <returns> true if this Model has a valid animation track set up;
     /// otherwise, false. /// </returns>
-    public bool HasAnimationTrack() { return CurrentAnimationTrack != null; }
+    public bool HasAnimationTrack() => CurrentAnimationTrack != null;
 
     /// <summary>
     /// Sets the duration of this Model's current animation.
@@ -218,17 +212,14 @@ public abstract class Model : MonoBehaviour
     /// </summary>
     /// <returns>the length of this Model's current animationt track;
     /// 0 if null.</returns>
-    public int NumFrames() { return HasAnimationTrack() ? CurrentAnimationTrack.Length : 0; }
+    public int NumFrames() => HasAnimationTrack() ? CurrentAnimationTrack.Length : 0;
 
 
     /// <summary>
     /// Increments the frame count by one; or, if it is already
     /// the final frame in the current animation, sets it to 0.
     /// </summary>
-    public void NextFrame()
-    {
-        CurrentFrame = (CurrentFrame + 1 >= NumFrames()) ? 0 : CurrentFrame + 1;
-    }
+    public void NextFrame() => CurrentFrame = (CurrentFrame + 1 >= NumFrames()) ? 0 : CurrentFrame + 1;
 
     /// <summary>
     /// Returns the Sprite at the current frame of the current
@@ -247,7 +238,7 @@ public abstract class Model : MonoBehaviour
     /// </summary>
     /// <param name="x">The X-Coordinate.</param>
     /// <param name="y">The Y-Coordinate.</param>
-    public void SetTileCoordinates(int x, int y) { coordinates = new Vector2Int(x, y); }
+    public void SetTileCoordinates(int x, int y) => coordinates = new Vector2Int(x, y);
 
     /// <summary>
     /// Adds all of the (X, Y) Tile coordinates this Model expands on.
@@ -293,31 +284,31 @@ public abstract class Model : MonoBehaviour
     /// Returns the world position of this Model.
     /// </summary>
     /// <returns>the world position of this Model.</returns>
-    public Vector3 GetPosition() { return transform.position; }
+    public Vector3 GetPosition() => transform.position;
 
     /// <summary>
     /// Sets this Model's Transform's local scale.
     /// </summary>
     /// <param name="scale">The scale to set to.</param>
-    public void SetSize(Vector3 scale) { transform.localScale = scale; }
+    public void SetSize(Vector3 scale) => transform.localScale = scale;
 
     /// <summary>
     /// Returns the X-Coordinate of the Tile on which this Model sits.
     /// </summary>
     /// <returns>the X-Coordinate of the Tile on which this Model sits.</returns>
-    public int GetX() { return coordinates.x; }
+    public int GetX() => coordinates.x;
 
     /// <summary>
     /// Returns the Y-Coordinate of the Tile on which this Model sits.
     /// </summary>
     /// <returns>the Y-Coordinate of the Tile on which this Model sits.</returns>
-    public int GetY() { return coordinates.y; }
+    public int GetY() => coordinates.y;
 
     /// <summary>
     /// Returns this Model's Transform component.
     /// </summary>
     /// <returns>this Model's Transform component.</returns>
-    public Transform GetTransform() { return transform; }
+    public Transform GetTransform() => transform;
 
     /// <summary>
     /// Returns the position of where attacks directed at this PlaceableObject
@@ -325,13 +316,13 @@ public abstract class Model : MonoBehaviour
     /// </summary>
     /// <returns>the position of where attacks directed at this PlaceableObject
     /// should go.</returns>
-    public virtual Vector3 GetAttackPosition() { return GetPosition(); }
+    public virtual Vector3 GetAttackPosition() => GetPosition();
 
     /// <summary>
     /// Rotates this Model such that it faces a given direction.
     /// </summary>
     /// <param name="direction">The direction to face.</param>
-    public void FaceDirection(Direction direction) { this.direction = direction; }
+    public void FaceDirection(Direction direction) => this.direction = direction;
 
     /// <summary>
     /// Changes this Model's direction such that it faces some position.
@@ -354,7 +345,7 @@ public abstract class Model : MonoBehaviour
     /// Returns the Direction to which this Model faces.
     /// </summary>
     /// <returns>the Direction to which this Model faces</returns>
-    public Direction GetDirection() { return direction; }
+    public Direction GetDirection() => direction;
 
     /// <summary>
     /// Subscribes a handler (this model's controller) to the collision event.
@@ -370,10 +361,7 @@ public abstract class Model : MonoBehaviour
     /// Subscribes a handler to the ProjectileCollision event.
     /// </summary>
     /// <param name="handler">The collision handler to subscribe.</param>
-    public void SubscribeToProjectileCollisionEvent(Action<Projectile> handler)
-    {
-        OnProjectileImpact += handler;
-    }
+    public void SubscribeToProjectileCollisionEvent(Action<Projectile> handler) => OnProjectileImpact += handler;
 
     /// <summary>
     /// Invokes the OnProjectileImpact event, which is handled by the
@@ -401,7 +389,7 @@ public abstract class Model : MonoBehaviour
     /// Returns the Collider2D component used by this Model.
     /// </summary>
     /// <returns>the Collider2D component used by this Model.</returns>
-    public Collider2D GetColllider() { return modelCollider; }
+    public Collider2D GetColllider() => modelCollider;
 
     /// <summary>
     /// Sets this Model's Collider2D properties, such as its position,
@@ -422,10 +410,7 @@ public abstract class Model : MonoBehaviour
     /// Sets this Model's sorting layer.
     /// </summary>
     /// <param name="layer">The layer to set to.</param>
-    public void SetSortingLayer(SortingLayers layer)
-    {
-        modelRenderer.sortingLayerName = layer.ToString().ToLower();
-    }
+    public void SetSortingLayer(SortingLayers layer) => modelRenderer.sortingLayerName = layer.ToString().ToLower();
 
     /// <summary>
     /// Returns this Model's sorting layer.
@@ -457,10 +442,7 @@ public abstract class Model : MonoBehaviour
     /// Returns the (X, Y) dimensions of this Model's placement track.
     /// </summary>
     /// <returns>the (X, Y) dimensions of this Model's placement track.</returns>
-    public virtual Vector2Int GetPlacementTrackDimensions()
-    {
-        return new Vector2Int(16, 16);
-    }
+    public virtual Vector2Int GetPlacementTrackDimensions() => new Vector2Int(16, 16);
 
     /// <summary>
     /// Returns the euclidian distance from this Model to another Model.
@@ -476,13 +458,13 @@ public abstract class Model : MonoBehaviour
     /// <summary>
     /// Called when a Nexus determines this Model has picked it up. 
     /// </summary>
-    public void OnHoldNexus() { holdingNexus = true; }
+    public void OnHoldNexus() => holdingNexus = true;
 
     /// <summary>
     /// Returns true if this Model is currently holding a Nexus. 
     /// </summary>
     /// <returns></returns>
-    public bool IsHoldingNexus() { return holdingNexus; }
+    public bool IsHoldingNexus() => holdingNexus;
 
     #endregion
 }

@@ -117,7 +117,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// it to its respective type.
     /// </summary>
     /// <returns>this MobController's Mob model.</returns>
-    protected Mob GetMob() { return GetModel() as Mob; }
+    protected Mob GetMob() => GetModel() as Mob;
 
     /// <summary>
     /// Animates this Controller's model's damage flash effect if it is
@@ -242,7 +242,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// for the FSM logic. 
     /// </summary>
     /// <param name="state">The State to set.</param>
-    public void SetState(T state) { this.state = state; }
+    public void SetState(T state) => this.state = state;
 
     /// <summary>
     /// Returns the State of this MobController. This helps keep track of
@@ -250,7 +250,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// for the FSM logic. 
     /// </summary>
     /// <returns>The State of this MobController. </returns>
-    public T GetState() { return state; }
+    public T GetState() => state;
 
     /// <summary>
     /// Processes this MobController's state FSM to determine the
@@ -282,18 +282,18 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// 
     /// </summary>
     /// <returns>this MobController's target.</returns>
-    protected List<Model> GetTargets() { return new List<Model>(targets); }
+    protected List<Model> GetTargets() => new List<Model>(targets);
 
     /// <summary>
     /// Returns the Mob's most pressing target.
     /// </summary>
     /// <returns>the Mob's most pressing target.</returns>
-    protected virtual Model GetTarget() { return targets.Count == 0 ? null : targets[0]; }
+    protected virtual Model GetTarget() => targets.Count == 0 ? null : targets[0];
 
     /// <summary>
     /// Clears the Mob's list of targets.
     /// </summary>
-    private void ClearTargets() { targets.Clear(); }
+    private void ClearTargets() => targets.Clear();
 
     /// <summary>
     /// Adds a Model to this Mob's list of targets.
@@ -346,10 +346,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// before the Mob acts on its targets.
     /// </summary>
     /// <param name="targets">The list of targets to sort.</param>
-    protected virtual void SortTargets(List<Model> targets)
-    {
-        return;
-    }
+    protected virtual void SortTargets(List<Model> targets) { }
 
     /// <summary>
     /// Returns true if the Mob is allowed to target a Model passed
@@ -366,7 +363,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// </summary>
     /// <returns>the current number of targets the Mob has
     /// elected.</returns>
-    protected int NumTargets() { return targets.Count; }
+    protected int NumTargets() => targets.Count;
 
     /// <summary>
     /// Returns true if the Mob can hold some Nexus.
@@ -414,10 +411,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// Returns a copy of the list of targets the Mob is currently holding.
     /// </summary>
     /// <returns>a copy of the list of targets the Mob is currently holding.</returns>
-    protected List<Model> GetHeldTargets()
-    {
-        return new List<Model>(modelsHolding);
-    }
+    protected List<Model> GetHeldTargets() => new List<Model>(modelsHolding);
 
     /// <summary>
     /// Returns the distance from this Controller's Mob to its first target.

@@ -148,7 +148,7 @@ public class StageController : MonoBehaviour
     /// Returns the current stage the player is on.
     /// </summary>
     /// <returns>the current stage. </returns>
-    public static int GetCurrentStage() { return instance.currentStage; }
+    public static int GetCurrentStage() => instance.currentStage;
 
     /// <summary>
     /// Returns the number of seconds that have elapsed
@@ -156,7 +156,7 @@ public class StageController : MonoBehaviour
     /// </summary>
     /// <returns>the number of seconds that have elapsed since the
     /// last stage began. </returns> 
-    public static float GetTimeSinceLastStageBegan() { return instance.timeSinceLastStage; }
+    public static float GetTimeSinceLastStageBegan() => instance.timeSinceLastStage;
 
     #endregion
 }

@@ -160,10 +160,7 @@ public class TiledData
     /// Returns the height, in Tiles, of this map.
     /// </summary>
     /// <returns>the height, in Tiles, of this map.</returns>
-    public int GetMapHeight()
-    {
-        return height;
-    }
+    public int GetMapHeight() => height;
 
     /// <summary>
     /// Returns the number of stages in this map.

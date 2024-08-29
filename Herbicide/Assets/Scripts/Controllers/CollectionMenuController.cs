@@ -105,10 +105,7 @@ public class CollectionMenuController : MonoBehaviour
     /// always returns MENU. Also informs controllers of this game state.
     /// </summary>
     /// <returns>the current GameState.</returns>
-    private GameState DetermineGameState()
-    {
-        return GameState.MENU;
-    }
+    private GameState DetermineGameState() => GameState.MENU;
 
     #endregion
 }

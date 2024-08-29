@@ -76,19 +76,19 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     /// Returns this SquirrelController's Squirrel.
     /// </summary>
     /// <returns>this SquirrelController's Squirrel.</returns>
-    private Squirrel GetSquirrel() { return GetMob() as Squirrel; }
+    private Squirrel GetSquirrel() => GetMob() as Squirrel;
 
     /// <summary>
     /// Handles all collisions between this controller's Squirrel
     /// model and some other collider.
     /// </summary>
     /// <param name="other">the other collider.</param>
-    protected override void HandleCollision(Collider2D other) { throw new NotImplementedException(); }
+    protected override void HandleCollision(Collider2D other) { }
 
     /// <summary>
     /// Returns the Squirrel prefab to the DefenderFactory singleton.
     /// </summary>
-    public override void DestroyModel() { DefenderFactory.ReturnDefenderPrefab(GetSquirrel().gameObject); }
+    public override void DestroyModel() => DefenderFactory.ReturnDefenderPrefab(GetSquirrel().gameObject);
 
     /// <summary>
     /// Returns true if the Squirrel can shoot an acorn.
@@ -148,10 +148,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     /// <param name="stateA">The first state.</param>
     /// <param name="stateB">The second state.</param>
     /// <returns>true if two SquirrelStates are equal; otherwise, false.</returns>
-    public override bool StateEquals(SquirrelState stateA, SquirrelState stateB)
-    {
-        return stateA == stateB;
-    }
+    public override bool StateEquals(SquirrelState stateA, SquirrelState stateB) => stateA == stateB;
 
     /// <summary>
     /// Updates the state of this SquirrelController's Squirrel model.

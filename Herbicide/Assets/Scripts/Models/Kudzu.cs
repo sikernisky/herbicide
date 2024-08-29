@@ -163,14 +163,14 @@ public class Kudzu : Enemy
     /// Returns the sprite that represents this Kudzu when placing.
     /// </summary>
     /// <returns>the sprite that represents this Kudzu when placing.</returns>
-    public override Sprite[] GetPlacementTrack() { return EnemyFactory.GetPlacementTrack(TYPE); }
+    public override Sprite[] GetPlacementTrack() => EnemyFactory.GetPlacementTrack(TYPE);
 
     /// <summary>
     /// Returns the GameObject that represents this Kudzu on the grid.
     /// </summary>
     /// <returns>the GameObject that represents this Kudzu on the grid.
     /// </returns>
-    public override GameObject Copy() { return EnemyFactory.GetEnemyPrefab(TYPE); }
+    public override GameObject Copy() => EnemyFactory.GetEnemyPrefab(TYPE);
 
     #endregion
 }

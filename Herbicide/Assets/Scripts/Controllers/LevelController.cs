@@ -144,6 +144,7 @@ public class LevelController : MonoBehaviour
         SoundController.SetSingleton(instance);
         LevelCompletionController.SetSingleton(instance);
         StageController.SetSingleton(instance);
+        ExplosionController.SetSingleton(instance);
     }
 
     /// <summary>
@@ -227,7 +228,6 @@ public class LevelController : MonoBehaviour
         {
             //Put events here to trigger if we're NOT hovering over a Canvas / UI element.
             TileGrid.CheckTileInputEvents();
-            EconomyController.CheckCurrencyPickup();
         }
     }
 

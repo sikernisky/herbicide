@@ -111,18 +111,18 @@ public class NexusHole : Mob
     /// </summary>
     /// <returns> the Sprite that represents this NexusHole when placing.
     /// </returns>
-    public override Sprite[] GetPlacementTrack() { return NexusHoleFactory.GetPlacementTrack(); }
+    public override Sprite[] GetPlacementTrack() => NexusHoleFactory.GetPlacementTrack();
 
     /// <summary>
     /// Returns an instantiated copy of this NexusHole.
     /// </summary>
     /// <returns>an instantiated copy of this NexusHole.</returns>
-    public override GameObject Copy() { return NexusHoleFactory.GetNexusHolePrefab(); }
+    public override GameObject Copy() => NexusHoleFactory.GetNexusHolePrefab();
 
     /// <summary>
     /// Sets the 2D Collider properties of this NexusHole.
     /// </summary>
-    public override void SetColliderProperties() { return; }
+    public override void SetColliderProperties() { }
 
     #endregion
 }

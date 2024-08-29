@@ -24,11 +24,6 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
     private T animationState;
 
     /// <summary>
-    /// Total number of collectables assigned since the scene began.
-    /// </summary>
-    private static int NUM_COLLECTABLES;
-
-    /// <summary>
     /// Starting position of the Collectable when it bobs up and down.
     /// </summary>
     private Vector3 bobStartPosition;
@@ -37,41 +32,6 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
     /// Time offset to create varying bobbing animations.
     /// </summary>
     private float timeOffset;
-
-    /// <summary>
-    /// true if the Collectable fully drifted upwards.
-    /// </summary>
-    private bool driftedUp;
-
-    /// <summary>
-    /// true if the Collectable is performing a DriftUp lerp.
-    /// </summary>
-    private bool isDriftingUp = false;
-
-    /// <summary>
-    /// When the drift started.
-    /// </summary>
-    private float driftStartTime;
-
-    /// <summary>
-    /// How many seconds the drift should last.
-    /// </summary>
-    private float driftDuration = .5f;
-
-    /// <summary>
-    /// How far the Collectable should drift upwards.
-    /// </summary>
-    private float driftDistance;
-
-    /// <summary>
-    /// The starting scale of the collectable for the DriftUp lerp.
-    /// </summary>
-    private Vector3 originalScale;
-
-    /// <summary>
-    /// The starting position of the collectable for the DriftUp lerp.
-    /// </summary>
-    private Vector3 originalPosition;
 
     /// <summary>
     /// Cursor detection range.
@@ -93,7 +53,6 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
 
     #region Methods
 
-
     /// <summary>
     /// Assigns a CollectableController to a Collectable Model.
     /// </summary>
@@ -102,7 +61,6 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
 
     public CollectableController(Collectable collectable, Vector3 dropPos) : base(collectable)
     {
-        NUM_COLLECTABLES++;
         bobStartPosition = dropPos;
         timeOffset = timeOffset = UnityEngine.Random.Range(0f, Mathf.PI * 2);
     }
@@ -122,7 +80,7 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
     /// 2D collider.
     /// </summary>
     /// <param name="other">The collider the Collectable hit.</param>
-    protected override void HandleCollision(Collider2D other) { return; }
+    protected override void HandleCollision(Collider2D other) { }
 
     /// <summary>
     /// Returns true if this controller's Collectable should be destoyed and
@@ -130,17 +88,13 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
     /// </summary>
     /// <returns>true if the Collectable should be nullified and destroyed;
     /// otherwise, false. </returns>
-    public override bool ValidModel()
-    {
-        if (GetCollectable().Collected()) return false;
-        return true;
-    }
+    public override bool ValidModel() => GetCollectable().Collected() ? false : true;
 
     /// <summary>
     /// Returns this controller's Collectable model.
     /// </summary>
     /// <returns>this controller's Collectable model.</returns>
-    protected Collectable GetCollectable() { return GetModel() as Collectable; }
+    protected Collectable GetCollectable() => GetModel() as Collectable;
 
     /// <summary>
     /// Returns true if the Collectable is within homing range of the cursor.
@@ -184,52 +138,6 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
         GetCollectable().SetWorldPosition(newPosition);
     }
 
-
-    /// <summary>
-    /// Drifts the Collectable upwards in a straight line, slowly
-    /// reducing its size until it completely dissapears.  
-    /// </summary>
-    /// <param name="distance">How far to drift up.</param>
-    protected virtual void Drift(float distance)
-    {
-        if (!isDriftingUp)
-        {
-            // Start drifting
-            isDriftingUp = true;
-            driftStartTime = Time.time;
-            driftDistance = distance;
-            originalScale = GetCollectable().transform.localScale;
-            originalPosition = GetCollectable().GetPosition();
-        }
-        else
-        {
-            // Continue drifting
-            float elapsedTime = Time.time - driftStartTime;
-            if (elapsedTime < driftDuration)
-            {
-                AnimationCurve driftCurve = GetCollectable().GetDriftUpCurve();
-
-                // Interpolate position
-                float newY = Mathf.Lerp(originalPosition.y, originalPosition.y + driftDistance, elapsedTime / driftDuration);
-                Vector3 newPosition = new Vector3(originalPosition.x, newY, originalPosition.z);
-                GetCollectable().SetWorldPosition(newPosition);
-
-                // Scale based on animation curve
-                float scaleMultiplier = driftCurve.Evaluate(elapsedTime / driftDuration);
-                Vector3 newScale = originalScale * scaleMultiplier;
-                GetCollectable().transform.localScale = newScale;
-            }
-            else driftedUp = true;
-        }
-    }
-
-    /// <summary>
-    /// Returns true if the Collectable fully drifted upwards.
-    /// </summary>
-    /// <returns>true if the Collectable fully drifted upwards;
-    /// otherwise, false. </returns>
-    protected bool DriftedUp() { return driftedUp; }
-
     /// <summary>
     /// Homes the collectable towards the cursor.
     /// </summary>
@@ -261,7 +169,7 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
     /// Sets the state of the Collectable.
     /// </summary>
     /// <param name="state">The state to set to.</param>
-    public void SetState(T state) { this.state = state; }
+    public void SetState(T state) => this.state = state;
 
     /// <summary>
     /// Returns true if two states are equal.
@@ -275,7 +183,7 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
     /// Returns the state of the Collectable.
     /// </summary>
     /// <returns>the state of the Collectable.</returns>
-    public T GetState() { return state; }
+    public T GetState() => state;
 
     /// <summary>
     /// Updates the state of this CollectableController's Collectable model.
@@ -290,13 +198,13 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
     /// Returns the Collectable's current animation state.
     /// </summary>
     /// <returns>the Collectable's current animation state.</returns>
-    public T GetAnimationState() { return animationState; }
+    public T GetAnimationState() => animationState;
 
     /// <summary>
     /// Sets the Collectable's current animation state.
     /// </summary>
     /// <param name="animationState">The animation state to set.</param>
-    public void SetAnimationState(T animationState) { this.animationState = animationState; }
+    public void SetAnimationState(T animationState) => this.animationState = animationState;
 
     #endregion
 }

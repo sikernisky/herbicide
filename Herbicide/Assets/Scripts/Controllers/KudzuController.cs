@@ -39,8 +39,7 @@ public class KudzuController : EnemyController
     /// Returns this KudzuController's Kudzu model.
     /// </summary>
     /// <returns>this KudzuController's Kudzu model.</returns>
-    private Kudzu GetKudzu() { return GetModel() as Kudzu; }
-
+    private Kudzu GetKudzu() => GetEnemy() as Kudzu;
 
     /// <summary>
     /// Returns the spawn position of the Kudzu when in a NexusHole.

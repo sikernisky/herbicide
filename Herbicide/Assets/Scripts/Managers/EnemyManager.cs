@@ -144,7 +144,7 @@ public class EnemyManager : MonoBehaviour
     /// </summary>
     /// <returns>true if the EnemyManager has been populated;
     /// otherwise, false. </returns>
-    public static bool Populated() { return instance.populated; }
+    public static bool Populated() => instance.populated;
 
     /// <summary>
     /// Finds and sets the EnemyManager singleton.

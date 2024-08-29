@@ -40,13 +40,13 @@ public class WallController : MobController<WallController.WallState>
     /// Returns this WallController's Wall.
     /// </summary>
     /// <returns>this WallController's Wall.</returns>
-    protected Wall GetWall() { return GetMob() as Wall; }
+    protected Wall GetWall() => GetMob() as Wall;
 
     /// <summary>
     /// Returns true if the Wall should be removed.
     /// </summary>
     /// <returns>true if the Wall should be removed; otherwise, false.</returns>
-    public override bool ValidModel() { return true; }
+    public override bool ValidModel() => true;
 
     /// <summary>
     /// Returns true if the Wall can target the Model passed into this method.
@@ -54,24 +54,17 @@ public class WallController : MobController<WallController.WallState>
     /// <param name="target">The Model to check. </param>
     /// <returns>true if the Wall can target the Model passed into this method;
     /// otherwise, false. </returns>
-    protected override bool CanTargetModel(Model target)
-    {
-        return false;
-    }
+    protected override bool CanTargetModel(Model target) => false;
 
     /// <summary>
     /// Handles a collision between the Wall and some other Collider2D.
     /// </summary>
     /// <param name="other">The other Collider2D.</param>
-    protected override void HandleCollision(Collider2D other)
-    {
-        return;
-    }
-
+    protected override void HandleCollision(Collider2D other) { }
     /// <summary>
     /// Returns the Wall prefab to the WallFactory singleton.
     /// </summary>
-    public override void DestroyModel() { WallFactory.ReturnWallPrefab(GetWall().gameObject); }
+    public override void DestroyModel() => WallFactory.ReturnWallPrefab(GetWall().gameObject);
 
     #endregion
 
@@ -83,10 +76,7 @@ public class WallController : MobController<WallController.WallState>
     /// <param name="stateA">The first WallState.</param>
     /// <param name="stateB">The second WallState.</param>
     /// <returns>true if the two WallStates are equal.</returns>
-    public override bool StateEquals(WallState stateA, WallState stateB)
-    {
-        return stateA == stateB;
-    }
+    public override bool StateEquals(WallState stateA, WallState stateB) => stateA == stateB;
 
     /// <summary>
     /// Updates the state of the Wall. The transitions are: <br></br>

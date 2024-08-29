@@ -141,31 +141,31 @@ public abstract class Enemy : Mob
     /// Returns the current HealthState of this Enemy.
     /// </summary>
     /// <returns>the current HealthState of this Enemy.</returns>
-    public EnemyHealthState GetHealthState() { return healthState; }
+    public EnemyHealthState GetHealthState() => healthState;
 
     /// <summary>
     /// Sets the SpawnTime of this Enemy.
     /// </summary>
     /// <param name="time">the time at which this Enemy spawns.</param>
-    public void SetSpawnTime(float time) { spawnTime = Mathf.Clamp(time, 0, float.MaxValue); }
+    public void SetSpawnTime(float time) => spawnTime = Mathf.Clamp(time, 0, float.MaxValue);
 
     /// <summary>
     /// Returns this Enemy's SpawnTime.
     /// </summary>
     /// <returns>this Enemy's SpawnTime.</returns>
-    public float GetSpawnTime() { return spawnTime; }
+    public float GetSpawnTime() => spawnTime;
 
     /// <summary>
     /// Sets the stage during which this Enemy spawns.
     /// </summary>
     /// <param name="stage">The stage during which this Enemy spawns.</param>
-    public void SetStage(int stage) { this.stage = stage; }
+    public void SetStage(int stage) => this.stage = stage;
 
     /// <summary>
     /// Returns the stage during which this Enemy spawns.
     /// </summary>
     /// <returns>the stage during which this Enemy spawns.</returns>
-    public int GetStage() { return stage; }
+    public int GetStage() => stage;
 
     /// <summary>
     /// Sets the Enemy as entering.
@@ -191,25 +191,25 @@ public abstract class Enemy : Mob
     /// Returns true if this Enemy is entering.
     /// </summary>
     /// <returns> true if this Enemy is entering; otherwise, false. </returns>
-    public bool IsEntering() { return entering; }
+    public bool IsEntering() => entering;
 
     /// <summary>
     /// Returns true if this Enemy has entered.
     /// </summary>
     /// <returns>true if this Enemy has entered; otherwise, false. </returns>
-    public bool IsEntered() { return entered; }
+    public bool IsEntered() => entered; 
 
     /// <summary>
     /// Returns the position where the Enemy is entering towards.
     /// </summary>
     /// <returns>the position where the Enemy is entering towards.</returns>
-    public Vector3 GetEnterPos() { return enterPos; }
+    public Vector3 GetEnterPos() => enterPos;
 
     /// <summary>
     /// Returns true if this Enemy exited.
     /// </summary>
     /// <returns>true if this Enemy exited; otherwise, false. </returns>
-    public bool Exited() { return exited; }
+    public bool Exited() => exited;
 
     /// <summary>
     /// Sets this Enemy as exited.
@@ -236,7 +236,7 @@ public abstract class Enemy : Mob
     /// Returns true if this Enemy is exiting.
     /// </summary>
     /// <returns>true if this Enemy is exiting; otherwise, false. </returns>
-    public bool IsExiting() { return exiting; }
+    public bool IsExiting() => exiting;
 
 
     /// <summary>
@@ -245,7 +245,7 @@ public abstract class Enemy : Mob
     /// </summary>
     /// <returns>the position of the structure the Enemy is
     /// using to exit.</returns>
-    public Vector3 GetExitPos() { return exitPos; }
+    public Vector3 GetExitPos() => exitPos;
 
     /// <summary>
     /// Returns the position where Models attacking this

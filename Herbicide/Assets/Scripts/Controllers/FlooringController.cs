@@ -28,37 +28,34 @@ public class FlooringController : ModelController
     /// </summary>
     /// <returns>true if the FlooringModel should be destroyed and removed;
     /// otherwise, false. </returns>
-    public override bool ValidModel() { return true; }
+    public override bool ValidModel() => true;
 
     /// <summary>
     /// Adds one chunk of Time.deltaTime to the animation
     /// counter that tracks the current state.
     /// </summary>
-    public override void AgeAnimationCounter() { return; }
+    public override void AgeAnimationCounter() => throw new System.NotImplementedException();
 
     /// <summary>
     /// Returns the animation counter for the current state.
     /// </summary>
     /// <returns>the animation counter for the current state.</returns>
-    public override float GetAnimationCounter() { return default; }
+    public override float GetAnimationCounter() => throw new System.NotImplementedException();
     /// <summary>
     /// Sets the animation counter for the current state to 0.
     /// </summary>
-    public override void ResetAnimationCounter() { return; }
+    public override void ResetAnimationCounter() => throw new System.NotImplementedException();
 
     /// <summary>
     /// Returns the Flooring Model.
     /// </summary>
     /// <returns>the Flooring Model.</returns>
-    protected Flooring GetFlooring() { return GetModel() as Flooring; }
+    protected Flooring GetFlooring() => GetModel() as Flooring;
 
     /// <summary>
     /// Returns the Flooring prefab to the FlooringFactory singleton.
     /// </summary>
-    public override void DestroyModel()
-    {
-        FlooringFactory.ReturnFlooringPrefab(GetFlooring().gameObject);
-    }
+    public override void DestroyModel() => FlooringFactory.ReturnFlooringPrefab(GetFlooring().gameObject);
 
     #endregion
 }

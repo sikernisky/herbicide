@@ -109,13 +109,13 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// it to its respective type.
     /// </summary>
     /// <returns>this ProjectileController's Projectile model.</returns>
-    protected Projectile GetProjectile() { return GetModel() as Projectile; }
+    protected Projectile GetProjectile() => GetModel() as Projectile;
 
     /// <summary>
     /// Returns the position to where the Projectile should go.
     /// </summary>
     /// <returns>the position to where the Projectile should go.</returns>
-    protected Vector3 GetDestination() { return destination; }
+    protected Vector3 GetDestination() => destination;
 
     /// <summary>
     /// Returns true if this controller's Projectile should be destoyed and
@@ -138,13 +138,13 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// </summary>
     /// <returns>the distance between the Projectile's starting position
     /// to its target position.</returns>
-    protected float GetInitialTargetDistance() { return Vector3.Distance(start, destination); }
+    protected float GetInitialTargetDistance() => Vector3.Distance(start, destination);
 
     /// <summary>
     /// Returns the linear direction of the Projectile.
     /// </summary>
     /// <returns>the linear direction of the Projectile.</returns>
-    protected Vector3 GetLinearDirection() { return linearDirection; }
+    protected Vector3 GetLinearDirection() => linearDirection;
 
     #endregion
 
@@ -156,7 +156,7 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// for the FSM logic. 
     /// </summary>
     /// <param name="state">The new state.</param>
-    public void SetState(T state) { this.state = state; }
+    public void SetState(T state) => this.state = state;
 
     /// <summary>
     /// Returns the State of this ProjectileController. This helps keep track of
@@ -164,7 +164,7 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// for the FSM logic. 
     /// </summary>
     /// <returns>The State of this ProjectileController. </returns>
-    public T GetState() { return state; }
+    public T GetState() => state;
 
     /// <summary>
     /// Processes this ProjectileController's state FSM to determine the
@@ -215,7 +215,7 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// animation.
     /// </summary>
     /// <param name="animationState">the animation state to set.</param>
-    public void SetAnimationState(T animationState) { this.animationState = animationState; }
+    public void SetAnimationState(T animationState) => this.animationState = animationState;
 
     #endregion
 

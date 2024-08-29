@@ -111,7 +111,7 @@ public class ObjectPool
     /// Returns the ModelType of GameObject prefabs that occupy this ObjectPool.
     /// </summary>
     /// <returns>the ModelType of GameObject prefabs that occupy this ObjectPool.</returns>
-    public ModelType GetPoolType() { return poolType; }
+    public ModelType GetPoolType() => poolType;
 
     #endregion
 }

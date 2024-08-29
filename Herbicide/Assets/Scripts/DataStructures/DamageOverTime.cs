@@ -93,13 +93,13 @@ public class DamageOverTime
     /// Returns true if the effect is finished.
     /// </summary>
     /// <returns>true if the effect is finished; otherwise, false. </returns>
-    public bool IsFinished() { return elapsedTime >= duration; }
+    public bool IsFinished() => elapsedTime >= duration;
 
     /// <summary>
     /// Returns the amount of damage to deal per tick.
     /// </summary>
     /// <returns>the amount of damage to deal per tick.</returns>
-    public float GetDamage() { return totalDamage / numTicks; }
+    public float GetDamage() => totalDamage / numTicks;
 
     /// <summary>
     /// Returns true if the effect stacks.
@@ -120,7 +120,7 @@ public class DamageOverTime
     /// Returns the type of DamageOverTime effect.
     /// </summary>
     /// <returns>the type of DamageOverTime effect.</returns>
-    public DOTType GetDOTType() { return dotType; }
+    public DOTType GetDOTType() => dotType;
 
     #endregion
 }

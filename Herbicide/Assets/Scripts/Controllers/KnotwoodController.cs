@@ -32,8 +32,7 @@ public class KnotwoodController : EnemyController
     /// Returns the Knotwood model of this KnotwoodController.
     /// </summary>
     /// <returns>the Knotwood model of this KnotwoodController.</returns>
-    protected Knotwood GetKnotwood() { return GetModel() as Knotwood; }
-
+    protected Knotwood GetKnotwood() => GetEnemy() as Knotwood;
 
     /// <summary>
     /// Returns the spawn position of the Knotwood when in a NexusHole.

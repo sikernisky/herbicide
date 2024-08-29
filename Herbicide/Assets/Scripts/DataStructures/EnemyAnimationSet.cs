@@ -483,7 +483,7 @@ public class EnemyAnimationSet : ScriptableObject
     /// Returns the placement animation track.
     /// </summary>
     /// <returns>the placement animation track </returns>
-    public Sprite[] GetPlacementAnimation() { return placementTrack; }
+    public Sprite[] GetPlacementAnimation() => placementTrack;
 
     #endregion
 }

@@ -31,10 +31,7 @@ public class TilesetData
     /// Returns the smallest GID within this tileset.
     /// </summary>
     /// <returns>the smallest GID in the tileset.</returns>
-    public int GetTilesetFirstGID()
-    {
-        return firstgid;
-    }
+    public int GetTilesetFirstGID() => firstgid;
 
     #endregion  
 }

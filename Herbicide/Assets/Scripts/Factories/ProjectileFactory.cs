@@ -94,15 +94,11 @@ public class ProjectileFactory : Factory
         }
     }
 
-
     /// <summary>
     /// Returns the ProjectileFactory's transform component.
     /// </summary>
     /// <returns>the ProjectileFactory's transform component.</returns>
-    protected override Transform GetTransform()
-    {
-        return instance.transform;
-    }
+    protected override Transform GetTransform() => instance.transform;
 
     #endregion
 }

@@ -137,31 +137,25 @@ public class Bear : Defender
     /// </summary>
     /// <returns>an instantiated GameObject with a Bear component
     ///  attached.</returns>
-    public override GameObject Copy() { return DefenderFactory.GetDefenderPrefab(ModelType.BEAR); }
+    public override GameObject Copy() => DefenderFactory.GetDefenderPrefab(ModelType.BEAR);
 
     /// <summary>
     /// Returns the animation track that represents this Bear when placing.
     /// </summary>
     /// <returns>the animation track that represents this Bear when placing.
     /// </returns>
-    public override Sprite[] GetPlacementTrack()
-    {
-        return DefenderFactory.GetPlacementTrack(ModelType.BEAR, GetTier());
-    }
+    public override Sprite[] GetPlacementTrack() => DefenderFactory.GetPlacementTrack(ModelType.BEAR, GetTier());
 
     /// <summary>
     /// Returns the (X, Y) dimensions of the Bear's placement track.
     /// </summary>
     /// <returns>the (X, Y) dimensions of the Bear's placement track.</returns>
-    public override Vector2Int GetPlacementTrackDimensions()
-    {
-        return new Vector2Int(19, 32);
-    }
+    public override Vector2Int GetPlacementTrackDimensions() => new Vector2Int(19, 32);
 
     /// <summary>
     /// Sets this Bear's 2D Collider properties.
     /// </summary>
-    public override void SetColliderProperties() { return; }
+    public override void SetColliderProperties() { }
 
     #endregion
 }

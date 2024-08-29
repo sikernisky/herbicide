@@ -84,11 +84,6 @@ public class EconomyController : MonoBehaviour
     }
 
     /// <summary>
-    /// Checks for and collects any currency the player clicked on.
-    /// </summary>
-    public static void CheckCurrencyPickup() { return; }
-
-    /// <summary>
     /// Main update loop for the EconomyController.<br></br>
     /// 
     /// (1) Updates all active Currencies in the game.<br></br>
@@ -148,7 +143,7 @@ public class EconomyController : MonoBehaviour
     /// Returns the amount of money the player currently has.
     ///  </summary>
     /// <returns>how much money the player has.</returns>
-    public static int GetBalance() { return currentMoney; }
+    public static int GetBalance() => currentMoney;
 
     /// <summary>
     /// Updates the passive income counter and awards the player currency

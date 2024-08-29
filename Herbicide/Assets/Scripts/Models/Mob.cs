@@ -118,19 +118,19 @@ public abstract class Mob : PlaceableObject
     /// <summary>
     /// Called when this Mob activates in the scene.
     /// </summary>
-    public virtual void OnSpawn() { spawned = true; }
+    public virtual void OnSpawn() => spawned = true;
 
     /// <summary>
     /// Returns this Mob's spawn position.
     /// </summary>
     /// <returns>the position where this Mob spawned.</returns>
-    public Vector3 GetSpawnPos() { return spawnPos; }
+    public Vector3 GetSpawnPos() => spawnPos;
 
     /// <summary>
     /// Sets where this Mob spawns.
     /// </summary>
     /// <param name="spawnPos">Where the mob spawns. </param>
-    public void SetSpawnPos(Vector3 spawnPos) { this.spawnPos = spawnPos; }
+    public void SetSpawnPos(Vector3 spawnPos) => this.spawnPos = spawnPos;
 
     /// <summary>
     /// Returns true if this Mob is dead. This is when the Mob
@@ -138,13 +138,13 @@ public abstract class Mob : PlaceableObject
     /// spawned.
     /// </summary>
     /// <returns>true if this Mob is dead; otherwise, false.</returns>
-    public override bool Dead() { return GetHealth() <= 0 && spawned; }
+    public override bool Dead() => GetHealth() <= 0 && spawned;
 
     /// <summary>
     /// Returns true if this Mob is spawned in the scene.
     /// </summary>
     /// <returns>true if this Mob is spawned in the scene.</returns>
-    public bool Spawned() { return spawned; }
+    public bool Spawned() => spawned;
 
     /// <summary>
     /// Returns true if this Mob can attack a target.
@@ -153,18 +153,18 @@ public abstract class Mob : PlaceableObject
     /// to attack. </param>
     /// <returns>true if this Mob can attack a target;
     /// otherwise, false.</returns>
-    public virtual bool CanAttack(Mob target) { return target != null; }
+    public virtual bool CanAttack(Mob target) => target != null;
 
     /// <summary>
     /// Returns this Mob's current attack range.
     /// </summary>
     /// <returns>this Mob's current attack range.</returns>
-    public float GetAttackRange() { return attackRange; }
+    public float GetAttackRange() => attackRange;
 
     /// <summary>
     /// Resets this Mob's attack range to its starting value.
     /// </summary>
-    public void ResetAttackRange() { attackRange = BASE_ATTACK_RANGE; }
+    public void ResetAttackRange() => attackRange = BASE_ATTACK_RANGE;
 
     /// <summary>
     /// Returns the number of seconds this Mob has to wait before
@@ -172,59 +172,56 @@ public abstract class Mob : PlaceableObject
     /// </summary>
     /// <returns>the number of seconds this Mob has to wait before
     /// attacking again.</returns>
-    public float GetAttackCooldown() { return attackCooldownTimer; }
+    public float GetAttackCooldown() => attackCooldownTimer;
 
     /// <summary>
     /// Reduces this Mob's attack cooldown by Time.deltaTime.
     /// </summary>
-    public void StepAttackCooldown()
-    {
-        attackCooldownTimer = Mathf.Clamp(GetAttackCooldown() - Time.deltaTime,
+    public void StepAttackCooldown() => attackCooldownTimer = Mathf.Clamp(GetAttackCooldown() - Time.deltaTime,
             MIN_ATTACK_SPEED, 1f / attackSpeed);
-    }
 
     /// <summary>
     /// Sets the number of attacks this Mob can make per second.
     /// </summary>
-    public void SetAttackSpeed(float attackSpeed) { this.attackSpeed = attackSpeed; }
+    public void SetAttackSpeed(float attackSpeed) => this.attackSpeed = attackSpeed;
 
     /// <summary>
     /// Returns this Mob's current attack speed.
     /// </summary>
     /// <returns>this Mob's current attack speed.</returns>
-    public float GetAttackSpeed() { return attackSpeed; }
+    public float GetAttackSpeed() => attackSpeed;
 
     /// <summary>
     /// Resets this Mob's attack cooldown to its currently capped value.
     /// </summary>
-    public void RestartAttackCooldown() { attackCooldownTimer = 1f / attackSpeed; }
+    public void RestartAttackCooldown() => attackCooldownTimer = 1f / attackSpeed;
 
     /// <summary>
     /// Resets this Mob's attack speed to its starting value.
     /// </summary>
-    public void ResetAttackSpeed() { attackSpeed = BASE_ATTACK_SPEED; }
+    public void ResetAttackSpeed() => attackSpeed = BASE_ATTACK_SPEED;
 
     /// <summary>
     /// Returns this Mob's current chase range.
     /// </summary>
     /// <returns>this Mob's current chase range.</returns>
-    public virtual float GetChaseRange() { return chaseRange; }
+    public virtual float GetChaseRange() => chaseRange;
 
     /// <summary>
     /// Resets this Mob's chase range to its starting value.
     /// </summary>
-    public void ResetChaseRange() { chaseRange = BASE_CHASE_RANGE; }
+    public void ResetChaseRange() => chaseRange = BASE_CHASE_RANGE;
 
     /// <summary>
     /// Returns this Mob's current movement speed.
     /// </summary>
     /// <returns>this Mob's current movement speed.</returns>
-    public float GetMovementSpeed() { return movementSpeed; }
+    public float GetMovementSpeed() => movementSpeed;
 
     /// <summary>
     /// Resets this Mob's movement speed to its starting value.
     /// </summary>
-    public void ResetMovementSpeed() { movementSpeed = BASE_MOVEMENT_SPEED; }
+    public void ResetMovementSpeed() => movementSpeed = BASE_MOVEMENT_SPEED;
 
     /// <summary>
     /// Resets this Mob's stats to their default values.

@@ -79,27 +79,24 @@ public class StoneWall : Wall
     /// Returns the GameObject that represents this StoneWall on the grid.
     /// </summary>
     /// <returns>the GameObject that represents this StoneWall on the grid</returns>
-    public override GameObject Copy() { throw new System.NotImplementedException(); }
+    public override GameObject Copy() => WallFactory.GetWallPrefab(TYPE);
 
     /// <summary>
     /// Returns true if this StoneWall is dead, false otherwise.
     /// </summary>
     /// <returns>true if this StoneWall is dead, false otherwise.</returns>
-    public override bool Dead() { return GetHealth() <= 0; }
+    public override bool Dead() => GetHealth() <= 0;
 
     /// <summary>
     /// Returns the placement track for this StoneWall.
     /// </summary>
     /// <returns> the placement track for this StoneWall.</returns>
-    public override Sprite[] GetPlacementTrack()
-    {
-        throw new System.NotImplementedException();
-    }
+    public override Sprite[] GetPlacementTrack() => throw new System.NotSupportedException();
 
     /// <summary>
     /// Sets the collider properties of this StoneWall.
     /// </summary>
-    public override void SetColliderProperties() { return; }
+    public override void SetColliderProperties() { }
 
     /// <summary>
     /// Returns the index representing the correct Sprite for this StoneWall.

@@ -355,10 +355,7 @@ public class InputController : MonoBehaviour
     /// Returns the player's mouse world-position.
     /// </summary>
     /// <returns>the player's mouse world-position.</returns>
-    public static Vector2 GetWorldMousePosition()
-    {
-        return CameraController.ScreenToWorldPoint(GetUIMousePosition());
-    }
+    public static Vector2 GetWorldMousePosition() => CameraController.ScreenToWorldPoint(GetUIMousePosition());
 
     /// <summary>
     /// Returns true if the player has clicked their primary button down (PC: mouse).

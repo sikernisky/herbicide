@@ -52,12 +52,12 @@ public class DewController : CollectableController<DewController.DewState>
     /// Returns this controller's Dew model.
     /// </summary>
     /// <returns>this controller's Dew model.</returns>
-    private Dew GetDew() { return GetCollectable() as Dew; }
+    private Dew GetDew() => GetCollectable() as Dew;
 
     /// <summary>
     /// Returns the Dew prefab to the DewFactory singleton.
     /// </summary>
-    public override void DestroyModel() { DewFactory.ReturnDewPrefab(GetDew().gameObject); }
+    public override void DestroyModel() => DewFactory.ReturnDewPrefab(GetDew().gameObject);
 
     #endregion
 
@@ -69,10 +69,7 @@ public class DewController : CollectableController<DewController.DewState>
     /// <param name="stateA">The first state.</param>
     /// <param name="stateB">The second state.</param>
     /// <returns>true if the two DewStates are equal.</returns>
-    public override bool StateEquals(DewState stateA, DewState stateB)
-    {
-        return stateA == stateB;
-    }
+    public override bool StateEquals(DewState stateA, DewState stateB) => stateA == stateB;
 
     /// <summary>
     /// Updates the state of this DewController's Dew model.
@@ -132,17 +129,17 @@ public class DewController : CollectableController<DewController.DewState>
     /// Adds one chunk of Time.deltaTime to the animation
     /// counter that tracks the current state.
     /// </summary>
-    public override void AgeAnimationCounter() { return; }
+    public override void AgeAnimationCounter() => throw new System.NotImplementedException();
 
     /// <summary>
     /// Returns the animation counter for the current state.
     /// </summary>
     /// <returns>the animation counter for the current state.</returns>
-    public override float GetAnimationCounter() { return default; }
+    public override float GetAnimationCounter() => throw new System.NotImplementedException();
     /// <summary>
     /// Sets the animation counter for the current state to 0.
     /// </summary>
-    public override void ResetAnimationCounter() { return; }
+    public override void ResetAnimationCounter() => throw new System.NotImplementedException();
 
     #endregion
 }

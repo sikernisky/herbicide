@@ -244,10 +244,7 @@ public class CanvasController : MonoBehaviour
     /// Returns true if debug mode is on.
     /// </summary>
     /// <returns>true if debug mode is on; otherwise, false.</returns>
-    private bool IsDebugging()
-    {
-        return isDebug;
-    }
+    private bool IsDebugging() => isDebug;
 
     #endregion
 }

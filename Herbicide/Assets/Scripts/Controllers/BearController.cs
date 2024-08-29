@@ -69,19 +69,19 @@ public class BearController : DefenderController<BearController.BearState>
     /// Returns this BearController's Bear.
     /// </summary>
     /// <returns>this BearController's Bear.</returns>
-    private Bear GetBear() { return GetMob() as Bear; }
+    private Bear GetBear() => GetDefender() as Bear;
 
     /// <summary>
     /// Handles all collisions between this controller's Bear
     /// model and some other collider.
     /// </summary>
     /// <param name="other">the other collider.</param>
-    protected override void HandleCollision(Collider2D other) { throw new NotImplementedException(); }
+    protected override void HandleCollision(Collider2D other) { }
 
     /// <summary>
     /// Returns the Bear prefab to the BearFactory singleton.
     /// </summary>
-    public override void DestroyModel() { DefenderFactory.ReturnDefenderPrefab(GetBear().gameObject); }
+    public override void DestroyModel() => DefenderFactory.ReturnDefenderPrefab(GetBear().gameObject);
 
     /// <summary>
     /// Returns true if the Bear can swipe its target.
@@ -107,10 +107,7 @@ public class BearController : DefenderController<BearController.BearState>
     /// <param name="stateA">The first state.</param>
     /// <param name="stateB">The second state.</param>
     /// <returns>true if two BearStates are equal; otherwise, false.</returns>
-    public override bool StateEquals(BearState stateA, BearState stateB)
-    {
-        return stateA == stateB;
-    }
+    public override bool StateEquals(BearState stateA, BearState stateB) => stateA == stateB;
 
     /// <summary>
     /// Updates the state of this SquirrelController's Squirrel model.

@@ -32,7 +32,7 @@ public abstract class TreeController<T> : MobController<T> where T : Enum
     /// Returns this TreeController's Tree model.
     /// </summary>
     /// <returns>this TreeController's Tree model.</returns>
-    protected Tree GetTree() { return GetModel() as Tree; }
+    protected Tree GetTree() => GetMob() as Tree;
 
     /// <summary>
     /// Returns true if this controller's Tree should be destoyed and
@@ -40,12 +40,7 @@ public abstract class TreeController<T> : MobController<T> where T : Enum
     /// </summary>
     /// <returns>true if this controller's Tree should be destoyed and
     /// set to null; otherwise, false.</returns>
-    public override bool ValidModel()
-    {
-        if (GetTree().Dead()) return false;
-
-        return true;
-    }
+    public override bool ValidModel() => !GetTree().Dead();
 
     /// <summary>
     /// Returns true if the Defender can target the Model passed
@@ -53,7 +48,7 @@ public abstract class TreeController<T> : MobController<T> where T : Enum
     /// </summary>
     /// <param name="target">The Model to check for targetability.</param>
     /// <returns>true if the Tree can target the Model; otherwise, false. </returns>
-    protected override bool CanTargetModel(Model target) { return false; }
+    protected override bool CanTargetModel(Model target) => false;
 
     /// <summary>
     /// Updates the Model's sorting order so that it appears behind Models

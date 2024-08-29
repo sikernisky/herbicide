@@ -48,24 +48,18 @@ public class BasicTreeController : TreeController<BasicTreeController.BasicTreeS
     /// model and some other collider.
     /// </summary>
     /// <param name="other">the other collider.</param>
-    protected override void HandleCollision(Collider2D other)
-    {
-        throw new System.NotImplementedException();
-    }
+    protected override void HandleCollision(Collider2D other) { }
 
     /// <summary>
     /// Returns the BasicTree model.
     /// </summary>
     /// <returns>the BasicTree model.</returns>
-    protected BasicTree GetBasicTree() { return GetTree() as BasicTree; }
+    protected BasicTree GetBasicTree() => GetTree() as BasicTree;
 
     /// <summary>
     /// Returns the BasicTree prefab to the BasicTreeFactory singleton.
     /// </summary>
-    public override void DestroyModel()
-    {
-        BasicTreeFactory.ReturnBasicTreePrefab(GetBasicTree().gameObject);
-    }
+    public override void DestroyModel() => BasicTreeFactory.ReturnBasicTreePrefab(GetBasicTree().gameObject);
 
     #endregion
 
@@ -77,10 +71,7 @@ public class BasicTreeController : TreeController<BasicTreeController.BasicTreeS
     /// <param name="stateA">The first state.</param>
     /// <param name="stateB">The second state.</param>
     /// <returns>true if two BasicTreeStates are equal; otherwise, false.</returns>
-    public override bool StateEquals(BasicTreeState stateA, BasicTreeState stateB)
-    {
-        return stateA == stateB;
-    }
+    public override bool StateEquals(BasicTreeState stateA, BasicTreeState stateB) => stateA == stateB;
 
     /// <summary>
     /// Updates the state of this BasicTreeController's Tree model.
@@ -119,18 +110,18 @@ public class BasicTreeController : TreeController<BasicTreeController.BasicTreeS
     /// Adds one chunk of Time.deltaTime to the animation
     /// counter that tracks the current state.
     /// </summary>
-    public override void AgeAnimationCounter() { throw new System.NotImplementedException(); }
+    public override void AgeAnimationCounter() => throw new System.NotImplementedException();
 
     /// <summary>
     /// Returns the animation counter for the current state.
     /// </summary>
     /// <returns>the animation counter for the current state.</returns>
-    public override float GetAnimationCounter() { throw new System.NotImplementedException(); }
+    public override float GetAnimationCounter() => throw new System.NotImplementedException();
 
     /// <summary>
     /// Sets the animation counter for the current state to 0.
     /// </summary>
-    public override void ResetAnimationCounter() { throw new System.NotImplementedException(); }
+    public override void ResetAnimationCounter() => throw new System.NotImplementedException();
 
     #endregion
 }

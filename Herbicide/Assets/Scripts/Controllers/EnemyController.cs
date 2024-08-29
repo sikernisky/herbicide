@@ -136,19 +136,19 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
     /// <summary>
     /// Updates the HealthState of the Enemy controlled by this EnemyController.
     /// </summary>
-    private void UpdateEnemyHealthState() { GetEnemy().UpdateHealthState(); }
+    private void UpdateEnemyHealthState() => GetEnemy().UpdateHealthState();
 
     /// <summary>
     /// Returns the Enemy controlled by this EnemyController.
     /// </summary>
     /// <returns>the Enemy controlled by this EnemyController.</returns>
-    public Enemy GetEnemy() { return GetMob() as Enemy; }
+    public Enemy GetEnemy() => GetMob() as Enemy;
 
     /// <summary>
     /// Updates the Enemy managed by this EnemyController's Collider2D
     /// properties.
     /// </summary>
-    private void UpdateEnemyCollider() { GetEnemy().SetColliderProperties(); }
+    private void UpdateEnemyCollider() => GetEnemy().SetColliderProperties();
 
     /// <summary>
     /// Returns true if this controller's Enemy should be destoyed and
@@ -173,10 +173,7 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
     /// model and some other collider.
     /// </summary>
     /// <param name="other">the other collider.</param>
-    protected override void HandleCollision(Collider2D other)
-    {
-        if (other == null) return;
-    }
+    protected override void HandleCollision(Collider2D other) { }
 
     /// <summary>
     /// Responds to a collision with a Projectile.
@@ -249,10 +246,7 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
     /// <param name="originalSpawnPos">The position of the NexusHole it is
     /// spawning from.</param>
     /// <returns> the spawn position of the Enemy when in a NexusHole.</returns>
-    protected virtual Vector3 NexusHoleSpawnPos(Vector3 originalSpawnPos)
-    {
-        return originalSpawnPos;
-    }
+    protected virtual Vector3 NexusHoleSpawnPos(Vector3 originalSpawnPos) => originalSpawnPos;
 
     /// <summary>
     /// Sets the EnemyController as popped out of a NexusHole.
@@ -268,7 +262,7 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
     /// </summary>
     /// <returns> true if the Enemy has popped out of a NexusHole; otherwise,
     /// false. </returns>
-    protected bool PoppedOutOfHole() { return poppedOutOfHole; }
+    protected bool PoppedOutOfHole() => poppedOutOfHole;
 
     /// <summary>
     /// Returns the Enemy closest to the one controlled by this EnemyController
@@ -367,10 +361,7 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
     /// <summary>
     /// Returns the Knotwood prefab to the KnotwoodFactory singleton.
     /// </summary>
-    public override void DestroyModel()
-    {
-        EnemyFactory.ReturnEnemyPrefab(GetEnemy().gameObject);
-    }
+    public override void DestroyModel() => EnemyFactory.ReturnEnemyPrefab(GetEnemy().gameObject);
 
     #endregion
 
@@ -382,10 +373,7 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
     /// <param name="stateA">The first EnemyState</param>
     /// <param name="stateB">The second EnemyState</param>
     /// <returns>true if two EnemyStates are equal; otherwise, false. </returns>
-    public override bool StateEquals(EnemyState stateA, EnemyState stateB)
-    {
-        return stateA == stateB;
-    }
+    public override bool StateEquals(EnemyState stateA, EnemyState stateB) => stateA == stateB;
 
     /// <summary>
     /// Executes the logic for the INACTIVE state.

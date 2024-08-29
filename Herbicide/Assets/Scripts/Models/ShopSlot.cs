@@ -73,7 +73,7 @@ public class ShopSlot : MonoBehaviour
     /// </summary>
     /// <returns> true if this ShopSlot has been setup by the ShopManager;
     /// otherwise, false. </returns>
-    public bool IsSetup() { return setupByManager; }
+    public bool IsSetup() => setupByManager;    
 
     /// <summary>
     /// Sets this ShopSlot's necessary attributes so that it
@@ -106,7 +106,7 @@ public class ShopSlot : MonoBehaviour
     /// </summary>
     /// <param name="currentBalance">How much currency the player has.</param>
     /// <returns></returns>
-    public bool CanBuy(int currentBalance) { return occupant.GetPrice() <= currentBalance; }
+    public bool CanBuy(int currentBalance) => occupant.GetPrice() <= currentBalance;
 
     /// <summary>
     /// Returns how much currency it takes to buy the ShopCard in this ShopSlot.
@@ -129,7 +129,7 @@ public class ShopSlot : MonoBehaviour
     /// Returns this ShopSlot's unique index.
     /// </summary>
     /// <returns>this ShopSlot's unique index.</returns>
-    public int GetSlotIndex() { return slotIndex; }
+    public int GetSlotIndex() => slotIndex;
 
     /// <summary>
     /// Returns true if the player clicked on this ShopSlot.
@@ -148,7 +148,7 @@ public class ShopSlot : MonoBehaviour
     /// </summary>
     /// <returns>true if this ShopSlot has been purchased and hosts
     /// no ShopCard; otherwise, false. </returns>
-    public bool Empty() { return occupant == null; }
+    public bool Empty() => occupant == null;
 
     /// <summary>
     /// Darkens the ShopCard in this slot.
@@ -171,18 +171,12 @@ public class ShopSlot : MonoBehaviour
     /// <summary>
     /// Disables this ShopSlot.
     /// </summary>
-    public void DisableSlot()
-    {
-        gameObject.SetActive(false);
-    }
+    public void DisableSlot() => gameObject.SetActive(false);
 
     /// <summary>
     /// Enables this ShopSlot.
     /// </summary>
-    public void EnableSlot()
-    {
-        gameObject.SetActive(true);
-    }
+    public void EnableSlot() => gameObject.SetActive(true);
 
     #endregion
 }

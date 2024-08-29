@@ -104,7 +104,7 @@ public class WallFactory : Factory
     /// Returns the Transform component of the WallFactory instance.
     /// </summary>
     /// <returns>the Transform component of the WallFactory instance.</returns>
-    protected override Transform GetTransform() { return instance.transform; }
+    protected override Transform GetTransform() => instance.transform;
 
     #endregion
 }

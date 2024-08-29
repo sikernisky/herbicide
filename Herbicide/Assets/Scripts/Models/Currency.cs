@@ -50,23 +50,23 @@ public abstract class Currency : Collectable
     /// Adds some amount to this Currency's value.
     /// </summary>
     /// <param name="amount">The amount to add.</param>
-    public void AdjustValue(int amount) { value = Mathf.Clamp(value + amount, MIN_VALUE, MAX_VALUE); }
+    public void AdjustValue(int amount) => value = Mathf.Clamp(value + amount, MIN_VALUE, MAX_VALUE);
 
     /// <summary>
     /// Resets this Currency's value to its starting amount.
     /// </summary>
-    public void ResetValue() { value = BASE_VALUE; }
+    public void ResetValue() => value = BASE_VALUE;
 
     /// <summary>
     /// Returns this Currency's current value.
     /// </summary>
     /// <returns>this Currency's current value.</returns>
-    public int GetValue() { return value; }
+    public int GetValue() => value;
 
     /// <summary>
     /// Sets this Currency's 2D Collider properties.
     /// </summary>
-    public override void SetColliderProperties() { return; }
+    public override void SetColliderProperties() { }
 
     #endregion
 }

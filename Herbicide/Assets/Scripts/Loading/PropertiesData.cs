@@ -36,10 +36,7 @@ public class PropertiesData
     /// Returns the value of this custom property, as a string.
     /// </summary>
     /// <returns>the value of this custom property as a string.</returns>
-    public string GetPropertyValue()
-    {
-        return value;
-    }
+    public string GetPropertyValue() => value;
 
     #endregion
 }

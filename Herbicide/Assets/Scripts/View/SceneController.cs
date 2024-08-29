@@ -32,20 +32,13 @@ public class SceneController : MonoBehaviour
     /// <summary>
     /// Main update loop for the SceneController.
     /// </summary>
-    public static void UpdateScene()
-    {
-        timeElapsed += Time.deltaTime;
-    }
+    public static void UpdateScene() => timeElapsed += Time.deltaTime;
 
     /// <summary>
     /// Returns the amount of time elapsed since this scene began.
     /// </summary>
     /// <returns>the amount of time elapsed since this scene began.</returns>
-    public static float GetTimeElapsed()
-    {
-        return timeElapsed;
-    }
-
+    public static float GetTimeElapsed() => timeElapsed;
     /// <summary>
     /// Finds and sets the SceneController singleton in the Main Menu.
     /// </summary>

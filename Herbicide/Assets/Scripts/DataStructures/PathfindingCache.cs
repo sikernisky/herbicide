@@ -94,7 +94,7 @@ public static class PathfindingCache
     /// <summary>
     /// Clears the cache.
     /// </summary>
-    public static void ClearCache() { cache.Clear(); }
+    public static void ClearCache() => cache.Clear();
 
     #endregion
 }

@@ -46,10 +46,7 @@ public class LayerData
     /// Returns true if this LayerData layer stores objects.
     /// </summary>
     /// <returns>true if this LayerData layer stores objects.</returns>
-    public bool IsObjectLayer()
-    {
-        return objects != null && objects.Count > 0;
-    }
+    public bool IsObjectLayer() => objects != null && objects.Count > 0;
 
     /// <summary>
     /// Returns true if this LayerData layer stores Enemy objects.

@@ -57,7 +57,7 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     /// Returns this DefenderController's Defender reference. 
     /// </summary>
     /// <returns>the reference to this DefenderController's defender.</returns>
-    private Defender GetDefender() { return GetMob() as Defender; }
+    protected Defender GetDefender() => GetMob() as Defender;
 
     /// <summary>
     /// Returns true if the Defender can target the Model passed
@@ -87,27 +87,19 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     /// </summary>
     /// <returns>true if this controller's Defender should be destoyed and
     /// set to null; otherwise, false.</returns>
-    public override bool ValidModel()
-    {
-        if (GetDefender().Dead()) return false;
-
-        return true;
-    }
-
+    public override bool ValidModel() => !GetDefender().Dead();
+    
     /// <summary>
     /// Performs logic for this Defender's SPAWN state.
     /// </summary>
-    protected virtual void ExecuteSpawnState()
-    {
-        spawnStateDone = true;
-    }
+    protected virtual void ExecuteSpawnState() => spawnStateDone = true;
 
     /// <summary>
     /// Returns true if the SpawnState has completed one execution.
     /// </summary>
     /// <returns>true if the SpawnState has completed one execution;
     /// otherwise, false. </returns>
-    protected bool SpawnStateDone() { return spawnStateDone; }
+    protected bool SpawnStateDone() => spawnStateDone;
 
     /// <summary>
     /// Returns the distance from the Defender's tree to its first

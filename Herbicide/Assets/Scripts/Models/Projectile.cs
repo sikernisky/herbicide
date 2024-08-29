@@ -132,100 +132,100 @@ public abstract class Projectile : Model
     /// </summary>
     /// <returns>true if this Projectile has collided with something;
     /// otherwise, false.</returns>
-    public bool Collided() { return victim != null; } 
+    public bool Collided() => victim != null;
 
     /// <summary>
     /// Sets this Projectile's properties such that it has not collided
     /// with anything.
     /// </summary>
-    private void SetUncollided() { victim = null; }
+    private void SetUncollided() => victim = null;
 
     /// <summary>
     /// Informs this Projectile that it reached its positional target.
     /// </summary>
-    public void SetReachedTarget() { reachedTarget = true; }
+    public void SetReachedTarget() => reachedTarget = true;
 
     /// <summary>
     /// Returns true if this Projectile reached its positional target.
     /// </summary>
     /// <returns>true if this Projectile reached its positional target;
     /// otherwise, false. </returns>
-    public bool HasReachedTarget() { return reachedTarget; }
+    public bool HasReachedTarget() => reachedTarget;
 
     /// <summary>
     /// Returns this Projectile's RigidBody2D component.
     /// </summary>
     /// <returns>this Projectile's RigidBody2D component.</returns>
-    public Rigidbody2D GetBody() { return projectileBody; }
+    public Rigidbody2D GetBody() => projectileBody;
 
     /// <summary>
     /// Returns this Projectile's current speed.
     /// </summary>
     /// <returns>this Projectile's current speed.</returns>
-    public float GetSpeed() { return speed; }
+    public float GetSpeed() => speed;
 
     /// <summary>
     /// Adds to this Projectile's current speed.
     /// </summary>
     /// <param name="amount">the amount of speed to add.</param>
-    public void AdjustSpeed(float amount) { speed += amount; }
+    public void AdjustSpeed(float amount) => speed += amount;
 
     /// <summary>
     /// Resets the Projectile's speed to its starting value.
     /// </summary>
-    public void ResetSpeed() { speed = BASE_SPEED; }
+    public void ResetSpeed() => speed = BASE_SPEED;
 
     /// <summary>
     /// Returns this Projectile's current damage.
     /// </summary>
     /// <returns>this Projectile's current damage.</returns>
-    public int GetDamage() { return damage; }
+    public int GetDamage() => damage;
 
     /// <summary>
     /// Adds to this Projectile's current damage.
     /// </summary>
     /// <param name="amount">the amount of damage to add.</param>
-    public void AdjustDamage(int amount) { damage += amount; }
+    public void AdjustDamage(int amount) => damage += amount;
 
     /// <summary>
     /// Resets the Projectile's damange to its starting value.
     /// </summary>
-    public void ResetDamage() { damage = BASE_DAMAGE; }
+    public void ResetDamage() => damage = BASE_DAMAGE;
 
     /// <summary>
     /// Returns true if this Projectile is active in the scene.
     /// </summary>
     /// <returns>true if this Projectile is active in the scene; otherwise,
     /// false.</returns>
-    public bool IsActive() { return active; }
+    public bool IsActive() => active;
 
     /// <summary>
     /// Sets this Projectile as inactive.
     /// </summary>
-    public void SetAsInactive() { active = false; }
+    public void SetAsInactive() => active = false;
 
     /// <summary>
     /// Sets this Projectile as active.
     /// </summary>
-    private void SetActive() { active = true; }
+    private void SetActive() => active = true;
 
     /// <summary>
     /// Adds to this Projectile's current age.
     /// </summary>
     /// <param name="time">the amount of time to add.</param>
-    public void AddToLifespan(float time) { age = time <= 0 ? age : age + time; }
+    public void AddToLifespan(float time) => age = time <= 0 ? age : age + time;
 
     /// <summary>
     /// Returns true if this Projectile has hit its lifespan.
     /// </summary>
     /// <returns>true if this Projectile has hit its lifespan;
     /// otherwise, false.</returns>
-    public bool Expired() { return age >= LIFESPAN; }
+    public bool Expired() => age >= LIFESPAN;
 
     /// <summary>
     /// Resets this Projectile's age to zero.
     /// </summary>
-    private void ResetAge() { age = 0; }
+    private void ResetAge() => age = 0;
 
     /// <summary>
     /// Resets this Projectile's stats to their starting
@@ -244,13 +244,13 @@ public abstract class Projectile : Model
     /// <summary>
     /// Sets this Projectile's 2D Collider's properties.
     /// </summary>
-    public override void SetColliderProperties() { return; }
+    public override void SetColliderProperties() { }
 
     /// <summary>
     /// Sets the position of the Projectile's shadow.
     /// </summary>
     /// <param name="position">The position to set the shadow to.</param>
-    public void SetShadowPosition(Vector3 position) { shadow.transform.position = position; }
+    public void SetShadowPosition(Vector3 position) => shadow.transform.position = position;
 
     #endregion
 }

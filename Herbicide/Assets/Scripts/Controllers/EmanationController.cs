@@ -152,14 +152,14 @@ public class EmanationController
     /// </summary>
     /// <returns>true if the ControllerController should remove this EmanationController;
     /// otherwise, false. </returns>
-    public bool ShouldRemoveController() { return emanationDummy == null; }
+    public bool ShouldRemoveController() => emanationDummy == null;
 
     /// <summary>
     /// Returns true if this controller should destroy its Emanation.
     /// </summary>
     /// <returns>true if this controller should destroy its Emanation; otherwise,
     /// false. </returns>
-    private bool ShouldRemoveModel() { return DoneAnimating(); }
+    private bool ShouldRemoveModel() => DoneAnimating();
 
     /// <summary>
     /// Returns true if the EmanationController has completed its required number
@@ -167,7 +167,7 @@ public class EmanationController
     /// </summary>
     /// <returns>true if the EmanationController has completed its required number
     /// of animation cycles; otherwise, false. </returns>
-    private bool DoneAnimating() { return cyclesCompleted >= requiredCycles; }
+    private bool DoneAnimating() => cyclesCompleted >= requiredCycles;
 
     /// <summary>
     /// Destroys and detatches the Model from this Controller.
@@ -196,7 +196,7 @@ public class EmanationController
     /// </summary>
     /// <returns>true if the Emanation is scheduled for destruction;
     /// otherwise, false.</returns>
-    protected bool ScheduledForDestruction() { return scheduledForDestruction; }
+    protected bool ScheduledForDestruction() => scheduledForDestruction;
 
     #endregion
 }

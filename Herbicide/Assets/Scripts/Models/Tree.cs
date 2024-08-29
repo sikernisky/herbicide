@@ -68,7 +68,7 @@ public abstract class Tree : Mob, ISurface
     /// </summary>
     /// <returns>true if there is an occupant on this Tree; otherwise,
     /// false.</returns>
-    public bool Occupied() { return defender != null; }
+    public bool Occupied() => defender != null;
 
     /// <summary>
     /// Returns true if a Defender can place on this Tree. If
@@ -130,7 +130,6 @@ public abstract class Tree : Mob, ISurface
     public virtual void Remove(ISurface[] neighbors)
     {
         Assert.IsTrue(CanRemove(neighbors), "Need to check removal validity.");
-
         defender = null;
     }
 
@@ -142,7 +141,7 @@ public abstract class Tree : Mob, ISurface
     /// <returns>true if there is a PlaceableObject on this Tree that can be
     /// removed; otherwise, false. </returns>
     public virtual bool CanRemove(ISurface[] neighbors)
-    {
+    { 
         Assert.IsNotNull(neighbors, "Array of neighbors is null.");
 
         if (!Occupied()) return false;
@@ -194,7 +193,7 @@ public abstract class Tree : Mob, ISurface
     /// </summary>
     /// <returns>The PlaceableObject on this Tree, or null if there
     /// is no PlaceableObject on this Tree. </returns>
-    public PlaceableObject GetPlaceableObject() { return defender; }
+    public PlaceableObject GetPlaceableObject() => defender;
 
     /// <summary>
     /// Provides a visual simulation of placing a Defender on
@@ -238,11 +237,8 @@ public abstract class Tree : Mob, ISurface
     /// trying to virtually place on this Tree.</param>
     /// <returns>true if the PlaceableObject (Defender) object can be placed on this Tree;
     /// otherwise, false.</returns>
-    public bool CanGhostPlace(PlaceableObject ghost)
-    {
-        return !Occupied() && ghostDefender == null && ghost as Defender != null
+    public bool CanGhostPlace(PlaceableObject ghost) => !Occupied() && ghostDefender == null && ghost as Defender != null
             && CanPlace(ghost, GetSurfaceNeighbors());
-    }
 
     /// <summary>
     /// Removes all visual simulations of placing a PlaceableObject on this
@@ -260,28 +256,28 @@ public abstract class Tree : Mob, ISurface
     /// Sets whether an Enemy is on this Tree.
     /// </summary>
     /// <param name="occupiedByEnemy">whether an Enemy is on this Tree.</param>
-    public void SetOccupiedByEnemy(bool occupiedByEnemy) { return; }
+    public void SetOccupiedByEnemy(bool occupiedByEnemy) => throw new System.NotSupportedException("Enemies cannot occupy Trees");
 
     /// <summary>
     /// Returns true if an Enemy is on this Tree.
     /// </summary>
     /// <returns>true if an Enemy is on this Tree; otherwise,
     /// false.</returns>
-    public virtual bool OccupiedByEnemy() { return false; }
+    public virtual bool OccupiedByEnemy() => false;
 
     /// <summary>
     /// Returns true if the ghost occupant on this Tree is not null.
     /// </summary>
     /// <returns>true if the ghost occupant on this Tree is not null;
     /// otherwise, false.</returns>
-    public bool HasActiveGhostOccupant() { return ghostDefender != null; }
+    public bool HasActiveGhostOccupant() => ghostDefender != null;
 
     /// <summary>
     /// Returns true if a pathfinder can walk across this Tree.
     /// </summary>
     /// <returns>true if a pathdfinder can walk across this Tree;
     /// otherwise, false.</returns>
-    public bool IsWalkable() { return false; }
+    public bool IsWalkable() => false;
 
     /// <summary>
     /// Returns the offset of a Defender on this Tree.

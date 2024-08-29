@@ -427,10 +427,7 @@ public class ControllerController : MonoBehaviour
     /// of the shop so that the player can choose the upgrade they want.
     /// </summary>
     /// <param name="combinedModel">The Model that was created by combining the Defenders.</param>
-    private void OnFinishCombining(Model combinedModel)
-    {
-
-    }
+    private void OnFinishCombining(Model combinedModel) { }
 
     /// <summary>
     /// Removes all Defenders of the given type and tier from the scene.

@@ -43,35 +43,31 @@ public class NexusHoleController : MobController<NexusHoleController.NexusHoleSt
     /// </summary>
     /// <param name="target">The Placeable object to check for targetability.</param>
     /// <returns>true if the NexusHole can target the Model; otherwise, false. </returns>
-    protected override bool CanTargetModel(Model target) { return false; }
+    protected override bool CanTargetModel(Model target) => false;
 
     /// <summary>
     /// Returns true if the NexusHole should be removed.
     /// </summary>
     /// <returns>true if the NexusHole should be removed; otherwise, false.</returns>
-    public override bool ValidModel() { return true; }
+    public override bool ValidModel() => true;
 
     /// <summary>
     /// Returns the NexusHole model.
     /// </summary>
     /// <returns>the NexusHole model.</returns>
-    private NexusHole GetNexusHole() { return GetMob() as NexusHole; }
+    private NexusHole GetNexusHole() => GetMob() as NexusHole;
 
     /// <summary>
     /// Handles a collision between the NexusHole model and some other
     /// collider.
     /// </summary>
     /// <param name="other">The other 2D Collider.</param>
-    protected override void HandleCollision(Collider2D other) { return; }
+    protected override void HandleCollision(Collider2D other) { }
 
     /// <summary>
     /// Returns the NexusHole prefab to the NexusHoleFactory singleton.
     /// </summary>
-    public override void DestroyModel()
-    {
-        NexusHoleFactory.ReturnNexusHolePrefab(GetNexusHole().gameObject);
-    }
-
+    public override void DestroyModel() => NexusHoleFactory.ReturnNexusHolePrefab(GetNexusHole().gameObject);
 
     #endregion
 
@@ -104,10 +100,7 @@ public class NexusHoleController : MobController<NexusHoleController.NexusHoleSt
     /// <param name="stateA">The first NexusHoleState.</param>
     /// <param name="stateB">The second NexusHoleState.</param>
     /// <returns>true if the two NexusHoleStates are equal.</returns>
-    public override bool StateEquals(NexusHoleState stateA, NexusHoleState stateB)
-    {
-        return stateA == stateB;
-    }
+    public override bool StateEquals(NexusHoleState stateA, NexusHoleState stateB) => stateA == stateB;
 
     #endregion
 

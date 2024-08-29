@@ -41,10 +41,7 @@ public class ModelCounts
     /// </summary>
     /// <param name="type">The ModelType to check.</param>
     /// <returns>the number of active Models of some ModelType.</returns>
-    public int GetCount(ModelType type)
-    {
-        return data.TryGetValue(type, out int count) ? count : 0;
-    }
+    public int GetCount(ModelType type) => data.TryGetValue(type, out int count) ? count : 0;
 
     #endregion
 }

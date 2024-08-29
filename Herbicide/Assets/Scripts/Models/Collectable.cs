@@ -62,19 +62,13 @@ public abstract class Collectable : Model
     /// </summary>
     /// <returns>true if the player picked up this Collectable;
     /// otherwise, false.</returns>
-    public bool Collected() { return collected; }
-
-    /// <summary>
-    /// Returns this Collectable's drift-up curve.
-    /// </summary>
-    /// <returns>this Collectable's drift-up curve.</returns>
-    public AnimationCurve GetDriftUpCurve() { return driftUpCurve; }
+    public bool Collected() => collected;
 
     /// <summary>
     /// Returns this Collectable's homing curve.
     /// </summary>
     /// <returns>this Collectable's homing curve.</returns>
-    public AnimationCurve GetHomingCurve() { return homingCurve; }
+    public AnimationCurve GetHomingCurve() => homingCurve;
 
     /// <summary>
     /// Resets this Collectable's state.

@@ -49,10 +49,7 @@ public class EdgeFactory : MonoBehaviour
     /// <param name="index">the index to check</param>
     /// <returns>true if an index is within the bounds for an Edge index;
     /// otherwise, false.</returns>
-    public static bool ValidEdgeIndex(int index)
-    {
-        return index >= 0 && index <= MAX_INDEX;
-    }
+    public static bool ValidEdgeIndex(int index) => index >= 0 && index <= MAX_INDEX;
 
     /// <summary>
     /// Returns the correct Sprite asset for an Edge object based on an index.

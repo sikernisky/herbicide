@@ -51,10 +51,7 @@ public class FlooringFactory : Factory
     /// <param name="index">the index to check</param>
     /// <returns>true if an index is within the bounds for a Flooring index;
     /// otherwise, false.</returns>
-    public static bool ValidFlooringIndex(int index)
-    {
-        return index >= 0 && index <= MAX_INDEX;
-    }
+    public static bool ValidFlooringIndex(int index) => index >= 0 && index <= MAX_INDEX;
 
     /// <summary>
     /// Returns the correct Sprite asset for a Flooring object based on an index.
@@ -104,7 +101,7 @@ public class FlooringFactory : Factory
     /// Returns the Transform component of the FlooringFactory instance.
     /// </summary>
     /// <returns>the Transform component of the FlooringFactory instance.</returns>
-    protected override Transform GetTransform() { return instance.transform; }
+    protected override Transform GetTransform() => instance.transform;
 
     #endregion
 }

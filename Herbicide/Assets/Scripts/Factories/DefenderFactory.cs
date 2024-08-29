@@ -56,19 +56,13 @@ public class DefenderFactory : Factory
     /// </summary>
     /// <param name="modelType">The ModelType of the Defender to get</param>
     /// <returns>a prefab for a given Defender type from the object pool.</returns>
-    public static GameObject GetDefenderPrefab(ModelType modelType)
-    {
-        return instance.RequestObject(modelType);
-    }
+    public static GameObject GetDefenderPrefab(ModelType modelType) => instance.RequestObject(modelType);
 
     /// <summary>
     /// Accepts a Defender prefab and puts it back in the object pool.
     /// </summary>
     /// <param name="prefab">the prefab to accept.</param>
-    public static void ReturnDefenderPrefab(GameObject prefab)
-    {
-        instance.ReturnObject(prefab);
-    }
+    public static void ReturnDefenderPrefab(GameObject prefab) => instance.ReturnObject(prefab);
 
     /// <summary>
     /// Returns the animation track that represents the Defender attacking.
@@ -139,15 +133,11 @@ public class DefenderFactory : Factory
         }
     }
 
-
     /// <summary>
     /// Returns the DefenderFactory's transform component.
     /// </summary>
     /// <returns>the DefenderFactory's transform component.</returns>
-    protected override Transform GetTransform()
-    {
-        return instance.transform;
-    }
+    protected override Transform GetTransform() => instance.transform;
 
     #endregion
 }

@@ -100,19 +100,19 @@ public class BasicTree : Tree
     /// </summary>
     /// <returns>the animation track that represents this BasicTree when placing.
     /// </returns>
-    public override Sprite[] GetPlacementTrack() { return BasicTreeFactory.GetPlacementTrack(); }
+    public override Sprite[] GetPlacementTrack() => BasicTreeFactory.GetPlacementTrack();
 
     /// <summary>
     /// Returns the GameObject that represents this BasicTree on the grid.
     /// </summary>
     /// <returns>the GameObject that represents this BasicTree on the grid.
     /// </returns>
-    public override GameObject Copy() { return BasicTreeFactory.GetBasicTreePrefab(); }
+    public override GameObject Copy() => BasicTreeFactory.GetBasicTreePrefab();
 
     /// <summary>
     /// Sets this BasicTree's 2D Collider's properties.
     /// </summary>
-    public override void SetColliderProperties() { return; }
+    public override void SetColliderProperties() { }
 
     #endregion
 }

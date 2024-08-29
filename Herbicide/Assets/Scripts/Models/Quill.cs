@@ -78,7 +78,7 @@ public class Quill : Projectile
     /// </summary>
     /// <returns>the GameObject that represents this Quill on the grid.
     /// </returns>
-    public override GameObject Copy() { return ProjectileFactory.GetProjectilePrefab(TYPE); }
+    public override GameObject Copy() => ProjectileFactory.GetProjectilePrefab(TYPE);
 
     /// <summary>
     /// Returns a Sprite that represents this Quill when it is
@@ -86,7 +86,7 @@ public class Quill : Projectile
     /// </summary>
     /// <returns> a Sprite that represents this Quill when it is
     /// being placed.</returns>
-    public override Sprite[] GetPlacementTrack() { return ProjectileFactory.GetPlacementTrack(TYPE); }
+    public override Sprite[] GetPlacementTrack() => ProjectileFactory.GetPlacementTrack(TYPE);
 
     /// <summary>
     /// Returns the GameObject that represents this Quill when it is

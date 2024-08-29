@@ -255,10 +255,7 @@ public class ShopManager : MonoBehaviour
     /// <summary>
     /// Called when the player finishes placing a Model.
     /// </summary>
-    private void OnFinishPlacing(Model m)
-    {
-        Assert.IsNotNull(m, "Placed model is null.");
-    }
+    private void OnFinishPlacing(Model m) => Assert.IsNotNull(m, "Placed model is null.");
 
     /// <summary>
     /// #BUTTON EVENT#
@@ -266,7 +263,7 @@ public class ShopManager : MonoBehaviour
     /// Called when the player clicks the Reroll button. Refreshes
     /// the shop if they have enough money.
     /// </summary>
-    public void ClickRerollButton() { Reroll(false); }
+    public void ClickRerollButton() => Reroll(false);
 
 
     /// <summary>
