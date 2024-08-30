@@ -152,8 +152,8 @@ public class LevelController : MonoBehaviour
     private void MakeFactories()
     {
         BasicTreeFactory.SetSingleton(instance);
+        CollectableFactory.SetSingleton(instance);
         DefenderFactory.SetSingleton(instance);
-        DewFactory.SetSingleton(instance);
         EdgeFactory.SetSingleton(instance);
         EmanationFactory.SetSingleton(instance);
         EnemyFactory.SetSingleton(instance);

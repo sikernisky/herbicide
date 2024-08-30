@@ -44,13 +44,6 @@ public class BasicTreeController : TreeController<BasicTreeController.BasicTreeS
     }
 
     /// <summary>
-    /// Handles all collisions between this controller's BasicTree
-    /// model and some other collider.
-    /// </summary>
-    /// <param name="other">the other collider.</param>
-    protected override void HandleCollision(Collider2D other) { }
-
-    /// <summary>
     /// Returns the BasicTree model.
     /// </summary>
     /// <returns>the BasicTree model.</returns>

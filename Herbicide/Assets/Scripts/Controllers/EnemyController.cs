@@ -167,21 +167,12 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
         return true;
     }
 
-
-    /// <summary>
-    /// Handles all collisions between this controller's Enemy
-    /// model and some other collider.
-    /// </summary>
-    /// <param name="other">the other collider.</param>
-    protected override void HandleCollision(Collider2D other) { }
-
     /// <summary>
     /// Responds to a collision with a Projectile.
     /// </summary>
     /// <param name="projectile">the Projectile that hit this Enemy. </param>
     protected override void HandleProjectileCollision(Projectile projectile)
     {
-        base.HandleProjectileCollision(projectile);
         if(projectile == null) return;
         switch (projectile.TYPE) {
 
@@ -232,7 +223,7 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
         if (DroppedDeathLoot()) return;
         if (GetEnemy().Exited()) return;
 
-        Dew dew = DewFactory.GetDewPrefab().GetComponent<Dew>();
+        Dew dew = CollectableFactory.GetCollectablePrefab(ModelType.DEW).GetComponent<Dew>();
         Vector3 lootPos = GetEnemy().Exited() ? GetEnemy().GetExitPos() : GetEnemy().GetPosition();
         int value = GetEnemy().CURRENCY_VALUE_ON_DEATH;
         DewController dewController = new DewController(dew, lootPos, value);
@@ -359,7 +350,7 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
     }
 
     /// <summary>
-    /// Returns the Knotwood prefab to the KnotwoodFactory singleton.
+    /// Returns the Enemy prefab to the EnemyFactory object pool.
     /// </summary>
     public override void DestroyModel() => EnemyFactory.ReturnEnemyPrefab(GetEnemy().gameObject);
 

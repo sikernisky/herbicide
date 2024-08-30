@@ -57,11 +57,6 @@ public class WallController : MobController<WallController.WallState>
     protected override bool CanTargetModel(Model target) => false;
 
     /// <summary>
-    /// Handles a collision between the Wall and some other Collider2D.
-    /// </summary>
-    /// <param name="other">The other Collider2D.</param>
-    protected override void HandleCollision(Collider2D other) { }
-    /// <summary>
     /// Returns the Wall prefab to the WallFactory singleton.
     /// </summary>
     public override void DestroyModel() => WallFactory.ReturnWallPrefab(GetWall().gameObject);

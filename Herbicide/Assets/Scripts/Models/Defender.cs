@@ -100,5 +100,18 @@ public abstract class Defender : Mob
         ResetTier();
     }
 
+    /// <summary>
+    /// Returns a fresh copy of this Defender from the object pool.
+    /// </summary>
+    /// <returns>a fresh copy of this Defender from the object pool.</returns>
+    public override GameObject CreateNew() => DefenderFactory.GetDefenderPrefab(TYPE);
+
+    /// <summary>
+    /// Returns the animation track that represents this Defender when placing.
+    /// </summary>
+    /// <returns>the animation track that represents this Defender when placing.
+    /// </returns>
+    public override Sprite[] GetPlacementTrack() => DefenderFactory.GetPlacementTrack(TYPE, GetTier());
+
     #endregion
 }

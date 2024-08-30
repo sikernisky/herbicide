@@ -219,11 +219,14 @@ public abstract class ModelController
     /// some other Collider.
     /// </summary>
     /// <param name="other">the other collider.</param>
-    protected abstract void HandleCollision(Collider2D other);
+    protected virtual void HandleCollision(Collider2D other) { }
 
     /// <summary>
     /// Handles a collision between this controller's model and
-    /// a Projectile.
+    /// a Projectile. <br></br>
+    /// 
+    /// This is manually called by the ProjectileController when its
+    /// Projectile hits this controller's Model.
     /// </summary>
     /// <param name="projectile">The Projectile that collided with
     /// this controller's Model. </param>

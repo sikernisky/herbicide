@@ -79,7 +79,7 @@ public class StoneWall : Wall
     /// Returns the GameObject that represents this StoneWall on the grid.
     /// </summary>
     /// <returns>the GameObject that represents this StoneWall on the grid</returns>
-    public override GameObject Copy() => WallFactory.GetWallPrefab(TYPE);
+    public override GameObject CreateNew() => WallFactory.GetWallPrefab(TYPE);
 
     /// <summary>
     /// Returns true if this StoneWall is dead, false otherwise.

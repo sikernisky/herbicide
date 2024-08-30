@@ -133,20 +133,6 @@ public class Bear : Defender
     #region Methods
 
     /// <summary>
-    /// Returns an instantiated GameObject with a Bear component attached.
-    /// </summary>
-    /// <returns>an instantiated GameObject with a Bear component
-    ///  attached.</returns>
-    public override GameObject Copy() => DefenderFactory.GetDefenderPrefab(ModelType.BEAR);
-
-    /// <summary>
-    /// Returns the animation track that represents this Bear when placing.
-    /// </summary>
-    /// <returns>the animation track that represents this Bear when placing.
-    /// </returns>
-    public override Sprite[] GetPlacementTrack() => DefenderFactory.GetPlacementTrack(ModelType.BEAR, GetTier());
-
-    /// <summary>
     /// Returns the (X, Y) dimensions of the Bear's placement track.
     /// </summary>
     /// <returns>the (X, Y) dimensions of the Bear's placement track.</returns>

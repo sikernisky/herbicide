@@ -76,13 +76,6 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
     }
 
     /// <summary>
-    /// Handles a collision between the Collectable and some other
-    /// 2D collider.
-    /// </summary>
-    /// <param name="other">The collider the Collectable hit.</param>
-    protected override void HandleCollision(Collider2D other) { }
-
-    /// <summary>
     /// Returns true if this controller's Collectable should be destoyed and
     /// set to null.
     /// </summary>
@@ -160,6 +153,11 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
             GetCollectable().SetWorldPosition(newPosition);
         }
     }
+
+    /// <summary>
+    /// Returns the Collectable prefab to the CollectableFactory object pool.
+    /// </summary>
+    public override void DestroyModel() => CollectableFactory.ReturnCollectablePrefab(GetCollectable().gameObject);
 
     #endregion
 

@@ -58,13 +58,6 @@ public class NexusHoleController : MobController<NexusHoleController.NexusHoleSt
     private NexusHole GetNexusHole() => GetMob() as NexusHole;
 
     /// <summary>
-    /// Handles a collision between the NexusHole model and some other
-    /// collider.
-    /// </summary>
-    /// <param name="other">The other 2D Collider.</param>
-    protected override void HandleCollision(Collider2D other) { }
-
-    /// <summary>
     /// Returns the NexusHole prefab to the NexusHoleFactory singleton.
     /// </summary>
     public override void DestroyModel() => NexusHoleFactory.ReturnNexusHolePrefab(GetNexusHole().gameObject);

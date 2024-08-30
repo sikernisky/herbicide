@@ -74,21 +74,6 @@ public class Quill : Projectile
     #region Methods
 
     /// <summary>
-    /// Returns the GameObject that represents this Quill on the grid.
-    /// </summary>
-    /// <returns>the GameObject that represents this Quill on the grid.
-    /// </returns>
-    public override GameObject Copy() => ProjectileFactory.GetProjectilePrefab(TYPE);
-
-    /// <summary>
-    /// Returns a Sprite that represents this Quill when it is
-    /// being placed.
-    /// </summary>
-    /// <returns> a Sprite that represents this Quill when it is
-    /// being placed.</returns>
-    public override Sprite[] GetPlacementTrack() => ProjectileFactory.GetPlacementTrack(TYPE);
-
-    /// <summary>
     /// Returns the GameObject that represents this Quill when it is
     /// piercing a target.
     /// </summary>

@@ -54,11 +54,6 @@ public class DewController : CollectableController<DewController.DewState>
     /// <returns>this controller's Dew model.</returns>
     private Dew GetDew() => GetCollectable() as Dew;
 
-    /// <summary>
-    /// Returns the Dew prefab to the DewFactory singleton.
-    /// </summary>
-    public override void DestroyModel() => DewFactory.ReturnDewPrefab(GetDew().gameObject);
-
     #endregion
 
     #region State Logic

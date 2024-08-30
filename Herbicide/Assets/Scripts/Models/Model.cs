@@ -424,11 +424,10 @@ public abstract class Model : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns the GameObject that represents this Model on the grid.
+    /// Returns a fresh GameObject that represents this Model. 
     /// </summary>
-    /// <returns>the GameObject that represents this Model on the grid.
-    /// </returns>
-    public abstract GameObject Copy();
+    /// <returns>a fresh GameObject that represents this Model.</returns>
+    public abstract GameObject CreateNew();
 
     /// <summary>
     /// Returns a Sprite that represents this Model when it is

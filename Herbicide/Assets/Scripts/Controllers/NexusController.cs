@@ -75,13 +75,6 @@ public class NexusController : MobController<NexusController.NexusState>
     private Nexus GetNexus() => GetMob() as Nexus;
 
     /// <summary>
-    /// Handles a collision between the Nexus model and some other
-    /// collider.
-    /// </summary>
-    /// <param name="other">The other 2D Collider.</param>
-    protected override void HandleCollision(Collider2D other) { }
-
-    /// <summary>
     /// Returns the Nexus prefab to the NexusFactory singleton.
     /// </summary>
     public override void DestroyModel() => NexusFactory.ReturnNexusPrefab(GetNexus().gameObject);

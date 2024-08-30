@@ -115,18 +115,6 @@ public class Knotwood : Enemy
     #region Methods
 
     /// <summary>
-    /// Returns a copy of a Knotwood.
-    /// </summary>
-    /// <returns> A copy of a Knotwood prefab. </returns> 
-    public override GameObject Copy() => EnemyFactory.GetEnemyPrefab(TYPE);
-
-    /// <summary>
-    /// Returns the placement track for a Knotwood.
-    /// </summary>
-    /// <returns>the placement track for a Knotwood.</returns>
-    public override Sprite[] GetPlacementTrack() => EnemyFactory.GetPlacementTrack(TYPE);
-
-    /// <summary>
     /// Sets this Knotwood's Collider2D properties.
     /// </summary>
     public override void SetColliderProperties()

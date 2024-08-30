@@ -194,7 +194,6 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
         GetMob().RefreshRenderer();
         GetMob().OnSpawn();
         GetMob().gameObject.SetActive(true);
-        GetMob().SubscribeToCollision(HandleCollision);
     }
 
     /// <summary>

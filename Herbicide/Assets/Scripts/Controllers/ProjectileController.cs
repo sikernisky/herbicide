@@ -112,6 +112,11 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     protected Projectile GetProjectile() => GetModel() as Projectile;
 
     /// <summary>
+    /// Returns the Projectile prefab to the AcornFactory object pool.
+    /// </summary>
+    public override void DestroyModel() => ProjectileFactory.ReturnProjectilePrefab(GetProjectile().gameObject);
+
+    /// <summary>
     /// Returns the position to where the Projectile should go.
     /// </summary>
     /// <returns>the position to where the Projectile should go.</returns>
@@ -145,6 +150,19 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// </summary>
     /// <returns>the linear direction of the Projectile.</returns>
     protected Vector3 GetLinearDirection() => linearDirection;
+
+    /// <summary>
+    /// Handles a collision between the Projectile and some other Collider2D.
+    /// </summary>
+    /// <param name="other">Some other Collider2D.</param>
+    protected override void HandleCollision(Collider2D other)
+    {
+        if (other == null) return;
+        Model model = other.gameObject.GetComponent<Model>();
+        if (model == null) return;
+        model.TriggerProjectileCollision(GetProjectile());
+        GetProjectile().SetCollided(model);
+    }
 
     #endregion
 

@@ -108,18 +108,6 @@ public class Porcupine : Defender
     #region Methods
 
     /// <summary>
-    /// Returns a new copy of a Porcupine prefab. 
-    /// </summary>
-    /// <returns>a new copy of a Porcupine prefab. </returns>
-    public override GameObject Copy() => DefenderFactory.GetDefenderPrefab(TYPE);
-
-    /// <summary>
-    /// Returns the Porcupine's animation track when placing.
-    /// </summary>
-    /// <returns>the Porcupine's animation track when placing.</returns>
-    public override Sprite[] GetPlacementTrack() => DefenderFactory.GetPlacementTrack(TYPE, GetTier());
-
-    /// <summary>
     /// Returns the (X, Y) dimensions of the Porcupine's placement track.
     /// </summary>
     /// <returns>the (X, Y) dimensions of the Porcupine's placement track.</returns>

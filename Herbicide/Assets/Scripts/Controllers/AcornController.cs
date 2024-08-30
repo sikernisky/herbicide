@@ -46,25 +46,7 @@ public class AcornController : ProjectileController<AcornController.AcornState>
     /// </summary>
     /// <returns>the Acorn model.</returns>
     protected Acorn GetAcorn() => GetProjectile() as Acorn;
-
-    /// <summary>
-    /// Returns the Acorn prefab to the AcornFactory singleton.
-    /// </summary>
-    public override void DestroyModel() => ProjectileFactory.ReturnProjectilePrefab(GetAcorn().gameObject);
-
-    /// <summary>
-    /// Handles a collision between the Projectile and some other Collider2D.
-    /// </summary>
-    /// <param name="other">Some other Collider2D.</param>
-    protected override void HandleCollision(Collider2D other)
-    {
-        if (other == null) return;
-        Model model = other.gameObject.GetComponent<Model>();
-        if (model == null) return;
-        model.TriggerProjectileCollision(GetProjectile());
-        GetProjectile().SetCollided(model);
-    }
-
+    
     #endregion
 
     #region State Logic

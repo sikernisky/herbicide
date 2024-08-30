@@ -165,6 +165,11 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
                 if(counts.GetCount(ModelType.SQUIRREL) == 2) BuffAttackSpeed(2);*/
     }
 
+    /// <summary>
+    /// Returns the Defender prefab to the DefenderFactory object pool.
+    /// </summary>
+    public override void DestroyModel() => DefenderFactory.ReturnDefenderPrefab(GetDefender().gameObject);
+
     #endregion
 }
 

@@ -340,6 +340,18 @@ public abstract class Enemy : Mob
         return base.Targetable();
     }
 
+    /// <summary>
+    /// Returns a fresh copy of this Enemy from the object pool.
+    /// </summary>
+    /// <returns>a fresh copy of this Enemy from the object pool.</returns>
+    public override GameObject CreateNew() => EnemyFactory.GetEnemyPrefab(TYPE);
+
+    /// <summary>
+    /// Returns the sprite that represents this Enemy when placing.
+    /// </summary>
+    /// <returns>the sprite that represents this Enemy when placing.</returns>
+    public override Sprite[] GetPlacementTrack() => EnemyFactory.GetPlacementTrack(TYPE);
+
     #endregion
 }
 

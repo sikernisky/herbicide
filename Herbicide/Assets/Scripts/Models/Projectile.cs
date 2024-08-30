@@ -252,5 +252,19 @@ public abstract class Projectile : Model
     /// <param name="position">The position to set the shadow to.</param>
     public void SetShadowPosition(Vector3 position) => shadow.transform.position = position;
 
+    /// <summary>
+    /// Returns a fresh copy of this Projectile from the object pool. 
+    /// </summary>
+    /// <returns>a fresh copy of this Projectile from the object pool.  </returns>
+    public override GameObject CreateNew() => ProjectileFactory.GetProjectilePrefab(TYPE);
+
+    /// <summary>
+    /// Returns a Sprite that represents this Projectile when it is
+    /// being placed.
+    /// </summary>
+    /// <returns> a Sprite that represents this Projectile when it is
+    /// being placed.</returns>
+    public override Sprite[] GetPlacementTrack() => ProjectileFactory.GetPlacementTrack(TYPE);
+
     #endregion
 }

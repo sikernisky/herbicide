@@ -125,20 +125,6 @@ public class Squirrel : Defender
     public override float GetChaseRange() => GetAttackRange();
 
     /// <summary>
-    /// Returns an instantiated GameObject with a Squirrel component attached.
-    /// </summary>
-    /// <returns>an instantiated GameObject with a Squirrel component
-    ///  attached.</returns>
-    public override GameObject Copy() => DefenderFactory.GetDefenderPrefab(ModelType.SQUIRREL);
-
-    /// <summary>
-    /// Returns the animation track that represents this Squirrel when placing.
-    /// </summary>
-    /// <returns>the animation track that represents this Squirrel when placing.
-    /// </returns>
-    public override Sprite[] GetPlacementTrack() => DefenderFactory.GetPlacementTrack(ModelType.SQUIRREL, GetTier());
-
-    /// <summary>
     /// Returns the (X, Y) dimensions of the Bear's placement track.
     /// </summary>
     /// <returns>the (X, Y) dimensions of the Bear's placement track.</returns>

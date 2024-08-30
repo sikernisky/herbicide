@@ -72,18 +72,6 @@ public class BearController : DefenderController<BearController.BearState>
     private Bear GetBear() => GetDefender() as Bear;
 
     /// <summary>
-    /// Handles all collisions between this controller's Bear
-    /// model and some other collider.
-    /// </summary>
-    /// <param name="other">the other collider.</param>
-    protected override void HandleCollision(Collider2D other) { }
-
-    /// <summary>
-    /// Returns the Bear prefab to the BearFactory singleton.
-    /// </summary>
-    public override void DestroyModel() => DefenderFactory.ReturnDefenderPrefab(GetBear().gameObject);
-
-    /// <summary>
     /// Returns true if the Bear can swipe its target.
     /// </summary>
     /// <returns>true if the Bear can swipe its target; otherwise,

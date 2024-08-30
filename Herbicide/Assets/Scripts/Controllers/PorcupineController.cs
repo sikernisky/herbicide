@@ -72,11 +72,6 @@ public class PorcupineController : DefenderController<PorcupineController.Porcup
     }
 
     /// <summary>
-    /// Returns the Porcupine prefab to the DefenderFactory singleton.
-    /// </summary>
-    public override void DestroyModel() { DefenderFactory.ReturnDefenderPrefab(GetPorcupine().gameObject); }
-
-    /// <summary>
     /// Returns this PorcupineController's Porcupine.
     /// </summary>
     /// <returns>this PorcupineController's Porcupine.</returns>
@@ -129,13 +124,6 @@ public class PorcupineController : DefenderController<PorcupineController.Porcup
         if (target == null || !target.Targetable()) return false; //Invalid target.
         return true;
     }
-
-    /// <summary>
-    /// Handles all collisions between this controller's Porcupine
-    /// model and some other collider.
-    /// </summary>
-    /// <param name="other">the other collider.</param>
-    protected override void HandleCollision(Collider2D other) { throw new System.NotImplementedException(); }
 
     #endregion
 

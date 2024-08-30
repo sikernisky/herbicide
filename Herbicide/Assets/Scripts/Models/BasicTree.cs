@@ -107,7 +107,7 @@ public class BasicTree : Tree
     /// </summary>
     /// <returns>the GameObject that represents this BasicTree on the grid.
     /// </returns>
-    public override GameObject Copy() => BasicTreeFactory.GetBasicTreePrefab();
+    public override GameObject CreateNew() => BasicTreeFactory.GetBasicTreePrefab();
 
     /// <summary>
     /// Sets this BasicTree's 2D Collider's properties.

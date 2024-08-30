@@ -18,12 +18,6 @@ public class FlooringController : ModelController
     public FlooringController(Flooring flooring) : base(flooring) { }
 
     /// <summary>
-    /// Handles a collision between between this Flooring and some other 2D collider.
-    /// </summary>
-    /// <param name="other">The model the Flooring collided with. </param>
-    protected override void HandleCollision(Collider2D other) { return; }
-
-    /// <summary>
     /// Returns true if the FlooringModel should be destroyed and removed.
     /// </summary>
     /// <returns>true if the FlooringModel should be destroyed and removed;

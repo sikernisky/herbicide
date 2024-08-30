@@ -542,7 +542,7 @@ public abstract class Tile : Model, ISurface
     /// </summary>
     /// <returns>the GameObject that represents this Tile on the grid.
     /// </returns>
-    public override GameObject Copy() => throw new System.NotSupportedException("Not allowed to copy Tiles");
+    public override GameObject CreateNew() => throw new System.NotSupportedException("Not allowed to copy Tiles");
 
     /// <summary>
     /// Returns a Sprite that represents this Tile when it is

@@ -32,23 +32,4 @@ public class Dew : Currency
     public override ModelType TYPE => ModelType.DEW;
 
     #endregion
-
-    #region Methods
-
-    /// <summary>
-    /// Returns the GameObject that represents this Dew on the grid.
-    /// </summary>
-    /// <returns>the GameObject that represents this Dew on the grid.
-    /// </returns>
-    public override GameObject Copy() => DewFactory.GetDewPrefab();
-
-    /// <summary>
-    /// Returns a Sprite that represents this Dew when it is
-    /// being placed.
-    /// </summary>
-    /// <returns> a Sprite that represents this Dew when it is
-    /// being placed.</returns>
-    public override Sprite[] GetPlacementTrack() => DewFactory.GetPlacementTrack();
-
-    #endregion
 }

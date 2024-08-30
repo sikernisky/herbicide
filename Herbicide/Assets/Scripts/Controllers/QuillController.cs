@@ -50,22 +50,13 @@ public class QuillController : ProjectileController<QuillController.QuillState>
     protected Quill GetQuill() => GetProjectile() as Quill;
 
     /// <summary>
-    /// Returns the Quill prefab to the QuillFactory singleton.
-    /// </summary>
-    public override void DestroyModel() => ProjectileFactory.ReturnProjectilePrefab(GetQuill().gameObject);
-
-    /// <summary>
     /// Handles a collision between the Quill and some other Collider2D.
     /// </summary>
     /// <param name="other">Some other Collider2D.</param>
     protected override void HandleCollision(Collider2D other)
     {
-        if (other == null) return;
-        if(GetProjectile().Collided()) return;
-        Model model = other.gameObject.GetComponent<Model>();
-        if (model == null) return;
-        model.TriggerProjectileCollision(GetProjectile());
-        GetProjectile().SetCollided(model);
+        // Parent invokes HandleProjectileCollision on the collidee
+        base.HandleCollision(other);
 
         // Calculate explosion position right behind the target
         Vector3 impactPoint = other.ClosestPoint(GetProjectile().transform.position);
@@ -84,7 +75,7 @@ public class QuillController : ProjectileController<QuillController.QuillState>
             piercingQuill.transform.position,
             piercingQuill.transform.rotation);
         ControllerController.AddEmanationController(piercingQuillEmanationController);
-        Enemy initialTarget = model as Enemy;
+        Enemy initialTarget = other.gameObject.GetComponent<Model>() as Enemy;
         HashSet<Enemy> immuneObjects = new HashSet<Enemy>() { initialTarget };
         ExplosionController.ExplodeOnEnemies(piercingQuill, GetQuill().PIERCING_DAMAGE, immuneObjects);
     }

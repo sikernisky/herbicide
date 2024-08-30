@@ -159,18 +159,5 @@ public class Kudzu : Enemy
         return new Vector3(transform.position.x, adjustedY, transform.position.z);
     }
 
-    /// <summary>
-    /// Returns the sprite that represents this Kudzu when placing.
-    /// </summary>
-    /// <returns>the sprite that represents this Kudzu when placing.</returns>
-    public override Sprite[] GetPlacementTrack() => EnemyFactory.GetPlacementTrack(TYPE);
-
-    /// <summary>
-    /// Returns the GameObject that represents this Kudzu on the grid.
-    /// </summary>
-    /// <returns>the GameObject that represents this Kudzu on the grid.
-    /// </returns>
-    public override GameObject Copy() => EnemyFactory.GetEnemyPrefab(TYPE);
-
     #endregion
 }

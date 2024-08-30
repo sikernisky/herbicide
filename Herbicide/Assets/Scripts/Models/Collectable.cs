@@ -71,6 +71,20 @@ public abstract class Collectable : Model
     public AnimationCurve GetHomingCurve() => homingCurve;
 
     /// <summary>
+    /// Returns a fresh Collectable prefab from the object pool.
+    /// </summary>
+    /// <returns>a fresh Collectable prefab from the object pool. </returns>
+    public override GameObject CreateNew() => CollectableFactory.GetCollectablePrefab(TYPE);
+
+    /// <summary>
+    /// Returns a Sprite that represents this Collectable when it is
+    /// being placed.
+    /// </summary>
+    /// <returns> a Sprite that represents this Collectable when it is
+    /// being placed.</returns>
+    public override Sprite[] GetPlacementTrack() => CollectableFactory.GetPlacementTrack(TYPE);
+
+    /// <summary>
     /// Resets this Collectable's state.
     /// </summary>
     public override void ResetModel()

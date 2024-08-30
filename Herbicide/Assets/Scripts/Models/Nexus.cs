@@ -141,7 +141,7 @@ public class Nexus : Mob
     /// Returns a GameObject representing this Nexus on the TileGrid.
     /// </summary>
     /// <returns>a GameObject representing this Nexus on the TileGrid.</returns>
-    public override GameObject Copy() => NexusFactory.GetNexusPrefab();
+    public override GameObject CreateNew() => NexusFactory.GetNexusPrefab();
 
     /// <summary>
     /// Sets this Nexus' 2D collider properties.

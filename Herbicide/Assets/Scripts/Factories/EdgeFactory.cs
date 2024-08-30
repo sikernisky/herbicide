@@ -16,7 +16,7 @@ public class EdgeFactory : MonoBehaviour
     /// <summary>
     /// The largest index of an Edge Sprite.
     /// </summary>
-    private const int MAX_INDEX = 22;
+    private const int MAX_INDEX = 32;
 
     /// <summary>
     /// Array of Sprites for Shore Edges
@@ -58,7 +58,7 @@ public class EdgeFactory : MonoBehaviour
     /// <param name="index">the Sprite index </param>
     public static Sprite GetEdgeSprite(string type, int index)
     {
-        Assert.IsTrue(ValidEdgeIndex(index));
+        Assert.IsTrue(ValidEdgeIndex(index), index + " is not valid.");
 
         if (type.ToLower() == "shore") return instance.shoreEdgeSprites[index];
 
