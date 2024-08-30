@@ -2,10 +2,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Cache for expensive A* Pathfinding calls.
+/// DataStructure to store frequently requested A* Pathfinding calls.
 /// </summary>
 public static class PathfindingCache
 {
+    #region CacheEntry
+
     /// <summary>
     /// Represents a cache entry.
     /// </summary>
@@ -23,10 +25,18 @@ public static class PathfindingCache
         public Vector2Int NextTilePosition { get; set; }
     }
 
+    #endregion
+
+    #region Fields
+
     /// <summary>
     /// The cache for pathfinding results.
     /// </summary>
     private static Dictionary<(Vector3 start, Vector3 goal), CacheEntry> cache = new Dictionary<(Vector3, Vector3), CacheEntry>();
+
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Updates the cache with the pathfinding results.
@@ -84,5 +94,7 @@ public static class PathfindingCache
     /// <summary>
     /// Clears the cache.
     /// </summary>
-    public static void ClearCache() { cache.Clear(); }
+    public static void ClearCache() => cache.Clear();
+
+    #endregion
 }

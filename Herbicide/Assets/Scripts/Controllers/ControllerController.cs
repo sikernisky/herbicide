@@ -1,19 +1,40 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.UI;
 
 /// <summary>
-/// Controller that controls the scene's controllers. Handles
-/// upgrading units.
+/// Controls and updates sub-controller classes.
 /// </summary>
 public class ControllerController : MonoBehaviour
 {
+    #region Fields
+
+    /// <summary>
+    /// Reference to the ControllerController singleton.
+    /// </summary>
+    private static ControllerController instance;
+
+    /// <summary>
+    /// Number of active Models of each ModelType.
+    /// </summary>
+    private ModelCounts counts;
+
+    /// <summary>
+    /// The most recent GameState.
+    /// </summary>
+    private GameState gameState;
+
+    /// <summary>
+    /// ModelTypes that can be upgraded. 
+    /// </summary>
+    private HashSet<ModelType> upgradeableTypes;
+
+    #endregion
+
+    #region Controller Lists
+
     /// <summary>
     /// List of active DefenderControllers.
     /// </summary>
@@ -54,28 +75,9 @@ public class ControllerController : MonoBehaviour
     /// </summary>
     private List<EmanationController> emanationControllers;
 
-    /// <summary>
-    /// Reference to the ControllerController singleton.
-    /// </summary>
-    private static ControllerController instance;
+    #endregion
 
-    /// <summary>
-    /// Number of active Models of each ModelType.
-    /// </summary>
-    private ModelCounts counts;
-
-    /// <summary>
-    /// The most recent GameState.
-    /// </summary>
-    private GameState gameState;
-
-    /// <summary>
-    /// ModelTypes that can be upgraded. 
-    /// </summary>
-    private HashSet<ModelType> upgradeableTypes;
-
-
-
+    #region Methods
 
     /// <summary>
     /// Finds and sets the ControllerController singleton. Also initializes the
@@ -106,7 +108,8 @@ public class ControllerController : MonoBehaviour
         instance.upgradeableTypes = new HashSet<ModelType>
         {
             ModelType.SQUIRREL,
-            ModelType.BEAR
+            ModelType.BEAR,
+            ModelType.PORCUPINE
         };
 
         ShopManager.SubscribeToBuyDefenderDelegate(instance.OnPurchaseModelFromShop);
@@ -166,6 +169,12 @@ public class ControllerController : MonoBehaviour
                 Assert.IsNotNull(nexusHole, "NexusHole is null.");
                 NexusHoleController nhc = new NexusHoleController(nexusHole);
                 instance.structureControllers.Add(nhc);
+                break;
+            case ModelType.PORCUPINE:
+                Porcupine porcupine = model as Porcupine;
+                Assert.IsNotNull(porcupine, "Porcupine is null.");
+                PorcupineController pc = new PorcupineController(porcupine);
+                instance.defenderControllers.Add(pc);
                 break;
             case ModelType.SOIL_FLOORING:
                 SoilFlooring soilFlooring = model as SoilFlooring;
@@ -418,10 +427,7 @@ public class ControllerController : MonoBehaviour
     /// of the shop so that the player can choose the upgrade they want.
     /// </summary>
     /// <param name="combinedModel">The Model that was created by combining the Defenders.</param>
-    private void OnFinishCombining(Model combinedModel)
-    {
-
-    }
+    private void OnFinishCombining(Model combinedModel) { }
 
     /// <summary>
     /// Removes all Defenders of the given type and tier from the scene.
@@ -453,11 +459,11 @@ public class ControllerController : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns a list of all Defenders of the given type and tier.
+    /// Returns a list of all placed Defenders of the given type and tier.
     /// </summary>
     /// <param name="defenderType">The type of Defender to get</param>
     /// <param name="tier">The tier of Defender to get</param>
-    /// <returns>a list of all Defenders of the given type and tier</returns>
+    /// <returns>a list of all placed Defenders of the given type and tier</returns>
     private List<Model> GetAllDefendersAtTier(ModelType defenderType, int tier)
     {
         List<Model> list = new List<Model>();
@@ -468,10 +474,12 @@ public class ControllerController : MonoBehaviour
             Defender defender = defenderController.GetModel() as Defender;
             if (defender == null) continue;
 
-            if (defender.TYPE == defenderType && defender.GetTier() == tier) list.Add(defender);
+            if (defender.TYPE == defenderType && defender.GetTier() == tier
+                && defender.IsPlaced()) list.Add(defender);
         }
 
         return list;
     }
 
+    #endregion
 }

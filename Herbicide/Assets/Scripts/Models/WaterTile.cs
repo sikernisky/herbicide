@@ -1,12 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 /// <summary>
-/// Represents impassable water.
+/// Represents a Water Tile.
 /// </summary>
 public class WaterTile : Tile
 {
+    #region Fields
+
+    #endregion
+
+    #region Stats
+
     /// <summary>
     /// WaterTiles are not walkable.
     /// </summary>
@@ -21,4 +23,6 @@ public class WaterTile : Tile
     /// Type of a WaterTile.
     /// </summary>
     protected override TileType type => TileType.WATER;
+
+    #endregion
 }

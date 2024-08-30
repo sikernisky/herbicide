@@ -1,13 +1,22 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 /// <summary>
-/// Represents the place where Enemies bring a nexus too.
+/// Represents a Model from which Enemies spawn.
 /// </summary>
-public class NexusHole : Structure
+public class NexusHole : Mob
 {
+    #region Fields
+
+    /// <summary>
+    /// All Nexii in this NexusHole.
+    /// </summary>
+    private List<Nexus> occupants = new List<Nexus>();
+
+    #endregion
+
+    #region Stats
+
     /// <summary>
     /// Type of a NexusHole.
     /// </summary>
@@ -93,60 +102,27 @@ public class NexusHole : Structure
     /// </summary>
     public override bool OCCUPIER => false;
 
-    /// <summary>
-    /// All Nexii in this NexusHole.
-    /// </summary>
-    private List<Nexus> occupants = new List<Nexus>();
+    #endregion
 
-    /// <summary>
-    /// Maximum number of Nexii that can be in this NexusHole.
-    /// </summary>
-    protected virtual int MAX_OCCUPANTS => int.MaxValue;
-
+    #region Methods
 
     /// <summary>
     /// Returns the Sprite that represents this NexusHole when placing.
     /// </summary>
     /// <returns> the Sprite that represents this NexusHole when placing.
     /// </returns>
-    public override Sprite[] GetPlacementTrack() { return NexusHoleFactory.GetPlacementTrack(); }
+    public override Sprite[] GetPlacementTrack() => NexusHoleFactory.GetPlacementTrack();
 
     /// <summary>
     /// Returns an instantiated copy of this NexusHole.
     /// </summary>
     /// <returns>an instantiated copy of this NexusHole.</returns>
-    public override GameObject Copy() { return NexusHoleFactory.GetNexusHolePrefab(); }
+    public override GameObject CreateNew() => NexusHoleFactory.GetNexusHolePrefab();
 
     /// <summary>
     /// Sets the 2D Collider properties of this NexusHole.
     /// </summary>
-    public override void SetColliderProperties() { return; }
+    public override void SetColliderProperties() { }
 
-    /// <summary>
-    /// Removes a Nexus from this NexusHole.
-    /// </summary>
-    /// <param name="nexus">The Nexus to remove.</param>
-    public void RemoveNexus(Nexus nexus)
-    {
-        if (!occupants.Contains(nexus)) return;
-        occupants.Remove(nexus);
-    }
-
-    /// <summary>
-    /// Returns the position that some sprite should be relative
-    /// to this NexusHole such that it looks like it is at the
-    /// bottom of the NexusHole
-    /// </summary>
-    /// <param name="occupant">The sprite to calculate.</param>
-    /// <returns>the position that some sprite should be relative
-    /// to this NexusHole such that it looks like it is at the
-    /// bottom of the NexusHole.</returns>
-    public Vector3 BottomOfHolePosition(Sprite occupant)
-    {
-        Assert.IsNotNull(occupant);
-
-        Vector3 nexusHolePos = GetPosition();
-        nexusHolePos.y -= occupant.bounds.size.y;
-        return nexusHolePos;
-    }
+    #endregion
 }

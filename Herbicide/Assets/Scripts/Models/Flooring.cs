@@ -1,23 +1,14 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Represents a GameObject that can be placed on a Tile to expand its
+/// Represents a Model that can place on a Tile to expand its
 /// behavior and complexity. 
 /// </summary>
 public abstract class Flooring : Model, ISurface
 {
-    /// <summary>
-    /// Index of the Sprite in tile set this Flooring takes on
-    /// </summary>
-    private int tilingIndex;
-
-    /// <summary>
-    /// Type of Tile this flooring is on
-    /// </summary>
-    private Tile.TileType typeOn;
+    #region Fields
 
     /// <summary>
     /// This Flooring's four neighbors.
@@ -49,6 +40,9 @@ public abstract class Flooring : Model, ISurface
     /// </summary>
     private bool defined;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Defines this Flooring on a Tile, setting its Sprite based on an
@@ -66,7 +60,6 @@ public abstract class Flooring : Model, ISurface
         SetTileCoordinates(x, y);
         name = TYPE.ToString() + " (" + GetX() + ", " + GetY() + ")";
         UpdateSurfaceNeighbors(neighbors);
-        this.typeOn = typeOn;
     }
 
     /// <summary>
@@ -125,7 +118,6 @@ public abstract class Flooring : Model, ISurface
         if (!FlooringFactory.ValidFlooringIndex(newIndex)) return;
         if (flooringRenderer == null) flooringRenderer = GetComponent<SpriteRenderer>();
         flooringRenderer.sprite = FlooringFactory.GetFlooringSprite(TYPE, newIndex);
-        tilingIndex = newIndex;
     }
 
     /// <summary>
@@ -138,7 +130,6 @@ public abstract class Flooring : Model, ISurface
         AssertDefined();
         return occupant != null;
     }
-
 
     /// <summary>
     /// Places a PlaceableObject on this Flooring.
@@ -177,7 +168,6 @@ public abstract class Flooring : Model, ISurface
         candidate.OnPlace(new Vector2Int(GetX(), GetY()));
         SetTilingIndex(GetTilingIndex(neighbors));
     }
-
 
     /// <summary>
     /// Sets the color of this Tile's SpriteRenderer. If it's floored, passes
@@ -250,7 +240,7 @@ public abstract class Flooring : Model, ISurface
     /// Returns this Flooring's occupant.
     /// </summary>
     /// <returns>this Flooring's occupant; null if there is none. </returns>
-    private PlaceableObject GetOccupant() { return occupant; }
+    private PlaceableObject GetOccupant() => occupant;
 
     /// <summary>
     /// Returns the index representing the correct Sprite in this 
@@ -265,17 +255,14 @@ public abstract class Flooring : Model, ISurface
     /// <summary>
     /// Asserts that this Flooring is defined.
     /// </summary>
-    public void AssertDefined()
-    {
-        Assert.IsTrue(defined);
-    }
+    public void AssertDefined() => Assert.IsTrue(defined, "Flooring is not defined.");
 
     /// <summary>
     /// Returns the PlaceableObject on this Flooring.
     /// </summary>
     /// <returns>the PlaceableObject on this Flooring; null if there
     /// is none</returns>
-    public PlaceableObject GetPlaceableObject() { return occupant; }
+    public PlaceableObject GetPlaceableObject() => occupant;
 
     /// <summary>
     /// Determines whether a PlaceableObject object can be potentially placed
@@ -286,12 +273,8 @@ public abstract class Flooring : Model, ISurface
     /// trying to virtually place on this TiFlooringle.</param>
     /// <returns>true if the PlaceableObject object can be placed on this Flooring;
     /// otherwise, false.</returns>
-    public bool CanGhostPlace(PlaceableObject ghost)
-    {
-        return !Occupied() && ghostOccupant == null && ghost != null
+    public bool CanGhostPlace(PlaceableObject ghost) => !Occupied() && ghostOccupant == null && ghost != null
             && CanPlace(ghost, GetSurfaceNeighbors());
-    }
-
     /// <summary>
     /// Provides a visual simulation of placing a PlaceableObject on
     /// this Flooring and is called during a hover / placement action.
@@ -329,7 +312,6 @@ public abstract class Flooring : Model, ISurface
         return true;
     }
 
-
     /// <summary>
     /// Removes all visual simulations of placing an IPlaceable on this
     /// Flooring. If there are none, does nothing.
@@ -360,7 +342,7 @@ public abstract class Flooring : Model, ISurface
     /// </summary>
     /// <returns>true if an Enemy is on this Flooring; otherwise,
     /// returns false.</returns>
-    public bool OccupiedByEnemy() { return occupiedByEnemy; }
+    public bool OccupiedByEnemy() => occupiedByEnemy;   
 
     /// <summary>
     /// Returns true if the ghost occupant on this Flooring is not null.
@@ -382,20 +364,17 @@ public abstract class Flooring : Model, ISurface
     /// </summary>
     /// <returns>true if a pathfinder can walk across this Flooring;
     /// otherwise, false.</returns>
-    public bool IsWalkable()
-    {
-        return !Occupied();
-    }
+    public bool IsWalkable() => !Occupied();
 
     /// <summary>
     /// Resets this Tile's stats to their starting values.
     /// </summary>
-    public override void ResetModel() { return; }
+    public override void ResetModel() => base.ResetModel();
 
     /// <summary>
     /// Sets the 2D Collider properties of this Tile.
     /// </summary>
-    public override void SetColliderProperties() { return; }
+    public override void SetColliderProperties() { }
 
     /// <summary>
     /// Returns a Sprite that represents this Flooring when it is
@@ -403,8 +382,7 @@ public abstract class Flooring : Model, ISurface
     /// </summary>
     /// <returns> a Sprite that represents this Flooring when it is
     /// being placed.</returns>
-    public override Sprite[] GetPlacementTrack()
-    {
-        throw new System.NotSupportedException("Tile placing not supported.");
-    }
+    public override Sprite[] GetPlacementTrack() => throw new System.NotSupportedException();
+
+    #endregion
 }

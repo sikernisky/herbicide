@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 /// <summary>
 /// Contract for a model that can host a PlaceableObject. In other
 /// words, a PlaceableObject can be placed on an ISurface.

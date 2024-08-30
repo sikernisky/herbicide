@@ -1,16 +1,14 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Manages assets for Wall components. With a factory,
-/// we save tremendous amounts of memory -- each Wall object
-/// can access its needed Sprite here rather than instantiating its own
-/// array of possible Sprites.
+/// Produces assets related to Walls.
 /// </summary>
 public class WallFactory : Factory
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the WallFactory singleton.
     /// </summary>
@@ -27,6 +25,9 @@ public class WallFactory : Factory
     [SerializeField]
     private Sprite[] stoneWallSprites;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Finds and sets the WallFactory singleton.
@@ -103,5 +104,7 @@ public class WallFactory : Factory
     /// Returns the Transform component of the WallFactory instance.
     /// </summary>
     /// <returns>the Transform component of the WallFactory instance.</returns>
-    protected override Transform GetTransform() { return instance.transform; }
+    protected override Transform GetTransform() => instance.transform;
+
+    #endregion
 }

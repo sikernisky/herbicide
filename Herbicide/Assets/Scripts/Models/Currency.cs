@@ -1,13 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Security.Cryptography;
 using UnityEngine;
 
 /// <summary>
-/// Represents a collectable currency.
+/// Represents a Collectable, that when collected, gives the player
+/// a form of currency.
 /// </summary>
 public abstract class Currency : Collectable
 {
+    #region Fields
+
+    /// <summary>
+    /// Current value of this Currency.
+    /// </summary>
+    private int value;
+
+    #endregion
+
+    #region Stats
+
     /// <summary>
     /// Starting value of this currency.
     /// </summary>
@@ -23,11 +32,9 @@ public abstract class Currency : Collectable
     /// </summary>
     public virtual int MIN_VALUE => int.MinValue;
 
-    /// <summary>
-    /// Current value of this Currency.
-    /// </summary>
-    private int value;
+    #endregion
 
+    #region Methods
 
     /// <summary>
     /// Performs actions when this Currency spawns in game. Sets the
@@ -43,21 +50,23 @@ public abstract class Currency : Collectable
     /// Adds some amount to this Currency's value.
     /// </summary>
     /// <param name="amount">The amount to add.</param>
-    public void AdjustValue(int amount) { value = Mathf.Clamp(value + amount, MIN_VALUE, MAX_VALUE); }
+    public void AdjustValue(int amount) => value = Mathf.Clamp(value + amount, MIN_VALUE, MAX_VALUE);
 
     /// <summary>
     /// Resets this Currency's value to its starting amount.
     /// </summary>
-    public void ResetValue() { value = BASE_VALUE; }
+    public void ResetValue() => value = BASE_VALUE;
 
     /// <summary>
     /// Returns this Currency's current value.
     /// </summary>
     /// <returns>this Currency's current value.</returns>
-    public int GetValue() { return value; }
+    public int GetValue() => value;
 
     /// <summary>
     /// Sets this Currency's 2D Collider properties.
     /// </summary>
-    public override void SetColliderProperties() { return; }
+    public override void SetColliderProperties() { }
+
+    #endregion
 }

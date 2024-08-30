@@ -1,13 +1,33 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Represents something the Enemies are trying to destroy.
+/// Represents a Structure that Enemies target.
 /// </summary>
-public class Nexus : Structure
+public class Nexus : Mob
 {
+    #region Fields
+
+    /// <summary>
+    /// true if this Nexus was brought to the target position.
+    /// </summary>
+    private bool cashedIn;
+
+    /// <summary>
+    /// The Transform of the Model that picked this Nexus up; null if
+    /// it is not picked up.
+    /// </summary>
+    private Transform holder;
+
+    /// <summary>
+    /// The HOLDER_OFFSET of the model that picked this Model up.
+    /// </summary>
+    private Vector2 holdingOffset;
+
+    #endregion
+
+    #region Stats
+
     /// <summary>
     /// The StructureType of a Nexus.
     /// </summary>
@@ -98,21 +118,9 @@ public class Nexus : Structure
     /// </summary>
     public override float MIN_MOVEMENT_SPEED => 0f;
 
-    /// <summary>
-    /// true if this Nexus was brought to the target position.
-    /// </summary>
-    private bool cashedIn;
+    #endregion
 
-    /// <summary>
-    /// The Transform of the Model that picked this Nexus up; null if
-    /// it is not picked up.
-    /// </summary>
-    private Transform holder;
-
-    /// <summary>
-    /// The HOLDER_OFFSET of the model that picked this Model up.
-    /// </summary>
-    private Vector2 holdingOffset;
+    #region Methods
 
     /// <summary>
     /// Returns true if this Nexus is dead. This is when its
@@ -120,25 +128,25 @@ public class Nexus : Structure
     /// </summary>
     /// <returns>true if this Nexus is dead; otherwise, false.
     /// </returns>
-    public override bool Dead() { return GetHealth() <= 0; }
+    public override bool Dead() => GetHealth() <= 0;
 
     /// <summary>
     /// Returns the Sprite that represents this Nexus when placing.
     /// </summary>
     /// <returns>the Sprite that represents this Nexus when placing.
     /// </returns>
-    public override Sprite[] GetPlacementTrack() { return null; }
+    public override Sprite[] GetPlacementTrack() => throw new System.NotSupportedException();
 
     /// <summary>
     /// Returns a GameObject representing this Nexus on the TileGrid.
     /// </summary>
     /// <returns>a GameObject representing this Nexus on the TileGrid.</returns>
-    public override GameObject Copy() { return NexusFactory.GetNexusPrefab(); }
+    public override GameObject CreateNew() => NexusFactory.GetNexusPrefab();
 
     /// <summary>
     /// Sets this Nexus' 2D collider properties.
     /// </summary>
-    public override void SetColliderProperties() { return; }
+    public override void SetColliderProperties() { }
 
     /// <summary>
     /// Returns true if this Nexus was brought to the target spot (usually a 
@@ -146,14 +154,12 @@ public class Nexus : Structure
     /// </summary>
     /// <returns>true if this Nexus was brought to the target spot; otherwise,
     /// false. </returns>
-    public bool CashedIn() { return cashedIn; }
+    public bool CashedIn() => cashedIn;
 
     /// <summary>
     /// Informs this Nexus that it was brought to the target spot.
     /// </summary>
-    public void CashIn() { cashedIn = true; }
-
-
+    public void CashIn() => cashedIn = true;
 
     /// <summary>
     /// Informs this Model that it has been picked up.
@@ -183,15 +189,14 @@ public class Nexus : Structure
     /// Returns true if this Model is picked up.
     /// </summary>
     /// <returns> true if this Model is picked up; otherwise, false.</returns>
-    public bool PickedUp() { return holder != null; }
+    public bool PickedUp() => holder != null;
 
     /// <summary>
     /// Returns the position of this Model when held. This is the position of
     /// the Model holding it + the Model holding it's HOLDER_OFFSET.
     /// </summary>
     /// <returns>the HOLDER_OFFSET of the Model that picked this Model up.</returns>
-    public Vector2 GetHeldPosition()
-    {
-        return holder.position + new Vector3(holdingOffset.x, holdingOffset.y, 1);
-    }
+    public Vector2 GetHeldPosition() => holder.position + new Vector3(holdingOffset.x, holdingOffset.y, 1);
+
+    #endregion
 }

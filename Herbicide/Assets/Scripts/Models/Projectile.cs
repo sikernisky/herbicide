@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -9,22 +7,7 @@ using UnityEngine.Assertions;
 /// </summary>
 public abstract class Projectile : Model
 {
-    //--------------------STATS---------------------//
-
-    /// <summary>
-    /// Starting speed of this Projectile.
-    /// </summary>
-    public abstract float BASE_SPEED { get; }
-
-    /// <summary>
-    /// Maximum speed of this Projectile.
-    /// </summary>
-    public abstract float MAX_SPEED { get; }
-
-    /// <summary>
-    /// Minimum speed of this Projectile.
-    /// </summary>
-    public abstract float MIN_SPEED { get; }
+    #region Fields
 
     /// <summary>
     /// Current speed of this Projectile.
@@ -32,42 +15,14 @@ public abstract class Projectile : Model
     private float speed;
 
     /// <summary>
-    /// Starting damage of this Projectile.
-    /// </summary>
-    public abstract int BASE_DAMAGE { get; }
-
-    /// <summary>
-    /// Maximum damage of this Projectile.
-    /// </summary>
-    public abstract int MAX_DAMAGE { get; }
-
-    /// <summary>
-    /// Minimum damage of this Projectile.
-    /// </summary>
-    public abstract int MIN_DAMAGE { get; }
-
-    /// <summary>
     /// Current damage of this Projectile.
     /// </summary>
     private int damage;
 
     /// <summary>
-    /// How many seconds this Projectile can last in the scene.
-    /// </summary>
-    public abstract float LIFESPAN { get; }
-
-    /// <summary>
     /// How long this Projectile has been active
     /// </summary>
     private float age;
-
-    //----------------------------------------------//
-
-    /// <summary>
-    /// How many seconds a Projectile's move animation lasts,
-    /// from start to finish. 
-    /// </summary>
-    public abstract float MOVE_ANIMATION_DURATION { get; }
 
     /// <summary>
     /// true if this Projectile is active in the scene.
@@ -105,14 +60,61 @@ public abstract class Projectile : Model
     /// </summary>
     private bool reachedTarget;
 
+    #endregion
+
+    #region Stats
+
     /// <summary>
-    /// Types of Projectiles.
+    /// Starting speed of this Projectile.
     /// </summary>
-    public enum ProjectileType
-    {
-        ACORN,
-        BOMB
-    }
+    public abstract float BASE_SPEED { get; }
+
+    /// <summary>
+    /// Maximum speed of this Projectile.
+    /// </summary>
+    public abstract float MAX_SPEED { get; }
+
+    /// <summary>
+    /// Minimum speed of this Projectile.
+    /// </summary>
+    public abstract float MIN_SPEED { get; }
+
+
+    /// <summary>
+    /// Starting damage of this Projectile.
+    /// </summary>
+    public abstract int BASE_DAMAGE { get; }
+
+    /// <summary>
+    /// Maximum damage of this Projectile.
+    /// </summary>
+    public abstract int MAX_DAMAGE { get; }
+
+    /// <summary>
+    /// Minimum damage of this Projectile.
+    /// </summary>
+    public abstract int MIN_DAMAGE { get; }
+
+    /// <summary>
+    /// How many seconds this Projectile can last in the scene.
+    /// </summary>
+    public abstract float LIFESPAN { get; }
+
+    /// <summary>
+    /// The duration of the animation that plays when this Projectile
+    /// is mid-air.
+    /// </summary>
+    public virtual float MID_AIR_ANIMATION_DURATION => .2f;
+
+    /// <summary>
+    /// How many seconds a Projectile's move animation lasts,
+    /// from start to finish. 
+    /// </summary>
+    public abstract float MOVE_ANIMATION_DURATION { get; }
+
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Informs this Projectile that it collided with some Model.
@@ -126,117 +128,104 @@ public abstract class Projectile : Model
     }
 
     /// <summary>
-    /// Returns the Model that this Projectile hit. This 
-    /// returns null if it hasn't hit anything.  
+    /// Returns true if this Projectile has collided with something.
     /// </summary>
-    /// <returns>the Model that this Projectile hit</returns>
-    public Model GetVictim() { return victim; }
+    /// <returns>true if this Projectile has collided with something;
+    /// otherwise, false.</returns>
+    public bool Collided() => victim != null;
 
     /// <summary>
     /// Sets this Projectile's properties such that it has not collided
     /// with anything.
     /// </summary>
-    private void SetUncollided() { victim = null; }
+    private void SetUncollided() => victim = null;
 
     /// <summary>
     /// Informs this Projectile that it reached its positional target.
     /// </summary>
-    public void SetReachedTarget() { reachedTarget = true; }
+    public void SetReachedTarget() => reachedTarget = true;
 
     /// <summary>
     /// Returns true if this Projectile reached its positional target.
     /// </summary>
     /// <returns>true if this Projectile reached its positional target;
     /// otherwise, false. </returns>
-    public bool HasReachedTarget() { return reachedTarget; }
+    public bool HasReachedTarget() => reachedTarget;
 
     /// <summary>
     /// Returns this Projectile's RigidBody2D component.
     /// </summary>
     /// <returns>this Projectile's RigidBody2D component.</returns>
-    public Rigidbody2D GetBody() { return projectileBody; }
+    public Rigidbody2D GetBody() => projectileBody;
 
     /// <summary>
     /// Returns this Projectile's current speed.
     /// </summary>
     /// <returns>this Projectile's current speed.</returns>
-    public float GetSpeed() { return speed; }
+    public float GetSpeed() => speed;
 
     /// <summary>
     /// Adds to this Projectile's current speed.
     /// </summary>
     /// <param name="amount">the amount of speed to add.</param>
-    public void AdjustSpeed(float amount) { speed += amount; }
+    public void AdjustSpeed(float amount) => speed += amount;
 
     /// <summary>
     /// Resets the Projectile's speed to its starting value.
     /// </summary>
-    public void ResetSpeed() { speed = BASE_SPEED; }
+    public void ResetSpeed() => speed = BASE_SPEED;
 
     /// <summary>
     /// Returns this Projectile's current damage.
     /// </summary>
     /// <returns>this Projectile's current damage.</returns>
-    public int GetDamage() { return damage; }
+    public int GetDamage() => damage;
 
     /// <summary>
     /// Adds to this Projectile's current damage.
     /// </summary>
     /// <param name="amount">the amount of damage to add.</param>
-    public void AdjustDamage(int amount) { damage += amount; }
+    public void AdjustDamage(int amount) => damage += amount;
 
     /// <summary>
     /// Resets the Projectile's damange to its starting value.
     /// </summary>
-    public void ResetDamage() { damage = BASE_DAMAGE; }
+    public void ResetDamage() => damage = BASE_DAMAGE;
 
     /// <summary>
     /// Returns true if this Projectile is active in the scene.
     /// </summary>
     /// <returns>true if this Projectile is active in the scene; otherwise,
     /// false.</returns>
-    public bool IsActive() { return active; }
+    public bool IsActive() => active;
 
     /// <summary>
     /// Sets this Projectile as inactive.
     /// </summary>
-    public void SetAsInactive() { active = false; }
+    public void SetAsInactive() => active = false;
 
     /// <summary>
     /// Sets this Projectile as active.
     /// </summary>
-    private void SetActive() { active = true; }
+    private void SetActive() => active = true;
 
     /// <summary>
     /// Adds to this Projectile's current age.
     /// </summary>
     /// <param name="time">the amount of time to add.</param>
-    public void AddToLifespan(float time) { age = time <= 0 ? age : age + time; }
+    public void AddToLifespan(float time) => age = time <= 0 ? age : age + time;
 
     /// <summary>
     /// Returns true if this Projectile has hit its lifespan.
     /// </summary>
     /// <returns>true if this Projectile has hit its lifespan;
     /// otherwise, false.</returns>
-    public bool Expired() { return age >= LIFESPAN; }
+    public bool Expired() => age >= LIFESPAN;
 
     /// <summary>
     /// Resets this Projectile's age to zero.
     /// </summary>
-    private void ResetAge() { age = 0; }
-
-    /// <summary>
-    /// Returns this Projectile's animation curve component for
-    /// a lob shot. Throws an exception if this projectile does
-    /// not support lobbing.
-    /// </summary>
-    /// <returns>this Projectile's animation curve component for
-    /// a lob shot.</returns>
-    public AnimationCurve GetLobCurve()
-    {
-        if (lobCurve == null) throw new System.Exception("This projectile cannot lob.");
-        return lobCurve;
-    }
+    private void ResetAge() => age = 0;
 
     /// <summary>
     /// Resets this Projectile's stats to their starting
@@ -244,6 +233,7 @@ public abstract class Projectile : Model
     /// </summary>
     public override void ResetModel()
     {
+        base.ResetModel();
         ResetSpeed();
         ResetDamage();
         SetUncollided();
@@ -254,11 +244,27 @@ public abstract class Projectile : Model
     /// <summary>
     /// Sets this Projectile's 2D Collider's properties.
     /// </summary>
-    public override void SetColliderProperties() { return; }
+    public override void SetColliderProperties() { }
 
     /// <summary>
     /// Sets the position of the Projectile's shadow.
     /// </summary>
     /// <param name="position">The position to set the shadow to.</param>
-    public void SetShadowPosition(Vector3 position) { shadow.transform.position = position; }
+    public void SetShadowPosition(Vector3 position) => shadow.transform.position = position;
+
+    /// <summary>
+    /// Returns a fresh copy of this Projectile from the object pool. 
+    /// </summary>
+    /// <returns>a fresh copy of this Projectile from the object pool.  </returns>
+    public override GameObject CreateNew() => ProjectileFactory.GetProjectilePrefab(TYPE);
+
+    /// <summary>
+    /// Returns a Sprite that represents this Projectile when it is
+    /// being placed.
+    /// </summary>
+    /// <returns> a Sprite that represents this Projectile when it is
+    /// being placed.</returns>
+    public override Sprite[] GetPlacementTrack() => ProjectileFactory.GetPlacementTrack(TYPE);
+
+    #endregion
 }

@@ -1,19 +1,21 @@
 using System;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Abstract class to represent controllers of Defenders.
+/// Controls a Defender. <br></br>
 /// 
 /// The DefenderController is responsible for manipulating its Defender and bringing
 /// it to life. This includes moving it, choosing targets, playing animations,
 /// and more.
 /// </summary>
-/// <typeparam name="T">Enum to represent state of the Defender.</typeparam>
+/// <typeparam name="T">The type of enum that represents distinct states or attributes
+/// of the Defender.</typeparam>
 public abstract class DefenderController<T> : MobController<T> where T : Enum
 {
+    #region Fields
+
     /// <summary>
     /// true if the Squirrel executed one call of its Spawn state;
     /// otherwise, false.
@@ -25,6 +27,9 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     /// </summary>
     protected override bool FINDS_TARGETS => true;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Makes a new DefenderController for a Defender.
@@ -32,7 +37,6 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     /// <param name="defender">The Defender controlled by this
     ///  DefenderController.</param>
     public DefenderController(Defender defender) : base(defender) { }
-
 
     /// <summary>
     /// Updates the Defender controlled by this DefenderController.
@@ -53,7 +57,7 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     /// Returns this DefenderController's Defender reference. 
     /// </summary>
     /// <returns>the reference to this DefenderController's defender.</returns>
-    private Defender GetDefender() { return GetMob() as Defender; }
+    protected Defender GetDefender() => GetMob() as Defender;
 
     /// <summary>
     /// Returns true if the Defender can target the Model passed
@@ -83,27 +87,19 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     /// </summary>
     /// <returns>true if this controller's Defender should be destoyed and
     /// set to null; otherwise, false.</returns>
-    public override bool ValidModel()
-    {
-        if (GetDefender().Dead()) return false;
-
-        return true;
-    }
-
+    public override bool ValidModel() => !GetDefender().Dead();
+    
     /// <summary>
     /// Performs logic for this Defender's SPAWN state.
     /// </summary>
-    protected virtual void ExecuteSpawnState()
-    {
-        spawnStateDone = true;
-    }
+    protected virtual void ExecuteSpawnState() => spawnStateDone = true;
 
     /// <summary>
     /// Returns true if the SpawnState has completed one execution.
     /// </summary>
     /// <returns>true if the SpawnState has completed one execution;
     /// otherwise, false. </returns>
-    protected bool SpawnStateDone() { return spawnStateDone; }
+    protected bool SpawnStateDone() => spawnStateDone;
 
     /// <summary>
     /// Returns the distance from the Defender's tree to its first
@@ -168,6 +164,13 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
         /*        ModelCounts counts = GetModelCounts();
                 if(counts.GetCount(ModelType.SQUIRREL) == 2) BuffAttackSpeed(2);*/
     }
+
+    /// <summary>
+    /// Returns the Defender prefab to the DefenderFactory object pool.
+    /// </summary>
+    public override void DestroyModel() => DefenderFactory.ReturnDefenderPrefab(GetDefender().gameObject);
+
+    #endregion
 }
 
 

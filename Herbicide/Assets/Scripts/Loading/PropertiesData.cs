@@ -1,15 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Represents deserialized custom properties from a Tiled
-/// JSON file.
+/// Represents a custom property from a Tiled JSON file, deserialized.
 /// </summary>
 [System.Serializable]
 public class PropertiesData
 {
+    #region Fields
+
     /// <summary>
     /// Name of this custom property.
     /// </summary>
@@ -19,6 +17,10 @@ public class PropertiesData
     /// Value of this custom property, in string form.
     /// </summary>
     public string value;
+
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Returns the name of this custom property.
@@ -34,8 +36,7 @@ public class PropertiesData
     /// Returns the value of this custom property, as a string.
     /// </summary>
     /// <returns>the value of this custom property as a string.</returns>
-    public string GetPropertyValue()
-    {
-        return value;
-    }
+    public string GetPropertyValue() => value;
+
+    #endregion
 }

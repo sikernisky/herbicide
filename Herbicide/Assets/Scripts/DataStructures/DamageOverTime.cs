@@ -1,13 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Represents a Damage Over Time effect.
+/// Data Structure for a Damage Over Time effect.
 /// </summary>
 public class DamageOverTime
 {
+    #region Fields
+
+    /// <summary>
+    /// Type of DamageOverTime effect.
+    /// </summary>
+    public enum DOTType
+    {
+        BEAR_CHOMP
+    }
+
     /// <summary>
     /// Total damage the effect will deal.
     /// </summary>
@@ -38,14 +46,9 @@ public class DamageOverTime
     /// </summary>
     private DOTType dotType;
 
-    /// <summary>
-    /// Type of DamageOverTime effect.
-    /// </summary>
-    public enum DOTType
-    {
-        BEAR_CHOMP
-    }
+    #endregion
 
+    #region Methods
 
     /// <summary>
     /// Constructs a new DamageOverTime effect.
@@ -90,13 +93,13 @@ public class DamageOverTime
     /// Returns true if the effect is finished.
     /// </summary>
     /// <returns>true if the effect is finished; otherwise, false. </returns>
-    public bool IsFinished() { return elapsedTime >= duration; }
+    public bool IsFinished() => elapsedTime >= duration;
 
     /// <summary>
     /// Returns the amount of damage to deal per tick.
     /// </summary>
     /// <returns>the amount of damage to deal per tick.</returns>
-    public float GetDamage() { return totalDamage / numTicks; }
+    public float GetDamage() => totalDamage / numTicks;
 
     /// <summary>
     /// Returns true if the effect stacks.
@@ -117,6 +120,7 @@ public class DamageOverTime
     /// Returns the type of DamageOverTime effect.
     /// </summary>
     /// <returns>the type of DamageOverTime effect.</returns>
-    public DOTType GetDOTType() { return dotType; }
+    public DOTType GetDOTType() => dotType;
 
+    #endregion
 }

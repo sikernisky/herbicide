@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -9,6 +8,8 @@ using UnityEngine.UI;
 /// </summary>
 public class SynergySlot : MonoBehaviour
 {
+    #region Fields
+
     /// <summary>
     /// Ordered list of the tier Image components.
     /// </summary>
@@ -46,9 +47,14 @@ public class SynergySlot : MonoBehaviour
     /// </summary>
     private Vector3 lerpedPosition;
 
+    /// <summary>
+    /// The progress of the SynergySlot's lerp.
+    /// </summary>
     private float lerpProgress = 0f;
 
+    #endregion
 
+    #region Methods
 
     /// <summary>
     /// Main update loop for the SynergySlot. Lights up / turns off pillars 
@@ -91,5 +97,7 @@ public class SynergySlot : MonoBehaviour
     /// Returns this SynergySlot's synergy.
     /// </summary>
     /// <returns>this SynergySlot's synergy.</returns>
-    public SynergyController.Synergy GetSynergy() { return synergy; }
+    public SynergyController.Synergy GetSynergy() => synergy;
+
+    #endregion
 }

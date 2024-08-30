@@ -1,24 +1,21 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Mono.Cecil;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
 /// Base class for all Factories. Provides essential methods
 /// for object pooling and defines fields that all Factories
-/// must implement. /// 
+/// must implement.
 /// </summary>
 public abstract class Factory : MonoBehaviour
 {
+    #region Fields
+
     /// <summary>
     /// This Factory's (non-instantiated) list of model prefabs.
     /// </summary>
     [SerializeField]
     private List<GameObject> prefabs;
-
-    //----------------OBJECT POOLING-------------------//
 
     /// <summary>
     /// An ObjectPool for each prefab type this Factory pumps out.
@@ -30,6 +27,9 @@ public abstract class Factory : MonoBehaviour
     /// </summary>
     protected virtual int poolStartingCount => 10;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Spawns a pool for each of this Factory's prefab. These objects will
@@ -89,4 +89,6 @@ public abstract class Factory : MonoBehaviour
         model.ResetModel();
         objectPool.ReturnToPool(returnedPrefab);
     }
+
+    #endregion
 }

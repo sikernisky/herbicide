@@ -1,15 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System;
 using UnityEngine.Assertions;
 
-
 /// <summary>
-/// Abstract class to represent controllers of Emanations.
+/// Controls an Emanation. <br></br>
 /// 
-/// The EmanationController is responsible for positioning its Emanation
-/// and playing its animation track. Then, it destroys it. <br></br>
+/// The EmanationController is responsible for manipulating its Emanation
+/// and bringing it to life. This includes moving it playing animations,
+/// and more. <br></br>
 /// 
 /// The EmanationController does not follow the Animation infrastructure
 /// used by all other models. This is because it only needs one track and
@@ -17,6 +14,17 @@ using UnityEngine.Assertions;
 /// implementing unused code. </summary>
 public class EmanationController
 {
+    #region Fields
+
+    /// <summary>
+    /// Different types of Emanations. 
+    /// </summary>
+    public enum EmanationType
+    {
+        BEAR_CHOMP,
+        QUILL_PIERCE
+    }
+
     /// <summary>
     /// Type of Emanation this controller is animating.
     /// </summary>
@@ -75,13 +83,9 @@ public class EmanationController
     /// </summary>
     private bool scheduledForDestruction;
 
-    /// <summary>
-    /// Different types of Emanations. 
-    /// </summary>
-    public enum EmanationType
-    {
-        BEAR_CHOMP,
-    }
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Makes a new EmanationController.
@@ -90,7 +94,8 @@ public class EmanationController
     /// <param name="numCycles">The number of cycles the EmanationController must
     /// run before removing its Emanation.</param>
     /// <param name="target">Where the Emanation should be.</param> 
-    public EmanationController(EmanationType emanationType, int numCycles, Vector3 target)
+    /// <param name="rotation">The rotation of the Emanation.</param>
+    public EmanationController(EmanationType emanationType, int numCycles, Vector3 target, Quaternion rotation)
     {
         Assert.IsTrue(numCycles > 0);
 
@@ -100,7 +105,12 @@ public class EmanationController
         requiredCycles = numCycles;
         spawnPos = target;
 
-        MakeEmanationDummy();
+        GameObject emanation = new GameObject(TYPE.ToString());
+        emanationDummy = emanation;
+        emanationRenderer = emanation.AddComponent<SpriteRenderer>();
+        emanationRenderer.sortingLayerName = SortingLayers.EMANATIONS.ToString().ToLower();
+        emanationDummy.transform.position = spawnPos;
+        emanationDummy.transform.rotation = rotation;
     }
 
     /// <summary>
@@ -115,6 +125,8 @@ public class EmanationController
             return;
         }
         if (DoneAnimating()) return;
+
+        // Debug.Log("here");
 
 
         counter += Time.deltaTime;
@@ -140,14 +152,14 @@ public class EmanationController
     /// </summary>
     /// <returns>true if the ControllerController should remove this EmanationController;
     /// otherwise, false. </returns>
-    public bool ShouldRemoveController() { return emanationDummy == null; }
+    public bool ShouldRemoveController() => emanationDummy == null;
 
     /// <summary>
     /// Returns true if this controller should destroy its Emanation.
     /// </summary>
     /// <returns>true if this controller should destroy its Emanation; otherwise,
     /// false. </returns>
-    private bool ShouldRemoveModel() { return DoneAnimating(); }
+    private bool ShouldRemoveModel() => DoneAnimating();
 
     /// <summary>
     /// Returns true if the EmanationController has completed its required number
@@ -155,29 +167,7 @@ public class EmanationController
     /// </summary>
     /// <returns>true if the EmanationController has completed its required number
     /// of animation cycles; otherwise, false. </returns>
-    private bool DoneAnimating() { return cyclesCompleted >= requiredCycles; }
-
-    /// <summary>
-    /// Creates the Emanation GameObject and attaches a SpriteRender component.
-    /// </summary>
-    private void MakeEmanationDummy()
-    {
-        GameObject emanation = new GameObject(TYPE.ToString());
-        emanationDummy = emanation;
-        emanationRenderer = emanation.AddComponent<SpriteRenderer>();
-        emanationRenderer.sortingLayerName = SortingLayers.EMANATIONS.ToString().ToLower();
-        emanationDummy.transform.position = spawnPos;
-    }
-
-    /// <summary>
-    /// TODO: Let the Controller who created the Emanation move it around
-    /// if it wants to. Needs to be called in an update method.
-    /// </summary>
-    /// <param name="targetPos">Where to move the Emanation</param>
-    public void MoveEmanation(Vector3 targetPos)
-    {
-        if (ScheduledForDestruction()) return;
-    }
+    private bool DoneAnimating() => cyclesCompleted >= requiredCycles;
 
     /// <summary>
     /// Destroys and detatches the Model from this Controller.
@@ -206,5 +196,7 @@ public class EmanationController
     /// </summary>
     /// <returns>true if the Emanation is scheduled for destruction;
     /// otherwise, false.</returns>
-    protected bool ScheduledForDestruction() { return scheduledForDestruction; }
+    protected bool ScheduledForDestruction() => scheduledForDestruction;
+
+    #endregion
 }

@@ -1,13 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 /// <summary>
 /// Represents a Tile that borders at least one unwalkable boundary and 
 /// at least one walkable Tile.
 /// </summary>
 public abstract class EdgeTile : Tile
 {
+    #region Fields
+
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Defines this EdgeTile to be within a TileGrid at coordinates (x, y).
@@ -21,4 +22,6 @@ public abstract class EdgeTile : Tile
         base.Define(x, y);
         SetSprite(EdgeFactory.GetEdgeSprite(GetTileType().ToString(), tilingIndex));
     }
+
+    #endregion
 }

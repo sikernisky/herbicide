@@ -1,19 +1,16 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 using System.Linq;
 using UnityEngine.Assertions;
 using System.Text.RegularExpressions;
 
-
 /// <summary>
-/// Manages what and how many Enemies spawn in a level. This
-/// also acts as an "EnemyFactory" in that it spawns Enemy
-/// GameObjects from an integer. 
+/// Manages what and how many Enemies spawn in a level.
 /// </summary>
 public class EnemyManager : MonoBehaviour
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the EnemyManager singleton
     /// </summary>
@@ -29,6 +26,9 @@ public class EnemyManager : MonoBehaviour
     /// </summary>
     private bool populated;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Gives the EnemyManager a dictionary of Enemy spawn marker locations
@@ -144,7 +144,7 @@ public class EnemyManager : MonoBehaviour
     /// </summary>
     /// <returns>true if the EnemyManager has been populated;
     /// otherwise, false. </returns>
-    public static bool Populated() { return instance.populated; }
+    public static bool Populated() => instance.populated;
 
     /// <summary>
     /// Finds and sets the EnemyManager singleton.
@@ -186,4 +186,6 @@ public class EnemyManager : MonoBehaviour
 
         throw new System.NotSupportedException(enemyName + " not supported.");
     }
+
+    #endregion
 }

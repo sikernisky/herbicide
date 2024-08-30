@@ -1995,9 +1995,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 498469192}
-  - component: {fileID: 498469193}
+  - component: {fileID: 498469194}
   m_Layer: 0
-  m_Name: AcornFactory
+  m_Name: ProjectileFactory
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2018,7 +2018,7 @@ Transform:
   m_Father: {fileID: 1398493868}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &498469193
+--- !u!114 &498469194
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2027,13 +2027,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 498469191}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3b98ff18c1454785b4b1d48273aac68, type: 3}
+  m_Script: {fileID: 11500000, guid: 54e660c0bc57668428e49d85731dfd99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   prefabs:
   - {fileID: 8079875932440872871, guid: ec999ae8a85bc44aa8bf5fd8f9a7acc9, type: 3}
-  placementTrack:
-  - {fileID: 21300000, guid: e0305b50b903247c7a3b4ab22191094c, type: 3}
+  - {fileID: 8079875932440872871, guid: f82c63b07c37ae54fa13c953ef62f46c, type: 3}
+  acornAnimationSet: {fileID: 11400000, guid: e05583944e8bb454ea20cf5db7ac8ffc, type: 2}
+  quillAnimationSet: {fileID: 11400000, guid: 982e2fad998e003449bb1dcdfbbd9ed7, type: 2}
 --- !u!1 &503143294
 GameObject:
   m_ObjectHideFlags: 0
@@ -2154,7 +2155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e39eb794ddd14e1c9cc16d535114f3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tiledJSON: {fileID: 4900000, guid: 520b006a5dd254f25870efaef98a31b5, type: 3}
+  tiledJSON: {fileID: 4900000, guid: d10a4859447e158499fa65f67ae286de, type: 3}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -3895,6 +3896,7 @@ MonoBehaviour:
   prefabs:
   - {fileID: 8243588634895102957, guid: 33d6f0d91cf424ab6a78a2a83a02d4d2, type: 3}
   - {fileID: 8243588634895102957, guid: 2fd948259679640fc87149ce1291f5ed, type: 3}
+  - {fileID: 8243588634895102957, guid: 45e5c8c7b3e2f244dbefe0abcefd9c95, type: 3}
   - {fileID: 8243588634895102957, guid: 87bb6a3f14829144cbb232dc73ef9e98, type: 3}
 --- !u!1 &1139417026
 GameObject:
@@ -5007,6 +5009,50 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameCanvas: {fileID: 850290206}
   fader: {fileID: 883189723}
+--- !u!1 &1486691647
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1486691648}
+  - component: {fileID: 1486691649}
+  m_Layer: 0
+  m_Name: ExplosionController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1486691648
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1486691647}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1918635051}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1486691649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1486691647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cf67256f813fd845becd7316fd33191, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1513332655
 GameObject:
   m_ObjectHideFlags: 0
@@ -5153,6 +5199,17 @@ MonoBehaviour:
   - {fileID: 548215758, guid: b17245f72fdfb4e3b9931cbaf086310c, type: 3}
   - {fileID: 521704097, guid: b17245f72fdfb4e3b9931cbaf086310c, type: 3}
   - {fileID: 140122250, guid: b17245f72fdfb4e3b9931cbaf086310c, type: 3}
+  quillPierceTrack:
+  - {fileID: 1578779845, guid: 75aef1c37dc759942a30a346b851b3e6, type: 3}
+  - {fileID: -2002935581, guid: 75aef1c37dc759942a30a346b851b3e6, type: 3}
+  - {fileID: -350840417, guid: 75aef1c37dc759942a30a346b851b3e6, type: 3}
+  - {fileID: -177517971, guid: 75aef1c37dc759942a30a346b851b3e6, type: 3}
+  - {fileID: 107342155, guid: 75aef1c37dc759942a30a346b851b3e6, type: 3}
+  - {fileID: -1377869091, guid: 75aef1c37dc759942a30a346b851b3e6, type: 3}
+  - {fileID: 1597401548, guid: 75aef1c37dc759942a30a346b851b3e6, type: 3}
+  - {fileID: -1468365903, guid: 75aef1c37dc759942a30a346b851b3e6, type: 3}
+  - {fileID: 1202231844, guid: 75aef1c37dc759942a30a346b851b3e6, type: 3}
+  - {fileID: -725687816, guid: 75aef1c37dc759942a30a346b851b3e6, type: 3}
 --- !u!1 &1549079117
 GameObject:
   m_ObjectHideFlags: 0
@@ -6108,6 +6165,7 @@ Transform:
   - {fileID: 315477445}
   - {fileID: 484092435}
   - {fileID: 2051107807}
+  - {fileID: 1486691648}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6586,7 +6644,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currencyText: {fileID: 1344936708}
-  startingMoney: 200
+  startingMoney: 100000
 --- !u!1 &2054696374
 GameObject:
   m_ObjectHideFlags: 0

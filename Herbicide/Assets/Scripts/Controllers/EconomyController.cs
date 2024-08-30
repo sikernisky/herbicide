@@ -1,16 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using TMPro;
 using System;
-using UnityEngine.UI;
 
 /// <summary>
-/// Handles economy and currency related events.
+/// Controls player balance and currency related events.
 /// </summary>
 public class EconomyController : MonoBehaviour
 {
+    #region Fields
 
     /// <summary>
     /// Upper bound of how much money the player can have at once.
@@ -65,6 +63,10 @@ public class EconomyController : MonoBehaviour
     /// </summary>
     private GameState gameState;
 
+    #endregion
+
+    #region Methods
+
     /// <summary>
     /// Finds and sets the EconomyController singleton.
     /// </summary>
@@ -80,11 +82,6 @@ public class EconomyController : MonoBehaviour
         instance = economyControllers[0];
         currentMoney = instance.startingMoney;
     }
-
-    /// <summary>
-    /// Checks for and collects any currency the player clicked on.
-    /// </summary>
-    public static void CheckCurrencyPickup() { return; }
 
     /// <summary>
     /// Main update loop for the EconomyController.<br></br>
@@ -146,7 +143,7 @@ public class EconomyController : MonoBehaviour
     /// Returns the amount of money the player currently has.
     ///  </summary>
     /// <returns>how much money the player has.</returns>
-    public static int GetBalance() { return currentMoney; }
+    public static int GetBalance() => currentMoney;
 
     /// <summary>
     /// Updates the passive income counter and awards the player currency
@@ -164,4 +161,6 @@ public class EconomyController : MonoBehaviour
             Deposit(PASSIVE_INCOME_AMOUNT);
         }
     }
+
+    #endregion
 }

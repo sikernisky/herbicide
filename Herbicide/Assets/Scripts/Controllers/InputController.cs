@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -11,6 +10,8 @@ using UnityEngine.UI;
 /// </summary>
 public class InputController : MonoBehaviour
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the InputController singleton.
     /// </summary>
@@ -63,6 +64,9 @@ public class InputController : MonoBehaviour
     /// </summary>
     private List<RaycastResult> raycastResults;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Finds and sets the InputController singleton for a level. Also instantiates the
@@ -351,10 +355,7 @@ public class InputController : MonoBehaviour
     /// Returns the player's mouse world-position.
     /// </summary>
     /// <returns>the player's mouse world-position.</returns>
-    public static Vector2 GetWorldMousePosition()
-    {
-        return CameraController.ScreenToWorldPoint(GetUIMousePosition());
-    }
+    public static Vector2 GetWorldMousePosition() => CameraController.ScreenToWorldPoint(GetUIMousePosition());
 
     /// <summary>
     /// Returns true if the player has clicked their primary button down (PC: mouse).
@@ -422,4 +423,6 @@ public class InputController : MonoBehaviour
         if (Input.GetMouseButtonUp(0)) return true;
         return false;
     }
+
+    #endregion
 }

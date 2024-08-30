@@ -1,17 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.Serialization.Formatters;
 using UnityEngine;
 
 /// <summary>
-/// Holds all animations for a defender. This is necessary
-/// because Defenders have multiple skins, and declaring
-/// a field for each skin would be cumbersome.
+/// DataStructure to hold all animations for a Defender.
 /// </summary>
 [CreateAssetMenu(fileName = "New Defender Animation Set", menuName = "Defender Animation Set")]
 [System.Serializable]
 public class DefenderAnimationSet : ScriptableObject
 {
+    #region Placement Tracks
+
     /// <summary>
     /// Animation track for placing the tier 1 Defender.
     /// </summary>
@@ -26,6 +23,10 @@ public class DefenderAnimationSet : ScriptableObject
     /// Animation track for placing the tier 3Defender.
     /// </summary>
     public Sprite[] placementTrackTier3;
+
+    #endregion
+
+    #region Attack Tracks
 
     /// <summary>
     /// Attack animations for the tier 1 Defender facing north.
@@ -67,7 +68,6 @@ public class DefenderAnimationSet : ScriptableObject
     /// </summary>
     public Sprite[] attackAnimationWestTier2;
 
-
     /// <summary>
     /// Attack animations for the tier 3 Defender facing north.
     /// </summary>
@@ -87,6 +87,10 @@ public class DefenderAnimationSet : ScriptableObject
     /// Attack animations for the tier 3 Defender facing west.
     /// </summary>
     public Sprite[] attackAnimationWestTier3;
+
+    #endregion
+
+    #region Idle Tracks
 
     /// <summary>
     /// Idle animations for the tier 1 Defender facing north.
@@ -148,6 +152,9 @@ public class DefenderAnimationSet : ScriptableObject
     /// </summary>
     public Sprite[] idleAnimationWestTier3;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Returns the attack animation track for the given direction.
@@ -222,4 +229,6 @@ public class DefenderAnimationSet : ScriptableObject
         else if (tier == 2) return placementTrackTier2;
         else return placementTrackTier3;
     }
+
+    #endregion
 }

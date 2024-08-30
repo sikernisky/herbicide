@@ -1,10 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 /// <summary>
-/// Enum to describe the different sorting layers a 
-/// SpriteRenderer can take on.
+/// Sorting layers for a Model's SpriteRenderer.
 /// </summary>
 public enum SortingLayers
 {

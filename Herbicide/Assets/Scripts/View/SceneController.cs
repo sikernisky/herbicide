@@ -1,17 +1,15 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Assertions;
-using System;
 
 /// <summary>
-/// Responsible for switching between scenes, maintaining
-/// information about the current scene, and loading
-/// scenes.
+/// Controls scene transitions and scene-related events.
 /// </summary>
 public class SceneController : MonoBehaviour
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the SceneController singleton.
     /// </summary>
@@ -27,24 +25,20 @@ public class SceneController : MonoBehaviour
     /// </summary>
     private bool loadingScene;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Main update loop for the SceneController.
     /// </summary>
-    public static void UpdateScene()
-    {
-        timeElapsed += Time.deltaTime;
-    }
+    public static void UpdateScene() => timeElapsed += Time.deltaTime;
 
     /// <summary>
     /// Returns the amount of time elapsed since this scene began.
     /// </summary>
     /// <returns>the amount of time elapsed since this scene began.</returns>
-    public static float GetTimeElapsed()
-    {
-        return timeElapsed;
-    }
-
+    public static float GetTimeElapsed() => timeElapsed;
     /// <summary>
     /// Finds and sets the SceneController singleton in the Main Menu.
     /// </summary>
@@ -155,4 +149,6 @@ public class SceneController : MonoBehaviour
         Assert.IsNotNull(reference, "Reference to Coroutine is null.");
         instance.StopCoroutine(reference);
     }
+
+    #endregion
 }

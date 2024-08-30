@@ -1,14 +1,17 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Controller for a Kudzu Enemy.
+/// Controls a Kudzu. <br></br>
+/// 
+/// The KnotwoodController is responsible for manipulating its Knotwood and bringing
+/// it to life. This includes moving it, choosing targets, playing animations,
+/// and more.
 /// </summary>
 public class KudzuController : EnemyController
 {
+    #region Fields
 
     /// <summary>
     /// The maximum number of targets a Kudzu can select at once.
@@ -20,6 +23,9 @@ public class KudzuController : EnemyController
     /// </summary>
     private float hopCooldownCounter;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Makes a new KudzuController.
@@ -33,8 +39,7 @@ public class KudzuController : EnemyController
     /// Returns this KudzuController's Kudzu model.
     /// </summary>
     /// <returns>this KudzuController's Kudzu model.</returns>
-    private Kudzu GetKudzu() { return GetModel() as Kudzu; }
-
+    private Kudzu GetKudzu() => GetEnemy() as Kudzu;
 
     /// <summary>
     /// Returns the spawn position of the Kudzu when in a NexusHole.
@@ -71,10 +76,56 @@ public class KudzuController : EnemyController
         else if (GetKudzu().Dead()) return false;
         else if (GetKudzu().Exited()) return false;
 
-        // Debug.Log("Valid Kudzu");
-
         return true;
     }
+
+    /// <summary>
+    /// Returns true if the Kudzu can target the Model passed
+    /// into this method.
+    /// </summary>
+    /// <param name="target">The Model to check for targetability.</param>
+    /// <returns>true if the Kudzu can target the Model passed
+    /// into this method; otherwise, false. </returns>
+    protected override bool CanTargetModel(Model target)
+    {
+        if (!GetKudzu().Spawned()) return false;
+        if (GetState() == EnemyState.ENTERING ||
+            GetState() == EnemyState.INACTIVE) return false;
+
+
+        Nexus nexusTarget = target as Nexus;
+        NexusHole nexusHoleTarget = target as NexusHole;
+
+        // If escaping, only target NexusHoles.
+        if (GetState() == EnemyState.ESCAPE || GetState() == EnemyState.EXITING)
+        {
+            if (nexusHoleTarget == null) return false;
+            if (!nexusHoleTarget.Targetable()) return false;
+            if (!GetKudzu().IsExiting() && !TileGrid.CanReach(GetKudzu().GetPosition(), nexusHoleTarget.GetPosition())) return false;
+            if (!IsClosestNexusHole(nexusHoleTarget)) return false;
+
+            return true;
+        }
+
+        // If not escaping, only target Nexii.
+        else
+        {
+            if (nexusTarget == null) return false;
+            if (!nexusTarget.Targetable()) return false;
+            if (nexusTarget.PickedUp()) return false;
+            if (nexusTarget.CashedIn()) return false;
+            if (!TileGrid.CanReach(GetKudzu().GetPosition(), nexusTarget.GetPosition())) return false;
+            if (!IsClosestDroppedNexus(nexusTarget)) return false;
+
+            return true;
+        }
+
+        throw new System.Exception("Something wrong happened.");
+    }
+
+    #endregion
+
+    #region State Logic
 
     /// <summary>
     /// Updates the state of this KudzuController's Kudzu model.
@@ -375,51 +426,5 @@ public class KudzuController : EnemyController
         Assert.IsTrue(NumTargetsHolding() > 0, "You need to hold targets to exit.");
     }
 
-
-
-    //---------------------END STATE LOGIC-----------------------//
-
-    /// <summary>
-    /// Returns true if the Kudzu can target the Model passed
-    /// into this method.
-    /// </summary>
-    /// <param name="target">The Model to check for targetability.</param>
-    /// <returns>true if the Kudzu can target the Model passed
-    /// into this method; otherwise, false. </returns>
-    protected override bool CanTargetModel(Model target)
-    {
-        if (!GetKudzu().Spawned()) return false;
-        if (GetState() == EnemyState.ENTERING ||
-            GetState() == EnemyState.INACTIVE) return false;
-
-
-        Nexus nexusTarget = target as Nexus;
-        NexusHole nexusHoleTarget = target as NexusHole;
-
-        // If escaping, only target NexusHoles.
-        if (GetState() == EnemyState.ESCAPE || GetState() == EnemyState.EXITING)
-        {
-            if (nexusHoleTarget == null) return false;
-            if (!nexusHoleTarget.Targetable()) return false;
-            if (!GetKudzu().IsExiting() && !TileGrid.CanReach(GetKudzu().GetPosition(), nexusHoleTarget.GetPosition())) return false;
-            if (!IsClosestNexusHole(nexusHoleTarget)) return false;
-
-            return true;
-        }
-
-        // If not escaping, only target Nexii.
-        else
-        {
-            if (nexusTarget == null) return false;
-            if (!nexusTarget.Targetable()) return false;
-            if (nexusTarget.PickedUp()) return false;
-            if (nexusTarget.CashedIn()) return false;
-            if (!TileGrid.CanReach(GetKudzu().GetPosition(), nexusTarget.GetPosition())) return false;
-            if (!IsClosestDroppedNexus(nexusTarget)) return false;
-
-            return true;
-        }
-
-        throw new System.Exception("Something wrong happened.");
-    }
+    #endregion
 }

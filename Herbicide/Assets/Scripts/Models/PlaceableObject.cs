@@ -1,20 +1,43 @@
 using UnityEngine;
-using System.Linq;
 using UnityEngine.Assertions;
-using System.Collections.Generic;
-using System;
 
 /// <summary>
-/// Abstract class for something unreactive that can be placed on the
-/// TileGrid. These objects can be targeted, but only have
-/// one base animation / state. <br></br>
-/// 
-/// If the PlaceableObject should
-/// react to the world and update its animation based off
-/// game events, please inherit from Mob. 
+/// Represents a static Model that has a health value and can be
+/// placed on the TileGrid. <br></br>
 /// </summary>
 public abstract class PlaceableObject : Model
 {
+    #region Fields
+
+    /// <summary>
+    /// This PlaceableObject's four neighbors.
+    /// </summary>
+    private PlaceableObject[] neighbors;
+
+    /// <summary>
+    /// Current amount of health.
+    /// </summary>
+    private float health;
+
+    /// <summary>
+    /// The tile coordinates where this PlaceableObject is placed.
+    /// </summary>
+    private Vector2Int placedCoords;
+
+    /// <summary>
+    /// true if this PlaceableObject is placed; otherwise, false.
+    /// </summary>
+    private bool placed;
+
+    /// <summary>
+    /// How much time remains in the current Damage Flash animation.
+    /// </summary>
+    private float remainingFlashAnimationTime;
+
+    #endregion
+
+    #region Stats
+
     /// <summary>
     /// Amount of health this PlaceableObject starts with.
     /// </summary>
@@ -31,29 +54,9 @@ public abstract class PlaceableObject : Model
     public abstract float MIN_HEALTH { get; }
 
     /// <summary>
-    /// This PlaceableObject's four neighbors.
-    /// </summary>
-    private PlaceableObject[] neighbors;
-
-    /// <summary>
-    /// Current amount of health.
-    /// </summary>
-    private float health;
-
-    /// <summary>
     /// The scale of this PlaceableObject when placed.
     /// </summary>
     protected virtual Vector3 PLACEMENT_SCALE => Vector3.one;
-
-    /// <summary>
-    /// The tile coordinates where this PlaceableObject is placed.
-    /// </summary>
-    private Vector2Int placedCoords;
-
-    /// <summary>
-    /// true if this PlaceableObject is placed; otherwise, false.
-    /// </summary>
-    private bool placed;
 
     /// <summary>
     /// true if this PlaceableObject occupies a Tile, preventing
@@ -65,11 +68,9 @@ public abstract class PlaceableObject : Model
     /// </summary>
     public virtual float DAMAGE_FLASH_TIME => 0.5f;
 
-    /// <summary>
-    /// How much time remains in the current Damage Flash animation.
-    /// </summary>
-    private float remainingFlashAnimationTime;
+    #endregion
 
+    #region Methods
 
     /// <summary>
     /// Returns this PlaceableObject's placement scale.
@@ -107,7 +108,7 @@ public abstract class PlaceableObject : Model
     /// </summary>
     /// <returns>true if something can target this PlaceableObject;
     /// otherwise, false</returns>
-    public virtual bool Targetable() { return !Dead() && gameObject.activeSelf; }
+    public virtual bool Targetable() => !Dead() && gameObject.activeSelf;
 
     /// <summary>
     /// Called when this PlaceableObject is placed.
@@ -123,14 +124,14 @@ public abstract class PlaceableObject : Model
     /// <summary>
     /// Returns true if this PlaceableObject is placed.
     /// </summary>
-    public bool IsPlaced() { return placed; }
+    public bool IsPlaced() => placed;
 
     /// <summary>
     /// Starts the Damage Flash animation by resetting the amount of time
     /// left in the animation to the total amount of time it takes to
     /// complete one animation cycle
     /// </summary>
-    public void FlashDamage() { SetRemainingFlashAnimationTime(DAMAGE_FLASH_TIME); }
+    public void FlashDamage() => SetRemainingFlashAnimationTime(DAMAGE_FLASH_TIME);
 
     /// <summary>
     /// Sets the amount of time this PlaceableObject's has left in its
@@ -138,10 +139,7 @@ public abstract class PlaceableObject : Model
     /// </summary>
     /// <param name="value">The new amount of time that this PlaceableObject
     /// has left in its flash animation. .</param>
-    public void SetRemainingFlashAnimationTime(float value)
-    {
-        remainingFlashAnimationTime = Mathf.Clamp(value, 0, DAMAGE_FLASH_TIME);
-    }
+    public void SetRemainingFlashAnimationTime(float value) => remainingFlashAnimationTime = Mathf.Clamp(value, 0, DAMAGE_FLASH_TIME);
 
     /// <summary>
     /// Returns the amount of time that remains in this PlaceableObject's
@@ -149,7 +147,7 @@ public abstract class PlaceableObject : Model
     /// </summary>
     /// <returns>the amount of time that remains in this PlaceableObject's
     /// flash animation</returns>
-    public float TimeRemaningInFlashAnimation() { return remainingFlashAnimationTime; }
+    public float TimeRemaningInFlashAnimation() => remainingFlashAnimationTime;
 
     /// <summary>
     /// Adds some amount (can be negative) of health to this PlaceableObject.
@@ -166,17 +164,17 @@ public abstract class PlaceableObject : Model
     /// Returns this PlaceableObject's current health.
     /// </summary>
     /// <returns>this PlaceableObject's current health.</returns>
-    public float GetHealth() { return health; }
+    public float GetHealth() => health;
 
     /// <summary>
     /// Resets this PlaceableObject's health to its starting health value.
     /// </summary>
-    public void ResetHealth() { health = Mathf.Clamp(BASE_HEALTH, MIN_HEALTH, MAX_HEALTH); }
+    public void ResetHealth() => health = Mathf.Clamp(BASE_HEALTH, MIN_HEALTH, MAX_HEALTH);
 
     /// <summary>
     /// Resets this PlaceableObject's stats to their default values.
     /// </summary>
-    public override void ResetModel() { ResetHealth(); }
+    public override void ResetModel() => ResetHealth();
 
     /// <summary>
     /// Updates this PlaceableObject with its newest four neighbors.
@@ -194,10 +192,11 @@ public abstract class PlaceableObject : Model
     /// Returns this PlaceableObject's neighbors.
     /// </summary>
     /// <returns>this PlaceableObject's neighbors.</returns>
-    protected PlaceableObject[] GetNeighbors() { return neighbors; }
-
+    protected PlaceableObject[] GetNeighbors() => neighbors;
     /// <summary>
     /// Returns the Tile coordinates where this PlaceableObject is placed.
     /// </summary>
-    public Vector2Int GetPlacedCoords() { return placedCoords; }
+    public Vector2Int GetPlacedCoords() => placedCoords;
+
+    #endregion
 }

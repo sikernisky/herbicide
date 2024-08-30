@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -8,6 +6,8 @@ using UnityEngine.Assertions;
 /// </summary>
 public class EnemyFactory : Factory
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the EnemyFactory singleton.
     /// </summary>
@@ -25,6 +25,9 @@ public class EnemyFactory : Factory
     [SerializeField]
     private EnemyAnimationSet kudzuAnimationSet;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Finds and sets the EnemyFactory singleton.
@@ -47,19 +50,13 @@ public class EnemyFactory : Factory
     /// </summary>
     /// <param name="modelType">The ModelType of the Enemy to get</param>
     /// <returns>a prefab for a given Enemy type from the object pool.</returns>
-    public static GameObject GetEnemyPrefab(ModelType modelType)
-    {
-        return instance.RequestObject(modelType);
-    }
+    public static GameObject GetEnemyPrefab(ModelType modelType) => instance.RequestObject(modelType);
 
     /// <summary>
     /// Accepts an Enemy prefab and puts it back in the object pool.
     /// </summary>
     /// <param name="prefab">the prefab to accept. </param>
-    public static void ReturnEnemyPrefab(GameObject prefab)
-    {
-        instance.ReturnObject(prefab);
-    }
+    public static void ReturnEnemyPrefab(GameObject prefab) => instance.ReturnObject(prefab);
 
     /// <summary>
     /// Returns the movement track for an Enemy of a given type facing
@@ -111,22 +108,7 @@ public class EnemyFactory : Factory
     /// <param name="d">The direction of the enemy</param>
     /// <param name="s">The health state of the enemy</param>
     /// <returns>the idle track for an Enemy of a given type</returns>
-    public static Sprite[] GetIdleTrack(ModelType e, Direction d, Enemy.EnemyHealthState s)
-    {
-        // switch (e)
-        // {
-        //     case ModelType.KNOTWOOD:
-        //         return instance.knotwoodAnimationSet.GetIdleAnimation(d, s);
-        //     case ModelType.KUDZU:
-        //         return instance.kudzuAnimationSet.GetIdleAnimation(d, s);
-        // }
-
-        // FOR NOW, WE USE MOVEMENT
-
-        return GetMovementTrack(e, d, s);
-
-        // throw new System.Exception("Enemy " + e + " not supported.");
-    }
+    public static Sprite[] GetIdleTrack(ModelType e, Direction d, Enemy.EnemyHealthState s) => GetMovementTrack(e, d, s);
 
     /// <summary>
     /// Returns the spawn track for an Enemy of a given type facing
@@ -136,22 +118,7 @@ public class EnemyFactory : Factory
     /// <param name="d">The direction of the enemy</param>
     /// <param name="s">The health state of the enemy</param>
     /// <returns>the spawn track for an Enemy of a given type</returns>
-    public static Sprite[] GetSpawnTrack(ModelType e, Direction d, Enemy.EnemyHealthState s)
-    {
-        // switch (e)
-        // {
-        //     case ModelType.KNOTWOOD:
-        //         return instance.knotwoodAnimationSet.GetSpawnAnimation(d, s);
-        //     case ModelType.KUDZU:
-        //         return instance.kudzuAnimationSet.GetSpawnAnimation(d, s);
-        // }
-
-        // throw new System.Exception("Enemy " + e + " not supported.");
-
-        // FOR NOW, WE USE MOVEMENT
-
-        return GetMovementTrack(e, d, s);
-    }
+    public static Sprite[] GetSpawnTrack(ModelType e, Direction d, Enemy.EnemyHealthState s) => GetMovementTrack(e, d, s);
 
     /// <summary>
     /// Returns the placement animation track for an Enemy of a given type.
@@ -175,8 +142,7 @@ public class EnemyFactory : Factory
     /// Returns the EnemyFactory's transform component. 
     /// </summary>
     /// <returns></returns>
-    protected override Transform GetTransform()
-    {
-        return instance.transform;
-    }
+    protected override Transform GetTransform() => instance.transform;
+
+    #endregion
 }

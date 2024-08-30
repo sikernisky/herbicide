@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -8,6 +6,8 @@ using UnityEngine.Assertions;
 /// </summary>
 public class ShopFactory : Factory
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the ShopFactory singleton.
     /// </summary>
@@ -18,6 +18,9 @@ public class ShopFactory : Factory
     /// </summary>
     protected override int poolStartingCount => 4;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Finds and sets the ShopFactory singleton.
@@ -40,24 +43,20 @@ public class ShopFactory : Factory
     /// </summary>
     /// <param name="modelType">The type of ShopCard model to get.</param>
     /// <returns>a GameObject with a ShopCard component attached to it</returns>
-    public static GameObject GetShopCardPrefab(ModelType modelType)
-    {
-        return instance.RequestObject(modelType);
-    }
+    public static GameObject GetShopCardPrefab(ModelType modelType) => instance.RequestObject(modelType);
 
     /// <summary>
     /// Accepts a ShopCard prefab that the caller no longer needs. Adds it back
     /// to its object pool.
     /// </summary>
     /// <param name="prefab">The ShopCard prefab to return.</param>
-    public static void ReturnShopCardPrefab(GameObject prefab)
-    {
-        instance.ReturnObject(prefab);
-    }
+    public static void ReturnShopCardPrefab(GameObject prefab) => instance.ReturnObject(prefab);
 
     /// <summary>
     /// Returns the ShopFactory instance's Transform component.
     /// </summary>
     /// <returns></returns>
     protected override Transform GetTransform() { return instance.transform; }
+
+    #endregion
 }

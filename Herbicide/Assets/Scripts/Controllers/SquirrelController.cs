@@ -1,23 +1,19 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using Unity.Burst.Intrinsics;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Controls a Squirrel.
+/// Controls a Squirrel. <br></br>
 /// 
 /// The SquirrelController is responsible for manipulating its Squirrel and bringing
 /// it to life. This includes moving it, choosing targets, playing animations,
 /// and more.
 /// </summary>
+/// <![CDATA[<param name="SquirrelState">]]>
 public class SquirrelController : DefenderController<SquirrelController.SquirrelState>
 {
-    /// <summary>
-    /// The maximum number of targets a Squirrel can select at once.
-    /// </summary>
-    protected override int MAX_TARGETS => 1;
+    #region Fields
 
     /// <summary>
     /// State of a Squirrel. 
@@ -29,6 +25,11 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         ATTACK,
         INVALID
     }
+
+    /// <summary>
+    /// The maximum number of targets a Squirrel can select at once.
+    /// </summary>
+    protected override int MAX_TARGETS => 1;
 
     /// <summary>
     /// Counts the number of seconds in the idle animation; resets
@@ -47,7 +48,9 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     /// </summary>
     private const float delayBetweenAcorns = 0.1f;
 
+    #endregion
 
+    #region Methods
 
     /// <summary>
     /// Makes a new SquirrelController.
@@ -73,21 +76,59 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     /// Returns this SquirrelController's Squirrel.
     /// </summary>
     /// <returns>this SquirrelController's Squirrel.</returns>
-    private Squirrel GetSquirrel() { return GetMob() as Squirrel; }
+    private Squirrel GetSquirrel() => GetMob() as Squirrel;
 
     /// <summary>
-    /// Handles all collisions between this controller's Squirrel
-    /// model and some other collider.
+    /// Returns true if the Squirrel can shoot an acorn.
     /// </summary>
-    /// <param name="other">the other collider.</param>
-    protected override void HandleCollision(Collider2D other) { throw new NotImplementedException(); }
+    /// <returns>true if the Squirrel can shoot an acorn; otherwise,
+    /// false.</returns>
+    public override bool CanAttack()
+    {
+        if (!base.CanAttack()) return false; //Cooldown
+        if (GetState() != SquirrelState.ATTACK) return false; //Not in the attack state.
+        Enemy target = GetTarget() as Enemy;
+        if (target == null || !target.Targetable()) return false; //Invalid target.
+        return true;
+    }
 
     /// <summary>
-    /// Returns the Squirrel prefab to the DefenderFactory singleton.
+    /// Queues an acorn to be fired at the Squirrel's target.
     /// </summary>
-    public override void DestroyModel() { DefenderFactory.ReturnDefenderPrefab(GetSquirrel().gameObject); }
+    /// <returns>A reference to the coroutine.</returns>
+    /// <param name="numAcorns">The number of acorns to fire.</param>
+    private IEnumerator FireAcorns(int numAcorns)
+    {
+        Assert.IsTrue(delayBetweenAcorns >= 0, "Delay needs to be non-negative");
 
-    //--------------------BEGIN STATE LOGIC----------------------//
+        for (int i = 0; i < numAcorns; i++)
+        {
+            Enemy target = GetTarget() as Enemy;
+            if (target == null || !target.Targetable()) yield break; // Invalid target.
+
+            SetAnimation(GetSquirrel().ATTACK_ANIMATION_DURATION / numAcorns,
+                DefenderFactory.GetAttackTrack(
+                    ModelType.SQUIRREL,
+                    GetSquirrel().GetDirection(), GetSquirrel().GetTier()));
+
+            GameObject acornPrefab = ProjectileFactory.GetProjectilePrefab(ModelType.ACORN);
+            Assert.IsNotNull(acornPrefab);
+            Acorn acornComp = acornPrefab.GetComponent<Acorn>();
+            Assert.IsNotNull(acornComp);
+            Vector3 targetPosition = GetTarget().GetAttackPosition();
+            AcornController acornController = new AcornController(acornComp, GetSquirrel().GetPosition(), targetPosition);
+            ControllerController.AddModelController(acornController);
+
+            if (i < numAcorns - 1) // Wait for the delay between shots unless it's the last one
+            {
+                yield return new WaitForSeconds(delayBetweenAcorns);
+            }
+        }
+    }
+
+    #endregion
+
+    #region State Logic
 
     /// <summary>
     /// Returns true if two SquirrelStates are equal.
@@ -95,10 +136,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     /// <param name="stateA">The first state.</param>
     /// <param name="stateB">The second state.</param>
     /// <returns>true if two SquirrelStates are equal; otherwise, false.</returns>
-    public override bool StateEquals(SquirrelState stateA, SquirrelState stateB)
-    {
-        return stateA == stateB;
-    }
+    public override bool StateEquals(SquirrelState stateA, SquirrelState stateB) => stateA == stateB;
 
     /// <summary>
     /// Updates the state of this SquirrelController's Squirrel model.
@@ -194,19 +232,9 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         GetSquirrel().RestartAttackCooldown();
     }
 
-    /// <summary>
-    /// Returns true if the Squirrel can shoot an acorn.
-    /// </summary>
-    /// <returns>true if the Squirrel can shoot an acorn; otherwise,
-    /// false.</returns>
-    public override bool CanAttack()
-    {
-        if (!base.CanAttack()) return false; //Cooldown
-        if (GetState() != SquirrelState.ATTACK) return false; //Not in the attack state.
-        Enemy target = GetTarget() as Enemy;
-        if (target == null || !target.Targetable()) return false; //Invalid target.
-        return true;
-    }
+    #endregion
+
+    #region Animation Logic
 
     /// <summary>
     /// Adds one chunk of Time.deltaTime to the animation
@@ -228,7 +256,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         SquirrelState state = GetState();
         if (state == SquirrelState.IDLE) return idleAnimationCounter;
         else if (state == SquirrelState.ATTACK) return attackAnimationCounter;
-        else throw new System.Exception("State " + state + " has no counter.");
+        else return 0;
     }
 
     /// <summary>
@@ -241,37 +269,5 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         else if (state == SquirrelState.ATTACK) attackAnimationCounter = 0;
     }
 
-    /// <summary>
-    /// Queues an acorn to be fired at the Squirrel's target.
-    /// </summary>
-    /// <returns>A reference to the coroutine.</returns>
-    /// <param name="numAcorns">The number of acorns to fire.</param>
-    private IEnumerator FireAcorns(int numAcorns)
-    {
-        Assert.IsTrue(delayBetweenAcorns >= 0, "Delay needs to be non-negative");
-
-        for (int i = 0; i < numAcorns; i++)
-        {
-            Enemy target = GetTarget() as Enemy;
-            if (target == null || !target.Targetable()) yield break; // Invalid target.
-
-            SetAnimation(GetSquirrel().ATTACK_ANIMATION_DURATION / numAcorns,
-                DefenderFactory.GetAttackTrack(
-                    ModelType.SQUIRREL,
-                    GetSquirrel().GetDirection(), GetSquirrel().GetTier()));
-
-            GameObject acornPrefab = AcornFactory.GetAcornPrefab();
-            Assert.IsNotNull(acornPrefab);
-            Acorn acornComp = acornPrefab.GetComponent<Acorn>();
-            Assert.IsNotNull(acornComp);
-            Vector3 targetPosition = GetTarget().GetAttackPosition();
-            AcornController acornController = new AcornController(acornComp, GetSquirrel().GetPosition(), targetPosition);
-            ControllerController.AddModelController(acornController);
-
-            if (i < numAcorns - 1) // Wait for the delay between shots unless it's the last one
-            {
-                yield return new WaitForSeconds(delayBetweenAcorns);
-            }
-        }
-    }
+    #endregion
 }

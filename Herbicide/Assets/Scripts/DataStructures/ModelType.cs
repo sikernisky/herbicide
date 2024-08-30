@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 /// <summary>
-/// Every type of non-abstract Model in the game.
+/// Every type of non-abstract ModeL.
 /// </summary>
 public enum ModelType
 {
@@ -14,16 +10,16 @@ public enum ModelType
     DEW,
     EMANATION,
     GRASS_TILE,
-    HEDGEHOG,
     KNOTWOOD,
     KUDZU,
     NEXUS,
     NEXUS_HOLE,
     PORCUPINE,
+    QUILL,
     SEED_TOKEN,
     SHOP_CARD_BEAR,
     SHOP_CARD_BLANK,
-    SHOP_CARD_HEDGEHOG,
+    SHOP_CARD_PORCUPINE,
     SHOP_CARD_SQUIRREL,
     SHORE_TILE,
     SOIL_FLOORING,

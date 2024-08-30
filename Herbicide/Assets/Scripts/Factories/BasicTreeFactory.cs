@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -8,6 +6,8 @@ using UnityEngine.Assertions;
 /// </summary>
 public class BasicTreeFactory : Factory
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the BasicTreeFactory singleton.
     /// </summary>
@@ -19,12 +19,9 @@ public class BasicTreeFactory : Factory
     [SerializeField]
     private Sprite[] placementTrack;
 
-    /// <summary>
-    /// Animation track when on a boat.
-    /// </summary>
-    [SerializeField]
-    private Sprite[] boatTrack;
+    #endregion
 
+    #region Methods
 
     /// <summary>
     /// Finds and sets the BasicTreeFactory singleton.
@@ -46,10 +43,7 @@ public class BasicTreeFactory : Factory
     /// Returns a fresh BasicTree prefab from the object pool.
     /// </summary>
     /// <returns>a GameObject with a BasicTree component attached to it</returns>
-    public static GameObject GetBasicTreePrefab()
-    {
-        return instance.RequestObject(ModelType.BASIC_TREE);
-    }
+    public static GameObject GetBasicTreePrefab() => instance.RequestObject(ModelType.BASIC_TREE);
 
     /// <summary>
     /// Accepts a BasicTree prefab that the caller no longer needs. Adds it back
@@ -68,18 +62,13 @@ public class BasicTreeFactory : Factory
     /// </summary>
     /// <returns>the animation track that represents this BasicTree when placing. 
     /// </returns>
-    public static Sprite[] GetPlacementTrack() { return instance.placementTrack; }
-
-    /// <summary>
-    /// Returns the animation track that represents this BasicTree when on a boat. 
-    /// </summary>
-    /// <returns>the animation track that represents this BasicTree when on a boat. 
-    /// </returns>
-    public static Sprite[] GetBoatTrack() { return instance.boatTrack; }
+    public static Sprite[] GetPlacementTrack() => instance.placementTrack;
 
     /// <summary>
     /// Returns the Transform component of the BasicTreeFactory instance. 
     /// </summary>
     /// <returns>the Transform component of the BasicTreeFactory instance. </returns>
-    protected override Transform GetTransform() { return instance.transform; }
+    protected override Transform GetTransform() => instance.transform;
+
+    #endregion
 }

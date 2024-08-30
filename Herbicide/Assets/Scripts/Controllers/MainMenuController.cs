@@ -1,25 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// The heart of the main menu. Responsible for <br></br>
-/// 
-/// (1) Setting up the main menu and singletons<br></br>
-/// (2) Running the main update loop <br></br>
-/// (3) Detecting input and switching to main game (with
-/// help of scene controller)
+/// Controls the Main Menu scene.
 /// </summary>
 public class MainMenuController : MonoBehaviour
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the MainMenuController singleton.
     /// </summary>
     private MainMenuController instance;
 
+    #endregion
 
+    #region Methods
 
     /// <summary>
     /// Sets up the Main Menu: <br></br>
@@ -107,8 +103,7 @@ public class MainMenuController : MonoBehaviour
     /// always returns MENU. Also informs controllers of this game state.
     /// </summary>
     /// <returns>the current GameState.</returns>
-    private GameState DetermineGameState()
-    {
-        return GameState.MENU;
-    }
+    private GameState DetermineGameState() => GameState.MENU;
+
+    #endregion
 }

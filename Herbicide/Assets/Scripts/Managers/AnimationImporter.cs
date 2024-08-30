@@ -1,15 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 /// <summary>
-/// Animation Importer is a utility class that automatically
-/// assigns sliced sprites to an AnimationSet. 
+/// A utility class that automatically assigns sliced sprites to an AnimationSet. 
 /// </summary>
 public class AnimationImporter : EditorWindow
 {
+    #region Fields
+
     /// <summary>
     /// The sprite sheet to slice and load.
     /// </summary>
@@ -20,14 +18,15 @@ public class AnimationImporter : EditorWindow
     /// </summary>
     private EnemyAnimationSet enemyAnimationSet;
 
+    #endregion
+
+    #region Methods
+
     /// <summary>
     /// Shows the Animation Importer window.
     /// </summary>
     [MenuItem("Window/Animation Importer")]
-    public static void ShowWindow()
-    {
-        GetWindow<AnimationImporter>("Animation Importer");
-    }
+    public static void ShowWindow() => GetWindow<AnimationImporter>("Animation Importer");
 
     /// <summary>
     /// Called when the window is opened.
@@ -44,4 +43,6 @@ public class AnimationImporter : EditorWindow
             //SliceAndLoadSpriteSheet();
         }
     }
+
+    #endregion
 }

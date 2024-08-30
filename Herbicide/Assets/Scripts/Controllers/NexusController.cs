@@ -1,21 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 /// <summary>
-/// Controls a Nexus.
+/// Controls a Nexus. <br></br>
 /// 
 /// The NexusController is responsible for manipulating its Nexus and bringing
 /// it to life. This includes moving it, choosing targets, playing animations,
 /// and more.
 /// </summary>
+/// <![CDATA[<param name="NexusState">]]>
 public class NexusController : MobController<NexusController.NexusState>
 {
-    /// <summary>
-    /// Maximum number of targets a Nexus can have.
-    /// </summary>
-    protected override int MAX_TARGETS => 0;
+    #region Fields
 
     /// <summary>
     /// Different states of a Nexus.
@@ -24,9 +19,22 @@ public class NexusController : MobController<NexusController.NexusState>
     {
         SPAWN,
         IDLE,
-        PICKED_UP,
-        CASHED_IN
+        PICKED_UP
     }
+
+    /// <summary>
+    /// Maximum number of targets a Nexus can have.
+    /// </summary>
+    protected override int MAX_TARGETS => 0;
+
+    /// <summary>
+    /// The latest stage of the Game.
+    /// </summary>
+    private int lastStage;
+
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Assigns a Nexus to this NexusController.
@@ -40,6 +48,7 @@ public class NexusController : MobController<NexusController.NexusState>
     protected override void UpdateMob()
     {
         base.UpdateMob();
+        ExecuteSpawnState();
         ExecuteIdleState();
         ExecutePickedUpState();
     }
@@ -51,52 +60,28 @@ public class NexusController : MobController<NexusController.NexusState>
     /// <param name="target">The Model to check for targetability.</param>
     /// <returns>true if the Nexus can target the Model passed
     /// into this method; otherwise, false.</returns>
-    protected override bool CanTargetModel(Model target) { return false; }
+    protected override bool CanTargetModel(Model target) => false;
 
     /// <summary>
     /// Returns true if the Nexus should be removed.
     /// </summary>
     /// <returns>true if the Nexus should be removed; otherwise, false.</returns>
-    public override bool ValidModel() { return !GetNexus().CashedIn(); }
+    public override bool ValidModel() => !GetNexus().CashedIn();
 
     /// <summary>
     /// Returns the Nexus model.
     /// </summary>
     /// <returns>the Nexus model.</returns>
-    private Nexus GetNexus() { return GetMob() as Nexus; }
-
-    /// <summary>
-    /// Handles a collision between the Nexus model and some other
-    /// collider.
-    /// </summary>
-    /// <param name="other">The other 2D Collider.</param>
-    protected override void HandleCollision(Collider2D other) { return; }
-
-    /// <summary>
-    /// Adds one chunk of Time.deltaTime to the animation
-    /// counter that tracks the current state.
-    /// </summary>
-    public override void AgeAnimationCounter() { throw new System.NotImplementedException(); }
-
-    /// <summary>
-    /// Returns the animation counter for the current state.
-    /// </summary>
-    /// <returns>the animation counter for the current state.</returns>
-    public override float GetAnimationCounter() { throw new System.NotImplementedException(); }
-
-    /// <summary>
-    /// Sets the animation counter for the current state to 0.
-    /// </summary>
-    public override void ResetAnimationCounter() { throw new System.NotImplementedException(); }
+    private Nexus GetNexus() => GetMob() as Nexus;
 
     /// <summary>
     /// Returns the Nexus prefab to the NexusFactory singleton.
     /// </summary>
-    public override void DestroyModel()
-    {
-        NexusFactory.ReturnNexusPrefab(GetNexus().gameObject);
-    }
-    //--------------------- STATE LOGIC-----------------------//
+    public override void DestroyModel() => NexusFactory.ReturnNexusPrefab(GetNexus().gameObject);
+
+    #endregion
+
+    #region State Logic
 
     /// <summary>
     /// Updates the state of the Nexus. The transitions are: <br></br>
@@ -117,9 +102,8 @@ public class NexusController : MobController<NexusController.NexusState>
                 break;
             case NexusState.PICKED_UP:
                 if (!GetNexus().PickedUp() && !GetNexus().CashedIn()) SetState(NexusState.IDLE);
-                if (GetNexus().CashedIn()) SetState(NexusState.CASHED_IN);
                 break;
-            case NexusState.CASHED_IN:
+            default:
                 break;
         }
     }
@@ -130,9 +114,16 @@ public class NexusController : MobController<NexusController.NexusState>
     /// <param name="stateA">The first NexusState.</param>
     /// <param name="stateB">The second NexusState.</param>
     /// <returns>true if the two NexusStates are equal.</returns>
-    public override bool StateEquals(NexusState stateA, NexusState stateB)
+    public override bool StateEquals(NexusState stateA, NexusState stateB) => stateA == stateB;
+
+    /// <summary>
+    /// Executes logic for the Nexus' spawn state.
+    /// </summary>
+    protected virtual void ExecuteSpawnState()
     {
-        return stateA == stateB;
+        if(GetState() != NexusState.SPAWN) return;
+
+        lastStage = StageController.GetCurrentStage();
     }
 
     /// <summary>
@@ -157,6 +148,15 @@ public class NexusController : MobController<NexusController.NexusState>
             if (!ReachedMovementTarget()) return;
             GetNexus().CashIn();
         }
+
+        int currentStage = StageController.GetCurrentStage();
+        if(currentStage != lastStage && GetNexus().GetPosition() != GetNexus().GetSpawnPos())
+        {
+            lastStage = currentStage;
+            Vector3 resetPos = GetNexus().GetSpawnPos();
+            TileGrid.PlaceOnTile(new Vector2Int((int)resetPos.x, (int)resetPos.y), GetNexus());
+        }
+
     }
 
     /// <summary>
@@ -171,5 +171,26 @@ public class NexusController : MobController<NexusController.NexusState>
         GetNexus().SetWorldPosition(GetNexus().GetHeldPosition());
     }
 
+    #endregion
 
+    #region Animation Logic
+
+    /// <summary>
+    /// Adds one chunk of Time.deltaTime to the animation
+    /// counter that tracks the current state.
+    /// </summary>
+    public override void AgeAnimationCounter() { throw new System.NotImplementedException(); }
+
+    /// <summary>
+    /// Returns the animation counter for the current state.
+    /// </summary>
+    /// <returns>the animation counter for the current state.</returns>
+    public override float GetAnimationCounter() { throw new System.NotImplementedException(); }
+
+    /// <summary>
+    /// Sets the animation counter for the current state to 0.
+    /// </summary>
+    public override void ResetAnimationCounter() { throw new System.NotImplementedException(); }
+
+    #endregion
 }

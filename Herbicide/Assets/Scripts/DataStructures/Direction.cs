@@ -1,7 +1,5 @@
-
 /// <summary>
-/// The eight primary directions. Used to determine locations and
-/// neighbors within the TileGrid.
+/// The four Directions a Model can face.
 /// </summary>
 public enum Direction
 {

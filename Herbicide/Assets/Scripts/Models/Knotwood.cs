@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -8,6 +6,12 @@ using UnityEngine.Assertions;
 /// </summary>
 public class Knotwood : Enemy
 {
+    #region Fields
+
+    #endregion
+
+    #region Stats
+
     /// <summary>
     /// Starting attack range of a Knotwood. 
     /// </summary>
@@ -106,17 +110,9 @@ public class Knotwood : Enemy
     /// </summary>
     public float KICK_DAMAGE => 20f;
 
-    /// <summary>
-    /// Returns a copy of a Knotwood.
-    /// </summary>
-    /// <returns> A copy of a Knotwood prefab. </returns> 
-    public override GameObject Copy() { return EnemyFactory.GetEnemyPrefab(TYPE); }
+    #endregion
 
-    /// <summary>
-    /// Returns the placement track for a Knotwood.
-    /// </summary>
-    /// <returns>the placement track for a Knotwood.</returns>
-    public override Sprite[] GetPlacementTrack() { return EnemyFactory.GetPlacementTrack(TYPE); }
+    #region Methods
 
     /// <summary>
     /// Sets this Knotwood's Collider2D properties.
@@ -138,4 +134,6 @@ public class Knotwood : Enemy
         float adjustedY = transform.position.y + .25f;
         return new Vector3(transform.position.x, adjustedY, transform.position.z);
     }
+
+    #endregion
 }

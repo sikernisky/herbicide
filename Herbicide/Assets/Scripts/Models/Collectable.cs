@@ -1,27 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Represents something that the player can click on
-/// to aquire/collect. 
+/// Represents a Model that can be collected.
 /// </summary>
 public abstract class Collectable : Model
 {
-    /// <summary>
-    /// Seconds to complete a bob cycle.
-    /// </summary>
-    public virtual float BOB_SPEED => 3f;
-
-    /// <summary>
-    /// How "tall" this Currency bobs.
-    /// </summary>
-    public virtual float BOB_HEIGHT => .15f;
-
-    /// <summary>
-    /// How fast this Collectable moves towards the cursor.
-    /// </summary>
-    public virtual float HOME_SPEED => 12f;
+    #region Fields
 
     /// <summary>
     /// true if the player collected this Collectable; false otherwise
@@ -40,14 +24,28 @@ public abstract class Collectable : Model
     [SerializeField]
     private AnimationCurve homingCurve;
 
+    #endregion
+
+    #region Stats
+
     /// <summary>
-    /// Types of Collectables.
+    /// Seconds to complete a bob cycle.
     /// </summary>
-    public enum CollectableType
-    {
-        SEED_TOKEN,
-        DEW
-    }
+    public virtual float BOB_SPEED => 3f;
+
+    /// <summary>
+    /// How "tall" this Currency bobs.
+    /// </summary>
+    public virtual float BOB_HEIGHT => .15f;
+
+    /// <summary>
+    /// How fast this Collectable moves towards the cursor.
+    /// </summary>
+    public virtual float HOME_SPEED => 12f;
+
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Does something when the player collects this Collectable.
@@ -64,26 +62,36 @@ public abstract class Collectable : Model
     /// </summary>
     /// <returns>true if the player picked up this Collectable;
     /// otherwise, false.</returns>
-    public bool Collected() { return collected; }
-
-    /// <summary>
-    /// Returns this Collectable's drift-up curve.
-    /// </summary>
-    /// <returns>this Collectable's drift-up curve.</returns>
-    public AnimationCurve GetDriftUpCurve() { return driftUpCurve; }
+    public bool Collected() => collected;
 
     /// <summary>
     /// Returns this Collectable's homing curve.
     /// </summary>
     /// <returns>this Collectable's homing curve.</returns>
-    public AnimationCurve GetHomingCurve() { return homingCurve; }
+    public AnimationCurve GetHomingCurve() => homingCurve;
+
+    /// <summary>
+    /// Returns a fresh Collectable prefab from the object pool.
+    /// </summary>
+    /// <returns>a fresh Collectable prefab from the object pool. </returns>
+    public override GameObject CreateNew() => CollectableFactory.GetCollectablePrefab(TYPE);
+
+    /// <summary>
+    /// Returns a Sprite that represents this Collectable when it is
+    /// being placed.
+    /// </summary>
+    /// <returns> a Sprite that represents this Collectable when it is
+    /// being placed.</returns>
+    public override Sprite[] GetPlacementTrack() => CollectableFactory.GetPlacementTrack(TYPE);
 
     /// <summary>
     /// Resets this Collectable's state.
     /// </summary>
     public override void ResetModel()
     {
+        base.ResetModel();
         collected = false;
     }
 
+    #endregion
 }

@@ -1,20 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 /// <summary>
-/// Controls a Dew Collectable.
+/// Controls a Dew. <br></br>
 /// 
 /// The DewController is responsible for manipulating its Dew and bringing
 /// it to life. This includes moving it playing animations, and more.
 /// </summary>
+/// <![CDATA[<param name="Dew">]]>
 public class DewController : CollectableController<DewController.DewState>
 {
-    /// <summary>
-    /// Number of Dew assigned since the scene began.
-    /// </summary>
-    private static int NUM_DEW;
+    #region Fields
 
     /// <summary>
     /// State of a Dew.
@@ -26,6 +21,10 @@ public class DewController : CollectableController<DewController.DewState>
         COLLECTING
     }
 
+    #endregion
+
+    #region Methods
+
     /// <summary>
     /// Assigns a Dew to a DewController.
     /// </summary>
@@ -34,7 +33,6 @@ public class DewController : CollectableController<DewController.DewState>
     /// <param name="value">How much the Dew collectable is worth..</param>
     public DewController(Dew dew, Vector3 dropPos, int value) : base(dew, dropPos)
     {
-        NUM_DEW++;
         GetDew().SetWorldPosition(dropPos);
         GetDew().AdjustValue(value);
     }
@@ -54,14 +52,11 @@ public class DewController : CollectableController<DewController.DewState>
     /// Returns this controller's Dew model.
     /// </summary>
     /// <returns>this controller's Dew model.</returns>
-    private Dew GetDew() { return GetCollectable() as Dew; }
+    private Dew GetDew() => GetCollectable() as Dew;
 
-    /// <summary>
-    /// Returns the Dew prefab to the DewFactory singleton.
-    /// </summary>
-    public override void DestroyModel() { DewFactory.ReturnDewPrefab(GetDew().gameObject); }
+    #endregion
 
-    //-----------------------STATE LOGIC----------------------//
+    #region State Logic
 
     /// <summary>
     /// Returns true if two DewStates are equal.
@@ -69,10 +64,7 @@ public class DewController : CollectableController<DewController.DewState>
     /// <param name="stateA">The first state.</param>
     /// <param name="stateB">The second state.</param>
     /// <returns>true if the two DewStates are equal.</returns>
-    public override bool StateEquals(DewState stateA, DewState stateB)
-    {
-        return stateA == stateB;
-    }
+    public override bool StateEquals(DewState stateA, DewState stateB) => stateA == stateB;
 
     /// <summary>
     /// Updates the state of this DewController's Dew model.
@@ -106,7 +98,6 @@ public class DewController : CollectableController<DewController.DewState>
         if (GetState() != DewState.BOBBING) return;
 
         BobUpAndDown();
-
     }
 
     /// <summary>
@@ -122,28 +113,28 @@ public class DewController : CollectableController<DewController.DewState>
             EconomyController.CashIn(GetDew());
             GetDew().OnCollect();
         }
-        else
-        {
-            MoveTowardsCursor();
-
-        }
+        else MoveTowardsCursor();
     }
 
-    //-----------------------ANIM LOGIC----------------------//
+    #endregion
+
+    #region Animation Logic
 
     /// <summary>
     /// Adds one chunk of Time.deltaTime to the animation
     /// counter that tracks the current state.
     /// </summary>
-    public override void AgeAnimationCounter() { return; }
+    public override void AgeAnimationCounter() => throw new System.NotImplementedException();
 
     /// <summary>
     /// Returns the animation counter for the current state.
     /// </summary>
     /// <returns>the animation counter for the current state.</returns>
-    public override float GetAnimationCounter() { return default; }
+    public override float GetAnimationCounter() => throw new System.NotImplementedException();
     /// <summary>
     /// Sets the animation counter for the current state to 0.
     /// </summary>
-    public override void ResetAnimationCounter() { return; }
+    public override void ResetAnimationCounter() => throw new System.NotImplementedException();
+
+    #endregion
 }

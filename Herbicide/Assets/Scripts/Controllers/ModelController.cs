@@ -1,12 +1,18 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
-using System.Linq;
-using static KudzuController;
 
+/// <summary>
+/// Controls a Model. <br></br>
+/// 
+/// The ModelController is responsible for manipulating its Model and bringing
+/// it to life. This includes moving it, choosing targets, playing animations,
+/// and more.
+/// </summary>
 public abstract class ModelController
 {
+    #region Fields
+
     /// <summary>
     /// This Controller's Model.
     /// </summary>
@@ -18,32 +24,9 @@ public abstract class ModelController
     private GameState gameState;
 
     /// <summary>
-    /// The Controller's ID. 
-    /// </summary>
-    private int id;
-
-    /// <summary>
-    /// true if the player clicked on the Model since it was
-    /// assigned to this ModelController; otherwise, false.
-    /// </summary>
-    private bool clicked;
-
-    /// <summary>
     /// All active Models in the scene.
     /// </summary>
     private static List<Model> ALL_MODELS = new List<Model>();
-
-    /// <summary>
-    /// All ModelControllers this ModelController has not yet passed
-    /// to the ControllerController.
-    /// </summary>
-    private List<ModelController> volatileModelControllers = new List<ModelController>();
-
-    /// <summary>
-    /// All EmanationControllers this ModelController has not yet passed
-    /// to the ControllerController.
-    /// </summary>
-    private List<EmanationController> volatileEmanationControllers = new List<EmanationController>();
 
     /// <summary>
     /// Number of active Models of each ModelType.
@@ -85,6 +68,9 @@ public abstract class ModelController
     /// </summary>
     Vector3 parabolaStartPos;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Makes a new ModelController for a Model.
@@ -96,7 +82,7 @@ public abstract class ModelController
         SetModel(model);
         GetModel().ResetModel();
         GetModel().SubscribeToCollision(HandleCollision);
-        id = ALL_MODELS.Count;
+        GetModel().SubscribeToProjectileCollisionEvent(HandleProjectileCollision);
         ALL_MODELS.Add(model);
     }
 
@@ -104,7 +90,7 @@ public abstract class ModelController
     /// Returns this ModelController's Model.
     /// </summary>
     /// <returns>this ModelController's Model.</returns>
-    public Model GetModel() { return model; }
+    public Model GetModel() => model;
 
     /// <summary>
     /// Sets this Controller's Model.
@@ -114,6 +100,7 @@ public abstract class ModelController
     {
         Assert.IsNotNull(model, "Cannot set Model as null.");
         this.model = model;
+        this.model.gameObject.SetActive(true);
     }
 
     /// <summary>
@@ -126,7 +113,6 @@ public abstract class ModelController
         this.gameState = gameState;
 
         UpdateTilePositions();
-        ModelClickedUp();
         FixSortingOrder();
         StepAnimation();
     }
@@ -177,14 +163,14 @@ public abstract class ModelController
     /// <summary>
     /// Drops loot from this Mob when it dies. 
     /// </summary>
-    protected virtual void DropDeathLoot() { droppedDeathLoot = true; }
+    protected virtual void DropDeathLoot() => droppedDeathLoot = true;
 
     /// <summary>
     /// Returns true if this Model dropped its death loot.
     /// </summary>
     /// <returns>true if this Model dropped its death loot; otherwise,
     /// false. </returns>
-    protected bool DroppedDeathLoot() { return droppedDeathLoot; }
+    protected bool DroppedDeathLoot() => droppedDeathLoot;
 
     /// <summary>
     /// Updates the Model's sorting order so that it appears behind Models
@@ -226,33 +212,74 @@ public abstract class ModelController
     /// <summary>
     /// Removes this Controller, destroying its Model.
     /// </summary>
-    public void RemoveController() { DestroyAndRemoveModel(); }
+    public void RemoveController() => DestroyAndRemoveModel();
 
     /// <summary>
     /// Handles a collision between this controller's model and
     /// some other Collider.
     /// </summary>
     /// <param name="other">the other collider.</param>
-    protected abstract void HandleCollision(Collider2D other);
+    protected virtual void HandleCollision(Collider2D other) { }
+
+    /// <summary>
+    /// Handles a collision between this controller's model and
+    /// a Projectile. <br></br>
+    /// 
+    /// This is manually called by the ProjectileController when its
+    /// Projectile hits this controller's Model.
+    /// </summary>
+    /// <param name="projectile">The Projectile that collided with
+    /// this controller's Model. </param>
+    protected virtual void HandleProjectileCollision(Projectile projectile) { }
 
     /// <summary>
     /// Informs this ModelController of the number of active Models of
     /// each type.
     /// </summary>
     /// <param name="counts">The number of active Models of each ModelType.</param>
-    public void InformOfModelCounts(ModelCounts counts) { this.counts = counts; }
+    public void InformOfModelCounts(ModelCounts counts) => this.counts = counts;
 
     /// <summary>
     /// Returns the number of active Models of each type.
     /// </summary>
     /// <returns>The number of active Models of each type.</returns>
-    protected ModelCounts GetModelCounts() { return counts; }
+    protected ModelCounts GetModelCounts() => counts;
 
     /// <summary>
     /// Returns the most recent GameState recognized by this ModelController.
     /// </summary>
     /// <returns>the most recent GameState.</returns>
-    protected GameState GetGameState() { return gameState; }
+    protected GameState GetGameState() => gameState;
+
+    /// <summary>
+    /// Returns a list of all active Models.
+    /// </summary>
+    /// <returns>a list of all Models in the scene.</returns>
+    public static IReadOnlyList<Model> GetAllModels() => ALL_MODELS.AsReadOnly();
+
+    /// <summary>
+    /// Checks if the player clicked on this Model this frame.
+    /// </summary>
+    protected bool ModelClickedUp()
+    {
+        if (!ValidModel()) return false;
+        return InputController.ModelClickedUp(GetModel());
+    }
+
+    /// <summary>
+    /// Destroys the model. This should be done by a sub class, who gives
+    /// the prefab back to the correct Factory.
+    /// </summary>
+    public abstract void DestroyModel();
+
+    /// <summary>
+    /// Performs logic right before this Model is destroyed.
+    /// </summary>
+    protected virtual void OnDestroyModel() { }
+
+    #endregion
+
+    #region Animation Logic
 
     /// <summary>
     /// Adds one chunk of Time.deltaTime to the animation
@@ -313,41 +340,9 @@ public abstract class ModelController
         return GetAnimationCounter() - stepTime > 0;
     }
 
-    /// <summary>
-    /// Returns a list of all active Models.
-    /// </summary>
-    /// <returns>a list of all Models in the scene.</returns>
-    public static IReadOnlyList<Model> GetAllModels() { return ALL_MODELS.AsReadOnly(); }
+    #endregion
 
-    /// <summary>
-    /// Checks if the player clicked on this Model.
-    /// </summary>
-    protected bool ModelClickedUp()
-    {
-        if (!ValidModel()) return false;
-        bool clickedUp = InputController.ModelClickedUp(GetModel());
-        clicked = false ? clickedUp : true;
-        return clickedUp;
-    }
-
-    /// <summary>
-    /// Returns true if the player has clicked on this Model since the
-    /// scene began.
-    /// </summary>
-    /// <returns>true if the player has clicked on this Model since the
-    /// scene began; otherwise, false.</returns>
-    protected bool ClickedOnSinceSceneBegan() { return clicked; }
-
-    /// <summary>
-    /// Destroys the model. This should be done by a sub class, who gives
-    /// the prefab back to the correct Factory.
-    /// </summary>
-    public abstract void DestroyModel();
-
-    /// <summary>
-    /// Performs logic right before this Model is destroyed.
-    /// </summary>
-    protected virtual void OnDestroyModel() { return; }
+    #region Movement Logic
 
     /// <summary>
     /// Moves the Model towards a target position in a linear manner.
@@ -450,4 +445,6 @@ public abstract class ModelController
         Vector3 newScale = Vector3.Lerp(new Vector3(0.1f, 0.1f, 0.1f), Vector3.one, scaleFraction);
         GetModel().transform.localScale = newScale;
     }
+
+    #endregion
 }

@@ -1,24 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using System;
 
 /// <summary>
-/// Abstract class to represent controllers of Projectiles.
+/// Controls a Projectile. <br></br>
 /// 
 /// The ProjectileController is responsible for manipulating its Projectile and bringing
-/// it to life. This includes moving it, firing in a specific way, playing animations,
+/// it to life. This includes moving it, choosing targets, playing animations,
 /// and more.
 /// </summary>
 /// <typeparam name="T">Enum to represent state of the Projectile.</typeparam>
 public abstract class ProjectileController<T> : ModelController, IStateTracker<T> where T : Enum
 {
-    /// <summary>
-    /// The number of Projectiles assigned to ProjectileControllers since
-    /// this scene began.
-    /// </summary>
-    private static int NUM_PROJECTILES;
+    #region Fields
 
     /// <summary>
     /// The Projectile's state.
@@ -56,12 +50,20 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     private float parabolicStep;
 
     /// <summary>
-    /// true if the Projectile hit its target and deployed its effect;
-    /// otherwise, false. If the projectile does not apply an effect,
-    /// this is irrelevant.
+    /// Counts the number of seconds in the mid air animation; resets
+    /// on step.
     /// </summary>
-    private bool effectApplied;
+    protected float midAirAnimationCounter;
 
+    /// <summary>
+    /// True if the Projectile should angle towards its target; otherwise,
+    /// false.
+    /// </summary>
+    protected abstract bool angleTowardsTarget { get; }
+
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Makes a new ProjectileController for this Projectile.
@@ -76,8 +78,13 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
         this.start = start;
         this.destination = destination;
         projectile.transform.position = start;
-        linearDirection = (destination - GetProjectile().GetPosition()).normalized;
-        NUM_PROJECTILES++;
+        linearDirection = (destination - start).normalized;
+        if (angleTowardsTarget)
+        {
+            float angle = Mathf.Atan2(linearDirection.y, linearDirection.x) * Mathf.Rad2Deg;
+            if(linearDirection.x < 0) angle += 180;
+            projectile.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+        }
     }
 
     /// <summary>
@@ -102,32 +109,18 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// it to its respective type.
     /// </summary>
     /// <returns>this ProjectileController's Projectile model.</returns>
-    protected Projectile GetProjectile() { return GetModel() as Projectile; }
+    protected Projectile GetProjectile() => GetModel() as Projectile;
 
     /// <summary>
-    /// Handles a collision between the Projectile and some other Collider2D.
+    /// Returns the Projectile prefab to the AcornFactory object pool.
     /// </summary>
-    /// <param name="other">Some other Collider2D.</param>
-    protected override void HandleCollision(Collider2D other) { return; }
+    public override void DestroyModel() => ProjectileFactory.ReturnProjectilePrefab(GetProjectile().gameObject);
 
     /// <summary>
     /// Returns the position to where the Projectile should go.
     /// </summary>
     /// <returns>the position to where the Projectile should go.</returns>
-    protected Vector3 GetDestination() { return destination; }
-
-    /// <summary>
-    /// Returns true if the projectile applied its effect.
-    /// </summary>
-    /// <returns>true if the projectile applied its effect; otherwise,
-    /// false.</returns>
-    protected virtual bool AppliedEffect() { return effectApplied; }
-
-    /// <summary>
-    /// Informs the ProjectileController that it applied its effect, if
-    /// it has one.
-    /// </summary>
-    protected virtual void ApplyEffect() { effectApplied = true; }
+    protected Vector3 GetDestination() => destination;
 
     /// <summary>
     /// Returns true if this controller's Projectile should be destoyed and
@@ -137,7 +130,7 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// set to null; otherwise, false.</returns>
     public override bool ValidModel()
     {
-        if (GetProjectile().GetVictim() != null) return false;
+        if (GetProjectile().Collided()) return false;
         if (GetProjectile().Expired()) return false;
         if (!GetProjectile().IsActive()) return false;
 
@@ -150,9 +143,30 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// </summary>
     /// <returns>the distance between the Projectile's starting position
     /// to its target position.</returns>
-    protected float GetInitialTargetDistance() { return Vector3.Distance(start, destination); }
+    protected float GetInitialTargetDistance() => Vector3.Distance(start, destination);
 
-    //-----------------------STATE LOGIC------------------------//
+    /// <summary>
+    /// Returns the linear direction of the Projectile.
+    /// </summary>
+    /// <returns>the linear direction of the Projectile.</returns>
+    protected Vector3 GetLinearDirection() => linearDirection;
+
+    /// <summary>
+    /// Handles a collision between the Projectile and some other Collider2D.
+    /// </summary>
+    /// <param name="other">Some other Collider2D.</param>
+    protected override void HandleCollision(Collider2D other)
+    {
+        if (other == null) return;
+        Model model = other.gameObject.GetComponent<Model>();
+        if (model == null) return;
+        model.TriggerProjectileCollision(GetProjectile());
+        GetProjectile().SetCollided(model);
+    }
+
+    #endregion
+
+    #region State Logic
 
     /// <summary>
     /// Sets the State of this ProjectileController. This helps keep track of
@@ -160,7 +174,7 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// for the FSM logic. 
     /// </summary>
     /// <param name="state">The new state.</param>
-    public void SetState(T state) { this.state = state; }
+    public void SetState(T state) => this.state = state;
 
     /// <summary>
     /// Returns the State of this ProjectileController. This helps keep track of
@@ -168,7 +182,7 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// for the FSM logic. 
     /// </summary>
     /// <returns>The State of this ProjectileController. </returns>
-    public T GetState() { return state; }
+    public T GetState() => state;
 
     /// <summary>
     /// Processes this ProjectileController's state FSM to determine the
@@ -219,10 +233,11 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// animation.
     /// </summary>
     /// <param name="animationState">the animation state to set.</param>
-    public void SetAnimationState(T animationState) { this.animationState = animationState; }
+    public void SetAnimationState(T animationState) => this.animationState = animationState;
 
+    #endregion
 
-    //------------------------SHOT/MOVEMENT TYPES------------------------//
+    #region Movement Logic
 
     /// <summary>
     /// Called each frame: moves the Projectile towards its target in a lobbing
@@ -277,4 +292,6 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
         // Check if the projectile has reached the destination
         if (currentPosition == targetPosition) { }
     }
+
+    #endregion
 }

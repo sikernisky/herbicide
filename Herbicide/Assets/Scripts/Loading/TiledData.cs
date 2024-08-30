@@ -1,15 +1,15 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Represents all map data that a Level needs to load correctly. An
-/// instance of this class is deserialized from JSON.
+/// Represents map data from a Tiled JSON file, deserialized.
 /// </summary>
 [System.Serializable]
 public class TiledData
 {
+    #region Fields
+
     /// <summary>
     /// The maximum height of this level's TileGrid.
     /// </summary>
@@ -39,6 +39,10 @@ public class TiledData
     /// All deserialized tilesets packaged within this TileData object.
     /// </summary>
     public List<TilesetData> tilesets;
+
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Returns a list of LayerData objects that represent Tile layers.
@@ -156,10 +160,7 @@ public class TiledData
     /// Returns the height, in Tiles, of this map.
     /// </summary>
     /// <returns>the height, in Tiles, of this map.</returns>
-    public int GetMapHeight()
-    {
-        return height;
-    }
+    public int GetMapHeight() => height;
 
     /// <summary>
     /// Returns the number of stages in this map.
@@ -187,4 +188,6 @@ public class TiledData
             }
         }
     }
+
+    #endregion
 }

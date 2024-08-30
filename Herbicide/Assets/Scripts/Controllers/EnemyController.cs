@@ -1,20 +1,38 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
-using System.Linq;
-using System;
 
 /// <summary>
-/// Abstract class to represent controllers of Enemies.
+/// Controls an Enemy. <br></br>
 /// 
 /// The EnemyController is responsible for manipulating its Enemy and bringing
 /// it to life. This includes moving it, choosing targets, playing animations,
 /// and more.
 /// </summary>
-/// <typeparam name="T">Enum to represent state of the Enemy.</typeparam>
+/// <typeparam name="T">The type of enum that represents distinct states or attributes
+/// of the Enemy.</typeparam>
 public abstract class EnemyController : MobController<EnemyController.EnemyState>
 {
+    #region Fields
+
+    /// <summary>
+    /// All possible states of an Enemy. In the future,
+    /// enemies will define their own states just like
+    /// Defenders do.
+    /// </summary>
+    public enum EnemyState
+    {
+        INACTIVE, // Not spawned yet.
+        ENTERING, // Entering map.
+        IDLE, // Static, nothing to do.
+        CHASE, // Pursuing target.
+        ATTACK, // Attacking target.
+        ESCAPE, // Running back to start.
+        PROTECT, // Protecting other escaping enemies.
+        EXITING, // Leaving map.
+        DEAD, // Dead.
+        INVALID // Something went wrong.
+    }
+
     /// <summary>
     /// true if the Enemy has popped out of a NexusHole and is fully spawned.
     /// </summary>
@@ -67,24 +85,9 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
     /// </summary>
     protected override bool FINDS_TARGETS => true;
 
-    /// <summary>
-    /// All possible states of an Enemy. Not all Enemies need to define logic
-    /// for each state. 
-    /// </summary>
-    public enum EnemyState
-    {
-        INACTIVE, // Not spawned yet.
-        ENTERING, // Entering map.
-        IDLE, // Static, nothing to do.
-        CHASE, // Pursuing target.
-        ATTACK, // Attacking target.
-        ESCAPE, // Running back to start.
-        PROTECT, // Protecting other escaping enemies.
-        EXITING, // Leaving map.
-        DEAD, // Dead.
-        INVALID // Something went wrong.
-    }
+    #endregion
 
+    #region Methods
 
     /// <summary>
     /// Initializes this EnemyController with the Enemy it controls.
@@ -133,19 +136,19 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
     /// <summary>
     /// Updates the HealthState of the Enemy controlled by this EnemyController.
     /// </summary>
-    private void UpdateEnemyHealthState() { GetEnemy().UpdateHealthState(); }
+    private void UpdateEnemyHealthState() => GetEnemy().UpdateHealthState();
 
     /// <summary>
     /// Returns the Enemy controlled by this EnemyController.
     /// </summary>
     /// <returns>the Enemy controlled by this EnemyController.</returns>
-    public Enemy GetEnemy() { return GetMob() as Enemy; }
+    public Enemy GetEnemy() => GetMob() as Enemy;
 
     /// <summary>
     /// Updates the Enemy managed by this EnemyController's Collider2D
     /// properties.
     /// </summary>
-    private void UpdateEnemyCollider() { GetEnemy().SetColliderProperties(); }
+    private void UpdateEnemyCollider() => GetEnemy().SetColliderProperties();
 
     /// <summary>
     /// Returns true if this controller's Enemy should be destoyed and
@@ -164,23 +167,29 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
         return true;
     }
 
-
     /// <summary>
-    /// Handles all collisions between this controller's Enemy
-    /// model and some other collider.
+    /// Responds to a collision with a Projectile.
     /// </summary>
-    /// <param name="other">the other collider.</param>
-    protected override void HandleCollision(Collider2D other)
+    /// <param name="projectile">the Projectile that hit this Enemy. </param>
+    protected override void HandleProjectileCollision(Projectile projectile)
     {
-        if (other == null) return;
+        if(projectile == null) return;
+        switch (projectile.TYPE) {
 
-        Acorn acorn = other.gameObject.GetComponent<Acorn>();
-
-        if (acorn != null && acorn.GetVictim() == null)
-        {
-            SoundController.PlaySoundEffect("kudzuHit");
-            GetEnemy().AdjustHealth(-acorn.GetDamage());
-            acorn.SetCollided(GetEnemy());
+            case ModelType.ACORN:
+                Acorn acorn = projectile as Acorn;
+                if(acorn == null) return;
+                GetEnemy().AdjustHealth(-acorn.GetDamage());
+                SoundController.PlaySoundEffect("kudzuHit");
+                break;
+            case ModelType.QUILL:
+                Quill quill = projectile as Quill;
+                if(quill == null) return;
+                GetEnemy().AdjustHealth(-quill.GetDamage());
+                SoundController.PlaySoundEffect("kudzuHit");
+                break; 
+            default:
+                break;
         }
     }
 
@@ -214,7 +223,7 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
         if (DroppedDeathLoot()) return;
         if (GetEnemy().Exited()) return;
 
-        Dew dew = DewFactory.GetDewPrefab().GetComponent<Dew>();
+        Dew dew = CollectableFactory.GetCollectablePrefab(ModelType.DEW).GetComponent<Dew>();
         Vector3 lootPos = GetEnemy().Exited() ? GetEnemy().GetExitPos() : GetEnemy().GetPosition();
         int value = GetEnemy().CURRENCY_VALUE_ON_DEATH;
         DewController dewController = new DewController(dew, lootPos, value);
@@ -228,10 +237,7 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
     /// <param name="originalSpawnPos">The position of the NexusHole it is
     /// spawning from.</param>
     /// <returns> the spawn position of the Enemy when in a NexusHole.</returns>
-    protected virtual Vector3 NexusHoleSpawnPos(Vector3 originalSpawnPos)
-    {
-        return originalSpawnPos;
-    }
+    protected virtual Vector3 NexusHoleSpawnPos(Vector3 originalSpawnPos) => originalSpawnPos;
 
     /// <summary>
     /// Sets the EnemyController as popped out of a NexusHole.
@@ -247,7 +253,7 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
     /// </summary>
     /// <returns> true if the Enemy has popped out of a NexusHole; otherwise,
     /// false. </returns>
-    protected bool PoppedOutOfHole() { return poppedOutOfHole; }
+    protected bool PoppedOutOfHole() => poppedOutOfHole;
 
     /// <summary>
     /// Returns the Enemy closest to the one controlled by this EnemyController
@@ -344,12 +350,13 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
     }
 
     /// <summary>
-    /// Returns the Knotwood prefab to the KnotwoodFactory singleton.
+    /// Returns the Enemy prefab to the EnemyFactory object pool.
     /// </summary>
-    public override void DestroyModel()
-    {
-        EnemyFactory.ReturnEnemyPrefab(GetEnemy().gameObject);
-    }
+    public override void DestroyModel() => EnemyFactory.ReturnEnemyPrefab(GetEnemy().gameObject);
+
+    #endregion
+
+    #region State Logic
 
     /// <summary>
     /// Returns true if two EnemyStates are equal.
@@ -357,10 +364,51 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
     /// <param name="stateA">The first EnemyState</param>
     /// <param name="stateB">The second EnemyState</param>
     /// <returns>true if two EnemyStates are equal; otherwise, false. </returns>
-    public override bool StateEquals(EnemyState stateA, EnemyState stateB)
-    {
-        return stateA == stateB;
-    }
+    public override bool StateEquals(EnemyState stateA, EnemyState stateB) => stateA == stateB;
+
+    /// <summary>
+    /// Executes the logic for the INACTIVE state.
+    /// </summary>
+    protected abstract void ExecuteInactiveState();
+
+    /// <summary>
+    /// Executes the logic for the ENTERING state.
+    /// </summary> 
+    protected abstract void ExecuteEnteringState();
+
+    /// <summary>
+    /// Executes the logic for the IDLE state.
+    /// </summary> 
+    protected abstract void ExecuteIdleState();
+
+    /// <summary>
+    /// Executes the logic for the CHASE state.
+    /// </summary> 
+    protected abstract void ExecuteChaseState();
+
+    /// <summary>
+    /// Executes the logic for the ATTACK state.
+    /// </summary> 
+    protected abstract void ExecuteAttackState();
+
+    /// <summary>
+    /// Executes the logic for the PROTECT state.
+    /// </summary> 
+    protected abstract void ExecuteProtectState();
+
+    /// <summary>
+    /// Executes the logic for the ESCAPE state.
+    /// </summary> 
+    protected abstract void ExecuteEscapeState();
+
+    /// <summary>
+    /// Executes the logic for the EXIT state.
+    /// </summary> 
+    protected abstract void ExecuteExitState();
+
+    #endregion
+
+    #region Animation Logic
 
     /// <summary>
     /// Adds one chunk of Time.deltaTime to the animation
@@ -410,43 +458,5 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
         else if (state == EnemyState.EXITING) exitingAnimationCounter = 0;
     }
 
-    /// <summary>
-    /// Executes the logic for the INACTIVE state.
-    /// </summary>
-    protected abstract void ExecuteInactiveState();
-
-    /// <summary>
-    /// Executes the logic for the ENTERING state.
-    /// </summary> 
-    protected abstract void ExecuteEnteringState();
-
-    /// <summary>
-    /// Executes the logic for the IDLE state.
-    /// </summary> 
-    protected abstract void ExecuteIdleState();
-
-    /// <summary>
-    /// Executes the logic for the CHASE state.
-    /// </summary> 
-    protected abstract void ExecuteChaseState();
-
-    /// <summary>
-    /// Executes the logic for the ATTACK state.
-    /// </summary> 
-    protected abstract void ExecuteAttackState();
-
-    /// <summary>
-    /// Executes the logic for the PROTECT state.
-    /// </summary> 
-    protected abstract void ExecuteProtectState();
-
-    /// <summary>
-    /// Executes the logic for the ESCAPE state.
-    /// </summary> 
-    protected abstract void ExecuteEscapeState();
-
-    /// <summary>
-    /// Executes the logic for the EXIT state.
-    /// </summary> 
-    protected abstract void ExecuteExitState();
+    #endregion
 }

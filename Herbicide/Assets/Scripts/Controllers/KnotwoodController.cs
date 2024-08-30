@@ -1,18 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Controller for a Knotwood Enemy.
+/// Controls a Knotwood. <br></br>
+/// 
+/// The KnotwoodController is responsible for manipulating its Knotwood and bringing
+/// it to life. This includes moving it, choosing targets, playing animations,
+/// and more.
 /// </summary>
 public class KnotwoodController : EnemyController
 {
+    #region Fields
+
     /// <summary>
     /// The maximum number of targets a Knotwood can select at once.
     /// </summary>
     protected override int MAX_TARGETS => 1;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Makes a new KnotwoodController.
@@ -25,7 +32,65 @@ public class KnotwoodController : EnemyController
     /// Returns the Knotwood model of this KnotwoodController.
     /// </summary>
     /// <returns>the Knotwood model of this KnotwoodController.</returns>
-    protected Knotwood GetKnotwood() { return GetModel() as Knotwood; }
+    protected Knotwood GetKnotwood() => GetEnemy() as Knotwood;
+
+    /// <summary>
+    /// Returns the spawn position of the Knotwood when in a NexusHole.
+    /// </summary>
+    /// <param name="originalSpawnPos">The position of the NexusHole it is
+    /// spawning from.</param>
+    /// <returns> the spawn position of the Knotwood when in a NexusHole.</returns>
+    protected override Vector3 NexusHoleSpawnPos(Vector3 originalSpawnPos)
+    {
+        originalSpawnPos.y -= 2;
+        return originalSpawnPos;
+    }
+
+    /// <summary>
+    /// Returns true if the Knotwood can target the Model passed
+    /// into this method.
+    /// </summary>
+    /// <param name="target">The Model to check for targetability.</param>
+    /// <returns>true if the Knotwood can target the Model passed
+    /// into this method; otherwise, false. </returns>
+    protected override bool CanTargetModel(Model target)
+    {
+        if (!GetKnotwood().Spawned()) return false;
+        if (GetState() == EnemyState.ENTERING) return false;
+
+        Nexus nexusTarget = target as Nexus;
+        NexusHole nexusHoleTarget = target as NexusHole;
+
+        // If escaping, only target NexusHoles.
+        if (GetState() == EnemyState.ESCAPE || GetState() == EnemyState.EXITING)
+        {
+            if (nexusHoleTarget == null) return false;
+            if (!nexusHoleTarget.Targetable()) return false;
+            if (!GetKnotwood().IsExiting() && !TileGrid.CanReach(GetKnotwood().GetPosition(), nexusHoleTarget.GetPosition())) return false;
+            if (!IsClosestNexusHole(nexusHoleTarget)) return false;
+
+            return true;
+        }
+
+        // If not escaping, only target Nexii.
+        else
+        {
+            if (nexusTarget == null) return false;
+            if (!nexusTarget.Targetable()) return false;
+            if (nexusTarget.PickedUp()) return false;
+            if (nexusTarget.CashedIn()) return false;
+            if (!TileGrid.CanReach(GetKnotwood().GetPosition(), nexusTarget.GetPosition())) return false;
+            if (!IsClosestDroppedNexus(nexusTarget)) return false;
+
+            return true;
+        }
+
+        throw new System.Exception("Something wrong happened.");
+    }
+
+    #endregion
+
+    #region State Logic
 
     /// <summary>
     /// Updates the state of this KnotwoodController's Knotwood model.
@@ -313,59 +378,5 @@ public class KnotwoodController : EnemyController
         Assert.IsTrue(NumTargetsHolding() > 0, "You need to hold targets to exit.");
     }
 
-
-
-    /// <summary>
-    /// Returns the spawn position of the Knotwood when in a NexusHole.
-    /// </summary>
-    /// <param name="originalSpawnPos">The position of the NexusHole it is
-    /// spawning from.</param>
-    /// <returns> the spawn position of the Knotwood when in a NexusHole.</returns>
-    protected override Vector3 NexusHoleSpawnPos(Vector3 originalSpawnPos)
-    {
-        originalSpawnPos.y -= 2;
-        return originalSpawnPos;
-    }
-
-    /// <summary>
-    /// Returns true if the Knotwood can target the Model passed
-    /// into this method.
-    /// </summary>
-    /// <param name="target">The Model to check for targetability.</param>
-    /// <returns>true if the Knotwood can target the Model passed
-    /// into this method; otherwise, false. </returns>
-    protected override bool CanTargetModel(Model target)
-    {
-        if (!GetKnotwood().Spawned()) return false;
-        if (GetState() == EnemyState.ENTERING) return false;
-
-        Nexus nexusTarget = target as Nexus;
-        NexusHole nexusHoleTarget = target as NexusHole;
-
-        // If escaping, only target NexusHoles.
-        if (GetState() == EnemyState.ESCAPE || GetState() == EnemyState.EXITING)
-        {
-            if (nexusHoleTarget == null) return false;
-            if (!nexusHoleTarget.Targetable()) return false;
-            if (!GetKnotwood().IsExiting() && !TileGrid.CanReach(GetKnotwood().GetPosition(), nexusHoleTarget.GetPosition())) return false;
-            if (!IsClosestNexusHole(nexusHoleTarget)) return false;
-
-            return true;
-        }
-
-        // If not escaping, only target Nexii.
-        else
-        {
-            if (nexusTarget == null) return false;
-            if (!nexusTarget.Targetable()) return false;
-            if (nexusTarget.PickedUp()) return false;
-            if (nexusTarget.CashedIn()) return false;
-            if (!TileGrid.CanReach(GetKnotwood().GetPosition(), nexusTarget.GetPosition())) return false;
-            if (!IsClosestDroppedNexus(nexusTarget)) return false;
-
-            return true;
-        }
-
-        throw new System.Exception("Something wrong happened.");
-    }
+    #endregion
 }

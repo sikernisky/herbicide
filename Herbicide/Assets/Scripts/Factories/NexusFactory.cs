@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -8,6 +6,8 @@ using UnityEngine.Assertions;
 /// </summary>
 public class NexusFactory : Factory
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the NexusFactory singleton.
     /// </summary>
@@ -19,12 +19,9 @@ public class NexusFactory : Factory
     [SerializeField]
     private Sprite[] placementTrack;
 
-    /// <summary>
-    /// Animation track when on a boat.
-    /// </summary>
-    [SerializeField]
-    private Sprite[] boatTrack;
+    #endregion
 
+    #region Methods
 
     /// <summary>
     /// Finds and sets the NexusFactory singleton.
@@ -46,7 +43,7 @@ public class NexusFactory : Factory
     /// Returns a fresh Nexus prefab from the object pool.
     /// </summary>
     /// <returns>a GameObject with a Nexus component attached to it</returns>
-    public static GameObject GetNexusPrefab() { return instance.RequestObject(ModelType.NEXUS); }
+    public static GameObject GetNexusPrefab() => instance.RequestObject(ModelType.NEXUS);
 
     /// <summary>
     /// Accepts a Nexus prefab that the caller no longer needs. Adds it back
@@ -64,11 +61,13 @@ public class NexusFactory : Factory
     /// </summary>
     /// <returns>the animation track that represents this Nexus when placing. 
     /// </returns>
-    public static Sprite[] GetPlacementTrack() { return instance.placementTrack; }
+    public static Sprite[] GetPlacementTrack() => instance.placementTrack;
 
     /// <summary>
     /// Returns the Transform component of the NexusFactory instance.
     /// </summary>
     /// <returns>the Transform component of the NexusFactory instance.</returns>
-    protected override Transform GetTransform() { return instance.transform; }
+    protected override Transform GetTransform() => instance.transform;
+
+    #endregion
 }

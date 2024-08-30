@@ -1,13 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 /// <summary>
 /// Represents a Squirrel Defender.
 /// </summary>
 public class Squirrel : Defender
 {
+    #region Fields
+
+    #endregion
+
+    #region Stats
+
     /// <summary>
     /// Starting health of a Squirrel
     /// </summary>
@@ -105,43 +108,28 @@ public class Squirrel : Defender
     /// </summary>
     public override DefenderClass CLASS => DefenderClass.TREBUCHET;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Sets this Squirrel's 2D Collider's properties.
     /// </summary>
-    public override void SetColliderProperties() { return; }
+    public override void SetColliderProperties() { }
 
     /// <summary>
     /// Returns this Squirrel's current chase range, which is always its
     /// current attack range (since Squirrels do not chase & are stationary.)
     /// </summary>
     /// <returns>this Squirrel's current chase & attack range.</returns>
-    public override float GetChaseRange() { return GetAttackRange(); }
-
-    /// <summary>
-    /// Returns an instantiated GameObject with a Squirrel component attached.
-    /// </summary>
-    /// <returns>an instantiated GameObject with a Squirrel component
-    ///  attached.</returns>
-    public override GameObject Copy() { return DefenderFactory.GetDefenderPrefab(ModelType.SQUIRREL); }
-
-    /// <summary>
-    /// Returns the animation track that represents this Squirrel when placing.
-    /// </summary>
-    /// <returns>the animation track that represents this Squirrel when placing.
-    /// </returns>
-    public override Sprite[] GetPlacementTrack()
-    {
-        return DefenderFactory.GetPlacementTrack(ModelType.SQUIRREL, GetTier());
-    }
+    public override float GetChaseRange() => GetAttackRange();
 
     /// <summary>
     /// Returns the (X, Y) dimensions of the Bear's placement track.
     /// </summary>
     /// <returns>the (X, Y) dimensions of the Bear's placement track.</returns>
-    public override Vector2Int GetPlacementTrackDimensions()
-    {
-        return new Vector2Int(16, 20);
-    }
+    public override Vector2Int GetPlacementTrackDimensions() => new Vector2Int(16, 20);
+
+    #endregion
 }
 

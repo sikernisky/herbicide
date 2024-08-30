@@ -1,16 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Manages assets for Edge components. With a factory,
-/// we save tremendous amounts of memory -- each Edge object
-/// can access its needed Sprite here rather than instantiating its own
-/// array of possible Sprites.
+/// Produces assets related to Edge sprites.
 /// </summary>
 public class EdgeFactory : MonoBehaviour
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the EdgeFactory singleton.
     /// </summary>
@@ -19,13 +16,17 @@ public class EdgeFactory : MonoBehaviour
     /// <summary>
     /// The largest index of an Edge Sprite.
     /// </summary>
-    private const int MAX_INDEX = 22;
+    private const int MAX_INDEX = 32;
 
     /// <summary>
     /// Array of Sprites for Shore Edges
     /// </summary>
     [SerializeField]
     private Sprite[] shoreEdgeSprites;
+
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Finds and sets the EdgeFactory singleton.
@@ -48,10 +49,7 @@ public class EdgeFactory : MonoBehaviour
     /// <param name="index">the index to check</param>
     /// <returns>true if an index is within the bounds for an Edge index;
     /// otherwise, false.</returns>
-    public static bool ValidEdgeIndex(int index)
-    {
-        return index >= 0 && index <= MAX_INDEX;
-    }
+    public static bool ValidEdgeIndex(int index) => index >= 0 && index <= MAX_INDEX;
 
     /// <summary>
     /// Returns the correct Sprite asset for an Edge object based on an index.
@@ -60,10 +58,12 @@ public class EdgeFactory : MonoBehaviour
     /// <param name="index">the Sprite index </param>
     public static Sprite GetEdgeSprite(string type, int index)
     {
-        Assert.IsTrue(ValidEdgeIndex(index));
+        Assert.IsTrue(ValidEdgeIndex(index), index + " is not valid.");
 
         if (type.ToLower() == "shore") return instance.shoreEdgeSprites[index];
 
         return null;
     }
+
+    #endregion
 }

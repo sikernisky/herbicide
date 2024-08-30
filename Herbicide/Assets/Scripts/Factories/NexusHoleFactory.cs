@@ -1,10 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
+/// <summary>
+/// Produces assets related to NexusHoles. 
+/// </summary>
 public class NexusHoleFactory : Factory
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the NexusHoleFactory singleton.
     /// </summary>
@@ -16,12 +19,9 @@ public class NexusHoleFactory : Factory
     [SerializeField]
     private Sprite[] placementTrack;
 
-    /// <summary>
-    /// Animation track when on a boat.
-    /// </summary>
-    [SerializeField]
-    private Sprite[] boatTrack;
+    #endregion
 
+    #region Methods
 
     /// <summary>
     /// Finds and sets the NexusHoleFactory singleton.
@@ -43,7 +43,7 @@ public class NexusHoleFactory : Factory
     /// Returns a fresh NexusHole prefab from the object pool.
     /// </summary>
     /// <returns>a GameObject with a NexusHole component attached to it</returns>
-    public static GameObject GetNexusHolePrefab() { return instance.RequestObject(ModelType.NEXUS_HOLE); }
+    public static GameObject GetNexusHolePrefab() => instance.RequestObject(ModelType.NEXUS_HOLE);
 
     /// <summary>
     /// Accepts a NexusHole prefab that the caller no longer needs. Adds it back
@@ -61,18 +61,13 @@ public class NexusHoleFactory : Factory
     /// </summary>
     /// <returns>the animation track that represents this NexusHole when placing. 
     /// </returns>
-    public static Sprite[] GetPlacementTrack() { return instance.placementTrack; }
-
-    /// <summary>
-    /// Returns the animation track that represents this NexusHole on a boat. 
-    /// </summary>
-    /// <returns>the animation track that represents this NexusHole on a boat. 
-    /// </returns>
-    public static Sprite[] GetBoatTrack() { return instance.boatTrack; }
+    public static Sprite[] GetPlacementTrack() => instance.placementTrack;
 
     /// <summary>
     /// Returns the Transform component of the NexusHoleFactory instance.
     /// </summary>
     /// <returns>the Transform component of the NexusHoleFactory instance.</returns>
-    protected override Transform GetTransform() { return instance.transform; }
+    protected override Transform GetTransform() => instance.transform;
+
+    #endregion
 }

@@ -1,13 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Represents a Stone Wall. These are the most basic type of Wall:
-/// they have infinite health, are immovable, and are impassable.
+/// Represents an impassable Stone Wall.
 /// </summary>
 public class StoneWall : Wall
 {
+    #region Fields
+
+    #endregion
+
+    #region Stats
+
     /// <summary>
     /// Type of a Stone Wall.
     /// </summary>
@@ -68,31 +71,32 @@ public class StoneWall : Wall
     /// </summary>
     public override float MIN_MOVEMENT_SPEED => 0f;
 
+    #endregion
+
+    #region Methods
+
     /// <summary>
     /// Returns the GameObject that represents this StoneWall on the grid.
     /// </summary>
     /// <returns>the GameObject that represents this StoneWall on the grid</returns>
-    public override GameObject Copy() { throw new System.NotImplementedException(); }
+    public override GameObject CreateNew() => WallFactory.GetWallPrefab(TYPE);
 
     /// <summary>
     /// Returns true if this StoneWall is dead, false otherwise.
     /// </summary>
     /// <returns>true if this StoneWall is dead, false otherwise.</returns>
-    public override bool Dead() { return GetHealth() <= 0; }
+    public override bool Dead() => GetHealth() <= 0;
 
     /// <summary>
     /// Returns the placement track for this StoneWall.
     /// </summary>
     /// <returns> the placement track for this StoneWall.</returns>
-    public override Sprite[] GetPlacementTrack()
-    {
-        throw new System.NotImplementedException();
-    }
+    public override Sprite[] GetPlacementTrack() => throw new System.NotSupportedException();
 
     /// <summary>
     /// Sets the collider properties of this StoneWall.
     /// </summary>
-    public override void SetColliderProperties() { return; }
+    public override void SetColliderProperties() { }
 
     /// <summary>
     /// Returns the index representing the correct Sprite for this StoneWall.
@@ -123,4 +127,6 @@ public class StoneWall : Wall
         if (!hasEast && hasWest && !hasSouth && hasNorth) return 14;
         return 15; // has no neighbors
     }
+
+    #endregion
 }

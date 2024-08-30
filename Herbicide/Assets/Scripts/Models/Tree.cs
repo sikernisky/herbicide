@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -8,15 +7,26 @@ using UnityEngine.Assertions;
 /// </summary>
 public abstract class Tree : Mob, ISurface
 {
-    /// <summary>
-    /// How far to push a hosted Defender horizontally
-    /// </summary>
-    public virtual float DEFENDER_OFFSET_X => 0f;
+    #region Fields
 
     /// <summary>
-    /// How far to push a hosted Defender vertically
+    /// This Tree's neighboring ISurfaces.
     /// </summary>
-    public virtual float DEFENDER_OFFSET_Y => .75f;
+    private ISurface[] surfaceNeighbors;
+
+    /// <summary>
+    /// The Defender on this Tree; null if no Defender is.
+    /// </summary>
+    private Defender defender;
+
+    /// <summary>
+    /// The Defender ghost placing on this Tree.
+    /// </summary>
+    private GameObject ghostDefender;
+
+    #endregion
+
+    #region Stats
 
     /// <summary>
     /// Starting number of Collectable Prefabs this Tree drops each second.
@@ -34,39 +44,13 @@ public abstract class Tree : Mob, ISurface
     public virtual float MAX_RESOURCE_DROP_RATE => float.MaxValue;
 
     /// <summary>
-    /// This Tree's current resource drop rate.
-    /// </summary>
-    private float resourceDropRate;
-
-    /// <summary>
-    /// This Tree's neighboring ISurfaces.
-    /// </summary>
-    private ISurface[] surfaceNeighbors;
-
-    /// <summary>
-    /// The Defender on this Tree; null if no Defender is.
-    /// </summary>
-    private Defender defender;
-
-    /// <summary>
-    /// The Defender ghost placing on this Tree.
-    /// </summary>
-    private GameObject ghostDefender;
-
-    /// <summary>
     /// Trees occupy Tiles & Flooring.
     /// </summary>
     public override bool OCCUPIER => true;
 
+    #endregion
 
-    /// <summary>
-    /// Resets this Tree's stats to their starting values.
-    /// </summary>
-    public override void ResetModel()
-    {
-        base.ResetModel();
-        ResetResourceDropRate();
-    }
+    #region Methods
 
     /// <summary>
     /// If this Tree is not occupied, adjusts its health by amount.
@@ -84,7 +68,7 @@ public abstract class Tree : Mob, ISurface
     /// </summary>
     /// <returns>true if there is an occupant on this Tree; otherwise,
     /// false.</returns>
-    public bool Occupied() { return defender != null; }
+    public bool Occupied() => defender != null;
 
     /// <summary>
     /// Returns true if a Defender can place on this Tree. If
@@ -100,17 +84,15 @@ public abstract class Tree : Mob, ISurface
         Assert.IsNotNull(neighbors, "Placement candidate's neighbors can't be null.");
         Assert.IsTrue(CanPlace(candidate, neighbors), "Need to make sure placement is valid.");
 
-
-        SpriteRenderer prefabRenderer = candidate.GetComponent<SpriteRenderer>();
-
         defender = candidate.GetComponent<Defender>();
 
         string placeName = defender.NAME.ToLower() + "Place";
         SoundController.PlaySoundEffect(placeName);
         defender.SetTreePosition(GetPosition());
         candidate.transform.SetParent(transform);
+        Vector2 defenderOffset = GetOffsetOfDefenderOnTree(candidate.TYPE);
         candidate.transform.localPosition =
-            new Vector3(DEFENDER_OFFSET_X, DEFENDER_OFFSET_Y, 1);
+            new Vector3(defenderOffset.x, defenderOffset.y, 1);
         candidate.transform.localScale = defender.GetPlacementScale();
         candidate.OnPlace(new Vector2Int(GetX(), GetY()));
     }
@@ -131,7 +113,7 @@ public abstract class Tree : Mob, ISurface
         {
             ModelType.SQUIRREL,
             ModelType.BEAR,
-            ModelType.HEDGEHOG
+            ModelType.PORCUPINE
         };
 
         if (candidate == null || neighbors == null) return false;
@@ -148,7 +130,6 @@ public abstract class Tree : Mob, ISurface
     public virtual void Remove(ISurface[] neighbors)
     {
         Assert.IsTrue(CanRemove(neighbors), "Need to check removal validity.");
-
         defender = null;
     }
 
@@ -160,7 +141,7 @@ public abstract class Tree : Mob, ISurface
     /// <returns>true if there is a PlaceableObject on this Tree that can be
     /// removed; otherwise, false. </returns>
     public virtual bool CanRemove(ISurface[] neighbors)
-    {
+    { 
         Assert.IsNotNull(neighbors, "Array of neighbors is null.");
 
         if (!Occupied()) return false;
@@ -212,7 +193,7 @@ public abstract class Tree : Mob, ISurface
     /// </summary>
     /// <returns>The PlaceableObject on this Tree, or null if there
     /// is no PlaceableObject on this Tree. </returns>
-    public PlaceableObject GetPlaceableObject() { return defender; }
+    public PlaceableObject GetPlaceableObject() => defender;
 
     /// <summary>
     /// Provides a visual simulation of placing a Defender on
@@ -228,7 +209,7 @@ public abstract class Tree : Mob, ISurface
     {
         if (!CanGhostPlace(ghost)) return false;
 
-        GameObject hollowCopy = (ghost as PlaceableObject).MakeHollowObject();
+        GameObject hollowCopy = ghost.MakeHollowObject();
         Assert.IsNotNull(hollowCopy);
         SpriteRenderer hollowRenderer = hollowCopy.GetComponent<SpriteRenderer>();
         Assert.IsNotNull(hollowRenderer);
@@ -237,10 +218,11 @@ public abstract class Tree : Mob, ISurface
         hollowRenderer.sortingOrder = GetSortingOrder() + 1;
         hollowRenderer.color = new Color32(255, 255, 255, 200);
         hollowCopy.transform.SetParent(transform);
-        hollowCopy.transform.localPosition =
-            new Vector3(DEFENDER_OFFSET_X, DEFENDER_OFFSET_Y, 1);
+        Vector2 defenderOffset = GetOffsetOfDefenderOnTree(ghost.TYPE);
+        hollowCopy.transform.localPosition = new Vector3(defenderOffset.x, defenderOffset.y, 1);
         hollowCopy.transform.localScale = Vector3.one;
         hollowCopy.transform.SetParent(transform);
+        hollowCopy.name = "Ghost " + ghost.NAME;
 
         ghostDefender = hollowCopy;
         return true;
@@ -255,11 +237,8 @@ public abstract class Tree : Mob, ISurface
     /// trying to virtually place on this Tree.</param>
     /// <returns>true if the PlaceableObject (Defender) object can be placed on this Tree;
     /// otherwise, false.</returns>
-    public bool CanGhostPlace(PlaceableObject ghost)
-    {
-        return !Occupied() && ghostDefender == null && ghost as Defender != null
+    public bool CanGhostPlace(PlaceableObject ghost) => !Occupied() && ghostDefender == null && ghost as Defender != null
             && CanPlace(ghost, GetSurfaceNeighbors());
-    }
 
     /// <summary>
     /// Removes all visual simulations of placing a PlaceableObject on this
@@ -277,48 +256,48 @@ public abstract class Tree : Mob, ISurface
     /// Sets whether an Enemy is on this Tree.
     /// </summary>
     /// <param name="occupiedByEnemy">whether an Enemy is on this Tree.</param>
-    public void SetOccupiedByEnemy(bool occupiedByEnemy) { return; }
+    public void SetOccupiedByEnemy(bool occupiedByEnemy) => throw new System.NotSupportedException("Enemies cannot occupy Trees");
 
     /// <summary>
     /// Returns true if an Enemy is on this Tree.
     /// </summary>
     /// <returns>true if an Enemy is on this Tree; otherwise,
     /// false.</returns>
-    public virtual bool OccupiedByEnemy() { return false; }
+    public virtual bool OccupiedByEnemy() => false;
 
     /// <summary>
     /// Returns true if the ghost occupant on this Tree is not null.
     /// </summary>
     /// <returns>true if the ghost occupant on this Tree is not null;
     /// otherwise, false.</returns>
-    public bool HasActiveGhostOccupant() { return ghostDefender != null; }
+    public bool HasActiveGhostOccupant() => ghostDefender != null;
 
     /// <summary>
     /// Returns true if a pathfinder can walk across this Tree.
     /// </summary>
     /// <returns>true if a pathdfinder can walk across this Tree;
     /// otherwise, false.</returns>
-    public bool IsWalkable() { return false; }
+    public bool IsWalkable() => false;
 
     /// <summary>
-    /// Resets this Tree's resource drop rate to its base value.
+    /// Returns the offset of a Defender on this Tree.
     /// </summary>
-    protected void ResetResourceDropRate() { resourceDropRate = BASE_RESOURCE_DROP_RATE; }
-
-    /// <summary>
-    /// Adds some amount to this Tree's resource drop rate.
-    /// </summary>
-    /// <param name="amount">The amount to add.</param>
-    public void AdjustResourceDropRate(float amount)
+    /// <param name="type">The type of Defender</param>
+    /// <returns>the offset of a Defender on this Tree.</returns>
+    private Vector2 GetOffsetOfDefenderOnTree(ModelType type)
     {
-        resourceDropRate = Mathf.Clamp(resourceDropRate + amount,
-         MIN_RESOURCE_DROP_RATE,
-         MAX_RESOURCE_DROP_RATE);
+        switch (type)
+        {
+            case ModelType.SQUIRREL:
+                return new Vector2(0, .75f);
+            case ModelType.BEAR:
+                return new Vector2(0, .75f);
+            case ModelType.PORCUPINE:
+                return new Vector2(0, .35f);
+            default:
+                return Vector2.zero;
+        }
     }
 
-    /// <summary>
-    /// Returns this Tree's current resource drop rate.
-    /// </summary>
-    /// <returns>this Tree's current resource drop rate.</returns>
-    public float GetResourceDropRate() { return resourceDropRate; }
+    #endregion
 }

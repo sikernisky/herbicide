@@ -1,19 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.UI;
 
 /// <summary>
-/// The heart of a level. Responsible for <br></br>
-/// 
-/// (1) Setting up the level and singletons<br></br>
-/// (2) Running the main update loop <br></br>
-/// (3) Tracking game state <br></br>
-/// (4) Closing a level and cleaning up
+/// Controls the game loop and updates
+/// all other controllers. The heart of a level. 
 /// </summary>
 public class LevelController : MonoBehaviour
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the LevelController singleton.
     /// </summary>
@@ -34,6 +29,9 @@ public class LevelController : MonoBehaviour
     /// </summary>
     private bool isPaused;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Sets up the level: <br></br>
@@ -146,22 +144,23 @@ public class LevelController : MonoBehaviour
         SoundController.SetSingleton(instance);
         LevelCompletionController.SetSingleton(instance);
         StageController.SetSingleton(instance);
+        ExplosionController.SetSingleton(instance);
     }
 
     /// <summary>
     /// Sets up all Factories.
     private void MakeFactories()
     {
-        AcornFactory.SetSingleton(instance);
         BasicTreeFactory.SetSingleton(instance);
+        CollectableFactory.SetSingleton(instance);
         DefenderFactory.SetSingleton(instance);
-        DewFactory.SetSingleton(instance);
         EdgeFactory.SetSingleton(instance);
         EmanationFactory.SetSingleton(instance);
         EnemyFactory.SetSingleton(instance);
         FlooringFactory.SetSingleton(instance);
         NexusFactory.SetSingleton(instance);
         NexusHoleFactory.SetSingleton(instance);
+        ProjectileFactory.SetSingleton(instance);
         ShopFactory.SetSingleton(instance);
         TileFactory.SetSingleton(instance);
         WallFactory.SetSingleton(instance);
@@ -229,7 +228,8 @@ public class LevelController : MonoBehaviour
         {
             //Put events here to trigger if we're NOT hovering over a Canvas / UI element.
             TileGrid.CheckTileInputEvents();
-            EconomyController.CheckCurrencyPickup();
         }
     }
+
+    #endregion
 }

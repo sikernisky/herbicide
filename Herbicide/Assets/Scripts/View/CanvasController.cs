@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
-using TMPro;
 
 /// <summary>
 /// Controls general UI events, such as positioning elements,
@@ -11,6 +8,8 @@ using TMPro;
 /// </summary>
 public class CanvasController : MonoBehaviour
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the CanvasController singleton.
     /// </summary>
@@ -82,6 +81,9 @@ public class CanvasController : MonoBehaviour
     /// </summary>
     private bool isDebug;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Finds and sets the CanvasController singleton for a level.
@@ -242,8 +244,7 @@ public class CanvasController : MonoBehaviour
     /// Returns true if debug mode is on.
     /// </summary>
     /// <returns>true if debug mode is on; otherwise, false.</returns>
-    private bool IsDebugging()
-    {
-        return isDebug;
-    }
+    private bool IsDebugging() => isDebug;
+
+    #endregion
 }

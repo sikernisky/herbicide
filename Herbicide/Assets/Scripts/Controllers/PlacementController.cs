@@ -1,15 +1,15 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
 
 /// <summary>
-/// Handles selecting and placing items. This may happen in regards to the
-/// Inventory or Tiles.
+/// Controls placement events.
 /// </summary>
 public class PlacementController : MonoBehaviour
 {
+    #region Fields
+
     /// <summary>
     /// Reference to the PlacementController singleton.
     /// </summary>
@@ -117,6 +117,9 @@ public class PlacementController : MonoBehaviour
     /// </summary>
     private int newTier;
 
+    #endregion
+
+    #region Methods
 
     /// <summary>
     /// Finds and sets the PlacementController singleton.
@@ -221,38 +224,26 @@ public class PlacementController : MonoBehaviour
     /// </summary>
     /// <returns>the Model that is currently being placed; null if no Model
     /// is being placed.</returns>
-    public static Model GetObjectPlacing()
-    {
-        return instance.subject;
-    }
+    public static Model GetObjectPlacing() => instance.subject;
 
     /// <summary>
     /// Returns true if there is an item being placed.
     /// </summary>
     /// <returns>true if there is an item being placed; otherwise, false.</returns>
-    public static bool Placing()
-    {
-        return instance.placing;
-    }
+    public static bool Placing() => instance.placing;
 
     /// <summary>
     /// Returns true if the player is ghost placing.
     /// </summary>
     /// <returns>true if the player is ghost placing; otherwise, false.
     /// </returns>
-    public static bool GhostPlacing()
-    {
-        return instance.ghostSubject != null;
-    }
+    public static bool GhostPlacing() => instance.ghostSubject != null;
 
     /// <summary>
     /// Transforms the subject of an active place event such that it is centered on
     /// the player's mouse.
     /// </summary>
-    private void GlueSubjectToMouse()
-    {
-        dummy.transform.position = InputController.GetUIMousePosition();
-    }
+    private void GlueSubjectToMouse() => dummy.transform.position = InputController.GetUIMousePosition();
 
     /// <summary>
     /// Starts a ghost place.
@@ -287,20 +278,6 @@ public class PlacementController : MonoBehaviour
         instance.dummyImage.color = PLACE_COLOR;
         instance.ghostSubject.GhostRemove();
         instance.ghostSubject = null;
-    }
-
-    /// <summary>
-    /// Upgrades the model that is currently being placed. If the model
-    /// cannot be upgraded or the player is not currently placing,
-    /// nothing happens.
-    /// </summary>
-    public static void UpgradeModelPlacing()
-    {
-        if (!Placing()) return;
-        Defender placingDefender = instance.subject as Defender;
-        if (placingDefender == null) return;
-
-        placingDefender.Upgrade();
     }
 
     /// <summary>
@@ -401,12 +378,13 @@ public class PlacementController : MonoBehaviour
             instance.OnFinishCombining?.Invoke(defenderSubject);
         }
     }
+
     /// <summary>
     /// Returns true if there is an active combination event.
     /// </summary>
     /// <returns>true if there is an active combination event; otherwise,
     /// false. </returns>
-    public static bool IsCombining() { return instance.combining; }
+    public static bool IsCombining() => instance.combining;
 
     /// <summary>
     /// Subscribes a handler (the ControllerController) to the finish combining event.
@@ -428,4 +406,5 @@ public class PlacementController : MonoBehaviour
         instance.OnFinishPlacing += handler;
     }
 
+    #endregion
 }
