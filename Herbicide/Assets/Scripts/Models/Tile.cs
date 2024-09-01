@@ -314,6 +314,7 @@ public abstract class Tile : Model, ISurface
         if (Floored()) GetFlooring().Remove(neighbors);
         else
         {
+            occupant.OnRemove();
             nexusHoleOccupant = null;
             occupant = null;
         }

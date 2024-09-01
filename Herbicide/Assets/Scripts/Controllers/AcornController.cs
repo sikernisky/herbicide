@@ -18,9 +18,7 @@ public class AcornController : ProjectileController<AcornController.AcornState>
     public enum AcornState
     {
         SPAWN,
-        MOVING,
-        COLLIDING,
-        DEAD
+        MOVING
     }
 
     /// <summary>
@@ -55,9 +53,7 @@ public class AcornController : ProjectileController<AcornController.AcornState>
     /// Updates the state of this AcornController's Acorn model.
     /// The transitions are: <br></br>
     /// 
-    /// SPAWN --> MOVING : when fired from source <br></br>
-    /// MOVING --> COLLIDING : when hits valid target <br></br>
-    /// COLLIDING --> DEAD : when all effects have been applied to valid target <br></br>
+    /// SPAWN --> MOVING : when fired from source
     /// </summary>
     public override void UpdateStateFSM()
     {
@@ -69,10 +65,6 @@ public class AcornController : ProjectileController<AcornController.AcornState>
                 SetState(AcornState.MOVING);
                 break;
             case AcornState.MOVING:
-                break;
-            case AcornState.COLLIDING:
-                break;
-            case AcornState.DEAD:
                 break;
         }
     }

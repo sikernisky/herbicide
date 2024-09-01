@@ -92,15 +92,6 @@ public abstract class Defender : Mob
     public int GetTier() => tier;
 
     /// <summary>
-    /// Resets this Defender's model.
-    /// </summary>
-    public override void ResetModel()
-    {
-        base.ResetModel();
-        ResetTier();
-    }
-
-    /// <summary>
     /// Returns a fresh copy of this Defender from the object pool.
     /// </summary>
     /// <returns>a fresh copy of this Defender from the object pool.</returns>

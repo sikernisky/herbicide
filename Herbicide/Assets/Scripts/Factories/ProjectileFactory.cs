@@ -25,6 +25,12 @@ public class ProjectileFactory : Factory
     [SerializeField]
     private ProjectileAnimationSet quillAnimationSet;
 
+    /// <summary>
+    /// The animation set for a Blackberry.
+    /// </summary>
+    [SerializeField]
+    private ProjectileAnimationSet blackberryAnimationSet;
+
     #endregion
 
     #region Methods
@@ -71,6 +77,8 @@ public class ProjectileFactory : Factory
                 return instance.acornAnimationSet.GetPlacementAnimation();
             case ModelType.QUILL:
                 return instance.quillAnimationSet.GetPlacementAnimation();
+            case ModelType.BLACKBERRY:
+                return instance.blackberryAnimationSet.GetPlacementAnimation();
             default:
                 throw new System.Exception("Invalid ModelType");
         }
@@ -89,6 +97,8 @@ public class ProjectileFactory : Factory
                 return instance.acornAnimationSet.GetMidAirAnimation();
             case ModelType.QUILL:
                 return instance.quillAnimationSet.GetMidAirAnimation();
+            case ModelType.BLACKBERRY:
+                return instance.blackberryAnimationSet.GetMidAirAnimation();
             default:
                 throw new System.Exception("Invalid ModelType");
         }

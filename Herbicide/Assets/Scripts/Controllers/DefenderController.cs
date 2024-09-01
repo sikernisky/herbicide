@@ -168,7 +168,11 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     /// <summary>
     /// Returns the Defender prefab to the DefenderFactory object pool.
     /// </summary>
-    public override void DestroyModel() => DefenderFactory.ReturnDefenderPrefab(GetDefender().gameObject);
+    public override void ReturnModelToFactory()
+    {
+        GetDefender().ResetTier();
+        DefenderFactory.ReturnDefenderPrefab(GetDefender().gameObject);
+    }
 
     #endregion
 }

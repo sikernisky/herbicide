@@ -60,7 +60,7 @@ public class NexusHoleController : MobController<NexusHoleController.NexusHoleSt
     /// <summary>
     /// Returns the NexusHole prefab to the NexusHoleFactory singleton.
     /// </summary>
-    public override void DestroyModel() => NexusHoleFactory.ReturnNexusHolePrefab(GetNexusHole().gameObject);
+    public override void ReturnModelToFactory() => NexusHoleFactory.ReturnNexusHolePrefab(GetNexusHole().gameObject);
 
     #endregion
 

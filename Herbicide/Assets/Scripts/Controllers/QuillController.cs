@@ -19,9 +19,7 @@ public class QuillController : ProjectileController<QuillController.QuillState>
     public enum QuillState
     {
         SPAWN,
-        MOVING,
-        COLLIDING,
-        DEAD
+        MOVING
     }
 
     /// <summary>
@@ -88,9 +86,7 @@ public class QuillController : ProjectileController<QuillController.QuillState>
     /// Updates the state of this QuillController's Quill model.
     /// The transitions are: <br></br>
     /// 
-    /// SPAWN --> MOVING : when fired from source <br></br>
-    /// MOVING --> COLLIDING : when hits valid target <br></br>
-    /// COLLIDING --> DEAD : when all effects have been applied to valid target <br></br>
+    /// SPAWN --> MOVING : when fired from source
     /// </summary>
     public override void UpdateStateFSM()
     {
@@ -102,10 +98,6 @@ public class QuillController : ProjectileController<QuillController.QuillState>
                 SetState(QuillState.MOVING);
                 break;
             case QuillState.MOVING:
-                break;
-            case QuillState.COLLIDING:
-                break;
-            case QuillState.DEAD:
                 break;
         }
     }

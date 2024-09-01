@@ -157,7 +157,7 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
     /// <summary>
     /// Returns the Collectable prefab to the CollectableFactory object pool.
     /// </summary>
-    public override void DestroyModel() => CollectableFactory.ReturnCollectablePrefab(GetCollectable().gameObject);
+    public override void ReturnModelToFactory() => CollectableFactory.ReturnCollectablePrefab(GetCollectable().gameObject);
 
     #endregion
 

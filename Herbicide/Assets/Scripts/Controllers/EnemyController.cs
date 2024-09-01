@@ -187,7 +187,13 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
                 if(quill == null) return;
                 GetEnemy().AdjustHealth(-quill.GetDamage());
                 SoundController.PlaySoundEffect("kudzuHit");
-                break; 
+                break;
+            case ModelType.BLACKBERRY:
+                Blackberry blackberry = projectile as Blackberry;
+                if(blackberry == null) return;
+                GetEnemy().AdjustHealth(-blackberry.GetDamage());
+                SoundController.PlaySoundEffect("kudzuHit");
+                break;
             default:
                 break;
         }
@@ -352,7 +358,7 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
     /// <summary>
     /// Returns the Enemy prefab to the EnemyFactory object pool.
     /// </summary>
-    public override void DestroyModel() => EnemyFactory.ReturnEnemyPrefab(GetEnemy().gameObject);
+    public override void ReturnModelToFactory() => EnemyFactory.ReturnEnemyPrefab(GetEnemy().gameObject);
 
     #endregion
 

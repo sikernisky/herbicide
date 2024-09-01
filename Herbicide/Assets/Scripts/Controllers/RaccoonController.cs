@@ -1,0 +1,270 @@
+using UnityEngine;
+using UnityEngine.Assertions;
+using System.Collections;
+
+/// <summary>
+/// Controls a Raccoon. <br></br>
+/// 
+/// The RaccoonController is responsible for manipulating its Raccoon and bringing
+/// it to life. This includes moving it, choosing targets, playing animations,
+/// and more.
+/// </summary>
+/// <![CDATA[<param name="RaccoonState">]]>
+public class RaccoonController : DefenderController<RaccoonController.RaccoonState>
+{
+    #region Fields
+
+    /// <summary>
+    /// States of a Raccoon.
+    /// </summary>
+    public enum RaccoonState
+    {
+        SPAWN,
+        IDLE,
+        ATTACK,
+        INVALID
+    }
+
+    /// <summary>
+    /// Counts the number of seconds in the idle animation; resets
+    /// on step.
+    /// </summary>
+    private float idleAnimationCounter;
+
+    /// <summary>
+    /// Counts the number of seconds in the attack animation; resets
+    /// on step.
+    /// </summary>
+    private float attackAnimationCounter;
+
+    /// <summary>
+    /// Maximum number of targets a Raccoon can have at once.
+    /// </summary>
+    protected override int MAX_TARGETS => 1;
+
+    /// <summary>
+    /// How many seconds to wait between firing quills.
+    /// </summary>
+    private const float delayBetweenBlackberries = 0.1f;
+
+    #endregion
+
+    #region Methods
+
+    /// <summary>
+    /// Creates a RaccoonController reference.
+    /// </summary>
+    /// <param name="raccoon">The Raccoon defender.</param>
+    /// <returns>a new RaccoonController reference.</returns>
+    public RaccoonController(Raccoon raccoon) : base(raccoon) { }
+
+    /// <summary>
+    /// Main update loop for the Raccoon.
+    /// </summary>
+    protected override void UpdateMob()
+    {
+        base.UpdateMob();
+        if (!ValidModel()) return;
+
+        ExecuteSpawnState();
+        ExecuteIdleState();
+        ExecuteAttackState();
+    }
+
+    /// <summary>
+    /// Returns this RaccoonController's Raccoon.
+    /// </summary>
+    /// <returns>this RaccoonController's Raccoon.</returns>
+    private Raccoon GetRaccoon() { return GetMob() as Raccoon; }
+
+    /// <summary>
+    /// Queues <c>numBlackberries</c> amount of berries to be fired at
+    /// the Raccoon's target.
+    /// </summary>
+    /// <returns>A reference to the coroutine.</returns>
+    /// <param name="numBlackberries">The number of berries to fire.</param>
+    private IEnumerator FireBlackberries(int numBlackberries)
+    {
+        Assert.IsTrue(delayBetweenBlackberries >= 0, "Delay needs to be non-negative");
+
+        for (int i = 0; i < numBlackberries; i++)
+        {
+            Enemy target = GetTarget() as Enemy;
+            if (target == null || !target.Targetable()) yield break; // Invalid target.
+
+            SetAnimation(GetRaccoon().ATTACK_ANIMATION_DURATION / numBlackberries,
+                DefenderFactory.GetAttackTrack(
+                    ModelType.RACCOON,
+                    GetRaccoon().GetDirection(), GetRaccoon().GetTier()));
+
+            GameObject blackberryPrefab = ProjectileFactory.GetProjectilePrefab(ModelType.BLACKBERRY);
+            Assert.IsNotNull(blackberryPrefab);
+            Blackberry blackberryComp = blackberryPrefab.GetComponent<Blackberry>();
+            Assert.IsNotNull(blackberryComp);
+            Vector3 targetPosition = GetTarget().GetAttackPosition();
+            BlackberryController blackberryController = new BlackberryController(blackberryComp, GetRaccoon().GetPosition(), targetPosition);
+            ControllerController.AddModelController(blackberryController);
+
+            if (i < numBlackberries - 1) // Wait for the delay between shots unless it's the last one
+            {
+                yield return new WaitForSeconds(delayBetweenBlackberries);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Returns true if the Raccoon can shoot an quill.
+    /// </summary>
+    /// <returns>true if the Raccoon can shoot an quill; otherwise,
+    /// false.</returns>
+    public override bool CanAttack()
+    {
+        if (!base.CanAttack()) return false; //Cooldown
+        if (GetState() != RaccoonState.ATTACK) return false; //Not in the attack state.
+        Enemy target = GetTarget() as Enemy;
+        if (target == null || !target.Targetable()) return false; //Invalid target.
+        return true;
+    }
+
+    #endregion
+
+    #region State Logic
+
+    /// <summary>
+    /// Returns true if two RaccoonStates are equal.
+    /// </summary>
+    /// <param name="stateA">The first state.</param>
+    /// <param name="stateB">The second state.</param>
+    /// <returns>true if two RaccoonStates are equal; otherwise, false.</returns>
+    public override bool StateEquals(RaccoonState stateA, RaccoonState stateB) => stateA == stateB;
+
+    /// <summary>
+    /// Updates the state of this RaccoonController's Raccoon model.
+    /// The transitions are: <br></br>
+    /// 
+    /// SPAWN --> IDLE : always <br></br>
+    /// </summary>
+    public override void UpdateStateFSM()
+    {
+        if (!ValidModel()) return;
+        if (GetGameState() != GameState.ONGOING)
+        {
+            SetState(RaccoonState.IDLE);
+            return;
+        }
+
+        Enemy target = GetTarget() as Enemy;
+        switch (GetState())
+        {
+            case RaccoonState.SPAWN:
+                if (SpawnStateDone()) SetState(RaccoonState.IDLE);
+                break;
+            case RaccoonState.IDLE:
+                if (target == null || !target.Targetable()) break;
+                if (DistanceToTargetFromTree() <= GetRaccoon().GetAttackRange() &&
+                    GetRaccoon().GetAttackCooldown() <= 0) SetState(RaccoonState.ATTACK);
+                break;
+            case RaccoonState.ATTACK:
+                if (target == null || !target.Targetable()) SetState(RaccoonState.IDLE);
+                if (GetAnimationCounter() > 0) break;
+                if (GetRaccoon().GetAttackCooldown() > 0) SetState(RaccoonState.IDLE);
+                else if (DistanceToTarget() > GetRaccoon().GetAttackRange()) SetState(RaccoonState.IDLE);
+                break;
+            case RaccoonState.INVALID:
+                throw new System.Exception("Invalid State.");
+        }
+    }
+
+    /// <summary>
+    /// Runs logic relevant to the Raccoon's spawn state.
+    /// </summary>
+    protected override void ExecuteSpawnState()
+    {
+        if (!ValidModel()) return;
+        if (GetState() != RaccoonState.SPAWN) return;
+
+        GetRaccoon().FaceDirection(Direction.SOUTH);
+        base.ExecuteSpawnState();
+    }
+
+    /// <summary>
+    /// Runs logic relevant to the Raccoon's idle state.
+    /// </summary>
+    protected virtual void ExecuteIdleState()
+    {
+        if (!ValidModel()) return;
+        if (GetState() != RaccoonState.IDLE) return;
+        Enemy target = GetTarget() as Enemy;
+        if (target != null && DistanceToTargetFromTree() <= GetRaccoon().GetAttackRange())
+            FaceTarget();
+        else GetRaccoon().FaceDirection(Direction.SOUTH);
+
+        SetAnimation(GetRaccoon().IDLE_ANIMATION_DURATION,
+            DefenderFactory.GetIdleTrack(
+                ModelType.RACCOON,
+                GetRaccoon().GetDirection(), GetRaccoon().GetTier()));
+    }
+
+    /// <summary>
+    /// Runs logic relevant to the Raccoon's attacking state.
+    /// </summary>
+    protected virtual void ExecuteAttackState()
+    {
+        if (!ValidModel()) return;
+        Enemy target = GetTarget() as Enemy;
+        if (target == null || !target.Targetable()) return;
+        if (GetState() != RaccoonState.ATTACK) return;
+
+        FaceTarget();
+        if (!CanAttack()) return;
+
+        // Calculate the number of quills to fire based on the Raccoon's tier.
+        int tier = GetRaccoon().GetTier();
+        int numQuillsToFire = 1;
+        if (tier == 2) numQuillsToFire = 2;
+        else if (tier >= 3) numQuillsToFire = 5;
+        GetRaccoon().StartCoroutine(FireBlackberries(numQuillsToFire));
+
+        // Reset attack animation.
+        GetRaccoon().RestartAttackCooldown();
+    }
+
+    #endregion
+
+    #region Animation Logic
+
+    /// <summary>
+    /// Adds one chunk of Time.deltaTime to the animation
+    /// counter that tracks the current state.
+    /// </summary>
+    public override void AgeAnimationCounter()
+    {
+        RaccoonState state = GetState();
+        if (state == RaccoonState.IDLE) idleAnimationCounter += Time.deltaTime;
+        else if (state == RaccoonState.ATTACK) attackAnimationCounter += Time.deltaTime;
+    }
+
+    /// <summary>
+    /// Returns the animation counter for the current state.
+    /// </summary>
+    /// <returns>the animation counter for the current state.</returns>
+    public override float GetAnimationCounter()
+    {
+        RaccoonState state = GetState();
+        if (state == RaccoonState.IDLE) return idleAnimationCounter;
+        else if (state == RaccoonState.ATTACK) return attackAnimationCounter;
+        else return 0;
+    }
+
+    /// <summary>
+    /// Sets the animation counter for the current state to 0.
+    /// </summary>
+    public override void ResetAnimationCounter()
+    {
+        RaccoonState state = GetState();
+        if (state == RaccoonState.IDLE) idleAnimationCounter = 0;
+        else if (state == RaccoonState.ATTACK) attackAnimationCounter = 0;
+    }
+
+    #endregion
+}

@@ -9,7 +9,7 @@ using UnityEngine.Assertions;
 /// it to life. This includes moving it, choosing targets, playing animations,
 /// and more.
 /// </summary>
-/// <![CDATA[<param name="AcornState">]]>
+/// <![CDATA[<param name="PorcupineState">]]>
 public class PorcupineController : DefenderController<PorcupineController.PorcupineState>
 {
     #region Fields

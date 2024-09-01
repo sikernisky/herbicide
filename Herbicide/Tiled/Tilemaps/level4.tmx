@@ -8,8 +8,8 @@
  <tileset firstgid="4" source="../Tilesets/Soil.tsx"/>
  <tileset firstgid="20" source="../Tilesets/Enemies.tsx"/>
  <tileset firstgid="24" source="../Tilesets/Shore.tsx"/>
- <tileset firstgid="48" source="../Tilesets/Placeables.tsx"/>
- <tileset firstgid="57" source="../Tilesets/Markers.tsx"/>
+ <tileset firstgid="59" source="../Tilesets/Placeables.tsx"/>
+ <tileset firstgid="68" source="../Tilesets/Markers.tsx"/>
  <layer id="3" name="Water" class="TileLayer" width="29" height="20">
   <properties>
    <property name="layerClass" value="TileLayer"/>
@@ -127,14 +127,14 @@
   <properties>
    <property name="layerClass" value="StructureLayer"/>
   </properties>
-  <object id="1229" gid="49" x="192" y="176" width="16" height="16"/>
-  <object id="1231" gid="48" x="256" y="160" width="16" height="16"/>
+  <object id="1229" gid="60" x="192" y="176" width="16" height="16"/>
+  <object id="1231" gid="59" x="256" y="160" width="16" height="16"/>
  </objectgroup>
  <objectgroup id="16" name="Markers" class="MarkerLayer">
   <properties>
    <property name="layerClass" value="MarkerLayer"/>
   </properties>
-  <object id="1230" gid="57" x="192" y="176" width="16" height="16">
+  <object id="1230" gid="68" x="192" y="176" width="16" height="16">
    <properties>
     <property name="enemySpawnData" value="kudzu1"/>
    </properties>

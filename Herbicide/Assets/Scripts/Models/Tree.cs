@@ -108,17 +108,9 @@ public abstract class Tree : Mob, ISurface
     /// returns false. </returns>
     public bool CanPlace(PlaceableObject candidate, ISurface[] neighbors)
     {
-        ModelType candidateType = candidate.TYPE;
-        List<ModelType> acceptedTypes = new List<ModelType>()
-        {
-            ModelType.SQUIRREL,
-            ModelType.BEAR,
-            ModelType.PORCUPINE
-        };
-
         if (candidate == null || neighbors == null) return false;
         if (Occupied()) return false;
-        if (!acceptedTypes.Contains(candidateType)) return false;
+        if (candidate as Defender == null) return false;
         return true;
     }
 
@@ -130,6 +122,7 @@ public abstract class Tree : Mob, ISurface
     public virtual void Remove(ISurface[] neighbors)
     {
         Assert.IsTrue(CanRemove(neighbors), "Need to check removal validity.");
+        defender.OnRemove();
         defender = null;
     }
 
@@ -289,11 +282,13 @@ public abstract class Tree : Mob, ISurface
         switch (type)
         {
             case ModelType.SQUIRREL:
-                return new Vector2(0, .75f);
+                return new Vector2(0.0f, 0.75f);
             case ModelType.BEAR:
-                return new Vector2(0, .75f);
+                return new Vector2(0.0f, 0.75f);
             case ModelType.PORCUPINE:
-                return new Vector2(0, .35f);
+                return new Vector2(0.0f, 0.35f);
+            case ModelType.RACCOON:
+                return new Vector2(0.1f, 0.85f);
             default:
                 return Vector2.zero;
         }

@@ -114,7 +114,7 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// <summary>
     /// Returns the Projectile prefab to the AcornFactory object pool.
     /// </summary>
-    public override void DestroyModel() => ProjectileFactory.ReturnProjectilePrefab(GetProjectile().gameObject);
+    public override void ReturnModelToFactory() => ProjectileFactory.ReturnProjectilePrefab(GetProjectile().gameObject);
 
     /// <summary>
     /// Returns the position to where the Projectile should go.
