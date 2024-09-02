@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -46,6 +47,55 @@ public class BlackberryController : ProjectileController<BlackberryController.Bl
     /// <returns>the Blackberry model.</returns>
     protected Blackberry GetBlackberry() => GetProjectile() as Blackberry;
 
+    /// <summary>
+    /// Helper method to handle the detonation of the Blackberry at the specified explosion position.
+    /// </summary>
+    /// <param name="explosionPosition">The position of the explosion.</param>
+    /// <param name="immuneObjects">Set of enemies immune to the explosion.</param>
+    private void DetonateBlackberry(Vector3 explosionPosition, HashSet<Enemy> immuneObjects)
+    {
+        EmanationController piercingBlackberryEmanationController = new EmanationController(
+            EmanationController.EmanationType.BLACKBERRY_EXPLOSION, 1,
+            explosionPosition,
+            Quaternion.identity);
+        ControllerController.AddEmanationController(piercingBlackberryEmanationController);
+        int explosionX = TileGrid.PositionToCoordinate(explosionPosition.x);
+        int explosionY = TileGrid.PositionToCoordinate(explosionPosition.y);
+        Vector2 tileExplosionPos = new Vector2(explosionX, explosionY);
+        ExplosionController.ExplodeOnEnemies(tileExplosionPos,
+            GetBlackberry().EXPLOSION_RADIUS, GetBlackberry().BASE_DAMAGE, immuneObjects);
+
+    }
+
+    /// <summary>
+    /// Processes events that occur when the Blackberry detonates at a given position.
+    /// </summary>
+    /// <param name="other">Collider2D the projectile collided with.</param>
+    protected override void DetonateProjectile(Collider2D other)
+    {
+        Vector3 impactPoint = other.ClosestPoint(GetProjectile().transform.position);
+        impactPoint = new Vector3(impactPoint.x, impactPoint.y, 1) - GetLinearDirection() * -.25f;
+        HashSet<Enemy> immuneObjects = new HashSet<Enemy>();
+
+        DetonateBlackberry(impactPoint, immuneObjects);
+    }
+
+    /// <summary>
+    /// Processes events that occur when this Projectile detonates at a given position.
+    /// This method is used because not all Projectiles collide with a Collider2D.
+    /// Some Projectiles detonate at a position.
+    /// </summary>
+    /// <param name="detonationPosition">The position where the Projectile detonated.</param>
+    protected override void DetonateProjectile(Vector3 detonationPosition)
+    {
+        Vector3 explosionPosition = detonationPosition - GetLinearDirection() * -.25f;
+        explosionPosition = new Vector3(explosionPosition.x, explosionPosition.y, 1);
+
+        HashSet<Enemy> immuneObjects = new HashSet<Enemy>();
+
+        DetonateBlackberry(explosionPosition, immuneObjects);
+    }
+
     #endregion
 
     #region State Logic
@@ -87,7 +137,7 @@ public class BlackberryController : ProjectileController<BlackberryController.Bl
         if (GetState() != BlackberryState.MOVING) return;
 
         SetAnimation(GetBlackberry().MID_AIR_ANIMATION_DURATION, ProjectileFactory.GetMidAirAnimationTrack(GetBlackberry()));
-        LinearShot();
+        LobShot();
     }
 
     /// <summary>

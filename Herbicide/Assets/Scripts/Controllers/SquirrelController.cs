@@ -116,7 +116,8 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
             Acorn acornComp = acornPrefab.GetComponent<Acorn>();
             Assert.IsNotNull(acornComp);
             Vector3 targetPosition = GetTarget().GetAttackPosition();
-            AcornController acornController = new AcornController(acornComp, GetSquirrel().GetPosition(), targetPosition);
+            int numSplits = GetSquirrel().GetTier() - 1;
+            AcornController acornController = new AcornController(acornComp, GetSquirrel().GetPosition(), targetPosition, numSplits);
             ControllerController.AddModelController(acornController);
 
             if (i < numAcorns - 1) // Wait for the delay between shots unless it's the last one

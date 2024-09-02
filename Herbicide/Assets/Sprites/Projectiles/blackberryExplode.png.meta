@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 575c42f39e79a8148aff776b0aaa5643
+guid: 5483f94d033b07e4bb7c7fe91236593d
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -105,169 +105,106 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: raccoon_0
+      name: blackberryExplode_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 23
-        width: 21
-        height: 23
-      alignment: 9
-      pivot: {x: 0.5, y: 0.5}
+        y: 32
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: efa80c5cedd33a541b6e932d30207f72
-      internalID: -1527025962
+      spriteID: 2552754ad2c2f004eaa1615cec2e1a64
+      internalID: 45867967
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: raccoon_1
+      name: blackberryExplode_1
       rect:
         serializedVersion: 2
-        x: 21
-        y: 23
-        width: 21
-        height: 23
+        x: 32
+        y: 32
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 33e119888171b2741a740b8f2105b1e6
-      internalID: 2138885224
+      spriteID: 9746727d41f4a124397d8243b6056ecf
+      internalID: 1029513853
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: raccoon_2
+      name: blackberryExplode_2
       rect:
         serializedVersion: 2
-        x: 42
-        y: 23
-        width: 21
-        height: 23
+        x: 64
+        y: 32
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5e18f02a7d5790b48a8e72d450119e11
-      internalID: 1816082651
+      spriteID: 8291352e312422349b6b9855d0e79f16
+      internalID: -441343965
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: raccoon_3
+      name: blackberryExplode_3
       rect:
         serializedVersion: 2
-        x: 63
-        y: 23
-        width: 21
-        height: 23
+        x: 96
+        y: 32
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1e4defb7e5471aa478c75507dc7430a2
-      internalID: 90783261
+      spriteID: db3222434cf52a24ba946f7ca06dd8d5
+      internalID: -1535559200
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: raccoon_4
+      name: blackberryExplode_4
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 21
-        height: 23
-      alignment: 9
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e044aa6272c8e6a47b679e7e76b8527e
-      internalID: -2136243195
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: raccoon_5
-      rect:
-        serializedVersion: 2
-        x: 21
-        y: 0
-        width: 21
-        height: 23
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 879599a0f20b18d4aa92fbb3d9daf146
-      internalID: 419591280
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: raccoon_6
-      rect:
-        serializedVersion: 2
-        x: 42
-        y: 0
-        width: 21
-        height: 23
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 9c5f4271a65761643a473064ebd6a63f
-      internalID: -710789618
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: raccoon_7
-      rect:
-        serializedVersion: 2
-        x: 63
-        y: 0
-        width: 21
-        height: 23
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: c088d9a5358ba5c4abaffb4126e013e9
-      internalID: -110656121
+      spriteID: 68a52114b7cf0314e8bc2ba2c4cb9bdf
+      internalID: -532525057
       vertices: []
       indices: 
       edges: []
@@ -283,14 +220,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      raccoon_4: -2136243195
-      raccoon_3: 90783261
-      raccoon_1: 2138885224
-      raccoon_5: 419591280
-      raccoon_0: -1527025962
-      raccoon_7: -110656121
-      raccoon_6: -710789618
-      raccoon_2: 1816082651
+      blackberryExplode_1: 1029513853
+      blackberryExplode_2: -441343965
+      blackberryExplode_4: -532525057
+      blackberryExplode_0: 45867967
+      blackberryExplode_3: -1535559200
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

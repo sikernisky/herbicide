@@ -190,8 +190,7 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
                 break;
             case ModelType.BLACKBERRY:
                 Blackberry blackberry = projectile as Blackberry;
-                if(blackberry == null) return;
-                GetEnemy().AdjustHealth(-blackberry.GetDamage());
+                if (blackberry == null) return;
                 SoundController.PlaySoundEffect("kudzuHit");
                 break;
             default:

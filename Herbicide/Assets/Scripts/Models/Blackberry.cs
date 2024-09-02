@@ -4,6 +4,11 @@ public class Blackberry : Projectile
 {
     #region Fields
 
+    /// <summary>
+    /// Explosion radius of an Blackberry.
+    /// </summary>
+    public int EXPLOSION_RADIUS => 2;
+
     #endregion
 
     #region Stats
@@ -16,7 +21,7 @@ public class Blackberry : Projectile
     /// <summary>
     /// Starting speed of an Blackberry.
     /// </summary>
-    public override float BASE_SPEED => 9f;
+    public override float BASE_SPEED => 1f;
 
     /// <summary>
     /// Maximum speed of an Blackberry.
@@ -53,6 +58,10 @@ public class Blackberry : Projectile
     /// from start to finish. 
     /// </summary>
     public override float MOVE_ANIMATION_DURATION => 0f;
+
+    #endregion
+
+    #region Methods
 
     #endregion
 }

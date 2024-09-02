@@ -7,6 +7,11 @@ public class Acorn : Projectile
 {
     #region Fields
 
+    /// <summary>
+    /// Number of times this Acorn will split.
+    /// </summary>
+    private int numSplits;
+
     #endregion
 
     #region Stats
@@ -56,6 +61,31 @@ public class Acorn : Projectile
     /// from start to finish. 
     /// </summary>
     public override float MOVE_ANIMATION_DURATION => 0f;
+
+    #endregion
+
+    #region Methods
+
+    /// <summary>
+    /// Sets the number of splits this Acorn has left.
+    /// </summary>
+    /// <param name="numSplits">the number of splits this Acorn has left.</param>
+    public void SetNumSplits(int numSplits)
+    {
+        if(numSplits < 0) numSplits = 0;
+        this.numSplits = numSplits;
+    }
+    
+    /// <summary>
+    /// Reduces the number of splits this Acorn has left by one.
+    /// </summary>
+    public void Split() => numSplits = numSplits > 0 ? numSplits - 1 : 0;
+
+    /// <summary>
+    /// Returns the number of splits this Acorn has left.
+    /// </summary>
+    /// <returns>the number of splits this Acorn has left.</returns>
+    public int GetNumSplits() => numSplits;
 
     #endregion
 }

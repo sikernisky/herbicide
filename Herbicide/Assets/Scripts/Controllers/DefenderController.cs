@@ -73,6 +73,7 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
         if (enemyTarget == null) return false;
         if (!enemyTarget.Spawned()) return false;
         if (!enemyTarget.Targetable()) return false;
+        if (!GetDefender().IsPlaced()) return false;
 
         Vector3 treePos = GetDefender().GetTreePosition();
         float distanceFromTree = Vector3.Distance(treePos, enemyTarget.GetPosition());

@@ -118,7 +118,11 @@ public class ShopManager : MonoBehaviour
         // Check & Handle ShopCard click
         foreach (ShopSlot shopSlot in instance.shopSlots)
         {
-            if (shopSlot.SlotClicked()) instance.ClickShopSlotButton(shopSlot.GetSlotIndex());
+            if (shopSlot.SlotClicked())
+            {
+                instance.ClickShopSlotButton(shopSlot.GetSlotIndex());
+                shopSlot.ResetSlotClickStatus();
+            }
         }
 
         // Enable / Disable reroll button depending on balance
@@ -234,8 +238,7 @@ public class ShopManager : MonoBehaviour
         ShopSlot clickedSlot = shopSlots.First(ss => ss.GetSlotIndex() == slotIndex);
         if (clickedSlot.Empty()) return;
         if (PlacementController.IsPlacing()) return;
-        if(PlacementController.IsCombining()) return;   
-
+        if(PlacementController.IsCombining()) return;
         if (!clickedSlot.CanBuy(EconomyController.GetBalance())) return;
 
         // Get a fresh copy of the Model we bought

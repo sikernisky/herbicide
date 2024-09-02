@@ -19,7 +19,7 @@ public class Raccoon : Defender
     /// <summary>
     /// Starting attack range of a Raccoon.
     /// </summary>
-    public override float BASE_ATTACK_RANGE => 3f;
+    public override float BASE_ATTACK_RANGE => 7f;
 
     /// <summary>
     /// Maximum attack range of a Raccoon.

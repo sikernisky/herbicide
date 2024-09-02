@@ -147,6 +147,11 @@ public class ShopCard : UIModel
     public bool ClickedOn() => clicked;
 
     /// <summary>
+    /// Resets the ShopCard's click status.
+    /// </summary>
+    public void ResetClick() => clicked = false;
+
+    /// <summary>
     /// Turns the ShopCard's background a darker color.
     /// </summary>
     public void TurnDark()

@@ -51,31 +51,56 @@ public class QuillController : ProjectileController<QuillController.QuillState>
     /// Handles a collision between the Quill and some other Collider2D.
     /// </summary>
     /// <param name="other">Some other Collider2D.</param>
-    protected override void HandleCollision(Collider2D other)
+    protected override void HandleCollision(Collider2D other) => base.HandleCollision(other);
+
+    /// <summary>
+    /// Helper method to handle the detonation of the quill at the specified explosion position.
+    /// </summary>
+    /// <param name="explosionPosition">The position of the explosion.</param>
+    /// <param name="immuneObjects">Set of enemies immune to the explosion.</param>
+    private void DetonateQuill(Vector3 explosionPosition, HashSet<Enemy> immuneObjects)
     {
-        // Parent invokes HandleProjectileCollision on the collidee
-        base.HandleCollision(other);
-
-        // Calculate explosion position right behind the target
-        Vector3 impactPoint = other.ClosestPoint(GetProjectile().transform.position);
-        Vector3 explosionPosition = impactPoint - GetLinearDirection() * -1f; // Adjust the 0.5f as needed for the desired offset
-        explosionPosition = new Vector3(explosionPosition.x, explosionPosition.y, 1);
-
-        // Configure the piercingQuill GameObject's position and collider for the explosion
+        // We need the piercing quill to define the custom explosion area
         GameObject piercingQuill = GetQuill().GetPiercingQuill();
         piercingQuill.transform.position = explosionPosition;
         piercingQuill.transform.rotation = GetProjectile().transform.rotation;
-        if(GetLinearDirection().x >= 0) piercingQuill.transform.Rotate(0, 0, 180);
+        if (GetLinearDirection().x >= 0)
+            piercingQuill.transform.Rotate(0, 0, 180);
 
-        // Assuming ExplosionController handles different types and manages the explosion area
         EmanationController piercingQuillEmanationController = new EmanationController(
             EmanationController.EmanationType.QUILL_PIERCE, 1,
             piercingQuill.transform.position,
             piercingQuill.transform.rotation);
         ControllerController.AddEmanationController(piercingQuillEmanationController);
+        ExplosionController.ExplodeOnEnemies(piercingQuill, GetQuill().PIERCING_DAMAGE, immuneObjects);
+    }
+
+    /// <summary>
+    /// Processes events that occur when the Quill detonates at a given position.
+    /// </summary>
+    /// <param name="other">Collider2D the projectile collided with.</param>
+    protected override void DetonateProjectile(Collider2D other)
+    {
+        Vector3 impactPoint = other.ClosestPoint(GetProjectile().transform.position);
+        Vector3 explosionPosition = impactPoint - GetLinearDirection() * -1f;
+        explosionPosition = new Vector3(explosionPosition.x, explosionPosition.y, 1);
         Enemy initialTarget = other.gameObject.GetComponent<Model>() as Enemy;
         HashSet<Enemy> immuneObjects = new HashSet<Enemy>() { initialTarget };
-        ExplosionController.ExplodeOnEnemies(piercingQuill, GetQuill().PIERCING_DAMAGE, immuneObjects);
+        DetonateQuill(explosionPosition, immuneObjects);
+    }
+
+    /// <summary>
+    /// Processes events that occur when this Projectile detonates at a given position.
+    /// This method is used because not all Projectiles collide with a Collider2D.
+    /// Some Projectiles detonate at a position.
+    /// </summary>
+    /// <param name="detonationPosition">The position where the Projectile detonated.</param>
+    protected override void DetonateProjectile(Vector3 detonationPosition)
+    {
+        Vector3 explosionPosition = detonationPosition - GetLinearDirection() * -1f;
+        explosionPosition = new Vector3(explosionPosition.x, explosionPosition.y, 1);
+        HashSet<Enemy> immuneObjects = new HashSet<Enemy>();
+        DetonateQuill(explosionPosition, immuneObjects);
     }
 
     #endregion

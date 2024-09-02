@@ -22,7 +22,8 @@ public class EmanationController
     public enum EmanationType
     {
         BEAR_CHOMP,
-        QUILL_PIERCE
+        QUILL_PIERCE,
+        BLACKBERRY_EXPLOSION
     }
 
     /// <summary>

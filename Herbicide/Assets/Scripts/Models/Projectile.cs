@@ -42,16 +42,9 @@ public abstract class Projectile : Model
     private GameObject shadow;
 
     /// <summary>
-    /// The animation curve of this Projectile's lob.
+    /// true if this Projectile hit something; otherwise, false. 
     /// </summary>
-    [SerializeField]
-    private AnimationCurve lobCurve;
-
-    /// <summary>
-    /// The Model that this Projectile hit; null if it hasn't hit
-    /// something yet.
-    /// </summary>
-    private Model victim;
+    private bool collided;
 
     /// <summary>
     /// true if this Projectile traveled and reached its target destination;
@@ -79,6 +72,10 @@ public abstract class Projectile : Model
     /// </summary>
     public abstract float MIN_SPEED { get; }
 
+    /// <summary>
+    /// How high this Projectile will be lobbed.
+    /// </summary>
+    public virtual float LOB_HEIGHT => 2f;
 
     /// <summary>
     /// Starting damage of this Projectile.
@@ -119,26 +116,16 @@ public abstract class Projectile : Model
     /// <summary>
     /// Informs this Projectile that it collided with some Model.
     /// </summary>
-    /// <param name="victim">The Model this projectile collided with.
-    /// </param>
-    public void SetCollided(Model victim)
-    {
-        Assert.IsNotNull(victim, "Victim cannot be null.");
-        this.victim = victim;
-    }
+    /// <param name="collided">true if this Projectile collided with
+    /// some Model; otherwise, false.</param>
+    public void SetCollided(bool collided) => this.collided = collided;
 
     /// <summary>
     /// Returns true if this Projectile has collided with something.
     /// </summary>
     /// <returns>true if this Projectile has collided with something;
     /// otherwise, false.</returns>
-    public bool Collided() => victim != null;
-
-    /// <summary>
-    /// Sets this Projectile's properties such that it has not collided
-    /// with anything.
-    /// </summary>
-    private void SetUncollided() => victim = null;
+    public bool Collided() => collided;
 
     /// <summary>
     /// Informs this Projectile that it reached its positional target.
@@ -228,6 +215,12 @@ public abstract class Projectile : Model
     private void ResetAge() => age = 0;
 
     /// <summary>
+    /// Returns the number of seconds that this Projectile has been active.
+    /// </summary>
+    /// <returns>the number of seconds that this Projectile has been active.</returns>
+    public float GetAge() => age;
+
+    /// <summary>
     /// Resets this Projectile's stats to their starting
     /// values.
     /// </summary>
@@ -236,7 +229,7 @@ public abstract class Projectile : Model
         base.ResetModel();
         ResetSpeed();
         ResetDamage();
-        SetUncollided();
+        SetCollided(false);
         SetActive();
         ResetAge();
     }

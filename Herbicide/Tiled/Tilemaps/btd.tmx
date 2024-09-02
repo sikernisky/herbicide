@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="25" height="11" tilewidth="16" tileheight="16" infinite="0" nextlayerid="17" nextobjectid="790">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="25" height="11" tilewidth="16" tileheight="16" infinite="0" nextlayerid="17" nextobjectid="791">
  <editorsettings>
   <export target="../../Assets/Levels/btd.json" format="json"/>
  </editorsettings>
@@ -247,13 +247,13 @@
   </properties>
   <object id="774" type="Marker" gid="68" x="32" y="80" width="16" height="16">
    <properties>
-    <property name="enemySpawnData" value="kudzu1-8,kudzu1-9.5, kudzu2-4, knotwood2-10, kudzu3-2, kudzu3-5, knotwood3-8, kudzu4-2, knotwood4-3, knotwood4-7, kudzu4-9, kudzu4-10, kudzu5-1, knotwood5-2, kudzu5-3, kudzu5-4, knotwood5-5, kudzu5-6, knotwood5-6"/>
+    <property name="enemySpawnData" value="kudzu1-3,kudzu1-9.5, kudzu2-4, kudzu3-2, kudzu3-5, kudzu4-2, kudzu4-9, kudzu4-10, kudzu5-1, kudzu5-3, kudzu5-4, kudzu5-6,"/>
     <property name="markerName" value="enemySpawn"/>
    </properties>
   </object>
-  <object id="775" type="Marker" gid="68" x="32" y="112" width="16" height="16">
+  <object id="790" type="Marker" gid="68" x="32" y="112" width="16" height="16">
    <properties>
-    <property name="enemySpawnData" value="kudzu1-8,kudzu1-9.5, kudzu2-4, knotwood2-10, kudzu3-2, kudzu3-5, knotwood3-8, kudzu4-2, knotwood4-3, knotwood4-7, kudzu4-9, kudzu4-10, kudzu5-1, knotwood5-2, kudzu5-3, kudzu5-4, knotwood5-5, kudzu5-6, knotwood5-6"/>
+    <property name="enemySpawnData" value="kudzu1-3,kudzu1-9.5, kudzu2-4, kudzu3-2, kudzu3-5, kudzu4-2, kudzu4-9, kudzu4-10, kudzu5-1, kudzu5-3, kudzu5-4, kudzu5-6,"/>
     <property name="markerName" value="enemySpawn"/>
    </properties>
   </object>

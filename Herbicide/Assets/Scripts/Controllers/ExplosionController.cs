@@ -67,5 +67,29 @@ public class ExplosionController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Detonates an explosion at the given position with a specified radius. The
+    /// explosion will deal damage to all PlaceableObjects within the radius. This explosion
+    /// hurts Enemy objects.
+    /// </summary>
+    /// <param name="center">The center position of the explosion.</param>
+    /// <param name="radius">The radius of the explosion area.</param>
+    /// <param name="damage">How much damage to inflict upon each PlaceableObject
+    /// within the explosion area.</param>
+    /// <param name="immuneEnemies">List of PlaceableObjects that are immune to
+    /// the explosion's damage.</param>
+    public static void ExplodeOnEnemies(Vector2 center, float radius, float damage, HashSet<Enemy> immuneEnemies)
+    {
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(center, radius);
+        foreach (Collider2D hit in colliders)
+        {
+            Enemy damageable = hit.GetComponent<Enemy>();
+            if (damageable != null && (immuneEnemies == null || !immuneEnemies.Contains(damageable)))
+            {
+                damageable.AdjustHealth(-damage);
+            }
+        }
+    }
+
     #endregion
 }

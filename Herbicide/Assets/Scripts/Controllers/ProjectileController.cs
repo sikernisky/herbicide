@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 using System;
+using System.Collections.Generic;
 
 /// <summary>
 /// Controls a Projectile. <br></br>
@@ -40,20 +41,21 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     private Vector3 linearDirection;
 
     /// <summary>
-    /// Progress metric in our parabolic shot.
+    /// The linear interpolation value for a LobShot.
     /// </summary>
-    private float parabolicProgress;
-
-    /// <summary>
-    /// Step metric in our parabolic shot.
-    /// </summary>
-    private float parabolicStep;
+    private float lobLerp;
 
     /// <summary>
     /// Counts the number of seconds in the mid air animation; resets
     /// on step.
     /// </summary>
     protected float midAirAnimationCounter;
+
+    /// <summary>
+    /// All Colliders2D that this Projectile has collided with.
+    /// </summary>
+    private HashSet<Collider2D> collidees;
+
 
     /// <summary>
     /// True if the Projectile should angle towards its target; otherwise,
@@ -85,6 +87,7 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
             if(linearDirection.x < 0) angle += 180;
             projectile.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
         }
+        if (collidees == null) collidees = new HashSet<Collider2D>();
     }
 
     /// <summary>
@@ -160,9 +163,47 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
         if (other == null) return;
         Model model = other.gameObject.GetComponent<Model>();
         if (model == null) return;
+        if (lobLerp > 0 && lobLerp < .6f) return; // Keep the lob illusion
+        if(collidees.Contains(other)) return;
+
+        Debug.Log("Here");
+
         model.TriggerProjectileCollision(GetProjectile());
-        GetProjectile().SetCollided(model);
+        DetonateProjectile(other);
+        GetProjectile().SetCollided(true);
+        AddColliderToIgnore(other);
     }
+
+    /// <summary>
+    /// Adds a Collider2D to the list of Colliders2D to ignore.
+    /// The projectile will not detonate when colliding with this Collider2D.
+    /// </summary>
+    /// <param name="other">The collider to ignore. </param>
+    public void AddColliderToIgnore(Collider2D other)
+    {
+        Assert.IsNotNull(other);
+        if (collidees == null) collidees = new HashSet<Collider2D>();
+        
+        collidees.Add(other);
+    }
+
+    /// <summary>
+    /// Processes events that occur when this Projectile detonates at
+    /// a given position. <br></br>
+    /// 
+    /// We have this method because not all Projectiles collide with
+    /// a Collider2D. Some Projectiles detonate at a position.
+    /// </summary>
+    /// <param name="detonationPosition">The position where the Projectile
+    /// detonated.</param>
+    protected virtual void DetonateProjectile(Vector3 detonationPosition) { return; }
+
+    /// <summary>
+    /// Processes events that occur when this projectile detonates at
+    /// a given Collider2D.
+    /// </summary>
+    /// <param name="other">The Collider2D with which the Projectile collided. </param>
+    protected virtual void DetonateProjectile(Collider2D other) { return; }
 
     #endregion
 
@@ -240,38 +281,6 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     #region Movement Logic
 
     /// <summary>
-    /// Called each frame: moves the Projectile towards its target in a lobbing
-    /// fashion.
-    /// </summary>
-    protected virtual void ParabolicShot(float height, float maxSize)
-    {
-        if (GetProjectile() == null) return;
-
-        parabolicStep = Time.deltaTime / .5f;
-        parabolicProgress = Mathf.Min(parabolicProgress + parabolicStep, 1f);
-
-        float parabola = 1.0f - 4.0f * (parabolicProgress - 0.5f) * (parabolicProgress - 0.5f);
-        Vector3 nextPos = Vector3.Lerp(start, destination, parabolicProgress);
-        nextPos.y += parabola * height;
-
-        Vector3 nextShadowPos = nextPos;
-        nextShadowPos.y -= parabola * height;
-        nextShadowPos.x += (parabola * height) / 2f;
-
-        float newSize = parabola * maxSize;
-        newSize = Mathf.Clamp(newSize, 1f, maxSize);
-        GetProjectile().transform.localScale = new Vector3(newSize, newSize, 1);
-        GetProjectile().SetWorldPosition(nextPos);
-        GetProjectile().SetShadowPosition(nextShadowPos);
-
-        if (parabolicProgress == 1)
-        {
-            GetProjectile().SetWorldPosition(GetDestination());
-            GetProjectile().SetReachedTarget();
-        }
-    }
-
-    /// <summary>
     /// Called each frame: moves the Projectile towards its target in a linear
     /// fashion.
     /// </summary>
@@ -280,17 +289,39 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
         if (GetProjectile() == null) return;
 
         Vector3 currentPosition = GetProjectile().GetPosition();
-        Vector3 targetPosition = GetDestination();
-
-        // Calculate the step size
         float step = GetProjectile().GetSpeed() * Time.deltaTime;
-
-        // Calculate the new position by moving along the direction vector
         Vector3 newPosition = currentPosition + linearDirection * step;
         GetProjectile().SetWorldPosition(newPosition);
+    }
 
-        // Check if the projectile has reached the destination
-        if (currentPosition == targetPosition) { }
+    /// <summary>
+    /// Called each frame: moves the Projectile towards its target in a parabolic
+    /// fashion.
+    /// </summary>
+    public void LobShot()
+    {
+        if (GetProjectile() == null) return;
+
+        // The lob is done and nothing was hit: detonate the projectile.
+        if (lobLerp >= 1)
+        {
+            DetonateProjectile(GetProjectile().GetPosition());
+            GetProjectile().SetCollided(true);
+            return;
+        }
+
+        Vector3 linearProgress = Vector3.Lerp(start, destination, lobLerp);
+        float height = Mathf.Sin(lobLerp * Mathf.PI) * GetProjectile().LOB_HEIGHT;
+        Vector3 newProjectilePos = new Vector3(linearProgress.x, linearProgress.y + height, linearProgress.z);
+        GetProjectile().SetWorldPosition(newProjectilePos);
+
+        // Adjust shadow position to appear lower as the projectile reaches its peak
+        float shadowHeight = 1 - height / GetProjectile().LOB_HEIGHT; // Normalize shadow height
+        Vector3 shadowPosition = new Vector3(linearProgress.x, linearProgress.y - shadowHeight, linearProgress.z);
+        GetProjectile().SetShadowPosition(shadowPosition);
+
+        lobLerp += GetProjectile().GetSpeed() * Time.deltaTime;
+        if (Vector3.Distance(GetProjectile().GetPosition(), destination) < 0.05f) lobLerp = 1;
     }
 
     #endregion

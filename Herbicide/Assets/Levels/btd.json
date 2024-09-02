@@ -570,7 +570,7 @@
                         {
                          "name":"enemySpawnData",
                          "type":"string",
-                         "value":"kudzu1-8,kudzu1-9.5, kudzu2-4, knotwood2-10, kudzu3-2, kudzu3-5, knotwood3-8, kudzu4-2, knotwood4-3, knotwood4-7, kudzu4-9, kudzu4-10, kudzu5-1, knotwood5-2, kudzu5-3, kudzu5-4, knotwood5-5, kudzu5-6, knotwood5-6"
+                         "value":"kudzu1-3,kudzu1-9.5, kudzu2-4, kudzu3-2, kudzu3-5, kudzu4-2, kudzu4-9, kudzu4-10, kudzu5-1, kudzu5-3, kudzu5-4, kudzu5-6,"
                         }, 
                         {
                          "name":"markerName",
@@ -587,13 +587,13 @@
                 {
                  "gid":68,
                  "height":16,
-                 "id":775,
+                 "id":790,
                  "name":"",
                  "properties":[
                         {
                          "name":"enemySpawnData",
                          "type":"string",
-                         "value":"kudzu1-8,kudzu1-9.5, kudzu2-4, knotwood2-10, kudzu3-2, kudzu3-5, knotwood3-8, kudzu4-2, knotwood4-3, knotwood4-7, kudzu4-9, kudzu4-10, kudzu5-1, knotwood5-2, kudzu5-3, kudzu5-4, knotwood5-5, kudzu5-6, knotwood5-6"
+                         "value":"kudzu1-3,kudzu1-9.5, kudzu2-4, kudzu3-2, kudzu3-5, kudzu4-2, kudzu4-9, kudzu4-10, kudzu5-1, kudzu5-3, kudzu5-4, kudzu5-6,"
                         }, 
                         {
                          "name":"markerName",
@@ -620,7 +620,7 @@
          "y":0
         }],
  "nextlayerid":17,
- "nextobjectid":790,
+ "nextobjectid":791,
  "orientation":"orthogonal",
  "properties":[
         {
