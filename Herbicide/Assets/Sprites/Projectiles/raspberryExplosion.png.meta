@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 5483f94d033b07e4bb7c7fe91236593d
+guid: eeacedb4e6e4dc44ca7377008779872a
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -105,13 +105,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: blackberryExplode_0
+      name: raspberryExplosion_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 48
-        width: 48
-        height: 48
+        y: 64
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -119,20 +119,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 76a0ac4092cffaa4f830b68e8ada6a6b
-      internalID: -433408375
+      spriteID: 56fb1eca1db955744a1f02db6eba625b
+      internalID: 1046263010
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: blackberryExplode_1
+      name: raspberryExplosion_1
       rect:
         serializedVersion: 2
-        x: 48
-        y: 48
-        width: 48
-        height: 48
+        x: 64
+        y: 64
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -140,20 +140,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d59256dae6086ca4196cdd29b71c37fe
-      internalID: 1662757705
+      spriteID: d410e171300cba746a139d008abaeb14
+      internalID: -429658276
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: blackberryExplode_2
+      name: raspberryExplosion_2
       rect:
         serializedVersion: 2
-        x: 96
-        y: 48
-        width: 48
-        height: 48
+        x: 128
+        y: 64
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -161,20 +161,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a5e5d486cf6707c4c88f680b9d386062
-      internalID: -601988469
+      spriteID: 1fac5cdc4dde4cf43a9589620426b25c
+      internalID: -1932534338
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: blackberryExplode_3
+      name: raspberryExplosion_3
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 48
-        height: 48
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -182,20 +182,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0b389488b8785864495ec0a17b4b729d
-      internalID: -1509022440
+      spriteID: 761a0b5c46c13eb4481afb265c0c732b
+      internalID: 1311272494
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: blackberryExplode_4
+      name: raspberryExplosion_4
       rect:
         serializedVersion: 2
-        x: 48
+        x: 64
         y: 0
-        width: 48
-        height: 48
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -203,8 +203,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 36659aaeb92c92944a481ad7731d8f32
-      internalID: -2147418337
+      spriteID: 243f7fd0c1be0564cae7e95893e30b21
+      internalID: 909567619
       vertices: []
       indices: 
       edges: []
@@ -220,11 +220,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      blackberryExplode_1: 1662757705
-      blackberryExplode_2: -601988469
-      blackberryExplode_4: -2147418337
-      blackberryExplode_0: -433408375
-      blackberryExplode_3: -1509022440
+      raspberryExplosion_0: 1046263010
+      raspberryExplosion_1: -429658276
+      raspberryExplosion_3: 1311272494
+      raspberryExplosion_4: 909567619
+      raspberryExplosion_2: -1932534338
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

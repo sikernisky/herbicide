@@ -34,7 +34,7 @@ public class Raccoon : Defender
     /// <summary>
     /// Starting attack speed of a Raccoon.
     /// </summary>
-    public override float BASE_ATTACK_SPEED => .6f;
+    public override float BASE_ATTACK_SPEED => .3f;
 
     /// <summary>
     /// Maximum attack speed of a Raccoon.

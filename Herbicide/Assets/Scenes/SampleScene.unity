@@ -2032,6 +2032,7 @@ MonoBehaviour:
   - {fileID: 8079875932440872871, guid: ec999ae8a85bc44aa8bf5fd8f9a7acc9, type: 3}
   - {fileID: 8079875932440872871, guid: f82c63b07c37ae54fa13c953ef62f46c, type: 3}
   - {fileID: 8079875932440872871, guid: 0c54ae2e29b788740822bfd3196c5234, type: 3}
+  - {fileID: 8079875932440872871, guid: 4d16a7bb6f88e2d4eb25bf990a24eef0, type: 3}
   acornAnimationSet: {fileID: 11400000, guid: e05583944e8bb454ea20cf5db7ac8ffc, type: 2}
   quillAnimationSet: {fileID: 11400000, guid: 982e2fad998e003449bb1dcdfbbd9ed7, type: 2}
   blackberryAnimationSet: {fileID: 11400000, guid: c1d7c88038fd1274495aa654582f46f0, type: 2}
@@ -5209,6 +5210,18 @@ MonoBehaviour:
   - {fileID: -1468365903, guid: 75aef1c37dc759942a30a346b851b3e6, type: 3}
   - {fileID: 1202231844, guid: 75aef1c37dc759942a30a346b851b3e6, type: 3}
   - {fileID: -725687816, guid: 75aef1c37dc759942a30a346b851b3e6, type: 3}
+  blackberryExplosionTrack:
+  - {fileID: 1441884882, guid: 5483f94d033b07e4bb7c7fe91236593d, type: 3}
+  - {fileID: 1470530240, guid: 5483f94d033b07e4bb7c7fe91236593d, type: 3}
+  - {fileID: -327951360, guid: 5483f94d033b07e4bb7c7fe91236593d, type: 3}
+  - {fileID: 1888000891, guid: 5483f94d033b07e4bb7c7fe91236593d, type: 3}
+  - {fileID: 1716346053, guid: 5483f94d033b07e4bb7c7fe91236593d, type: 3}
+  raspberryExplosionTrack:
+  - {fileID: 784150757, guid: eeacedb4e6e4dc44ca7377008779872a, type: 3}
+  - {fileID: 175269855, guid: eeacedb4e6e4dc44ca7377008779872a, type: 3}
+  - {fileID: 1420623258, guid: eeacedb4e6e4dc44ca7377008779872a, type: 3}
+  - {fileID: 635493305, guid: eeacedb4e6e4dc44ca7377008779872a, type: 3}
+  - {fileID: -451348472, guid: eeacedb4e6e4dc44ca7377008779872a, type: 3}
 --- !u!1 &1549079117
 GameObject:
   m_ObjectHideFlags: 0

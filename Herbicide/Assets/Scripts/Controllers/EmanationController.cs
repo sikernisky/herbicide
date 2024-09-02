@@ -23,7 +23,9 @@ public class EmanationController
     {
         BEAR_CHOMP,
         QUILL_PIERCE,
-        BLACKBERRY_EXPLOSION
+        BLACKBERRY_EXPLOSION,
+        RASPBERRY_EXPLOSION,
+        SALMONBERRY_EXPLOSION
     }
 
     /// <summary>
@@ -95,8 +97,7 @@ public class EmanationController
     /// <param name="numCycles">The number of cycles the EmanationController must
     /// run before removing its Emanation.</param>
     /// <param name="target">Where the Emanation should be.</param> 
-    /// <param name="rotation">The rotation of the Emanation.</param>
-    public EmanationController(EmanationType emanationType, int numCycles, Vector3 target, Quaternion rotation)
+    public EmanationController(EmanationType emanationType, int numCycles, Vector3 target)
     {
         Assert.IsTrue(numCycles > 0);
 
@@ -111,6 +112,19 @@ public class EmanationController
         emanationRenderer = emanation.AddComponent<SpriteRenderer>();
         emanationRenderer.sortingLayerName = SortingLayers.EMANATIONS.ToString().ToLower();
         emanationDummy.transform.position = spawnPos;
+    }
+
+    /// <summary>
+    /// Makes a new EmanationController with a custom rotation.
+    /// </summary>
+    /// <param name="emanationType">The Emanation to play.</param>
+    /// <param name="numCycles">The number of cycles the EmanationController must
+    /// run before removing its Emanation.</param>
+    /// <param name="target">Where the Emanation should be.</param> 
+    /// <param name="rotation">The rotation of the Emanation.</param>
+    public EmanationController(EmanationType emanationType, int numCycles, Vector3 target, Quaternion rotation)
+    : this(emanationType, numCycles, target)
+    {
         emanationDummy.transform.rotation = rotation;
     }
 

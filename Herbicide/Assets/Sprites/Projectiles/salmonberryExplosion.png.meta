@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 5483f94d033b07e4bb7c7fe91236593d
+guid: f5fab5bf424e499479601bd4a6855d4b
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -105,13 +105,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: blackberryExplode_0
+      name: salmonberryExplosion_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 48
-        width: 48
-        height: 48
+        y: 96
+        width: 96
+        height: 96
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -119,41 +119,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 76a0ac4092cffaa4f830b68e8ada6a6b
-      internalID: -433408375
+      spriteID: 1aa462fd05f2ccc4c89711a46a15cf49
+      internalID: 1746922231
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: blackberryExplode_1
-      rect:
-        serializedVersion: 2
-        x: 48
-        y: 48
-        width: 48
-        height: 48
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d59256dae6086ca4196cdd29b71c37fe
-      internalID: 1662757705
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: blackberryExplode_2
+      name: salmonberryExplosion_1
       rect:
         serializedVersion: 2
         x: 96
-        y: 48
-        width: 48
-        height: 48
+        y: 96
+        width: 96
+        height: 96
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -161,20 +140,41 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a5e5d486cf6707c4c88f680b9d386062
-      internalID: -601988469
+      spriteID: 2613e08c8cf146842b5096db5d388b72
+      internalID: 1869895693
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: blackberryExplode_3
+      name: salmonberryExplosion_2
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 96
+        width: 96
+        height: 96
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ccc5c4a79c3b75e40bde81dda2df167f
+      internalID: 1583781255
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: salmonberryExplosion_3
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 48
-        height: 48
+        width: 96
+        height: 96
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -182,20 +182,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0b389488b8785864495ec0a17b4b729d
-      internalID: -1509022440
+      spriteID: 6bfa2c5160546584ea0f0d7bb5dbe70a
+      internalID: -837729883
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: blackberryExplode_4
+      name: salmonberryExplosion_4
       rect:
         serializedVersion: 2
-        x: 48
+        x: 96
         y: 0
-        width: 48
-        height: 48
+        width: 96
+        height: 96
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -203,8 +203,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 36659aaeb92c92944a481ad7731d8f32
-      internalID: -2147418337
+      spriteID: ae0e3f1a57d7e5e4782b44bc9f2a15b7
+      internalID: -1054259387
       vertices: []
       indices: 
       edges: []
@@ -220,11 +220,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      blackberryExplode_1: 1662757705
-      blackberryExplode_2: -601988469
-      blackberryExplode_4: -2147418337
-      blackberryExplode_0: -433408375
-      blackberryExplode_3: -1509022440
+      salmonberryExplosion_3: -837729883
+      salmonberryExplosion_1: 1869895693
+      salmonberryExplosion_4: -1054259387
+      salmonberryExplosion_2: 1583781255
+      salmonberryExplosion_0: 1746922231
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

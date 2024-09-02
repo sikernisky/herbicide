@@ -221,7 +221,7 @@ public class PorcupineController : DefenderController<PorcupineController.Porcup
         int tier = GetPorcupine().GetTier();
         int numQuillsToFire = 1;
         if (tier == 2) numQuillsToFire = 2;
-        else if (tier >= 3) numQuillsToFire = 5;
+        else if (tier >= 3) numQuillsToFire = 4;
         GetPorcupine().StartCoroutine(FireQuills(numQuillsToFire));
 
         // Reset attack animation.

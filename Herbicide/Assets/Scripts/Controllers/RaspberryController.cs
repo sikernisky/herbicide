@@ -2,21 +2,21 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Controls a Blackberry. <br></br>
+/// Controls a Raspberry. <br></br>
 /// 
-/// The BlackberyController is responsible for manipulating its Blackberry and bringing
+/// The RaspberryController is responsible for manipulating its Raspberry and bringing
 /// it to life. This includes moving it, choosing targets, playing animations,
 /// and more.
 /// </summary>
-/// <![CDATA[<param name="BlackberryState">]]>
-public class BlackberryController : ProjectileController<BlackberryController.BlackberryState>
+/// <![CDATA[<param name="RaspberryState">]]>
+public class RaspberryController : ProjectileController<RaspberryController.RaspberryState> 
 {
     #region Fields
 
     /// <summary>
-    /// Possible states of an Blackberry over its lifetime.
+    /// Possible states of an Raspberry over its lifetime.
     /// </summary>
-    public enum BlackberryState
+    public enum RaspberryState
     {
         SPAWN,
         MOVING
@@ -32,42 +32,42 @@ public class BlackberryController : ProjectileController<BlackberryController.Bl
     #region Methods
 
     /// <summary>
-    /// Gives an Blackberry an BlackberryController.
+    /// Gives an Raspberry an RaspberryController.
     /// </summary>
-    /// <param name="blackberry">The blackberry which will get an BlackberryController.</param>
-    /// <param name="destination">Where the blackberry started.</param>
-    /// <param name="destination">Where the blackberry should go.</param>
-    public BlackberryController(Blackberry blackberry, Vector3 start, Vector3 destination) :
-        base(blackberry, start, destination)
+    /// <param name="raspberry">The Raspberry which will get an RaspberryController.</param>
+    /// <param name="destination">Where the Raspberry started.</param>
+    /// <param name="destination">Where the Raspberry should go.</param>
+    public RaspberryController(Raspberry raspberry, Vector3 start, Vector3 destination) :
+        base(raspberry, start, destination)
     { }
 
     /// <summary>
-    /// Returns the Blackberry model.
+    /// Returns the Raspberry model.
     /// </summary>
-    /// <returns>the Blackberry model.</returns>
-    protected Blackberry GetBlackberry() => GetProjectile() as Blackberry;
+    /// <returns>the Raspberry model.</returns>
+    protected Raspberry GetRaspberry() => GetProjectile() as Raspberry;
 
     /// <summary>
-    /// Helper method to handle the detonation of the Blackberry at the specified explosion position.
+    /// Helper method to handle the detonation of the Raspberry at the specified explosion position.
     /// </summary>
     /// <param name="explosionPosition">The position of the explosion.</param>
     /// <param name="immuneObjects">Set of enemies immune to the explosion.</param>
-    private void DetonateBlackberry(Vector3 explosionPosition, HashSet<Enemy> immuneObjects)
+    private void DetonateRaspberry(Vector3 explosionPosition, HashSet<Enemy> immuneObjects)
     {
-        EmanationController piercingBlackberryEmanationController = new EmanationController(
-            EmanationController.EmanationType.BLACKBERRY_EXPLOSION, 1,
+        EmanationController piercingRaspberryEmanationController = new EmanationController(
+            EmanationController.EmanationType.RASPBERRY_EXPLOSION, 1,
             explosionPosition);
-        ControllerController.AddEmanationController(piercingBlackberryEmanationController);
+        ControllerController.AddEmanationController(piercingRaspberryEmanationController);
         int explosionX = TileGrid.PositionToCoordinate(explosionPosition.x);
         int explosionY = TileGrid.PositionToCoordinate(explosionPosition.y);
         Vector2 tileExplosionPos = new Vector2(explosionX, explosionY);
         ExplosionController.ExplodeOnEnemies(tileExplosionPos,
-            GetBlackberry().EXPLOSION_RADIUS, GetBlackberry().BASE_DAMAGE, immuneObjects);
+            GetRaspberry().EXPLOSION_RADIUS, GetRaspberry().BASE_DAMAGE, immuneObjects);
 
     }
 
     /// <summary>
-    /// Processes events that occur when the Blackberry detonates at a given position.
+    /// Processes events that occur when the Raspberry detonates at a given position.
     /// </summary>
     /// <param name="other">Collider2D the projectile collided with.</param>
     protected override void DetonateProjectile(Collider2D other)
@@ -76,7 +76,7 @@ public class BlackberryController : ProjectileController<BlackberryController.Bl
         impactPoint = new Vector3(impactPoint.x, impactPoint.y, 1) - GetLinearDirection() * -.25f;
         HashSet<Enemy> immuneObjects = new HashSet<Enemy>();
 
-        DetonateBlackberry(impactPoint, immuneObjects);
+        DetonateRaspberry(impactPoint, immuneObjects);
     }
 
     /// <summary>
@@ -92,7 +92,7 @@ public class BlackberryController : ProjectileController<BlackberryController.Bl
 
         HashSet<Enemy> immuneObjects = new HashSet<Enemy>();
 
-        DetonateBlackberry(explosionPosition, immuneObjects);
+        DetonateRaspberry(explosionPosition, immuneObjects);
     }
 
     #endregion
@@ -100,7 +100,7 @@ public class BlackberryController : ProjectileController<BlackberryController.Bl
     #region State Logic
 
     /// <summary>
-    /// Updates the state of this BlackberryController's Blackberry model.
+    /// Updates the state of this RaspberryController's Raspberry model.
     /// The transitions are: <br></br>
     /// 
     /// SPAWN --> MOVING : when fired from source
@@ -111,41 +111,41 @@ public class BlackberryController : ProjectileController<BlackberryController.Bl
 
         switch (GetState())
         {
-            case BlackberryState.SPAWN:
-                SetState(BlackberryState.MOVING);
+            case RaspberryState.SPAWN:
+                SetState(RaspberryState.MOVING);
                 break;
-            case BlackberryState.MOVING:
+            case RaspberryState.MOVING:
                 break;
         }
     }
 
     /// <summary>
-    /// Returns true if two BlackberryStates are equal.
+    /// Returns true if two RaspberryStates are equal.
     /// </summary>
     /// <param name="stateA">The first state.</param>
     /// <param name="stateB">The second state.</param>
-    /// <returns>true if two BlackberryStates are equal; otherwise, false.</returns>
-    public override bool StateEquals(BlackberryState stateA, BlackberryState stateB) => stateA == stateB;
+    /// <returns>true if two RaspberryStates are equal; otherwise, false.</returns>
+    public override bool StateEquals(RaspberryState stateA, RaspberryState stateB) => stateA == stateB;
 
     /// <summary>
-    /// Runs logic relevant to the Blackberry's MOVING state.
+    /// Runs logic relevant to the Raspberry's MOVING state.
     /// </summary>
     public override void ExecuteMovingState()
     {
         if (!ValidModel()) return;
-        if (GetState() != BlackberryState.MOVING) return;
+        if (GetState() != RaspberryState.MOVING) return;
 
-        SetAnimation(GetBlackberry().MID_AIR_ANIMATION_DURATION, ProjectileFactory.GetMidAirAnimationTrack(GetBlackberry()));
+        SetAnimation(GetRaspberry().MID_AIR_ANIMATION_DURATION, ProjectileFactory.GetMidAirAnimationTrack(GetRaspberry()));
         LobShot();
     }
 
     /// <summary>
-    /// Runs logic relevant to the Blackberry's COLLIDING state.
+    /// Runs logic relevant to the Raspberry's COLLIDING state.
     /// </summary>
     public override void ExecuteCollidingState() { }
 
     /// <summary>
-    /// Runs logic relevant to the Blackberry's DEAD state.
+    /// Runs logic relevant to the Raspberry's DEAD state.
     /// </summary>
     public override void ExecuteDeadState() { }
 
@@ -159,8 +159,8 @@ public class BlackberryController : ProjectileController<BlackberryController.Bl
     /// </summary>
     public override void AgeAnimationCounter()
     {
-        BlackberryState state = GetState();
-        if (state == BlackberryState.MOVING) midAirAnimationCounter += Time.deltaTime;
+        RaspberryState state = GetState();
+        if (state == RaspberryState.MOVING) midAirAnimationCounter += Time.deltaTime;
     }
 
     /// <summary>
@@ -169,8 +169,8 @@ public class BlackberryController : ProjectileController<BlackberryController.Bl
     /// <returns>the animation counter for the current state.</returns>
     public override float GetAnimationCounter()
     {
-        BlackberryState state = GetState();
-        if (state == BlackberryState.MOVING) return midAirAnimationCounter;
+        RaspberryState state = GetState();
+        if (state == RaspberryState.MOVING) return midAirAnimationCounter;
         return 0;
     }
 
@@ -179,8 +179,8 @@ public class BlackberryController : ProjectileController<BlackberryController.Bl
     /// </summary>
     public override void ResetAnimationCounter()
     {
-        BlackberryState state = GetState();
-        if (state == BlackberryState.MOVING) midAirAnimationCounter = 0;
+        RaspberryState state = GetState();
+        if (state == RaspberryState.MOVING) midAirAnimationCounter = 0;
     }
 
     #endregion

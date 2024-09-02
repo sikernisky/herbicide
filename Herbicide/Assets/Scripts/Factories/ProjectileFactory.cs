@@ -31,6 +31,18 @@ public class ProjectileFactory : Factory
     [SerializeField]
     private ProjectileAnimationSet blackberryAnimationSet;
 
+    /// <summary>
+    /// The animation set for a Raspberry.
+    /// </summary>
+    [SerializeField]
+    private ProjectileAnimationSet raspberryAnimationSet;
+
+    /// <summary>
+    /// The animation set for a Salmonberry.
+    /// </summary>
+    [SerializeField]
+    private ProjectileAnimationSet salmonberryAnimationSet;
+
     #endregion
 
     #region Methods
@@ -79,6 +91,10 @@ public class ProjectileFactory : Factory
                 return instance.quillAnimationSet.GetPlacementAnimation();
             case ModelType.BLACKBERRY:
                 return instance.blackberryAnimationSet.GetPlacementAnimation();
+            case ModelType.RASPBERRY:
+                return instance.raspberryAnimationSet.GetPlacementAnimation();
+            case ModelType.SALMONBERRY:
+                return instance.salmonberryAnimationSet.GetPlacementAnimation();
             default:
                 throw new System.Exception("Invalid ModelType");
         }
@@ -99,6 +115,10 @@ public class ProjectileFactory : Factory
                 return instance.quillAnimationSet.GetMidAirAnimation();
             case ModelType.BLACKBERRY:
                 return instance.blackberryAnimationSet.GetMidAirAnimation();
+            case ModelType.RASPBERRY:
+                return instance.raspberryAnimationSet.GetMidAirAnimation();
+            case ModelType.SALMONBERRY:
+                return instance.salmonberryAnimationSet.GetMidAirAnimation();
             default:
                 throw new System.Exception("Invalid ModelType");
         }

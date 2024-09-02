@@ -190,8 +190,7 @@ public class BearController : DefenderController<BearController.BearState>
         EmanationController chompEmanationController = new EmanationController(
             EmanationController.EmanationType.BEAR_CHOMP,
             1,
-            GetTarget().GetAttackPosition(),
-            Quaternion.identity);
+            GetTarget().GetAttackPosition());
         ControllerController.AddEmanationController(chompEmanationController);
 
         target.AdjustHealth(-GetBear().CHOMP_DAMAGE);

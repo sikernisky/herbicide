@@ -18,6 +18,8 @@ public enum ModelType
     PORCUPINE,
     QUILL,
     RACCOON,
+    RASPBERRY,
+    SALMONBERRY,
     SEED_TOKEN,
     SHOP_CARD_BEAR,
     SHOP_CARD_BLANK,

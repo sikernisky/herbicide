@@ -78,34 +78,104 @@ public class RaccoonController : DefenderController<RaccoonController.RaccoonSta
     private Raccoon GetRaccoon() { return GetMob() as Raccoon; }
 
     /// <summary>
-    /// Queues <c>numBlackberries</c> amount of berries to be fired at
+    /// Queues <c>numBerries</c> amount of berries to be fired at
     /// the Raccoon's target.
     /// </summary>
     /// <returns>A reference to the coroutine.</returns>
-    /// <param name="numBlackberries">The number of berries to fire.</param>
-    private IEnumerator FireBlackberries(int numBlackberries)
+    /// <param name="numBerries">The number of berries to fire.</param>
+    private IEnumerator FireBerries(int numBerries)
     {
         Assert.IsTrue(delayBetweenBlackberries >= 0, "Delay needs to be non-negative");
 
-        for (int i = 0; i < numBlackberries; i++)
+        for (int i = 0; i < numBerries; i++)
         {
             Enemy target = GetTarget() as Enemy;
             if (target == null || !target.Targetable()) yield break; // Invalid target.
 
-            SetAnimation(GetRaccoon().ATTACK_ANIMATION_DURATION / numBlackberries,
+            SetAnimation(GetRaccoon().ATTACK_ANIMATION_DURATION / numBerries,
                 DefenderFactory.GetAttackTrack(
                     ModelType.RACCOON,
                     GetRaccoon().GetDirection(), GetRaccoon().GetTier()));
 
-            GameObject blackberryPrefab = ProjectileFactory.GetProjectilePrefab(ModelType.BLACKBERRY);
-            Assert.IsNotNull(blackberryPrefab);
-            Blackberry blackberryComp = blackberryPrefab.GetComponent<Blackberry>();
-            Assert.IsNotNull(blackberryComp);
+            int raccoonTier = GetRaccoon().GetTier();
             Vector3 targetPosition = GetTarget().GetAttackPosition();
-            BlackberryController blackberryController = new BlackberryController(blackberryComp, GetRaccoon().GetPosition(), targetPosition);
-            ControllerController.AddModelController(blackberryController);
+            Vector3 raccoonPosition = GetRaccoon().GetPosition();
 
-            if (i < numBlackberries - 1) // Wait for the delay between shots unless it's the last one
+            if (raccoonTier == 1)
+            {
+                // 100% chance to fire a blackberry at tier 1
+                GameObject blackberryPrefab = ProjectileFactory.GetProjectilePrefab(ModelType.BLACKBERRY);
+                Assert.IsNotNull(blackberryPrefab, "Blackberry prefab is null.");
+                Blackberry blackberryComp = blackberryPrefab.GetComponent<Blackberry>();
+                Assert.IsNotNull(blackberryComp, "Blackberry component is missing.");
+
+                BlackberryController blackberryController = new BlackberryController(blackberryComp, raccoonPosition, targetPosition);
+                ControllerController.AddModelController(blackberryController);
+            }
+            else if (raccoonTier == 2)
+            {
+                if (Random.value < 0.40f)
+                {
+                    // 40% chance to fire a raspberry at tier 2
+                    GameObject raspberryPrefab = ProjectileFactory.GetProjectilePrefab(ModelType.RASPBERRY);
+                    Assert.IsNotNull(raspberryPrefab, "Raspberry prefab is null.");
+                    Raspberry raspberryComp = raspberryPrefab.GetComponent<Raspberry>();
+                    Assert.IsNotNull(raspberryComp, "Raspberry component is missing.");
+
+                    RaspberryController raspberryController = new RaspberryController(raspberryComp, raccoonPosition, targetPosition);
+                    ControllerController.AddModelController(raspberryController);
+                }
+                else
+                {
+                    // 60% chance to fire a blackberry at tier 2
+                    GameObject blackberryPrefab = ProjectileFactory.GetProjectilePrefab(ModelType.BLACKBERRY);
+                    Assert.IsNotNull(blackberryPrefab, "Blackberry prefab is null.");
+                    Blackberry blackberryComp = blackberryPrefab.GetComponent<Blackberry>();
+                    Assert.IsNotNull(blackberryComp, "Blackberry component is missing.");
+
+                    BlackberryController blackberryController = new BlackberryController(blackberryComp, raccoonPosition, targetPosition);
+                    ControllerController.AddModelController(blackberryController);
+                }
+            }
+            else if (raccoonTier == 3)
+            {
+                float chance = Random.value;
+                if (chance < 0.20f)
+                {
+                    // 20% chance to fire a blackberry at tier 3
+                    GameObject blackberryPrefab = ProjectileFactory.GetProjectilePrefab(ModelType.BLACKBERRY);
+                    Assert.IsNotNull(blackberryPrefab, "Blackberry prefab is null.");
+                    Blackberry blackberryComp = blackberryPrefab.GetComponent<Blackberry>();
+                    Assert.IsNotNull(blackberryComp, "Blackberry component is missing.");
+
+                    BlackberryController blackberryController = new BlackberryController(blackberryComp, raccoonPosition, targetPosition);
+                    ControllerController.AddModelController(blackberryController);
+                }
+                else if (chance < 0.70f)
+                {
+                    // 50% chance to fire a raspberry at tier 3
+                    GameObject raspberryPrefab = ProjectileFactory.GetProjectilePrefab(ModelType.RASPBERRY);
+                    Assert.IsNotNull(raspberryPrefab, "Raspberry prefab is null.");
+                    Raspberry raspberryComp = raspberryPrefab.GetComponent<Raspberry>();
+                    Assert.IsNotNull(raspberryComp, "Raspberry component is missing.");
+
+                    RaspberryController raspberryController = new RaspberryController(raspberryComp, raccoonPosition, targetPosition);
+                    ControllerController.AddModelController(raspberryController);
+                }
+                else
+                {
+                    // 30% chance to fire a salmonberry at tier 3
+                    GameObject salmonberryPrefab = ProjectileFactory.GetProjectilePrefab(ModelType.SALMONBERRY);
+                    Assert.IsNotNull(salmonberryPrefab, "Salmonberry prefab is null.");
+                    Salmonberry salmonberryComp = salmonberryPrefab.GetComponent<Salmonberry>();
+                    Assert.IsNotNull(salmonberryComp, "Salmonberry component is missing.");
+
+                    SalmonberryController salmonberryController = new SalmonberryController(salmonberryComp, raccoonPosition, targetPosition);
+                    ControllerController.AddModelController(salmonberryController);
+                }
+            }
+
+            if (i < numBerries - 1) // Wait for the delay between shots unless it's the last one
             {
                 yield return new WaitForSeconds(delayBetweenBlackberries);
             }
@@ -220,10 +290,10 @@ public class RaccoonController : DefenderController<RaccoonController.RaccoonSta
 
         // Calculate the number of quills to fire based on the Raccoon's tier.
         int tier = GetRaccoon().GetTier();
-        int numQuillsToFire = 1;
-        if (tier == 2) numQuillsToFire = 2;
-        else if (tier >= 3) numQuillsToFire = 5;
-        GetRaccoon().StartCoroutine(FireBlackberries(numQuillsToFire));
+        int numBerriesToFire = 1;
+        if (tier == 2) numBerriesToFire = 2;
+        else if (tier >= 3) numBerriesToFire = 4;
+        GetRaccoon().StartCoroutine(FireBerries(numBerriesToFire));
 
         // Reset attack animation.
         GetRaccoon().RestartAttackCooldown();

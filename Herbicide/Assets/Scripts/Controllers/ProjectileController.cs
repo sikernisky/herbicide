@@ -166,8 +166,6 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
         if (lobLerp > 0 && lobLerp < .6f) return; // Keep the lob illusion
         if(collidees.Contains(other)) return;
 
-        Debug.Log("Here");
-
         model.TriggerProjectileCollision(GetProjectile());
         DetonateProjectile(other);
         GetProjectile().SetCollided(true);
