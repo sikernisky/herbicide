@@ -132,16 +132,6 @@ public class AcornController : ProjectileController<AcornController.AcornState>
         LinearShot();
     }
 
-    /// <summary>
-    /// Runs logic relevant to the Acorn's COLLIDING state.
-    /// </summary>
-    public override void ExecuteCollidingState() { }
-
-    /// <summary>
-    /// Runs logic relevant to the Acorn's DEAD state.
-    /// </summary>
-    public override void ExecuteDeadState() { }
-
     #endregion
 
     #region Animation Logic

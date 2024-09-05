@@ -139,16 +139,6 @@ public class BlackberryController : ProjectileController<BlackberryController.Bl
         LobShot();
     }
 
-    /// <summary>
-    /// Runs logic relevant to the Blackberry's COLLIDING state.
-    /// </summary>
-    public override void ExecuteCollidingState() { }
-
-    /// <summary>
-    /// Runs logic relevant to the Blackberry's DEAD state.
-    /// </summary>
-    public override void ExecuteDeadState() { }
-
     #endregion
 
     #region Animation Logic

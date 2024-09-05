@@ -246,6 +246,12 @@ public abstract class Projectile : Model
     public void SetShadowPosition(Vector3 position) => shadow.transform.position = position;
 
     /// <summary>
+    /// Sets the active status of the shadow.
+    /// </summary>
+    /// <param name="active">true if the shadow should be active; otherwise, false. </param>
+    public void SetShadowActive(bool active) => shadow.SetActive(active);
+
+    /// <summary>
     /// Returns a fresh copy of this Projectile from the object pool. 
     /// </summary>
     /// <returns>a fresh copy of this Projectile from the object pool.  </returns>

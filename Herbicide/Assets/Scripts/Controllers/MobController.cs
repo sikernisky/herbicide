@@ -419,6 +419,9 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     protected float DistanceToTarget()
     {
         Assert.IsNotNull(GetTargets());
+
+        if (GetTargets().Count == 0) return float.MaxValue;
+
         Model target = GetTargets()[0];
         Assert.IsNotNull(target);
 

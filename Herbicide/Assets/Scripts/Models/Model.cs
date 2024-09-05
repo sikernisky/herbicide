@@ -293,6 +293,12 @@ public abstract class Model : MonoBehaviour
     public void SetSize(Vector3 scale) => transform.localScale = scale;
 
     /// <summary>
+    /// Sets this Model's Transform's local rotation.
+    /// </summary>
+    /// <param name="rotation">The rotation to set to.</param>
+    public void SetRotation(Quaternion rotation) => transform.rotation = rotation;
+
+    /// <summary>
     /// Returns the X-Coordinate of the Tile on which this Model sits.
     /// </summary>
     /// <returns>the X-Coordinate of the Tile on which this Model sits.</returns>

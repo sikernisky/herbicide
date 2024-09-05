@@ -139,16 +139,6 @@ public class RaspberryController : ProjectileController<RaspberryController.Rasp
         LobShot();
     }
 
-    /// <summary>
-    /// Runs logic relevant to the Raspberry's COLLIDING state.
-    /// </summary>
-    public override void ExecuteCollidingState() { }
-
-    /// <summary>
-    /// Runs logic relevant to the Raspberry's DEAD state.
-    /// </summary>
-    public override void ExecuteDeadState() { }
-
     #endregion
 
     #region Animation Logic

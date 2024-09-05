@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Assertions;
+using static UnityEngine.RuleTile.TilingRuleOutput;
 
 /// <summary>
 /// Controls an Enemy. <br></br>
@@ -186,6 +187,7 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
                 Quill quill = projectile as Quill;
                 if(quill == null) return;
                 GetEnemy().AdjustHealth(-quill.GetDamage());
+                GetEnemy().StickWithQuill(quill);
                 SoundController.PlaySoundEffect("kudzuHit");
                 break;
             case ModelType.BLACKBERRY:
@@ -215,6 +217,28 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
                 else TileGrid.PlaceOnTile(new Vector2Int(GetEnemy().GetX(), GetEnemy().GetY()), nexusTarget);
             }
 
+        }
+
+        // Explode Quills.
+        int numQuills = GetEnemy().GetQuillsStuckInEnemy().Count;
+        GetEnemy().RemoveQuills();
+        float angleStep = 360.0f / numQuills;
+        Vector3 enemyPosition = GetEnemy().GetPosition();
+
+        for (int i = 0; i < numQuills; i++)
+        {
+            float angle = i * angleStep;
+            Vector3 direction = Quaternion.Euler(0, 0, angle) * Vector3.right;
+            Vector3 targetPosition = enemyPosition + direction * 1000; // Arbitrary distance multiplier
+
+            GameObject quillPrefab = ProjectileFactory.GetProjectilePrefab(ModelType.QUILL);
+            Assert.IsNotNull(quillPrefab);
+            Quill quillComp = quillPrefab.GetComponent<Quill>();
+            Assert.IsNotNull(quillComp);
+
+            // Create the quill at the enemy's position aiming in the calculated direction
+            QuillController quillController = new QuillController(quillComp, enemyPosition, targetPosition);
+            ControllerController.AddModelController(quillController);
         }
 
         base.OnDestroyModel();

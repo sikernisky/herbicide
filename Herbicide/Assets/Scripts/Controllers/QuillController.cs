@@ -14,13 +14,30 @@ public class QuillController : ProjectileController<QuillController.QuillState>
     #region Fields
 
     /// <summary>
+    /// The Collider2D that the Quill has pierced and is stuck in.
+    /// </summary>
+    private Collider2D piercedCollider;
+
+    /// <summary>
+    /// The scale of a Quill when it is stuck in a Collider2D.
+    /// </summary>
+    private Vector3 STUCK_SIZE => new Vector3(1.0f, 1.0f, 1.0f);
+
+    /// <summary>
+    /// A small, random offset to apply to the Quill's stuck position.
+    /// </summary>
+    private Vector3 randomStuckPositionOffset;
+
+    /// <summary>
     /// Possible states of a Quill over its lifetime.
     /// </summary>
     public enum QuillState
     {
         SPAWN,
-        MOVING
+        MOVING,
+        STUCK
     }
+
 
     /// <summary>
     /// Quills angle towards their target.
@@ -42,38 +59,23 @@ public class QuillController : ProjectileController<QuillController.QuillState>
     { }
 
     /// <summary>
+    /// Main update loop for the QuillController. Here's where
+    /// it manipulates its Quill based off game state. 
+    /// </summary>
+    /// <param name="gameState">The most recent GameState.</param>
+    public override void UpdateController(GameState gameState)
+    {
+        base.UpdateController(gameState);
+        if(!ValidModel()) return;
+
+        ExecuteStuckState();
+    }
+
+    /// <summary>
     /// Returns the Quill model.
     /// </summary>
     /// <returns>the Quill model.</returns>
     protected Quill GetQuill() => GetProjectile() as Quill;
-
-    /// <summary>
-    /// Handles a collision between the Quill and some other Collider2D.
-    /// </summary>
-    /// <param name="other">Some other Collider2D.</param>
-    protected override void HandleCollision(Collider2D other) => base.HandleCollision(other);
-
-    /// <summary>
-    /// Helper method to handle the detonation of the quill at the specified explosion position.
-    /// </summary>
-    /// <param name="explosionPosition">The position of the explosion.</param>
-    /// <param name="immuneObjects">Set of enemies immune to the explosion.</param>
-    private void DetonateQuill(Vector3 explosionPosition, HashSet<Enemy> immuneObjects)
-    {
-        // We need the piercing quill to define the custom explosion area
-        GameObject piercingQuill = GetQuill().GetPiercingQuill();
-        piercingQuill.transform.position = explosionPosition;
-        piercingQuill.transform.rotation = GetProjectile().transform.rotation;
-        if (GetLinearDirection().x >= 0)
-            piercingQuill.transform.Rotate(0, 0, 180);
-
-        EmanationController piercingQuillEmanationController = new EmanationController(
-            EmanationController.EmanationType.QUILL_PIERCE, 1,
-            piercingQuill.transform.position,
-            piercingQuill.transform.rotation);
-        ControllerController.AddEmanationController(piercingQuillEmanationController);
-        ExplosionController.ExplodeOnEnemies(piercingQuill, GetQuill().PIERCING_DAMAGE, immuneObjects);
-    }
 
     /// <summary>
     /// Processes events that occur when the Quill detonates at a given position.
@@ -81,26 +83,29 @@ public class QuillController : ProjectileController<QuillController.QuillState>
     /// <param name="other">Collider2D the projectile collided with.</param>
     protected override void DetonateProjectile(Collider2D other)
     {
-        Vector3 impactPoint = other.ClosestPoint(GetProjectile().transform.position);
-        Vector3 explosionPosition = impactPoint - GetLinearDirection() * -1f;
-        explosionPosition = new Vector3(explosionPosition.x, explosionPosition.y, 1);
-        Enemy initialTarget = other.gameObject.GetComponent<Model>() as Enemy;
-        HashSet<Enemy> immuneObjects = new HashSet<Enemy>() { initialTarget };
-        DetonateQuill(explosionPosition, immuneObjects);
+        GetQuill().SetSize(STUCK_SIZE);
+        Quaternion currentRotation = GetQuill().transform.rotation;
+        float randomAdjustment = Random.Range(-20, 21);
+        Quaternion newRotation = Quaternion.Euler(0, 0, currentRotation.eulerAngles.z + randomAdjustment);
+        GetQuill().SetRotation(newRotation);
+        GetQuill().SetShadowActive(false);
+        piercedCollider = other;
+        randomStuckPositionOffset = new Vector3(Random.Range(-0.1f, 0.1f), Random.Range(-0.1f, 0.1f), 1);
     }
 
     /// <summary>
-    /// Processes events that occur when this Projectile detonates at a given position.
-    /// This method is used because not all Projectiles collide with a Collider2D.
-    /// Some Projectiles detonate at a position.
+    /// Returns true if this controller's Quill should be destoyed and
+    /// set to null.
     /// </summary>
-    /// <param name="detonationPosition">The position where the Projectile detonated.</param>
-    protected override void DetonateProjectile(Vector3 detonationPosition)
+    /// <returns>true if this controller's Quill should be destoyed and
+    /// set to null; otherwise, false.</returns>
+    public override bool ValidModel()
     {
-        Vector3 explosionPosition = detonationPosition - GetLinearDirection() * -1f;
-        explosionPosition = new Vector3(explosionPosition.x, explosionPosition.y, 1);
-        HashSet<Enemy> immuneObjects = new HashSet<Enemy>();
-        DetonateQuill(explosionPosition, immuneObjects);
+        if (GetQuill().Expired()) return false;
+        if (!GetQuill().IsActive()) return false;
+        if(GetQuill().HasExploded()) return false;
+
+        return true;
     }
 
     #endregion
@@ -123,6 +128,9 @@ public class QuillController : ProjectileController<QuillController.QuillState>
                 SetState(QuillState.MOVING);
                 break;
             case QuillState.MOVING:
+                if(GetProjectile().Collided()) SetState(QuillState.STUCK);
+                break;
+            case QuillState.STUCK: 
                 break;
         }
     }
@@ -148,14 +156,21 @@ public class QuillController : ProjectileController<QuillController.QuillState>
     }
 
     /// <summary>
-    /// Runs logic relevant to the Quill's COLLIDING state.
+    /// Runs logic relevant to the Quill's STUCK state.
     /// </summary>
-    public override void ExecuteCollidingState() { return; }
+    private void ExecuteStuckState()
+    {
+        if (!ValidModel()) return;
+        if (GetState() != QuillState.STUCK) return;
+        if(piercedCollider == null) return;
 
-    /// <summary>
-    /// Runs logic relevant to the Quill's DEAD state.
-    /// </summary>
-    public override void ExecuteDeadState() { return; }
+        Vector3 piercedPosition;
+        Enemy piercedEnemy = piercedCollider.gameObject.GetComponent<Model>() as Enemy;
+        if (piercedEnemy != null) piercedPosition = piercedEnemy.GetAttackPosition();
+        else piercedPosition = piercedCollider.transform.position;
+        Vector3 stuckPosition = piercedPosition + randomStuckPositionOffset;
+        GetQuill().SetWorldPosition(stuckPosition);
+    }
 
     #endregion
 

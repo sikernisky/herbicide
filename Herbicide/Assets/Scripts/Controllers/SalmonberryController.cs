@@ -140,16 +140,6 @@ public class SalmonberryController : ProjectileController<SalmonberryController.
         LobShot();
     }
 
-    /// <summary>
-    /// Runs logic relevant to the Salmonberry's COLLIDING state.
-    /// </summary>
-    public override void ExecuteCollidingState() { }
-
-    /// <summary>
-    /// Runs logic relevant to the Salmonberry's DEAD state.
-    /// </summary>
-    public override void ExecuteDeadState() { }
-
     #endregion
 
     #region Animation Logic

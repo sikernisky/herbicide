@@ -102,8 +102,6 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
         GetProjectile().AddToLifespan(Time.deltaTime);
         UpdateStateFSM();
         ExecuteMovingState();
-        ExecuteCollidingState();
-        ExecuteDeadState();
     }
 
     /// <summary>
@@ -164,7 +162,7 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
         Model model = other.gameObject.GetComponent<Model>();
         if (model == null) return;
         if (lobLerp > 0 && lobLerp < .6f) return; // Keep the lob illusion
-        if(collidees.Contains(other)) return;
+        if(IgnoreCollider(other)) return;
 
         model.TriggerProjectileCollision(GetProjectile());
         DetonateProjectile(other);
@@ -183,6 +181,18 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
         if (collidees == null) collidees = new HashSet<Collider2D>();
         
         collidees.Add(other);
+    }
+
+    /// <summary>
+    /// Returns true if this Projectile should ignore a given Collider2D.
+    /// </summary>
+    /// <param name="other">the Collider2D to check</param>
+    /// <returns>true if this Projectile should ignore a given Collider2D;
+    /// otherwise, false. </returns>
+    protected bool IgnoreCollider(Collider2D other)
+    {
+        if (collidees == null) return false;
+        return collidees.Contains(other);
     }
 
     /// <summary>
@@ -244,20 +254,6 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// its methods.
     /// </summary>
     public abstract void ExecuteMovingState();
-
-    /// <summary>
-    /// Logic to execute when this ProjectileController's Projectile is moving.
-    /// The ProjectileController manipulates the Projectile model by calling
-    /// its methods.
-    /// </summary>
-    public abstract void ExecuteCollidingState();
-
-    /// <summary>
-    /// Logic to execute when this ProjectileController's Projectile is dead.
-    /// The ProjectileController manipulates the Projectile model by calling
-    /// its methods.
-    /// </summary>
-    public abstract void ExecuteDeadState();
 
     /// <summary>
     /// Returns the State that triggered the Projectile's most recent
