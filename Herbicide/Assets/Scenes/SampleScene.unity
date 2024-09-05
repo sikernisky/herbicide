@@ -2036,6 +2036,8 @@ MonoBehaviour:
   acornAnimationSet: {fileID: 11400000, guid: e05583944e8bb454ea20cf5db7ac8ffc, type: 2}
   quillAnimationSet: {fileID: 11400000, guid: 982e2fad998e003449bb1dcdfbbd9ed7, type: 2}
   blackberryAnimationSet: {fileID: 11400000, guid: c1d7c88038fd1274495aa654582f46f0, type: 2}
+  raspberryAnimationSet: {fileID: 11400000, guid: 9e3f4bd10b89dbc4b8c2fbe9101c75c1, type: 2}
+  salmonberryAnimationSet: {fileID: 11400000, guid: 0625bf8846cfd0b4b9da599deba08fef, type: 2}
 --- !u!1 &503143294
 GameObject:
   m_ObjectHideFlags: 0
@@ -5211,17 +5213,23 @@ MonoBehaviour:
   - {fileID: 1202231844, guid: 75aef1c37dc759942a30a346b851b3e6, type: 3}
   - {fileID: -725687816, guid: 75aef1c37dc759942a30a346b851b3e6, type: 3}
   blackberryExplosionTrack:
-  - {fileID: 1441884882, guid: 5483f94d033b07e4bb7c7fe91236593d, type: 3}
-  - {fileID: 1470530240, guid: 5483f94d033b07e4bb7c7fe91236593d, type: 3}
-  - {fileID: -327951360, guid: 5483f94d033b07e4bb7c7fe91236593d, type: 3}
-  - {fileID: 1888000891, guid: 5483f94d033b07e4bb7c7fe91236593d, type: 3}
-  - {fileID: 1716346053, guid: 5483f94d033b07e4bb7c7fe91236593d, type: 3}
+  - {fileID: -433408375, guid: 5483f94d033b07e4bb7c7fe91236593d, type: 3}
+  - {fileID: 1662757705, guid: 5483f94d033b07e4bb7c7fe91236593d, type: 3}
+  - {fileID: -601988469, guid: 5483f94d033b07e4bb7c7fe91236593d, type: 3}
+  - {fileID: -1509022440, guid: 5483f94d033b07e4bb7c7fe91236593d, type: 3}
+  - {fileID: -2147418337, guid: 5483f94d033b07e4bb7c7fe91236593d, type: 3}
   raspberryExplosionTrack:
-  - {fileID: 784150757, guid: eeacedb4e6e4dc44ca7377008779872a, type: 3}
-  - {fileID: 175269855, guid: eeacedb4e6e4dc44ca7377008779872a, type: 3}
-  - {fileID: 1420623258, guid: eeacedb4e6e4dc44ca7377008779872a, type: 3}
-  - {fileID: 635493305, guid: eeacedb4e6e4dc44ca7377008779872a, type: 3}
-  - {fileID: -451348472, guid: eeacedb4e6e4dc44ca7377008779872a, type: 3}
+  - {fileID: 1046263010, guid: eeacedb4e6e4dc44ca7377008779872a, type: 3}
+  - {fileID: -429658276, guid: eeacedb4e6e4dc44ca7377008779872a, type: 3}
+  - {fileID: -1932534338, guid: eeacedb4e6e4dc44ca7377008779872a, type: 3}
+  - {fileID: 1311272494, guid: eeacedb4e6e4dc44ca7377008779872a, type: 3}
+  - {fileID: 909567619, guid: eeacedb4e6e4dc44ca7377008779872a, type: 3}
+  salmonberryExplosionTrack:
+  - {fileID: 1746922231, guid: f5fab5bf424e499479601bd4a6855d4b, type: 3}
+  - {fileID: 1869895693, guid: f5fab5bf424e499479601bd4a6855d4b, type: 3}
+  - {fileID: 1583781255, guid: f5fab5bf424e499479601bd4a6855d4b, type: 3}
+  - {fileID: -837729883, guid: f5fab5bf424e499479601bd4a6855d4b, type: 3}
+  - {fileID: -1054259387, guid: f5fab5bf424e499479601bd4a6855d4b, type: 3}
 --- !u!1 &1549079117
 GameObject:
   m_ObjectHideFlags: 0

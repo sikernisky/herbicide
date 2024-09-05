@@ -67,6 +67,7 @@ public class EnemyManager : MonoBehaviour
                 Assert.IsNotNull(enemy);
                 Enemy enemyComp = enemy.GetComponent<Enemy>();
                 enemy.gameObject.SetActive(false);
+                enemyComp.GetColllider().enabled = false;
                 float spawnX = TileGrid.CoordinateToPosition(marker.Key.x);
                 float spawnY = TileGrid.CoordinateToPosition(marker.Key.y);
                 Vector3 spawnWorldPos = new Vector3(spawnX, spawnY, 1);
