@@ -14,6 +14,12 @@ public class Quill : Projectile
     /// </summary>
     private bool exploded;
 
+    /// <summary>
+    /// true if the Quill will split into two upon its target's death;
+    /// otherwise, false.
+    /// </summary>
+    private bool doubleQuill;
+
     #endregion
 
     #region Stats
@@ -85,12 +91,31 @@ public class Quill : Projectile
     public bool HasExploded() => exploded;
 
     /// <summary>
+    /// Sets this Quill as a double Quill. The Quill will split into two
+    /// upon its target's death.
+    /// </summary>
+    public void SetAsDoubleQuill() => doubleQuill = true;
+    /// <summary>
+    /// Sets this Quill as a single Quill. The Quill will not split into two
+    /// upon its target's death.
+    /// </summary>
+    /// 
+    public void SetAsSingleQuill() => doubleQuill = false;
+
+    /// <summary>
+    /// Returns true if the Quill is a double Quill; otherwise, false.
+    /// </summary>
+    /// <returns>true if the Quill is a double Quill; otherwise, false.</returns>
+    public bool IsDoubleQuill() => doubleQuill;
+
+    /// <summary>
     /// Resets the Quill's model.
     /// </summary>
     public override void ResetModel()
     {
         base.ResetModel();
         exploded = false;
+        SetAsSingleQuill();
     }
 
     #endregion

@@ -349,10 +349,10 @@ public abstract class Enemy : Mob
     }
 
     /// <summary>
-    /// Returns a copy of the set of Quills stuck in this Enemy.
+    /// Returns a copy of the set of Quills stuck in this Enemy as a list.
     /// </summary>
-    /// <returns>a copy of the set of Quills stuck in this Enemy</returns>
-    public HashSet<Quill> GetQuillsStuckInEnemy() => new HashSet<Quill>(quillsStuckInEnemy);
+    /// <returns>a copy of the set of Quills stuck in this Enemy as a list.</returns>
+    public List<Quill> GetQuillsStuckInEnemy() => new List<Quill>(quillsStuckInEnemy);
 
     /// <summary>
     /// Removes all Quills stuck in this Enemy by setting them to exploded.

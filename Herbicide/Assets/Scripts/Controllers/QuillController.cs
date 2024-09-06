@@ -52,11 +52,15 @@ public class QuillController : ProjectileController<QuillController.QuillState>
     /// Gives an Quill an QuillController.
     /// </summary>
     /// <param name="quill">The quill which will get an QuillController.</param>
-    /// <param name="destination">Where the quill started.</param>
+    /// <param name="start">Where the quill started.</param>
     /// <param name="destination">Where the quill should go.</param>
-    public QuillController(Quill quill, Vector3 start, Vector3 destination) :
+    /// <param name="isDoubleQuill">true if the Quill should split into two upon its target's death;
+    /// otherwise, false.</param>
+    public QuillController(Quill quill, Vector3 start, Vector3 destination, bool isDoubleQuill) :
         base(quill, start, destination)
-    { }
+    {
+        if (isDoubleQuill) GetQuill().SetAsDoubleQuill();
+    }
 
     /// <summary>
     /// Main update loop for the QuillController. Here's where

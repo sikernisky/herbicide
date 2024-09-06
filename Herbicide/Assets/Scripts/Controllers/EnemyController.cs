@@ -1,6 +1,7 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
-using static UnityEngine.RuleTile.TilingRuleOutput;
+using System.Linq;
 
 /// <summary>
 /// Controls an Enemy. <br></br>
@@ -219,28 +220,35 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
 
         }
 
-        // Explode Quills.
-        int numQuills = GetEnemy().GetQuillsStuckInEnemy().Count;
+        List<Quill> quillsStuck = GetEnemy().GetQuillsStuckInEnemy();
         GetEnemy().RemoveQuills();
-        float angleStep = 360.0f / numQuills;
+
+        int totalQuills = quillsStuck.Sum(quill => quill.IsDoubleQuill() ? 2 : 1);
+        float angleStep = 360.0f / totalQuills;
         Vector3 enemyPosition = GetEnemy().GetPosition();
+        int quillIndex = 0;
 
-        for (int i = 0; i < numQuills; i++)
+        foreach (Quill stuckQuill in quillsStuck)
         {
-            float angle = i * angleStep;
-            Vector3 direction = Quaternion.Euler(0, 0, angle) * Vector3.right;
-            Vector3 targetPosition = enemyPosition + direction * 1000; // Arbitrary distance multiplier
+            int quillsToCreate = stuckQuill.IsDoubleQuill() ? 2 : 1;
+            for (int j = 0; j < quillsToCreate; j++)
+            {
+                float angle = quillIndex * angleStep;
+                Vector3 direction = Quaternion.Euler(0, 0, angle) * Vector3.right;
+                Vector3 targetPosition = enemyPosition + direction * 1000; // Arbitrary distance multiplier
 
-            GameObject quillPrefab = ProjectileFactory.GetProjectilePrefab(ModelType.QUILL);
-            Assert.IsNotNull(quillPrefab);
-            Quill quillComp = quillPrefab.GetComponent<Quill>();
-            Assert.IsNotNull(quillComp);
+                GameObject quillPrefab = ProjectileFactory.GetProjectilePrefab(ModelType.QUILL);
+                Assert.IsNotNull(quillPrefab);
+                Quill quillComp = quillPrefab.GetComponent<Quill>();
+                Assert.IsNotNull(quillComp);
 
-            // Create the quill at the enemy's position aiming in the calculated direction
-            QuillController quillController = new QuillController(quillComp, enemyPosition, targetPosition);
-            ControllerController.AddModelController(quillController);
+                // Create the quill at the enemy's position aiming in the calculated direction
+                QuillController quillController = new QuillController(quillComp, enemyPosition, targetPosition, false);
+                ControllerController.AddModelController(quillController);
+
+                quillIndex++;
+            }
         }
-
         base.OnDestroyModel();
     }
 
