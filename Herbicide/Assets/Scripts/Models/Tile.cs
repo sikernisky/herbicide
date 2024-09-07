@@ -534,11 +534,6 @@ public abstract class Tile : Model, ISurface
     public override void ResetModel() => base.ResetModel();
 
     /// <summary>
-    /// Sets the 2D Collider properties of this Tile.
-    /// </summary>
-    public override void SetColliderProperties() { return; }
-
-    /// <summary>
     /// Returns the GameObject that represents this Tile on the grid.
     /// </summary>
     /// <returns>the GameObject that represents this Tile on the grid.

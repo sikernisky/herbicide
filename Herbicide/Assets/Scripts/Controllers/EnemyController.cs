@@ -177,28 +177,29 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
     {
         if(projectile == null) return;
         switch (projectile.TYPE) {
-
-            case ModelType.ACORN:
-                Acorn acorn = projectile as Acorn;
-                if(acorn == null) return;
-                GetEnemy().AdjustHealth(-acorn.GetDamage());
-                SoundController.PlaySoundEffect("kudzuHit");
-                break;
             case ModelType.QUILL:
                 Quill quill = projectile as Quill;
-                if(quill == null) return;
-                GetEnemy().AdjustHealth(-quill.GetDamage());
-                GetEnemy().StickWithQuill(quill);
-                SoundController.PlaySoundEffect("kudzuHit");
-                break;
-            case ModelType.BLACKBERRY:
-                Blackberry blackberry = projectile as Blackberry;
-                if (blackberry == null) return;
-                SoundController.PlaySoundEffect("kudzuHit");
+                if(quill != null) GetEnemy().StickWithQuill(quill);
+                TakeProjectileHit(projectile);
                 break;
             default:
+                TakeProjectileHit(projectile);
                 break;
         }
+    }
+
+    /// <summary>
+    /// Helper method to handle a Projectile hit on this Enemy.
+    /// Applies the damage from the Projectile to the Enemy
+    /// and plays a sound effect.
+    /// </summary>
+    /// <param name="projectile">the Projectile that hit this
+    /// Enemy.</param>
+    private void TakeProjectileHit(Projectile projectile)
+    {
+        if (projectile == null) return;
+        GetEnemy().AdjustHealth(-projectile.GetDamage());
+        SoundController.PlaySoundEffect("kudzuHit");
     }
 
     /// <summary>
@@ -220,9 +221,9 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
 
         }
 
+        // Explode quills.
         List<Quill> quillsStuck = GetEnemy().GetQuillsStuckInEnemy();
         GetEnemy().RemoveQuills();
-
         int totalQuills = quillsStuck.Sum(quill => quill.IsDoubleQuill() ? 2 : 1);
         float angleStep = 360.0f / totalQuills;
         Vector3 enemyPosition = GetEnemy().GetPosition();
@@ -236,16 +237,12 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
                 float angle = quillIndex * angleStep;
                 Vector3 direction = Quaternion.Euler(0, 0, angle) * Vector3.right;
                 Vector3 targetPosition = enemyPosition + direction * 1000; // Arbitrary distance multiplier
-
                 GameObject quillPrefab = ProjectileFactory.GetProjectilePrefab(ModelType.QUILL);
                 Assert.IsNotNull(quillPrefab);
                 Quill quillComp = quillPrefab.GetComponent<Quill>();
                 Assert.IsNotNull(quillComp);
-
-                // Create the quill at the enemy's position aiming in the calculated direction
                 QuillController quillController = new QuillController(quillComp, enemyPosition, targetPosition, false);
                 ControllerController.AddModelController(quillController);
-
                 quillIndex++;
             }
         }

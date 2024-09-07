@@ -1,6 +1,3 @@
-using UnityEngine;
-using static QuillController;
-
 /// <summary>
 /// Represents a Quill projectile.
 /// </summary>
@@ -99,8 +96,8 @@ public class Quill : Projectile
     /// Sets this Quill as a single Quill. The Quill will not split into two
     /// upon its target's death.
     /// </summary>
-    /// 
-    public void SetAsSingleQuill() => doubleQuill = false;
+
+    private void SetAsSingleQuill() => doubleQuill = false;
 
     /// <summary>
     /// Returns true if the Quill is a double Quill; otherwise, false.

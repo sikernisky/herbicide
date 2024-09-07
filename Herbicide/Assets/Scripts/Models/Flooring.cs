@@ -376,11 +376,6 @@ public abstract class Flooring : Model, ISurface
     public override void ResetModel() => base.ResetModel();
 
     /// <summary>
-    /// Sets the 2D Collider properties of this Tile.
-    /// </summary>
-    public override void SetColliderProperties() { }
-
-    /// <summary>
     /// Returns a Sprite that represents this Flooring when it is
     /// being placed.
     /// </summary>

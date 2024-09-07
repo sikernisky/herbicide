@@ -113,10 +113,5 @@ public class Raccoon : Defender
     /// <returns>the (X, Y) dimensions of the Raccoon's placement track.</returns>
     public override Vector2Int GetPlacementTrackDimensions() => new Vector2Int(21, 23);
 
-    /// <summary>
-    /// Sets the Raccoon's BoxCollider properties.
-    /// </summary>
-    public override void SetColliderProperties() { }
-
     #endregion
 }

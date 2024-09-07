@@ -401,7 +401,7 @@ public abstract class Model : MonoBehaviour
     /// Sets this Model's Collider2D properties, such as its position,
     /// width, and height.
     /// </summary>
-    public abstract void SetColliderProperties();
+    public virtual void SetColliderProperties() { }
 
     /// <summary>
     /// Resets this Model's state.

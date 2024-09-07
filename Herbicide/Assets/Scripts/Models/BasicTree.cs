@@ -109,10 +109,5 @@ public class BasicTree : Tree
     /// </returns>
     public override GameObject CreateNew() => BasicTreeFactory.GetBasicTreePrefab();
 
-    /// <summary>
-    /// Sets this BasicTree's 2D Collider's properties.
-    /// </summary>
-    public override void SetColliderProperties() { }
-
     #endregion
 }

@@ -119,10 +119,5 @@ public class NexusHole : Mob
     /// <returns>an instantiated copy of this NexusHole.</returns>
     public override GameObject CreateNew() => NexusHoleFactory.GetNexusHolePrefab();
 
-    /// <summary>
-    /// Sets the 2D Collider properties of this NexusHole.
-    /// </summary>
-    public override void SetColliderProperties() { }
-
     #endregion
 }

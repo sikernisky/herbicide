@@ -111,12 +111,7 @@ public class Porcupine : Defender
     /// Returns the (X, Y) dimensions of the Porcupine's placement track.
     /// </summary>
     /// <returns>the (X, Y) dimensions of the Porcupine's placement track.</returns>
-    public override Vector2Int GetPlacementTrackDimensions() => new Vector2Int(32, 32);
-
-    /// <summary>
-    /// Sets the Porcupine's BoxCollider properties.
-    /// </summary>
-    public override void SetColliderProperties() { }
+    public override Vector2Int GetPlacementTrackDimensions() => new Vector2Int(19, 23);
 
     #endregion
 }

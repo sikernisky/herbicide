@@ -263,7 +263,7 @@ public abstract class Projectile : Model
     /// </summary>
     /// <returns> a Sprite that represents this Projectile when it is
     /// being placed.</returns>
-    public override Sprite[] GetPlacementTrack() => ProjectileFactory.GetPlacementTrack(TYPE);
+    public override Sprite[] GetPlacementTrack() => ProjectileFactory.GetPlacementTrack(this);
 
     #endregion
 }

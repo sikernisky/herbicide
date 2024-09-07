@@ -9,10 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bedc35646eb937e47b1baaf62c708264, type: 3}
+  m_Script: {fileID: 11500000, guid: 0eed32deef8e80c49b4a9ad9dd7b59ab, type: 3}
   m_Name: QuillAnimationSet
   m_EditorClassIdentifier: 
   placementTrack:
   - {fileID: 21300000, guid: 23b83c1a95cab8247b7046c5e8eda59b, type: 3}
   midAirTrack:
   - {fileID: 21300000, guid: 23b83c1a95cab8247b7046c5e8eda59b, type: 3}
+  doubleQuillMidAirAnimation:
+  - {fileID: 21300000, guid: d487843248dda0c418908bc71a5971e5, type: 3}
+  doubleQuillPlacementAnimation:
+  - {fileID: 21300000, guid: d487843248dda0c418908bc71a5971e5, type: 3}

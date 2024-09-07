@@ -136,12 +136,7 @@ public class Bear : Defender
     /// Returns the (X, Y) dimensions of the Bear's placement track.
     /// </summary>
     /// <returns>the (X, Y) dimensions of the Bear's placement track.</returns>
-    public override Vector2Int GetPlacementTrackDimensions() => new Vector2Int(19, 32);
-
-    /// <summary>
-    /// Sets this Bear's 2D Collider properties.
-    /// </summary>
-    public override void SetColliderProperties() { }
+    public override Vector2Int GetPlacementTrackDimensions() => new Vector2Int(19, 26);
 
     #endregion
 }
