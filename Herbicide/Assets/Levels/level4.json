@@ -625,7 +625,7 @@
          "name":"Structures",
          "objects":[
                 {
-                 "gid":49,
+                 "gid":60,
                  "height":16,
                  "id":1229,
                  "name":"",
@@ -643,7 +643,7 @@
                  "y":176
                 }, 
                 {
-                 "gid":48,
+                 "gid":59,
                  "height":16,
                  "id":1231,
                  "name":"",
@@ -679,7 +679,7 @@
          "name":"Markers",
          "objects":[
                 {
-                 "gid":57,
+                 "gid":68,
                  "height":16,
                  "id":1230,
                  "name":"",
@@ -950,15 +950,15 @@
          "tilewidth":16
         }, 
         {
-         "columns":4,
+         "columns":5,
          "firstgid":24,
          "image":"..\/..\/Tiled\/HerbicideArt\/TileSets\/tilesetShore.png",
-         "imageheight":96,
-         "imagewidth":64,
+         "imageheight":112,
+         "imagewidth":80,
          "margin":0,
          "name":"Shore",
          "spacing":0,
-         "tilecount":24,
+         "tilecount":35,
          "tileheight":16,
          "tiles":[
                 {
@@ -975,7 +975,7 @@
         }, 
         {
          "columns":3,
-         "firstgid":48,
+         "firstgid":59,
          "image":"..\/..\/Tiled\/HerbicideArt\/TileSets\/tileSetPlaceables.png",
          "imageheight":48,
          "imagewidth":48,
@@ -1029,7 +1029,7 @@
         }, 
         {
          "columns":2,
-         "firstgid":57,
+         "firstgid":68,
          "image":"..\/..\/Tiled\/HerbicideArt\/TileSets\/markers.png",
          "imageheight":32,
          "imagewidth":32,

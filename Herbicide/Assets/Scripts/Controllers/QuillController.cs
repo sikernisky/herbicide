@@ -14,15 +14,30 @@ public class QuillController : ProjectileController<QuillController.QuillState>
     #region Fields
 
     /// <summary>
+    /// The Collider2D that the Quill has pierced and is stuck in.
+    /// </summary>
+    private Collider2D piercedCollider;
+
+    /// <summary>
+    /// The scale of a Quill when it is stuck in a Collider2D.
+    /// </summary>
+    private Vector3 STUCK_SIZE => new Vector3(1.0f, 1.0f, 1.0f);
+
+    /// <summary>
+    /// A small, random offset to apply to the Quill's stuck position.
+    /// </summary>
+    private Vector3 randomStuckPositionOffset;
+
+    /// <summary>
     /// Possible states of a Quill over its lifetime.
     /// </summary>
     public enum QuillState
     {
         SPAWN,
         MOVING,
-        COLLIDING,
-        DEAD
+        STUCK
     }
+
 
     /// <summary>
     /// Quills angle towards their target.
@@ -37,11 +52,28 @@ public class QuillController : ProjectileController<QuillController.QuillState>
     /// Gives an Quill an QuillController.
     /// </summary>
     /// <param name="quill">The quill which will get an QuillController.</param>
-    /// <param name="destination">Where the quill started.</param>
+    /// <param name="start">Where the quill started.</param>
     /// <param name="destination">Where the quill should go.</param>
-    public QuillController(Quill quill, Vector3 start, Vector3 destination) :
+    /// <param name="isDoubleQuill">true if the Quill should split into two upon its target's death;
+    /// otherwise, false.</param>
+    public QuillController(Quill quill, Vector3 start, Vector3 destination, bool isDoubleQuill) :
         base(quill, start, destination)
-    { }
+    {
+        if (isDoubleQuill) GetQuill().SetAsDoubleQuill();
+    }
+
+    /// <summary>
+    /// Main update loop for the QuillController. Here's where
+    /// it manipulates its Quill based off game state. 
+    /// </summary>
+    /// <param name="gameState">The most recent GameState.</param>
+    public override void UpdateController(GameState gameState)
+    {
+        base.UpdateController(gameState);
+        if(!ValidModel()) return;
+
+        ExecuteStuckState();
+    }
 
     /// <summary>
     /// Returns the Quill model.
@@ -50,34 +82,34 @@ public class QuillController : ProjectileController<QuillController.QuillState>
     protected Quill GetQuill() => GetProjectile() as Quill;
 
     /// <summary>
-    /// Handles a collision between the Quill and some other Collider2D.
+    /// Processes events that occur when the Quill detonates at a given position.
     /// </summary>
-    /// <param name="other">Some other Collider2D.</param>
-    protected override void HandleCollision(Collider2D other)
+    /// <param name="other">Collider2D the projectile collided with.</param>
+    protected override void DetonateProjectile(Collider2D other)
     {
-        // Parent invokes HandleProjectileCollision on the collidee
-        base.HandleCollision(other);
+        GetQuill().SetSize(STUCK_SIZE);
+        Quaternion currentRotation = GetQuill().transform.rotation;
+        float randomAdjustment = Random.Range(-20, 21);
+        Quaternion newRotation = Quaternion.Euler(0, 0, currentRotation.eulerAngles.z + randomAdjustment);
+        GetQuill().SetRotation(newRotation);
+        GetQuill().SetShadowActive(false);
+        piercedCollider = other;
+        randomStuckPositionOffset = new Vector3(Random.Range(-0.1f, 0.1f), Random.Range(-0.1f, 0.1f), 1);
+    }
 
-        // Calculate explosion position right behind the target
-        Vector3 impactPoint = other.ClosestPoint(GetProjectile().transform.position);
-        Vector3 explosionPosition = impactPoint - GetLinearDirection() * -1f; // Adjust the 0.5f as needed for the desired offset
-        explosionPosition = new Vector3(explosionPosition.x, explosionPosition.y, 1);
+    /// <summary>
+    /// Returns true if this controller's Quill should be destoyed and
+    /// set to null.
+    /// </summary>
+    /// <returns>true if this controller's Quill should be destoyed and
+    /// set to null; otherwise, false.</returns>
+    public override bool ValidModel()
+    {
+        if (GetQuill().Expired()) return false;
+        if (!GetQuill().IsActive()) return false;
+        if(GetQuill().HasExploded()) return false;
 
-        // Configure the piercingQuill GameObject's position and collider for the explosion
-        GameObject piercingQuill = GetQuill().GetPiercingQuill();
-        piercingQuill.transform.position = explosionPosition;
-        piercingQuill.transform.rotation = GetProjectile().transform.rotation;
-        if(GetLinearDirection().x >= 0) piercingQuill.transform.Rotate(0, 0, 180);
-
-        // Assuming ExplosionController handles different types and manages the explosion area
-        EmanationController piercingQuillEmanationController = new EmanationController(
-            EmanationController.EmanationType.QUILL_PIERCE, 1,
-            piercingQuill.transform.position,
-            piercingQuill.transform.rotation);
-        ControllerController.AddEmanationController(piercingQuillEmanationController);
-        Enemy initialTarget = other.gameObject.GetComponent<Model>() as Enemy;
-        HashSet<Enemy> immuneObjects = new HashSet<Enemy>() { initialTarget };
-        ExplosionController.ExplodeOnEnemies(piercingQuill, GetQuill().PIERCING_DAMAGE, immuneObjects);
+        return true;
     }
 
     #endregion
@@ -88,9 +120,7 @@ public class QuillController : ProjectileController<QuillController.QuillState>
     /// Updates the state of this QuillController's Quill model.
     /// The transitions are: <br></br>
     /// 
-    /// SPAWN --> MOVING : when fired from source <br></br>
-    /// MOVING --> COLLIDING : when hits valid target <br></br>
-    /// COLLIDING --> DEAD : when all effects have been applied to valid target <br></br>
+    /// SPAWN --> MOVING : when fired from source
     /// </summary>
     public override void UpdateStateFSM()
     {
@@ -102,10 +132,9 @@ public class QuillController : ProjectileController<QuillController.QuillState>
                 SetState(QuillState.MOVING);
                 break;
             case QuillState.MOVING:
+                if(GetProjectile().Collided()) SetState(QuillState.STUCK);
                 break;
-            case QuillState.COLLIDING:
-                break;
-            case QuillState.DEAD:
+            case QuillState.STUCK: 
                 break;
         }
     }
@@ -131,14 +160,21 @@ public class QuillController : ProjectileController<QuillController.QuillState>
     }
 
     /// <summary>
-    /// Runs logic relevant to the Quill's COLLIDING state.
+    /// Runs logic relevant to the Quill's STUCK state.
     /// </summary>
-    public override void ExecuteCollidingState() { return; }
+    private void ExecuteStuckState()
+    {
+        if (!ValidModel()) return;
+        if (GetState() != QuillState.STUCK) return;
+        if(piercedCollider == null) return;
 
-    /// <summary>
-    /// Runs logic relevant to the Quill's DEAD state.
-    /// </summary>
-    public override void ExecuteDeadState() { return; }
+        Vector3 piercedPosition;
+        Enemy piercedEnemy = piercedCollider.gameObject.GetComponent<Model>() as Enemy;
+        if (piercedEnemy != null) piercedPosition = piercedEnemy.GetAttackPosition();
+        else piercedPosition = piercedCollider.transform.position;
+        Vector3 stuckPosition = piercedPosition + randomStuckPositionOffset;
+        GetQuill().SetWorldPosition(stuckPosition);
+    }
 
     #endregion
 

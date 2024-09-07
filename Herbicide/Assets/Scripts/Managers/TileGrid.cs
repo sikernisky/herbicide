@@ -327,7 +327,7 @@ public class TileGrid : MonoBehaviour
         if (tile == null) return;
 
         //(1) and (2): Placing and Using
-        if (PlacementController.Placing() && !PlacementController.IsCombining())
+        if (PlacementController.IsPlacing() && !PlacementController.IsCombining())
         {
             Model placingItem = PlacementController.GetObjectPlacing();
             PlaceableObject itemPlaceable = placingItem as PlaceableObject;
@@ -335,7 +335,7 @@ public class TileGrid : MonoBehaviour
             {
                 //Stop the placement event.
                 PlacementController.StopGhostPlacing();
-                PlacementController.StopPlacingObject(true);
+                PlacementController.StopPlacingObject();
                 //ShopManager.SetUpgradeMode(false);
             }
             //TODO: implement (2) in a future sprint.
@@ -352,7 +352,7 @@ public class TileGrid : MonoBehaviour
         if (tile == null) return;
 
         // Tile was hovered over. Put hover logic here.
-        if (PlacementController.Placing())
+        if (PlacementController.IsPlacing())
         {
             // Ghost place
             Model placingSlottable = PlacementController.GetObjectPlacing();

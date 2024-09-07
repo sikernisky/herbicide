@@ -14,11 +14,6 @@ public class EdgeFactory : MonoBehaviour
     private static EdgeFactory instance;
 
     /// <summary>
-    /// The largest index of an Edge Sprite.
-    /// </summary>
-    private const int MAX_INDEX = 32;
-
-    /// <summary>
     /// Array of Sprites for Shore Edges
     /// </summary>
     [SerializeField]
@@ -49,7 +44,7 @@ public class EdgeFactory : MonoBehaviour
     /// <param name="index">the index to check</param>
     /// <returns>true if an index is within the bounds for an Edge index;
     /// otherwise, false.</returns>
-    public static bool ValidEdgeIndex(int index) => index >= 0 && index <= MAX_INDEX;
+    public static bool ValidEdgeIndex(int index) => index >= 0 && index <= instance.shoreEdgeSprites.Length - 1;
 
     /// <summary>
     /// Returns the correct Sprite asset for an Edge object based on an index.

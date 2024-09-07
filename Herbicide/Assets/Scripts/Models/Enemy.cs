@@ -86,6 +86,11 @@ public abstract class Enemy : Mob
     /// </summary>
     private HashSet<DamageOverTime.DOTType> appliedDOTsThisCycle;
 
+    /// <summary>
+    /// The Quills stuck in this Enemy.
+    /// </summary>
+    private HashSet<Quill> quillsStuckInEnemy;
+
     #endregion
 
     #region Stats
@@ -109,6 +114,7 @@ public abstract class Enemy : Mob
         Assert.IsTrue(ReadyToSpawn(), "Not Ready.");
         base.OnSpawn();
 
+        GetColllider().enabled = true;
         activeDOTs = new HashSet<DamageOverTime>();
         appliedDOTsThisCycle = new HashSet<DamageOverTime.DOTType>();
     }
@@ -327,6 +333,39 @@ public abstract class Enemy : Mob
         {
             healthBarBackground.enabled = false;
             healthBarFill.enabled = false;
+        }
+    }
+
+    /// <summary>
+    /// Sticks a Quill in this Enemy.
+    /// </summary>
+    /// <param name="quill">the Quill with which to stick this Enemy. </param>
+    public void StickWithQuill(Quill quill)
+    {
+        Assert.IsNotNull(quill, "Quill is null.");
+        if (quillsStuckInEnemy == null) quillsStuckInEnemy = new HashSet<Quill>();
+        Assert.IsFalse(quillsStuckInEnemy.Contains(quill), "Quill already stuck in enemy.");
+        quillsStuckInEnemy.Add(quill);
+    }
+
+    /// <summary>
+    /// Returns a copy of the set of Quills stuck in this Enemy as a list.
+    /// </summary>
+    /// <returns>a copy of the set of Quills stuck in this Enemy as a list.</returns>
+    public List<Quill> GetQuillsStuckInEnemy() => new List<Quill>(quillsStuckInEnemy);
+
+    /// <summary>
+    /// Removes all Quills stuck in this Enemy by setting them to exploded.
+    /// Exploded Quills are not valid and will be removed by their
+    /// QuillControllers.
+    /// </summary>
+    public void RemoveQuills()
+    {
+        if (quillsStuckInEnemy == null) return;
+        foreach (Quill quill in quillsStuckInEnemy)
+        {
+            if (quill == null) continue;
+            quill.SetExploded();
         }
     }
 

@@ -9,7 +9,7 @@ using UnityEngine.Assertions;
 /// it to life. This includes moving it, choosing targets, playing animations,
 /// and more.
 /// </summary>
-/// <![CDATA[<param name="AcornState">]]>
+/// <![CDATA[<param name="PorcupineState">]]>
 public class PorcupineController : DefenderController<PorcupineController.PorcupineState>
 {
     #region Fields
@@ -100,8 +100,9 @@ public class PorcupineController : DefenderController<PorcupineController.Porcup
             Assert.IsNotNull(quillPrefab);
             Quill quillComp = quillPrefab.GetComponent<Quill>();
             Assert.IsNotNull(quillComp);
+            bool doubleQuill = GetPorcupine().GetTier() > 2;
             Vector3 targetPosition = GetTarget().GetAttackPosition();
-            QuillController quillController = new QuillController(quillComp, GetPorcupine().GetPosition(), targetPosition);
+            QuillController quillController = new QuillController(quillComp, GetPorcupine().GetPosition(), targetPosition, doubleQuill);
             ControllerController.AddModelController(quillController);
 
             if (i < numQuills - 1) // Wait for the delay between shots unless it's the last one
@@ -221,7 +222,7 @@ public class PorcupineController : DefenderController<PorcupineController.Porcup
         int tier = GetPorcupine().GetTier();
         int numQuillsToFire = 1;
         if (tier == 2) numQuillsToFire = 2;
-        else if (tier >= 3) numQuillsToFire = 5;
+        else if (tier >= 3) numQuillsToFire = 4;
         GetPorcupine().StartCoroutine(FireQuills(numQuillsToFire));
 
         // Reset attack animation.

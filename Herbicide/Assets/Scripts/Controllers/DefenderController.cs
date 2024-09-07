@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -73,6 +74,7 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
         if (enemyTarget == null) return false;
         if (!enemyTarget.Spawned()) return false;
         if (!enemyTarget.Targetable()) return false;
+        if (!GetDefender().IsPlaced()) return false;
 
         Vector3 treePos = GetDefender().GetTreePosition();
         float distanceFromTree = Vector3.Distance(treePos, enemyTarget.GetPosition());
@@ -168,7 +170,11 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     /// <summary>
     /// Returns the Defender prefab to the DefenderFactory object pool.
     /// </summary>
-    public override void DestroyModel() => DefenderFactory.ReturnDefenderPrefab(GetDefender().gameObject);
+    public override void ReturnModelToFactory()
+    {
+        GetDefender().ResetTier();
+        DefenderFactory.ReturnDefenderPrefab(GetDefender().gameObject);
+    }
 
     #endregion
 }

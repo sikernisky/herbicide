@@ -1,5 +1,3 @@
-using UnityEngine;
-
 /// <summary>
 /// Represents a Quill projectile.
 /// </summary>
@@ -8,11 +6,16 @@ public class Quill : Projectile
     #region Fields
 
     /// <summary>
-    /// The Quill after it hits a target. Used to start
-    /// the explosion. 
+    /// true if the Quill has exploded from the target it
+    /// was stuck in; otherwise, false.
     /// </summary>
-    [SerializeField]
-    public GameObject piercingQuill;
+    private bool exploded;
+
+    /// <summary>
+    /// true if the Quill will split into two upon its target's death;
+    /// otherwise, false.
+    /// </summary>
+    private bool doubleQuill;
 
     #endregion
 
@@ -26,7 +29,7 @@ public class Quill : Projectile
     /// <summary>
     /// Starting speed of an Quill.
     /// </summary>
-    public override float BASE_SPEED => 18f;
+    public override float BASE_SPEED => 22f;
 
     /// <summary>
     /// Maximum speed of an Quill.
@@ -41,7 +44,7 @@ public class Quill : Projectile
     /// <summary>
     /// Starting damage of an Quill.
     /// </summary>
-    public override int BASE_DAMAGE => 3; //default: 3
+    public override int BASE_DAMAGE => 4; //default: 3
 
     /// <summary>
     /// How much damage an Quill does to the targets behind the first target.
@@ -74,16 +77,42 @@ public class Quill : Projectile
     #region Methods
 
     /// <summary>
-    /// Returns the GameObject that represents this Quill when it is
-    /// piercing a target.
+    /// Sets the Quill to exploded.
     /// </summary>
-    /// <returns>the GameObject that represents this Quill when it is
-    /// piercing a target.</returns>
-    public GameObject GetPiercingQuill() 
+    public void SetExploded() => exploded = true;
+
+    /// <summary>
+    /// Returns true if the Quill has exploded; otherwise, false.
+    /// </summary>
+    /// <returns>true if the Quill has exploded; otherwise, false. </returns>
+    public bool HasExploded() => exploded;
+
+    /// <summary>
+    /// Sets this Quill as a double Quill. The Quill will split into two
+    /// upon its target's death.
+    /// </summary>
+    public void SetAsDoubleQuill() => doubleQuill = true;
+    /// <summary>
+    /// Sets this Quill as a single Quill. The Quill will not split into two
+    /// upon its target's death.
+    /// </summary>
+
+    private void SetAsSingleQuill() => doubleQuill = false;
+
+    /// <summary>
+    /// Returns true if the Quill is a double Quill; otherwise, false.
+    /// </summary>
+    /// <returns>true if the Quill is a double Quill; otherwise, false.</returns>
+    public bool IsDoubleQuill() => doubleQuill;
+
+    /// <summary>
+    /// Resets the Quill's model.
+    /// </summary>
+    public override void ResetModel()
     {
-        GameObject piercingQuillCopy= Instantiate(piercingQuill);
-        piercingQuillCopy.SetActive(true);
-        return piercingQuillCopy;     
+        base.ResetModel();
+        exploded = false;
+        SetAsSingleQuill();
     }
 
     #endregion

@@ -27,6 +27,24 @@ public class EmanationFactory : MonoBehaviour
     [SerializeField]
     private Sprite[] quillPierceTrack;
 
+    /// <summary>
+    /// Animation track for the Blackberry Explosion emanation.
+    /// </summary>
+    [SerializeField]
+    private Sprite[] blackberryExplosionTrack;
+
+    /// <summary>
+    /// Animation track for the Raspberry Explosion emanation.
+    /// </summary>
+    [SerializeField]
+    private Sprite[] raspberryExplosionTrack;
+
+    /// <summary>
+    /// Animation track for the Salmonberry Explosion emanation.
+    /// </summary>
+    [SerializeField]
+    private Sprite[] salmonberryExplosionTrack;
+
     #endregion
 
     #region Methods
@@ -59,6 +77,12 @@ public class EmanationFactory : MonoBehaviour
                 return instance.bearChompTrack;
             case EmanationController.EmanationType.QUILL_PIERCE:
                 return instance.quillPierceTrack;
+            case EmanationController.EmanationType.BLACKBERRY_EXPLOSION:
+                return instance.blackberryExplosionTrack;
+            case EmanationController.EmanationType.RASPBERRY_EXPLOSION:
+                return instance.raspberryExplosionTrack;
+            case EmanationController.EmanationType.SALMONBERRY_EXPLOSION:
+                return instance.salmonberryExplosionTrack;
             default:
                 break;
         }
@@ -81,6 +105,12 @@ public class EmanationFactory : MonoBehaviour
                 return 0.075f;
             case EmanationController.EmanationType.QUILL_PIERCE:
                 return 0.200f;
+            case EmanationController.EmanationType.BLACKBERRY_EXPLOSION:
+                return 0.100f;
+            case EmanationController.EmanationType.RASPBERRY_EXPLOSION:
+                return 0.100f;
+            case EmanationController.EmanationType.SALMONBERRY_EXPLOSION:
+                return 0.100f;
             default:
                 break;
         }

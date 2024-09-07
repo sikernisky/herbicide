@@ -63,10 +63,5 @@ public abstract class Currency : Collectable
     /// <returns>this Currency's current value.</returns>
     public int GetValue() => value;
 
-    /// <summary>
-    /// Sets this Currency's 2D Collider properties.
-    /// </summary>
-    public override void SetColliderProperties() { }
-
     #endregion
 }

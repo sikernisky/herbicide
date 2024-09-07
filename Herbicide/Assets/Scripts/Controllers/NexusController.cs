@@ -77,7 +77,7 @@ public class NexusController : MobController<NexusController.NexusState>
     /// <summary>
     /// Returns the Nexus prefab to the NexusFactory singleton.
     /// </summary>
-    public override void DestroyModel() => NexusFactory.ReturnNexusPrefab(GetNexus().gameObject);
+    public override void ReturnModelToFactory() => NexusFactory.ReturnNexusPrefab(GetNexus().gameObject);
 
     #endregion
 

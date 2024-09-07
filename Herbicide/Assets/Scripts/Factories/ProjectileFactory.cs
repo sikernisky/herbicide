@@ -23,7 +23,25 @@ public class ProjectileFactory : Factory
     /// The animation set for a Quill.
     /// </summary>
     [SerializeField]
-    private ProjectileAnimationSet quillAnimationSet;
+    private QuillAnimationSet quillAnimationSet;
+
+    /// <summary>
+    /// The animation set for a Blackberry.
+    /// </summary>
+    [SerializeField]
+    private ProjectileAnimationSet blackberryAnimationSet;
+
+    /// <summary>
+    /// The animation set for a Raspberry.
+    /// </summary>
+    [SerializeField]
+    private ProjectileAnimationSet raspberryAnimationSet;
+
+    /// <summary>
+    /// The animation set for a Salmonberry.
+    /// </summary>
+    [SerializeField]
+    private ProjectileAnimationSet salmonberryAnimationSet;
 
     #endregion
 
@@ -63,14 +81,23 @@ public class ProjectileFactory : Factory
     /// </summary>
     /// <param name="m">The ModelType of the Projectile to get</param>
     /// <returns>the animation track that represents this Projectile when placing.</returns>
-    public static Sprite[] GetPlacementTrack(ModelType m)
+    public static Sprite[] GetPlacementTrack(Model m)
     {
-        switch (m)
+        switch (m.TYPE)
         {
             case ModelType.ACORN:
                 return instance.acornAnimationSet.GetPlacementAnimation();
             case ModelType.QUILL:
-                return instance.quillAnimationSet.GetPlacementAnimation();
+                Quill quill = m as Quill;
+                Assert.IsNotNull(quill, "Quill is null.");
+                if(quill.IsDoubleQuill()) return instance.quillAnimationSet.GetDoubleQuillPlacementAnimation();
+                else return instance.quillAnimationSet.GetPlacementAnimation();
+            case ModelType.BLACKBERRY:
+                return instance.blackberryAnimationSet.GetPlacementAnimation();
+            case ModelType.RASPBERRY:
+                return instance.raspberryAnimationSet.GetPlacementAnimation();
+            case ModelType.SALMONBERRY:
+                return instance.salmonberryAnimationSet.GetPlacementAnimation();
             default:
                 throw new System.Exception("Invalid ModelType");
         }
@@ -88,7 +115,16 @@ public class ProjectileFactory : Factory
             case ModelType.ACORN:
                 return instance.acornAnimationSet.GetMidAirAnimation();
             case ModelType.QUILL:
-                return instance.quillAnimationSet.GetMidAirAnimation();
+                Quill quill = m as Quill;
+                Assert.IsNotNull(quill, "Quill is null.");
+                if(quill.IsDoubleQuill()) return instance.quillAnimationSet.GetDoubleQuillMidAirAnimation();
+                else return instance.quillAnimationSet.GetMidAirAnimation();
+            case ModelType.BLACKBERRY:
+                return instance.blackberryAnimationSet.GetMidAirAnimation();
+            case ModelType.RASPBERRY:
+                return instance.raspberryAnimationSet.GetMidAirAnimation();
+            case ModelType.SALMONBERRY:
+                return instance.salmonberryAnimationSet.GetMidAirAnimation();
             default:
                 throw new System.Exception("Invalid ModelType");
         }

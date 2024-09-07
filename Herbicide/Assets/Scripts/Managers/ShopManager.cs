@@ -118,7 +118,11 @@ public class ShopManager : MonoBehaviour
         // Check & Handle ShopCard click
         foreach (ShopSlot shopSlot in instance.shopSlots)
         {
-            if (shopSlot.SlotClicked()) instance.ClickShopSlotButton(shopSlot.GetSlotIndex());
+            if (shopSlot.SlotClicked())
+            {
+                instance.ClickShopSlotButton(shopSlot.GetSlotIndex());
+                shopSlot.ResetSlotClickStatus();
+            }
         }
 
         // Enable / Disable reroll button depending on balance
@@ -166,7 +170,8 @@ public class ShopManager : MonoBehaviour
                 modelTypes = new HashSet<ModelType>(){
                 ModelType.SHOP_CARD_SQUIRREL,
                 ModelType.SHOP_CARD_BEAR,
-                ModelType.SHOP_CARD_PORCUPINE
+                ModelType.SHOP_CARD_PORCUPINE,
+                ModelType.SHOP_CARD_RACCOON
             };
             }
 
@@ -232,10 +237,11 @@ public class ShopManager : MonoBehaviour
         Assert.IsTrue(slotIndex >= 0 && slotIndex < shopSlots.Count);
         ShopSlot clickedSlot = shopSlots.First(ss => ss.GetSlotIndex() == slotIndex);
         if (clickedSlot.Empty()) return;
-        if (PlacementController.Placing()) return;
-
+        if (PlacementController.IsPlacing()) return;
+        if(PlacementController.IsCombining()) return;
         if (!clickedSlot.CanBuy(EconomyController.GetBalance())) return;
 
+        // Get a fresh copy of the Model we bought
         GameObject slotPrefab = clickedSlot.GetCardPrefab();
         Assert.IsNotNull(slotPrefab);
         Model slotModel = slotPrefab.GetComponent<Model>();
@@ -244,7 +250,7 @@ public class ShopManager : MonoBehaviour
         PlacementController.StartPlacingObject(slotModel);
         EconomyController.Withdraw(clickedSlot.Buy(EconomyController.GetBalance()));
 
-        // Let the ControllerController bring this Model to life
+        // The ControllerController handles upgrading and combination logic
         OnBuyModel?.Invoke(slotModel);
 
         bool allSlotsEmpty = true;

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -20,16 +21,6 @@ public class ControllerController : MonoBehaviour
     /// Number of active Models of each ModelType.
     /// </summary>
     private ModelCounts counts;
-
-    /// <summary>
-    /// The most recent GameState.
-    /// </summary>
-    private GameState gameState;
-
-    /// <summary>
-    /// ModelTypes that can be upgraded. 
-    /// </summary>
-    private HashSet<ModelType> upgradeableTypes;
 
     #endregion
 
@@ -105,15 +96,7 @@ public class ControllerController : MonoBehaviour
 
         instance.counts = new ModelCounts();
 
-        instance.upgradeableTypes = new HashSet<ModelType>
-        {
-            ModelType.SQUIRREL,
-            ModelType.BEAR,
-            ModelType.PORCUPINE
-        };
-
         ShopManager.SubscribeToBuyDefenderDelegate(instance.OnPurchaseModelFromShop);
-        PlacementController.SubscribeToFinishCombiningDelegate(instance.OnFinishCombining);
     }
 
     /// <summary>
@@ -175,6 +158,12 @@ public class ControllerController : MonoBehaviour
                 Assert.IsNotNull(porcupine, "Porcupine is null.");
                 PorcupineController pc = new PorcupineController(porcupine);
                 instance.defenderControllers.Add(pc);
+                break;
+            case ModelType.RACCOON:
+                Raccoon raccoon = model as Raccoon;
+                Assert.IsNotNull(raccoon, "Raccoon is null.");
+                RaccoonController rc = new RaccoonController(raccoon);
+                instance.defenderControllers.Add(rc);
                 break;
             case ModelType.SOIL_FLOORING:
                 SoilFlooring soilFlooring = model as SoilFlooring;
@@ -320,7 +309,7 @@ public class ControllerController : MonoBehaviour
 
         // Emanation Controllers
         List<EmanationController> emanationControllersToRemove = emanationControllers.Where(emc => emc.ShouldRemoveController()).ToList();
-        enemyControllersToRemove.ForEach(emc => emc.RemoveController());
+        enemyControllersToRemove.ForEach(emc => emc.OnRemoveController());
         emanationControllers.RemoveAll(emc => emc.ShouldRemoveController());
     }
 
@@ -332,7 +321,7 @@ public class ControllerController : MonoBehaviour
     private void DiscardController(ModelController controllerToRemove)
     {
         counts.SetCount(instance, controllerToRemove.GetModel().TYPE, counts.GetCount(controllerToRemove.GetModel().TYPE) - 1);
-        controllerToRemove.RemoveController();
+        controllerToRemove.OnRemoveController();
     }
 
     /// <summary>
@@ -341,9 +330,6 @@ public class ControllerController : MonoBehaviour
     /// <param name="gameState">Current game state</param>
     public static void UpdateModelControllers(GameState gameState)
     {
-        // Game state
-        instance.gameState = gameState;
-
         // General updates
         instance.TryRemoveControllers();
         instance.UpdateModelCounts();
@@ -395,90 +381,125 @@ public class ControllerController : MonoBehaviour
     /// <param name="purchasedModel">the Model that was just purchased.</param>
     private void OnPurchaseModelFromShop(Model purchasedModel)
     {
-        // Handle upgrades
-        int numTierOne = GetAllDefendersAtTier(purchasedModel.TYPE, 1).Count;
-        int numTierTwo = GetAllDefendersAtTier(purchasedModel.TYPE, 2).Count;
+        // Create the model controller for the newly purchased model
         MakeModelController(purchasedModel);
-        if (upgradeableTypes.Contains(purchasedModel.TYPE))
+
+        Defender purchasedDefender = purchasedModel as Defender;
+        if(purchasedDefender == null) return;
+
+        StartCoroutine(CheckAndCombineDefenders(purchasedDefender));
+    }
+    
+    /// <summary>
+    /// Checks if there is a combination of Defenders that can be made.
+    /// If so, triggers a combination event in PlacementController and
+    /// makes a recursive call to check for more combinations.
+    /// </summary>
+    /// <param name="newDefender">The Defender that was just purchased
+    /// or combined.</param>
+    /// <returns>a reference to the coroutine.</returns>
+    private IEnumerator CheckAndCombineDefenders(Defender newDefender)
+    {
+        Assert.IsNotNull(newDefender);
+        yield return new WaitWhile(() => PlacementController.IsCombining());
+
+        if(newDefender.GetTier() < 3)
         {
-            if (numTierOne >= 2 && numTierTwo >= 2)
+            List<Defender> defendersOfTypeAndTier = FindPlacedDefendersOfTypeAndTier(newDefender.TYPE, newDefender.GetTier());
+            Assert.IsNotNull(defendersOfTypeAndTier);
+            defendersOfTypeAndTier.Add(newDefender);
+
+            if (defendersOfTypeAndTier.Count == 3)
             {
-                //PlacementController.UpgradeModelPlacing();
-                //PlacementController.UpgradeModelPlacing();
-                List<Model> tierOneDefenders = GetAllDefendersAtTier(purchasedModel.TYPE, 1);
-                List<Model> tierTwoDefenders = GetAllDefendersAtTier(purchasedModel.TYPE, 2);
-                List<Model> combined = tierOneDefenders.Concat(tierTwoDefenders).ToList();
-                PlacementController.CombineDefendersToCursor(combined, 3);
-                RemoveAllDefendersOfTypeAtTier(purchasedModel.TYPE, 1);
-                RemoveAllDefendersOfTypeAtTier(purchasedModel.TYPE, 2);
-            }
-            else if (numTierOne >= 2)
-            {
-                //PlacementController.UpgradeModelPlacing();
-                PlacementController.CombineDefendersToCursor(GetAllDefendersAtTier(purchasedModel.TYPE, 1), 2);
-                RemoveAllDefendersOfTypeAtTier(purchasedModel.TYPE, 1);
+                ModelType defenderType = newDefender.TYPE;
+                List<Defender> defendersToAnimate = defendersOfTypeAndTier.GetRange(0, defendersOfTypeAndTier.Count - 1);
+                PlacementController.AnimateCombination(defendersToAnimate);
+                yield return new WaitWhile(() => PlacementController.IsCombining());
+
+                Defender combinationResult = CombineDefenders(defendersOfTypeAndTier, newDefender.GetTier());
+                PlacementController.StopPlacingObject();
+                PlacementController.StartPlacingObject(combinationResult);
+                yield return StartCoroutine(CheckAndCombineDefenders(combinationResult));
             }
         }
     }
 
     /// <summary>
-    /// Called when the PlacementController completes its animation
-    /// of combining Defenders. Triggers the Upgrade layout on top
-    /// of the shop so that the player can choose the upgrade they want.
+    /// Creates a new Defender and controller of the given type and tier.
+    /// Removes the old Defenders from the scene.
     /// </summary>
-    /// <param name="combinedModel">The Model that was created by combining the Defenders.</param>
-    private void OnFinishCombining(Model combinedModel) { }
+    /// <param name="combinedDefenders">The Defenders that were just combined.</param>
+    /// <param name="oldTier">The tier of the Defenders that were just combined.</param>
+    /// <returns>the new, combined Defender. </returns>
+    private Defender CombineDefenders(List<Defender> combinedDefenders, int oldTier)
+    {
+        Assert.IsNotNull(combinedDefenders);
+        Assert.IsTrue(combinedDefenders.Count == 3, "Cannot combine less than 3 Defenders.");
+        combinedDefenders.ForEach(cd => Assert.IsNotNull(cd));
+        combinedDefenders.ForEach(cd => Assert.IsTrue(cd.GetTier() == oldTier));
+
+        int newTier = combinedDefenders[0].GetTier() + 1;
+        ModelType defenderType = combinedDefenders[0].TYPE;
+        combinedDefenders.ForEach(d => RemoveDefenderFromScene(d));
+        GameObject newDefenderOb = DefenderFactory.GetDefenderPrefab(defenderType);
+        Assert.IsNotNull(newDefenderOb);
+        Defender newDefenderComp = newDefenderOb.GetComponent<Defender>();
+        Assert.IsNotNull(newDefenderComp);
+        while(newDefenderComp.GetTier() < newTier) newDefenderComp.Upgrade();
+        MakeModelController(newDefenderComp);
+
+        return newDefenderComp;
+    }
 
     /// <summary>
-    /// Removes all Defenders of the given type and tier from the scene.
+    /// Removes a Defender and its associated Controller from the scene.
     /// </summary>
-    /// <param name="defenderType">the type of Defender to remove</param>
-    /// <param name="tier">the tier of Defender to remove</param>
-    private void RemoveAllDefendersOfTypeAtTier(ModelType defenderType, int tier)
+    /// <param name="defenderToRemove">the Defender to remove. </param>
+    /// <returns>true if the remove was successful; otherwise, false. </returns>
+    private bool RemoveDefenderFromScene(Defender defenderToRemove)
     {
-        HashSet<ModelController> controllersToRemove = new HashSet<ModelController>();
+        Assert.IsNotNull(defenderToRemove);
 
         foreach (ModelController dc in defenderControllers)
         {
-            if (dc.GetModel().TYPE != defenderType) continue;
+            if (dc == null) continue;
             Defender defender = dc.GetModel() as Defender;
             if (defender == null) continue;
-            if (!defender.IsPlaced()) continue;
-            //Debug.Log("Defender tier: " + defender.GetTier() + " target tier: " + tier);
-            if (defender.GetTier() != tier) continue;
+            if (defender != defenderToRemove) continue;
 
-            TileGrid.RemoveFromTile(defender.GetPlacedCoords());
-            controllersToRemove.Add(dc);
-        }
-
-        foreach (ModelController dc in controllersToRemove)
-        {
+            TileGrid.RemoveFromTile(defenderToRemove.GetPlacedCoords());
             DiscardController(dc);
             defenderControllers.Remove(dc);
+            return true;
         }
+
+        return false;
     }
 
     /// <summary>
-    /// Returns a list of all placed Defenders of the given type and tier.
+    /// Returns a list of all placed Defenders of the given type. Does
+    /// not discriminate by tier.
     /// </summary>
-    /// <param name="defenderType">The type of Defender to get</param>
-    /// <param name="tier">The tier of Defender to get</param>
-    /// <returns>a list of all placed Defenders of the given type and tier</returns>
-    private List<Model> GetAllDefendersAtTier(ModelType defenderType, int tier)
+    /// <param name="defenderType">The ModelType of Defender to search for.</param>
+    /// <returns>a list of all placed Defenders of the given type.</returns>
+    private List<Defender> FindPlacedDefendersOfTypeAndTier(ModelType defenderType, int tier)
     {
-        List<Model> list = new List<Model>();
+        List<Defender> placedDefenders = new List<Defender>();
 
         foreach (ModelController defenderController in defenderControllers)
         {
             if (defenderController == null) continue;
             Defender defender = defenderController.GetModel() as Defender;
-            if (defender == null) continue;
 
-            if (defender.TYPE == defenderType && defender.GetTier() == tier
-                && defender.IsPlaced()) list.Add(defender);
+            if (defender == null || !defender.IsPlaced() || defender.GetTier() != tier) continue;
+
+            if (defender.TYPE == defenderType)
+            {
+                placedDefenders.Add(defender);
+            }
         }
 
-        return list;
+        return placedDefenders;
     }
 
     #endregion

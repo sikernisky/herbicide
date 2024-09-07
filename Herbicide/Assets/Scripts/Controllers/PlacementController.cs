@@ -86,17 +86,6 @@ public class PlacementController : MonoBehaviour
     private Model subject;
 
     /// <summary>
-    /// Defines a delegate for completing a Model combination and upgrade.
-    /// </summary>
-    /// <param name="combinedModel">The combined Model.</param>
-    public delegate void FinishCombiningDelegate(Model combinedModel);
-
-    /// <summary>
-    /// Event triggered when a Model is combined and upgraded.
-    /// </summary>
-    public event FinishCombiningDelegate OnFinishCombining;
-
-    /// <summary>
     /// Defines a delegate for completing a Model placement.
     /// </summary>
     /// <param name="model">The placed Model.</param>
@@ -111,11 +100,6 @@ public class PlacementController : MonoBehaviour
     /// The position of the last placed Model.
     /// </summary>
     private Vector3 lastPlacedPosition;
-
-    /// <summary>
-    /// The tier of the newly combined Defender.
-    /// </summary>
-    private int newTier;
 
     #endregion
 
@@ -162,7 +146,7 @@ public class PlacementController : MonoBehaviour
         if (instance.gameState == GameState.ONGOING)
         {
             instance.GlueSubjectToMouse();
-            if (Placing())
+            if (IsPlacing())
             {
                 instance.dummyImage.sprite = instance.subject.GetPlacementTrack()[0];
                 instance.lastPlacedPosition = instance.dummy.transform.position;
@@ -171,7 +155,7 @@ public class PlacementController : MonoBehaviour
 
             if (didEscape)
             {
-                if (Placing()) StopPlacingObject(false);
+                if (IsPlacing()) StopPlacingObject();
                 if (GhostPlacing()) StopGhostPlacing();
             }
             if (GhostPlacing() && !instance.ghostSubject.HasActiveGhostOccupant())
@@ -179,7 +163,7 @@ public class PlacementController : MonoBehaviour
                 StopGhostPlacing();
             }
         }
-        else if (Placing()) StopPlacingObject(false);
+        else if (IsPlacing()) StopPlacingObject();
     }
 
     /// <summary>
@@ -187,7 +171,7 @@ public class PlacementController : MonoBehaviour
     /// </summary>
     public static void StartPlacingObject(Model m)
     {
-        if (Placing()) return;
+        if (IsPlacing()) return;
         if (m == null) return;
 
         Vector2Int placementDimensions = m.GetPlacementTrackDimensions();
@@ -204,11 +188,9 @@ public class PlacementController : MonoBehaviour
     /// <summary>
     /// Stops an active placement event if there is one.
     /// </summary>
-    /// <param name="wasPlaced">true if the placing object was placed;
-    /// false if it was canceled or otherwise invalid. </param>
-    public static void StopPlacingObject(bool wasPlaced)
+    public static void StopPlacingObject()
     {
-        if (!Placing()) return;
+        if (!IsPlacing()) return;
 
         instance.dummy.SetActive(false);
         instance.dummyImage.sprite = null;
@@ -230,7 +212,7 @@ public class PlacementController : MonoBehaviour
     /// Returns true if there is an item being placed.
     /// </summary>
     /// <returns>true if there is an item being placed; otherwise, false.</returns>
-    public static bool Placing() => instance.placing;
+    public static bool IsPlacing() => instance.placing;
 
     /// <summary>
     /// Returns true if the player is ghost placing.
@@ -285,7 +267,7 @@ public class PlacementController : MonoBehaviour
     /// </summary>
     /// <param name="defendersToCombine">The Defenders to combine.</param>
     /// <param name="newTier">The tier of the new Defender.</param>
-    public static void CombineDefendersToCursor(List<Model> defendersToCombine, int newTier)
+    public static void AnimateCombination(List<Defender> defendersToCombine)
     {
         Assert.IsNotNull(defendersToCombine);
         Assert.IsTrue(defendersToCombine.Count >= 0 && defendersToCombine.Count <= instance.combinationDummies.Length);
@@ -293,7 +275,6 @@ public class PlacementController : MonoBehaviour
         List<Vector3> initialPositions = new List<Vector3>();
         List<Sprite> combinationSprites = new List<Sprite>();
         List<Vector3> dummySizes = new List<Vector3>();
-        instance.newTier = newTier;
 
         foreach (Model model in defendersToCombine)
         {
@@ -319,17 +300,21 @@ public class PlacementController : MonoBehaviour
     }
 
     /// <summary>
-    /// Updates the combination events, moving the dummies towards the cursor.
+    /// Called every frame. Updates the combination events, moving the dummies towards the cursor.
     /// </summary>
     public static void UpdateCombinationEvents()
     {
         if (instance.combinationDummies == null || instance.combinationLerpCurve == null) return;
         if (!instance.combining) return;
         Defender defenderSubject = instance.subject as Defender;
-        if (defenderSubject == null) return;
+        if (defenderSubject == null)
+        {
+            instance.combining = false;
+            return;
+        }
 
         Vector3 targetPosition;
-        if (Placing()) targetPosition = InputController.GetUIMousePosition();
+        if (IsPlacing()) targetPosition = InputController.GetUIMousePosition();
         else targetPosition = instance.lastPlacedPosition;
         targetPosition.z = 0;
 
@@ -370,12 +355,6 @@ public class PlacementController : MonoBehaviour
         if (allInactive)
         {
             instance.combining = false;
-            for (int i = 1; i < instance.newTier; i++)
-            {
-                defenderSubject.Upgrade();
-            }
-
-            instance.OnFinishCombining?.Invoke(defenderSubject);
         }
     }
 
@@ -385,16 +364,6 @@ public class PlacementController : MonoBehaviour
     /// <returns>true if there is an active combination event; otherwise,
     /// false. </returns>
     public static bool IsCombining() => instance.combining;
-
-    /// <summary>
-    /// Subscribes a handler (the ControllerController) to the finish combining event.
-    /// </summary>
-    /// <param name="handler">The handler to subscribe.</param>
-    public static void SubscribeToFinishCombiningDelegate(FinishCombiningDelegate handler)
-    {
-        Assert.IsNotNull(handler, "Handler is null.");
-        instance.OnFinishCombining += handler;
-    }
 
     /// <summary>
     /// Subscribes a handler (the ControllerController) to the finish placing event.

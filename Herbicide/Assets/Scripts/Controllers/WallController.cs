@@ -59,7 +59,7 @@ public class WallController : MobController<WallController.WallState>
     /// <summary>
     /// Returns the Wall prefab to the WallFactory singleton.
     /// </summary>
-    public override void DestroyModel() => WallFactory.ReturnWallPrefab(GetWall().gameObject);
+    public override void ReturnModelToFactory() => WallFactory.ReturnWallPrefab(GetWall().gameObject);
 
     #endregion
 

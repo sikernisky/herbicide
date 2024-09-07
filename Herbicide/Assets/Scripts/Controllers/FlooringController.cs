@@ -49,7 +49,7 @@ public class FlooringController : ModelController
     /// <summary>
     /// Returns the Flooring prefab to the FlooringFactory singleton.
     /// </summary>
-    public override void DestroyModel() => FlooringFactory.ReturnFlooringPrefab(GetFlooring().gameObject);
+    public override void ReturnModelToFactory() => FlooringFactory.ReturnFlooringPrefab(GetFlooring().gameObject);
 
     #endregion
 }

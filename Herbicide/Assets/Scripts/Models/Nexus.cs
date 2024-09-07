@@ -144,11 +144,6 @@ public class Nexus : Mob
     public override GameObject CreateNew() => NexusFactory.GetNexusPrefab();
 
     /// <summary>
-    /// Sets this Nexus' 2D collider properties.
-    /// </summary>
-    public override void SetColliderProperties() { }
-
-    /// <summary>
     /// Returns true if this Nexus was brought to the target spot (usually a 
     /// NexusHole).
     /// </summary>

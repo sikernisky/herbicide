@@ -143,6 +143,15 @@ public class ShopSlot : MonoBehaviour
     }
 
     /// <summary>
+    /// Resets the ShopCard's click status.
+    /// </summary>
+    public void ResetSlotClickStatus()
+    {
+        if (Empty()) return;
+        occupant.ResetClick();
+    }
+
+    /// <summary>
     /// Returns true if this ShopSlot has been purchased and hosts
     /// no ShopCard.
     /// </summary>

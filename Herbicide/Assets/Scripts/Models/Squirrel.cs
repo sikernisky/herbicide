@@ -113,11 +113,6 @@ public class Squirrel : Defender
     #region Methods
 
     /// <summary>
-    /// Sets this Squirrel's 2D Collider's properties.
-    /// </summary>
-    public override void SetColliderProperties() { }
-
-    /// <summary>
     /// Returns this Squirrel's current chase range, which is always its
     /// current attack range (since Squirrels do not chase & are stationary.)
     /// </summary>

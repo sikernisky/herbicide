@@ -314,6 +314,7 @@ public abstract class Tile : Model, ISurface
         if (Floored()) GetFlooring().Remove(neighbors);
         else
         {
+            occupant.OnRemove();
             nexusHoleOccupant = null;
             occupant = null;
         }
@@ -531,11 +532,6 @@ public abstract class Tile : Model, ISurface
     /// Resets this Tile's stats to their starting values.
     /// </summary>
     public override void ResetModel() => base.ResetModel();
-
-    /// <summary>
-    /// Sets the 2D Collider properties of this Tile.
-    /// </summary>
-    public override void SetColliderProperties() { return; }
 
     /// <summary>
     /// Returns the GameObject that represents this Tile on the grid.

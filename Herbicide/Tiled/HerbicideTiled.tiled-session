@@ -12,11 +12,11 @@
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
         "Tilemaps/btd.tmx": {
-            "scale": 2,
-            "selectedLayer": 0,
+            "scale": 3,
+            "selectedLayer": 4,
             "viewCenter": {
-                "x": 180.75,
-                "y": 107.5
+                "x": 153.5,
+                "y": 127.33333333333331
             }
         },
         "Tilemaps/btd.tmx#Enemies": {
@@ -26,13 +26,13 @@
             "scaleInDock": 1
         },
         "Tilemaps/btd.tmx#Placeables": {
-            "scaleInDock": 1
+            "scaleInDock": 8
         },
         "Tilemaps/btd.tmx#Shore": {
             "scaleInDock": 1
         },
         "Tilemaps/btd.tmx#Soil": {
-            "scaleInDock": 1
+            "scaleInDock": 5.5
         },
         "Tilemaps/btd.tmx#Water": {
             "scaleInDock": 1
@@ -110,8 +110,8 @@
             "scale": 4,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 191.625,
-                "y": 111.75
+                "x": 191.375,
+                "y": 111.5
             }
         },
         "Tilemaps/level1.tmj": {
@@ -124,8 +124,8 @@
         },
         "Tilemaps/level1.tmx": {
             "expandedObjectLayers": [
-                16,
-                13
+                13,
+                16
             ],
             "scale": 2.8034,
             "selectedLayer": 5,
@@ -144,9 +144,9 @@
         },
         "Tilemaps/level2.tmx": {
             "expandedObjectLayers": [
+                13,
                 16,
-                15,
-                13
+                15
             ],
             "scale": 5.5,
             "selectedLayer": 5,
@@ -157,9 +157,9 @@
         },
         "Tilemaps/level3.tmx": {
             "expandedObjectLayers": [
+                13,
                 16,
-                15,
-                13
+                15
             ],
             "scale": 1.6635,
             "selectedLayer": 5,
@@ -170,15 +170,15 @@
         },
         "Tilemaps/level4.tmx": {
             "expandedObjectLayers": [
+                13,
                 16,
-                15,
-                13
+                15
             ],
             "scale": 2,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 231.75,
-                "y": 160
+                "x": 230.25,
+                "y": 158.5
             }
         },
         "Tilemaps/level5.tmx": {
@@ -188,8 +188,8 @@
             "scale": 2,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 164.75,
-                "y": 86.5
+                "x": 163.75,
+                "y": 74.5
             }
         },
         "Tilemaps/level5.tmx#Enemies": {
@@ -253,14 +253,14 @@
     ],
     "project": "HerbicideTiled.tiled-project",
     "recentFiles": [
+        "Tilemaps/level5.tmx",
+        "Tilemaps/level4.tmx",
+        "Tilemaps/level3.tmx",
+        "Tilemaps/level2.tmx",
         "Tilesets/Shore.tsx",
         "Tilemaps/level1.json",
         "Tilemaps/level1.tmx",
-        "Tilemaps/level1.tmj",
-        "Tilemaps/level2.tmx",
-        "Tilemaps/level3.tmx",
-        "Tilemaps/level4.tmx",
-        "Tilemaps/level5.tmx"
+        "Tilemaps/level1.tmj"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

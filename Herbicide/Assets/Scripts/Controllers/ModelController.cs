@@ -154,7 +154,7 @@ public abstract class ModelController
         OnDestroyModel();
 
         ALL_MODELS.Remove(GetModel());
-        DestroyModel();
+        ReturnModelToFactory();
         model = null;
         modelRemoved = true;
     }
@@ -210,9 +210,10 @@ public abstract class ModelController
     }
 
     /// <summary>
-    /// Removes this Controller, destroying its Model.
+    /// Called when the ControllerController removes this ModelController from
+    /// the scene. Destroys this controller's Model.
     /// </summary>
-    public void RemoveController() => DestroyAndRemoveModel();
+    public void OnRemoveController() => DestroyAndRemoveModel();
 
     /// <summary>
     /// Handles a collision between this controller's model and
@@ -267,10 +268,9 @@ public abstract class ModelController
     }
 
     /// <summary>
-    /// Destroys the model. This should be done by a sub class, who gives
-    /// the prefab back to the correct Factory.
+    /// Returns this ModelController's Model to its Factory.
     /// </summary>
-    public abstract void DestroyModel();
+    public abstract void ReturnModelToFactory();
 
     /// <summary>
     /// Performs logic right before this Model is destroyed.

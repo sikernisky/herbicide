@@ -92,6 +92,8 @@ public class ShopCard : UIModel
                 return ModelType.SHOP_CARD_PORCUPINE;
             case ModelType.SQUIRREL:
                 return ModelType.SHOP_CARD_SQUIRREL;
+            case ModelType.RACCOON:
+                return ModelType.SHOP_CARD_RACCOON;
             default:
                 return ModelType.SHOP_CARD_BLANK;
         }
@@ -143,6 +145,11 @@ public class ShopCard : UIModel
     /// <returns>true if the player clicked this ShopCard;
     /// otherwise, false. /// </returns>
     public bool ClickedOn() => clicked;
+
+    /// <summary>
+    /// Resets the ShopCard's click status.
+    /// </summary>
+    public void ResetClick() => clicked = false;
 
     /// <summary>
     /// Turns the ShopCard's background a darker color.

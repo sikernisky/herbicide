@@ -94,11 +94,6 @@ public class StoneWall : Wall
     public override Sprite[] GetPlacementTrack() => throw new System.NotSupportedException();
 
     /// <summary>
-    /// Sets the collider properties of this StoneWall.
-    /// </summary>
-    public override void SetColliderProperties() { }
-
-    /// <summary>
     /// Returns the index representing the correct Sprite for this StoneWall.
     /// </summary>
     /// <param name="neighbors"> the four neighbors that surround this StoneWall.</param>

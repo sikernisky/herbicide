@@ -82,7 +82,7 @@ SpriteRenderer:
   m_Size: {x: 2, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!61 &6715831502170715460
@@ -347,28 +347,5 @@ MonoBehaviour:
   modelCollider: {fileID: 2222121041725726139}
   projectileBody: {fileID: 8933929584816650215}
   shadow: {fileID: 2702060016471813828}
-  lobCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  piercingQuill: {fileID: 1542050753623651964}
+  singleQuillSprite: {fileID: 21300000, guid: 23b83c1a95cab8247b7046c5e8eda59b, type: 3}
+  doubleQuillSprite: {fileID: 21300000, guid: d487843248dda0c418908bc71a5971e5, type: 3}

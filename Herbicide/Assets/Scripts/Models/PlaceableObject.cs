@@ -122,6 +122,11 @@ public abstract class PlaceableObject : Model
     }
 
     /// <summary>
+    /// Called when this PlaceableObject is removed.
+    /// </summary>
+    public virtual void OnRemove() => placed = false;
+
+    /// <summary>
     /// Returns true if this PlaceableObject is placed.
     /// </summary>
     public bool IsPlaced() => placed;

@@ -214,7 +214,11 @@ public abstract class Flooring : Model, ISurface
 
         Tree treeOccupant = GetOccupant() as Tree;
         if (treeOccupant != null) treeOccupant.Remove(neighbors);
-        else occupant = null;
+        else
+        {
+            occupant.OnRemove();
+            occupant = null;
+        }
     }
 
     /// <summary>
@@ -370,11 +374,6 @@ public abstract class Flooring : Model, ISurface
     /// Resets this Tile's stats to their starting values.
     /// </summary>
     public override void ResetModel() => base.ResetModel();
-
-    /// <summary>
-    /// Sets the 2D Collider properties of this Tile.
-    /// </summary>
-    public override void SetColliderProperties() { }
 
     /// <summary>
     /// Returns a Sprite that represents this Flooring when it is
