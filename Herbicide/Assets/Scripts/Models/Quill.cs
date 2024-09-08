@@ -29,7 +29,7 @@ public class Quill : Projectile
     /// <summary>
     /// Starting speed of an Quill.
     /// </summary>
-    public override float BASE_SPEED => 22f;
+    public override float BASE_SPEED => 25f;
 
     /// <summary>
     /// Maximum speed of an Quill.
@@ -44,12 +44,7 @@ public class Quill : Projectile
     /// <summary>
     /// Starting damage of an Quill.
     /// </summary>
-    public override int BASE_DAMAGE => 4; //default: 3
-
-    /// <summary>
-    /// How much damage an Quill does to the targets behind the first target.
-    /// </summary>
-    public int PIERCING_DAMAGE => 3;
+    public override int BASE_DAMAGE => 2;
 
     /// <summary>
     /// Maximum damage of an Quill.

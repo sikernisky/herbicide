@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SquirrelAnimationSet
   m_EditorClassIdentifier: 
   placementTrackTier1:
-  - {fileID: -1985209435, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  - {fileID: 21300000, guid: 38d12ef5d626e4b918d858f04a2d5db4, type: 3}
   placementTrackTier2:
   - {fileID: 2061260637, guid: 01970f2e7961561489d6127e7712fbb2, type: 3}
   placementTrackTier3:

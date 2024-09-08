@@ -395,7 +395,7 @@ public abstract class Model : MonoBehaviour
     /// Returns the Collider2D component used by this Model.
     /// </summary>
     /// <returns>the Collider2D component used by this Model.</returns>
-    public Collider2D GetColllider() => modelCollider;
+    public Collider2D GetCollider() => modelCollider;
 
     /// <summary>
     /// Sets this Model's Collider2D properties, such as its position,

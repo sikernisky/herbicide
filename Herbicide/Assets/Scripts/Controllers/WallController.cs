@@ -54,7 +54,7 @@ public class WallController : MobController<WallController.WallState>
     /// <param name="target">The Model to check. </param>
     /// <returns>true if the Wall can target the Model passed into this method;
     /// otherwise, false. </returns>
-    protected override bool CanTargetModel(Model target) => false;
+    protected override bool CanTargetOtherModel(Model target) => false;
 
     /// <summary>
     /// Returns the Wall prefab to the WallFactory singleton.
@@ -78,7 +78,7 @@ public class WallController : MobController<WallController.WallState>
     /// 
     /// SPAWN --> IDLE : always
     /// </summary>
-    public override void UpdateStateFSM()
+    public override void UpdateFSM()
     {
         if (!ValidModel()) return;
 

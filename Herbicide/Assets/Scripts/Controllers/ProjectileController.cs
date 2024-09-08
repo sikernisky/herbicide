@@ -100,7 +100,7 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
         base.UpdateController(gameState);
         if (!ValidModel()) return;
         GetProjectile().AddToLifespan(Time.deltaTime);
-        UpdateStateFSM();
+        UpdateFSM();
         ExecuteMovingState();
     }
 
@@ -161,8 +161,8 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
         if (other == null) return;
         Model model = other.gameObject.GetComponent<Model>();
         if (model == null) return;
-        if (lobLerp > 0 && lobLerp < .6f) return; // Keep the lob illusion
-        if(IgnoreCollider(other)) return;
+        if (lobLerp > 0 && lobLerp < .75f) return; // Keep the lob illusion
+        if (IgnoreCollider(other)) return;
 
         model.TriggerProjectileCollision(GetProjectile());
         DetonateProjectile(other);
@@ -238,7 +238,7 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// correct state. Takes the current state and chooses whether
     /// or not to switch to another based on game conditions. /// 
     /// </summary>
-    public abstract void UpdateStateFSM();
+    public abstract void UpdateFSM();
 
     /// <summary>
     /// Returns true if two states are equal.

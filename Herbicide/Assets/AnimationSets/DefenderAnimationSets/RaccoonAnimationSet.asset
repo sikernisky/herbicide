@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: RaccoonAnimationSet
   m_EditorClassIdentifier: 
   placementTrackTier1:
-  - {fileID: -2136243195, guid: 575c42f39e79a8148aff776b0aaa5643, type: 3}
+  - {fileID: 21300000, guid: 8e42119209fceba47a36e27e432d7614, type: 3}
   placementTrackTier2:
   - {fileID: -2136243195, guid: 575c42f39e79a8148aff776b0aaa5643, type: 3}
   placementTrackTier3:

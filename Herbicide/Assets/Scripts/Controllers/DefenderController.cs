@@ -66,7 +66,7 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     /// </summary>
     /// <param name="target">The Model object to check for targetability.</param>
     /// <returns></returns>
-    protected override bool CanTargetModel(Model target)
+    protected override bool CanTargetOtherModel(Model target)
     {
         Enemy enemyTarget = target as Enemy;
 

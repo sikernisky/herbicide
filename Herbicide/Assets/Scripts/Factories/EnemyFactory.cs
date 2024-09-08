@@ -25,6 +25,18 @@ public class EnemyFactory : Factory
     [SerializeField]
     private EnemyAnimationSet kudzuAnimationSet;
 
+    /// <summary>
+    /// Animation set for a Spurge
+    /// </summary>
+    [SerializeField]
+    private EnemyAnimationSet spurgeAnimationSet;
+
+    /// <summary>
+    /// Animation set for a SpurgeMinion
+    /// </summary>
+    [SerializeField]
+    private EnemyAnimationSet spurgeMinionAnimationSet;
+
     #endregion
 
     #region Methods
@@ -74,6 +86,10 @@ public class EnemyFactory : Factory
                 return instance.knotwoodAnimationSet.GetMovementAnimation(d, s);
             case ModelType.KUDZU:
                 return instance.kudzuAnimationSet.GetMovementAnimation(d, s);
+            case ModelType.SPURGE:
+                return instance.spurgeAnimationSet.GetMovementAnimation(d, s);
+            case ModelType.SPURGE_MINION:
+                return instance.spurgeMinionAnimationSet.GetMovementAnimation(d, s);
         }
 
         throw new System.Exception("Enemy " + e + " not supported.");
@@ -95,6 +111,10 @@ public class EnemyFactory : Factory
                 return instance.knotwoodAnimationSet.GetAttackAnimation(d, s);
             case ModelType.KUDZU:
                 return instance.kudzuAnimationSet.GetAttackAnimation(d, s);
+            case ModelType.SPURGE:
+                return instance.spurgeAnimationSet.GetAttackAnimation(d, s);
+            case ModelType.SPURGE_MINION:
+                return instance.spurgeMinionAnimationSet.GetAttackAnimation(d, s);
         }
 
         throw new System.Exception("Enemy " + e + " not supported.");
@@ -133,6 +153,10 @@ public class EnemyFactory : Factory
                 return instance.knotwoodAnimationSet.GetPlacementAnimation();
             case ModelType.KUDZU:
                 return instance.kudzuAnimationSet.GetPlacementAnimation();
+            case ModelType.SPURGE:
+                return instance.spurgeAnimationSet.GetPlacementAnimation();
+            case ModelType.SPURGE_MINION:
+                return instance.spurgeMinionAnimationSet.GetPlacementAnimation();
         }
 
         throw new System.Exception("Enemy " + e + " not supported.");

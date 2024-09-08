@@ -60,7 +60,7 @@ public class NexusController : MobController<NexusController.NexusState>
     /// <param name="target">The Model to check for targetability.</param>
     /// <returns>true if the Nexus can target the Model passed
     /// into this method; otherwise, false.</returns>
-    protected override bool CanTargetModel(Model target) => false;
+    protected override bool CanTargetOtherModel(Model target) => false;
 
     /// <summary>
     /// Returns true if the Nexus should be removed.
@@ -88,7 +88,7 @@ public class NexusController : MobController<NexusController.NexusState>
     /// 
     /// SPAWN --> IDLE : always
     /// </summary>
-    public override void UpdateStateFSM()
+    public override void UpdateFSM()
     {
         if (!ValidModel()) return;
 

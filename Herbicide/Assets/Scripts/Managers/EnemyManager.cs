@@ -67,7 +67,7 @@ public class EnemyManager : MonoBehaviour
                 Assert.IsNotNull(enemy);
                 Enemy enemyComp = enemy.GetComponent<Enemy>();
                 enemy.gameObject.SetActive(false);
-                enemyComp.GetColllider().enabled = false;
+                enemyComp.GetCollider().enabled = false;
                 float spawnX = TileGrid.CoordinateToPosition(marker.Key.x);
                 float spawnY = TileGrid.CoordinateToPosition(marker.Key.y);
                 Vector3 spawnWorldPos = new Vector3(spawnX, spawnY, 1);
@@ -181,6 +181,8 @@ public class EnemyManager : MonoBehaviour
                 return EnemyFactory.GetEnemyPrefab(ModelType.KNOTWOOD);
             case "kudzu":
                 return EnemyFactory.GetEnemyPrefab(ModelType.KUDZU);
+            case "spurge":
+                return EnemyFactory.GetEnemyPrefab(ModelType.SPURGE);
             default:
                 break;
         }

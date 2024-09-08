@@ -87,6 +87,7 @@ public class QuillController : ProjectileController<QuillController.QuillState>
     /// <param name="other">Collider2D the projectile collided with.</param>
     protected override void DetonateProjectile(Collider2D other)
     {
+        GetQuill().GetCollider().enabled = false;
         GetQuill().SetSize(STUCK_SIZE);
         Quaternion currentRotation = GetQuill().transform.rotation;
         float randomAdjustment = Random.Range(-20, 21);
@@ -122,7 +123,7 @@ public class QuillController : ProjectileController<QuillController.QuillState>
     /// 
     /// SPAWN --> MOVING : when fired from source
     /// </summary>
-    public override void UpdateStateFSM()
+    public override void UpdateFSM()
     {
         if (!ValidModel()) return;
 

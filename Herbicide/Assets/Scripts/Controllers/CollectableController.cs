@@ -72,7 +72,7 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
     public override void UpdateController(GameState gameState)
     {
         base.UpdateController(gameState);
-        UpdateStateFSM();
+        UpdateFSM();
     }
 
     /// <summary>
@@ -186,7 +186,7 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
     /// <summary>
     /// Updates the state of this CollectableController's Collectable model.
     /// </summary>
-    public abstract void UpdateStateFSM();
+    public abstract void UpdateFSM();
 
     #endregion
 

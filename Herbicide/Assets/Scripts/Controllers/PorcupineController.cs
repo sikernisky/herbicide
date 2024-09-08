@@ -144,7 +144,7 @@ public class PorcupineController : DefenderController<PorcupineController.Porcup
     /// 
     /// SPAWN --> IDLE : always <br></br>
     /// </summary>
-    public override void UpdateStateFSM()
+    public override void UpdateFSM()
     {
         if (!ValidModel()) return;
         if (GetGameState() != GameState.ONGOING)

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PorcupineAnimationSet
   m_EditorClassIdentifier: 
   placementTrackTier1:
-  - {fileID: -822638326, guid: 19a4f9057ea8f47718c82ad75fa4ff59, type: 3}
+  - {fileID: 21300000, guid: afe7c032c21a91f4a9464d90670a2507, type: 3}
   placementTrackTier2:
   - {fileID: -822638326, guid: 19a4f9057ea8f47718c82ad75fa4ff59, type: 3}
   placementTrackTier3:

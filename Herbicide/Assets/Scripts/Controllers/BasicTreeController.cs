@@ -72,7 +72,7 @@ public class BasicTreeController : TreeController<BasicTreeController.BasicTreeS
     /// 
     /// SPAWN --> IDLE : always <br></br>
     /// </summary>
-    public override void UpdateStateFSM()
+    public override void UpdateFSM()
     {
         switch (GetState())
         {

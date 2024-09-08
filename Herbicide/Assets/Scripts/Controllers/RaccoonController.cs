@@ -214,7 +214,7 @@ public class RaccoonController : DefenderController<RaccoonController.RaccoonSta
     /// 
     /// SPAWN --> IDLE : always <br></br>
     /// </summary>
-    public override void UpdateStateFSM()
+    public override void UpdateFSM()
     {
         if (!ValidModel()) return;
         if (GetGameState() != GameState.ONGOING)

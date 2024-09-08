@@ -28,6 +28,8 @@ public enum ModelType
     SHOP_CARD_SQUIRREL,
     SHORE_TILE,
     SOIL_FLOORING,
+    SPURGE,
+    SPURGE_MINION,
     SQUIRREL,
     STONE_WALL,
     WATER_TILE

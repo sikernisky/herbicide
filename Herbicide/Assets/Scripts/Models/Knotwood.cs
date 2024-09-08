@@ -55,7 +55,7 @@ public class Knotwood : Enemy
     /// <summary>
     /// Starting movement speed of a Knotwood.
     /// </summary>
-    public override float BASE_MOVEMENT_SPEED => 2.25f;
+    public override float BASE_MOVEMENT_SPEED => 4f;
 
     /// <summary>
     /// Maximum movement speed of a Knotwood.
@@ -119,7 +119,7 @@ public class Knotwood : Enemy
     /// </summary>
     public override void SetColliderProperties()
     {
-        BoxCollider2D collider = GetColllider() as BoxCollider2D;
+        BoxCollider2D collider = GetCollider() as BoxCollider2D;
         Assert.IsNotNull(collider, "Collider is null.");
         collider.offset = new Vector2(0, .5f);
     }

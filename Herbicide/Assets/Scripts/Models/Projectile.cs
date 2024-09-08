@@ -118,7 +118,11 @@ public abstract class Projectile : Model
     /// </summary>
     /// <param name="collided">true if this Projectile collided with
     /// some Model; otherwise, false.</param>
-    public void SetCollided(bool collided) => this.collided = collided;
+    public void SetCollided(bool collided)
+    {
+        this.collided = collided;
+        GetCollider().enabled = !collided;
+    }
 
     /// <summary>
     /// Returns true if this Projectile has collided with something.

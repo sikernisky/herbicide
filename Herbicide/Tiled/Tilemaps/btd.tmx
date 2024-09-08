@@ -247,13 +247,13 @@
   </properties>
   <object id="774" type="Marker" gid="68" x="32" y="80" width="16" height="16">
    <properties>
-    <property name="enemySpawnData" value="kudzu1-3,kudzu1-9.5, kudzu2-4, kudzu3-2, kudzu3-5, kudzu4-2, kudzu4-9, kudzu4-10, kudzu5-1, kudzu5-3, kudzu5-4, kudzu5-6,"/>
+    <property name="enemySpawnData" value=""/>
     <property name="markerName" value="enemySpawn"/>
    </properties>
   </object>
   <object id="790" type="Marker" gid="68" x="32" y="112" width="16" height="16">
    <properties>
-    <property name="enemySpawnData" value="kudzu1-3,kudzu1-9.5, kudzu2-4, kudzu3-2, kudzu3-5, kudzu4-2, kudzu4-9, kudzu4-10, kudzu5-1, kudzu5-3, kudzu5-4, kudzu5-6,"/>
+    <property name="enemySpawnData" value="spurge1-3"/>
     <property name="markerName" value="enemySpawn"/>
    </properties>
   </object>

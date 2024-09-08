@@ -8,11 +8,6 @@ public class Kudzu : Enemy
 {
     #region Fields
 
-    /// <summary>
-    /// How many seconds remain before this Kudzu can hop.
-    /// </summary>
-    private float hopCooldownTimer;
-
     #endregion
 
     #region Stats
@@ -143,7 +138,7 @@ public class Kudzu : Enemy
     /// </summary>
     public override void SetColliderProperties()
     {
-        BoxCollider2D collider = GetColllider() as BoxCollider2D;
+        BoxCollider2D collider = GetCollider() as BoxCollider2D;
         Assert.IsNotNull(collider, "Collider is null.");
         collider.offset = new Vector2(0, .5f);
     }

@@ -147,7 +147,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     /// IDLE --> ATTACK : if target in range <br></br>
     /// ATTACK --> IDLE : if no target in range
     /// </summary>
-    public override void UpdateStateFSM()
+    public override void UpdateFSM()
     {
         if (!ValidModel()) return;
         if (GetGameState() != GameState.ONGOING)
