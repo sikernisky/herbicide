@@ -37,11 +37,6 @@ public abstract class Model : MonoBehaviour
     private Vector2Int coordinates;
 
     /// <summary>
-    /// Coordinates of all Tiles on which this Model rests.
-    /// </summary>
-    private HashSet<Vector2Int> expandedCoordinates;
-
-    /// <summary>
     /// This Model's Collider component. 
     /// </summary>
     [SerializeField]
@@ -239,36 +234,6 @@ public abstract class Model : MonoBehaviour
     /// <param name="x">The X-Coordinate.</param>
     /// <param name="y">The Y-Coordinate.</param>
     public void SetTileCoordinates(int x, int y) => coordinates = new Vector2Int(x, y);
-
-    /// <summary>
-    /// Adds all of the (X, Y) Tile coordinates this Model expands on.
-    /// </summary>
-    /// <param name="x">The expanded X-Coordinate.</param>
-    /// <param name="y">The expanded Y-Coordinate.</param>
-    public void AddExpandedTileCoordinate(int x, int y)
-    {
-        if (expandedCoordinates == null) expandedCoordinates = new HashSet<Vector2Int>();
-        expandedCoordinates.Add(new Vector2Int(x, y));
-    }
-
-    /// <summary>
-    /// Returns a copy of the HashSet of this Model's expanded Tile coordinates.
-    /// </summary>
-    /// <returns>a copy of the HashSet of this Model's expanded Tile coordinates.</returns>
-    public virtual HashSet<Vector2Int> GetExpandedTileCoordinates()
-    {
-        if (expandedCoordinates == null) return new HashSet<Vector2Int>();
-        return new HashSet<Vector2Int>(expandedCoordinates);
-    }
-
-    /// <summary>
-    /// Removes all stored (X, Y) Tile coordinates this Model expands on.
-    /// </summary>
-    public void WipeExpandedCoordinates()
-    {
-        if (expandedCoordinates == null) expandedCoordinates = new HashSet<Vector2Int>();
-        expandedCoordinates.Clear();
-    }
 
     /// <summary>
     /// Sets the world position of this Model.

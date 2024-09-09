@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using static UnityEngine.GraphicsBuffer;
 
 /// <summary>
 /// Controls a Mob. The T generic Enum represents the Mob's State. 
@@ -148,42 +149,26 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     }
 
     /// <summary>
-    /// Returns the closest position from the Mob to some PlaceableObject.<br></br>
-    /// 
-    /// This is needed because some Models are larger than 1x1. So traditional distance
-    /// calculations don't work anymore because they always used bottom left corner.
-    /// For example: <br></br>
-    /// 
-    /// [][]        [][]
-    /// [][x]       [x][]
-    /// [][] 
-    /// <br></br>
-    ///</summary>
-    /// <param name="target"></param>
-    /// <returns></returns>
-    protected Vector3 ClosestPositionToTarget(PlaceableObject target)
+    /// Returns the closest Tile coordinate position from the Mob to some PlaceableObject.
+    /// </summary>
+    /// <param name="target">The PlaceableObject to find the closest Tile coordinate position to.</param>
+    /// <returns>The closest Tile coordinate position from the Mob to some PlaceableObject.</returns>
+    protected Vector3 ClosestTileCoordinatePositionToTarget(PlaceableObject target) => ClosestTileCoordinatePositionToTarget(target.transform.position);
+
+    /// <summary>
+    /// Returns the closest Tile coordinate position from the Mob to a given position.
+    /// </summary>
+    /// <param name="targetPosition">The position to find the closest Tile coordinate position to.</param>
+    /// <returns>The closest Tile coordinate position from the Mob to the given position.</returns>
+    protected Vector3 ClosestTileCoordinatePositionToTarget(Vector3 targetPosition)
     {
-        float minDistance = float.MaxValue;
-        Vector2Int closestPosition = new Vector2Int();
-        Vector3 mobPosition = GetMob().transform.position;  // Get the Mob's position
+        Vector2Int mobPosition = new Vector2Int(Mathf.FloorToInt(GetMob().transform.position.x), Mathf.FloorToInt(GetMob().transform.position.y));
+        Vector2Int targetTilePosition = new Vector2Int(Mathf.FloorToInt(targetPosition.x), Mathf.FloorToInt(targetPosition.y));
+        Vector3 convertedMobPosition = new Vector3(mobPosition.x, mobPosition.y, 1);
+        Vector3 convertedTargetPosition = new Vector3(targetTilePosition.x, targetTilePosition.y, 1);
+        if (TileGrid.CanReach(convertedMobPosition, convertedTargetPosition)) return convertedTargetPosition;
 
-        foreach (var thisCoord in GetMob().GetExpandedTileCoordinates())
-        {
-            foreach (var targetCoord in target.GetExpandedTileCoordinates())
-            {
-                float distance = Vector2Int.Distance(thisCoord, targetCoord);
-                Vector3 convertedThis = new Vector3(thisCoord.x, thisCoord.y, 1);
-                Vector3 targetPosition = new Vector3(targetCoord.x, targetCoord.y, 1);
-
-                if (distance < minDistance && TileGrid.CanReach(mobPosition, targetPosition))
-                {
-                    minDistance = distance;
-                    closestPosition = targetCoord;
-                }
-            }
-        }
-
-        return new Vector3(closestPosition.x, closestPosition.y, 1);
+        return convertedMobPosition;
     }
 
     /// <summary>
@@ -471,7 +456,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     protected void PopOutOfMovePos(Vector3 startPosition)
     {
         if (GetMovementDestinationPosition() == null) return;
-        PopFrom(startPosition, GetMovementDestinationPosition().Value, GetMob().GetMovementSpeed());
+        PopFrom(startPosition, GetMovementDestinationPosition().Value, GetMob().ENTERING_MOVEMENT_SPEED);
     }
 
     /// <summary>
@@ -490,7 +475,6 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     protected virtual void SetNextMovePos(Vector3? nextPos)
     {
         movementDestinationPosition = nextPos;
-
         Vector3 newParabolicTarget = new Vector3(movementDestinationPosition.Value.x, movementDestinationPosition.Value.y, 1);
         float newParabolicScale = GetMob().GetMovementSpeed() /
             Vector3.Distance(GetMob().GetPosition(), newParabolicTarget);
@@ -520,7 +504,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
             1
         );
 
-        return Vector3.Distance(GetMob().GetPosition(), nextMovePos) < 0.1f;
+        return Vector3.Distance(GetMob().GetPosition(), nextMovePos) < 0.01f;
     }
 
     #endregion

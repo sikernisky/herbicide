@@ -570,7 +570,7 @@
                         {
                          "name":"enemySpawnData",
                          "type":"string",
-                         "value":""
+                         "value":"spurge1-3"
                         }, 
                         {
                          "name":"markerName",
@@ -593,7 +593,7 @@
                         {
                          "name":"enemySpawnData",
                          "type":"string",
-                         "value":"spurge1-3"
+                         "value":""
                         }, 
                         {
                          "name":"markerName",

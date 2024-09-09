@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.Timeline;
 
 /// <summary>
 /// Controls a Spurge. <br></br>
@@ -83,6 +82,11 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
     /// How far the Spurge spawns its minions from itself.
     /// </summary>
     private float SPURGE_MINION_SPAWN_DISTANCE => 0.5f;
+
+    /// <summary>
+    /// The SpurgeMinions spawned by this Spurge.
+    /// </summary>
+    private HashSet<SpurgeMinion> spurgeMinions;
 
     #endregion
 
@@ -326,8 +330,7 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
 
         GetSpurge().SetEntering(GetSpurge().GetSpawnPos());
         SetAnimation(GetSpurge().MOVE_ANIMATION_DURATION, EnemyFactory.GetSpawnTrack(
-            GetSpurge().TYPE,
-                                  GetSpurge().GetDirection(), GetSpurge().GetHealthState()));
+            GetSpurge().TYPE, GetSpurge().GetDirection(), GetSpurge().GetHealthState()));
 
         PopOutOfMovePos(NexusHoleSpawnPos(GetSpurge().GetSpawnPos()));
         GetSpurge().FaceDirection(Direction.SOUTH);
@@ -339,15 +342,15 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
 
         Vector3 movementDestPos = GetMovementDestinationPosition().Value;
         if (movementDestPos == null) return;
-        Debug.Log(movementDestPos);
 
-        // Assuming 'spurge' is your spurge GameObject and it has a Transform component
+        spurgeMinions = new HashSet<SpurgeMinion>();
         GameObject minion = EnemyFactory.GetEnemyPrefab(ModelType.SPURGE_MINION);
         Assert.IsNotNull(minion);
         SpurgeMinion minionComp = minion.GetComponent<SpurgeMinion>();
+        minionComp.SetSpurgeTransform(GetSpurge().transform);
         minion.gameObject.SetActive(false);
         minionComp.GetCollider().enabled = false;
-        minionComp.SetSpawnPos((movementDestPos - GetSpurge().GetPosition()) / 2);
+        minionComp.SetSpawnPos(GetSpurge().GetPosition());
         ControllerController.MakeModelController(minionComp);
     }
 
@@ -390,7 +393,7 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
 
         if (DistanceToTarget() <= GetSpurge().GetAttackRange()) return;
 
-        Vector3 closest = ClosestPositionToTarget(target);
+        Vector3 closest = ClosestTileCoordinatePositionToTarget(target);
         Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetSpurge().GetPosition(), closest);
         SetNextMovePos(nextMove);
     }

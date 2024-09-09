@@ -107,6 +107,11 @@ public abstract class Mob : PlaceableObject
     public abstract float MIN_MOVEMENT_SPEED { get; }
 
     /// <summary>
+    /// How much faster this Mob moves when entering the scene.
+    /// </summary>
+    public virtual float ENTERING_MOVEMENT_SPEED => GetMovementSpeed() * 2.5f;
+
+    /// <summary>
     /// By default, Mobs do not occupy Tiles.
     /// </summary>
     public override bool OCCUPIER => false;

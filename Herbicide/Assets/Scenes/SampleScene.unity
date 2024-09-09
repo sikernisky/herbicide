@@ -6934,8 +6934,12 @@ MonoBehaviour:
   prefabs:
   - {fileID: 7290264091372080636, guid: 5fcaa2ef01e0846eaac9cf5396b7d367, type: 3}
   - {fileID: 7290264091372080636, guid: edbc2e2753c2e4bd1a26ce7d05b50c31, type: 3}
+  - {fileID: 7290264091372080636, guid: 128ed98f3ed2ff448ba96feff9f73883, type: 3}
+  - {fileID: 7290264091372080636, guid: bf16022fe1b2dd84491517c05cab3fd5, type: 3}
   knotwoodAnimationSet: {fileID: 11400000, guid: c4a97ccc6f5f745439868eecc5203a87, type: 2}
   kudzuAnimationSet: {fileID: 11400000, guid: 424613322da4f46669fd8786dee9cb98, type: 2}
+  spurgeAnimationSet: {fileID: 11400000, guid: 39756622ef89f8d458bf1c167c07ef98, type: 2}
+  spurgeMinionAnimationSet: {fileID: 11400000, guid: 554fdf1820a9bba40bb8777734a50223, type: 2}
 --- !u!1 &2088787539
 GameObject:
   m_ObjectHideFlags: 0

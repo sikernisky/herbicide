@@ -388,7 +388,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
 
         if (DistanceToTarget() <= GetKudzu().GetAttackRange()) return;
 
-        Vector3 closest = ClosestPositionToTarget(target);
+        Vector3 closest = ClosestTileCoordinatePositionToTarget(target);
         Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetKudzu().GetPosition(), closest);
         SetNextMovePos(nextMove);
         hopCooldownCounter = GetKudzu().HOP_COOLDOWN;

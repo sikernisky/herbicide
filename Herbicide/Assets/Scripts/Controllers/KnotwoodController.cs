@@ -103,6 +103,8 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
         ExecuteProtectState();
         ExecuteEscapeState();
         ExecuteExitState();
+
+        Debug.Log(GetKnotwood().GetPosition());
     }
 
     /// <summary>
@@ -367,7 +369,7 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
 
         if (DistanceToTarget() <= GetKnotwood().GetAttackRange()) return;
 
-        Vector3 closest = ClosestPositionToTarget(target);
+        Vector3 closest = ClosestTileCoordinatePositionToTarget(target);
         Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetKnotwood().GetPosition(), closest);
         SetNextMovePos(nextMove);
     }

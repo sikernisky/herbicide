@@ -52,7 +52,6 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
         UpdateEnemyHealthState();
         UpdateEnemyCollider();
         GetEnemy().UpdateDamageOverTimeEffects();
-        GetEnemy().ToggleHealthBar(SettingsController.SHOW_HEALTH_BARS);
     }
 
     /// <summary>
@@ -144,7 +143,6 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     private void TakeProjectileHit(Projectile projectile)
     {
         if (projectile == null) return;
-        Debug.Log("Enemy hit by projectile: " + GetEnemy().NAME);
         GetEnemy().AdjustHealth(-projectile.GetDamage());
         SoundController.PlaySoundEffect("kudzuHit");
     }

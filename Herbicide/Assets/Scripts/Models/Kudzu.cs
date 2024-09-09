@@ -125,6 +125,11 @@ public class Kudzu : Enemy
     public override float MIN_MOVEMENT_SPEED => 0f;
 
     /// <summary>
+    /// How fast a Kudzu moves when entering the game.
+    /// </summary>
+    public override float ENTERING_MOVEMENT_SPEED => GetMovementSpeed();
+
+    /// <summary>
     /// The offset of the Model held by this Kudzu.
     /// </summary>
     public override Vector2 HOLDER_OFFSET => new Vector2(0, .25f);

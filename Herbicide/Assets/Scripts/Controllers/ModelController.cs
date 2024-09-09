@@ -133,18 +133,6 @@ public abstract class ModelController
         int tileX = TileGrid.PositionToCoordinate(worldPos.x);
         int tileY = TileGrid.PositionToCoordinate(worldPos.y);
         GetModel().SetTileCoordinates(tileX, tileY);
-
-        // Expanded tile position
-        GetModel().WipeExpandedCoordinates();
-        int placedX = GetModel().GetX();
-        int placedY = GetModel().GetY();
-        for (int x = placedX; x < placedX + GetModel().SIZE.x; x++)
-        {
-            for (int y = placedY; y < placedY + GetModel().SIZE.y; y++)
-            {
-                GetModel().AddExpandedTileCoordinate(x, y);
-            }
-        }
     }
 
     /// <summary>
