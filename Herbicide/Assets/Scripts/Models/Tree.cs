@@ -289,6 +289,8 @@ public abstract class Tree : Mob, ISurface
                 return new Vector2(0.0f, 0.35f);
             case ModelType.RACCOON:
                 return new Vector2(0.1f, 0.85f);
+            case ModelType.OWL:
+                return new Vector2(0.0f, 0.90f);
             default:
                 return Vector2.zero;
         }

@@ -67,7 +67,7 @@ public class EnemyManager : MonoBehaviour
                 Assert.IsNotNull(enemy);
                 Enemy enemyComp = enemy.GetComponent<Enemy>();
                 enemy.gameObject.SetActive(false);
-                enemyComp.GetColllider().enabled = false;
+                enemyComp.GetCollider().enabled = false;
                 float spawnX = TileGrid.CoordinateToPosition(marker.Key.x);
                 float spawnY = TileGrid.CoordinateToPosition(marker.Key.y);
                 Vector3 spawnWorldPos = new Vector3(spawnX, spawnY, 1);
@@ -77,6 +77,41 @@ public class EnemyManager : MonoBehaviour
                 enemyComp.SetStage(spawnStage);
                 enemyComp.SetSpawnTime(spawnTime);
                 enemyComp.SetSpawnPos(spawnWorldPos);
+
+                Spurge spurgeComp = enemyComp as Spurge;
+                if(spurgeComp != null)
+                {
+                    // Spurge in front of enemy to be spawned.
+                    GameObject enemySpurgeMinionInFront = EnemyFactory.GetEnemyPrefab(ModelType.SPURGE_MINION);
+                    Assert.IsNotNull(enemySpurgeMinionInFront);
+                    SpurgeMinion spurgeMinionCompInFront = enemySpurgeMinionInFront.GetComponent<SpurgeMinion>();
+                    Assert.IsNotNull(spurgeMinionCompInFront);
+                    spurgeMinionCompInFront.gameObject.SetActive(false);
+                    spurgeMinionCompInFront.GetCollider().enabled = false;
+                    spurgeMinionCompInFront.SetSpawnPos(spawnWorldPos);
+                    spurgeMinionCompInFront.SetStage(spawnStage);
+                    spurgeMinionCompInFront.SetSpawnTime(spawnTime - 1.0f);
+
+                    // Spurge behind enemy to be spawned.
+                    GameObject enemySpurgeMinionBehind = EnemyFactory.GetEnemyPrefab(ModelType.SPURGE_MINION);
+                    Assert.IsNotNull(enemySpurgeMinionBehind);
+                    SpurgeMinion spurgeMinionCompBehind = enemySpurgeMinionBehind.GetComponent<SpurgeMinion>();
+                    Assert.IsNotNull(spurgeMinionCompBehind);
+                    spurgeMinionCompBehind.gameObject.SetActive(false);
+                    spurgeMinionCompBehind.GetCollider().enabled = false;
+                    spurgeMinionCompBehind.SetSpawnPos(spawnWorldPos);
+                    spurgeMinionCompBehind.SetStage(spawnStage);
+                    spurgeMinionCompBehind.SetSpawnTime(spawnTime + 1.0f);
+
+                    // Add the SpurgeMinions to the Spurge.
+                    spurgeComp.AddMinion(spurgeMinionCompInFront);
+                    spurgeComp.AddMinion(spurgeMinionCompBehind);
+
+                    // Make the controllers for the SpurgeMinions.
+                    ControllerController.MakeModelController(spurgeMinionCompInFront);
+                    ControllerController.MakeModelController(spurgeMinionCompBehind);
+                }
+
                 ControllerController.MakeModelController(enemyComp);
 
                 // Store the latest spawn time for this stage.
@@ -94,6 +129,7 @@ public class EnemyManager : MonoBehaviour
         instance.spawnTimes.Sort();
         instance.populated = true;
     }
+
 
     /// <summary>
     /// Returns a list of tuples of Enemy names, their stages, and spawn times.
@@ -181,6 +217,8 @@ public class EnemyManager : MonoBehaviour
                 return EnemyFactory.GetEnemyPrefab(ModelType.KNOTWOOD);
             case "kudzu":
                 return EnemyFactory.GetEnemyPrefab(ModelType.KUDZU);
+            case "spurge":
+                return EnemyFactory.GetEnemyPrefab(ModelType.SPURGE);
             default:
                 break;
         }

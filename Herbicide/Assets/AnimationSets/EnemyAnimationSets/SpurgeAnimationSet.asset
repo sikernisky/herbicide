@@ -1,0 +1,112 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6869bf1261269456b8333deb154be0ab, type: 3}
+  m_Name: SpurgeAnimationSet
+  m_EditorClassIdentifier: 
+  placementTrack:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  attackAnimationNorthHealthy:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  attackAnimationEastHealthy:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  attackAnimationSouthHealthy:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  attackAnimationWestHealthy:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  attackAnimationNorthDamaged:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  attackAnimationEastDamaged:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  attackAnimationSouthDamaged:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  attackAnimationWestDamaged:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  attackAnimationNorthCritical:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  attackAnimationEastCritical:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  attackAnimationSouthCritical:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  attackAnimationWestCritical:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  idleAnimationNorthHealthy:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  idleAnimationEastHealthy:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  idleAnimationSouthHealthy:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  idleAnimationWestHealthy:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  idleAnimationNorthDamaged:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  idleAnimationEastDamaged:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  idleAnimationSouthDamaged:
+  - {fileID: 0}
+  idleAnimationWestDamaged:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  idleAnimationNorthCritical:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  idleAnimationEastCritical:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  idleAnimationSouthCritical:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  idleAnimationWestCritical:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  movementAnimationNorthHealthy:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  movementAnimationEastHealthy:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  movementAnimationSouthHealthy:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  movementAnimationWestHealthy:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  movementAnimationNorthDamaged:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  movementAnimationEastDamaged:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  movementAnimationSouthDamaged:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  movementAnimationWestDamaged:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  movementAnimationNorthCritical:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  movementAnimationEastCritical:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  movementAnimationSouthCritical:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  movementAnimationWestCritical:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  spawnAnimationNorthHealthy:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  spawnAnimationEastHealthy:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  spawnAnimationSouthHealthy:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  spawnAnimationWestHealthy:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  spawnAnimationNorthDamaged:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  spawnAnimationEastDamaged:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  spawnAnimationSouthDamaged:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  spawnAnimationWestDamaged:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  spawnAnimationNorthCritical:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  spawnAnimationEastCritical:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  spawnAnimationSouthCritical:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}
+  spawnAnimationWestCritical:
+  - {fileID: 21300000, guid: c3a17def1b64da94c848e6f33f987f65, type: 3}

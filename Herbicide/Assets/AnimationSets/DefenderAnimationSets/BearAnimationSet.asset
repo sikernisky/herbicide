@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BearAnimationSet
   m_EditorClassIdentifier: 
   placementTrackTier1:
-  - {fileID: 1226891533, guid: cabd17ccd36144b86be59d2415f20aae, type: 3}
+  - {fileID: 21300000, guid: 1c20aa03b1422ab4d92f6af8c3c50f35, type: 3}
   placementTrackTier2:
   - {fileID: 1226891533, guid: cabd17ccd36144b86be59d2415f20aae, type: 3}
   placementTrackTier3:

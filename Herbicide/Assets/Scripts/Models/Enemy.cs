@@ -114,7 +114,7 @@ public abstract class Enemy : Mob
         Assert.IsTrue(ReadyToSpawn(), "Not Ready.");
         base.OnSpawn();
 
-        GetColllider().enabled = true;
+        GetCollider().enabled = true;
         activeDOTs = new HashSet<DamageOverTime>();
         appliedDOTsThisCycle = new HashSet<DamageOverTime.DOTType>();
     }
@@ -352,7 +352,11 @@ public abstract class Enemy : Mob
     /// Returns a copy of the set of Quills stuck in this Enemy as a list.
     /// </summary>
     /// <returns>a copy of the set of Quills stuck in this Enemy as a list.</returns>
-    public List<Quill> GetQuillsStuckInEnemy() => new List<Quill>(quillsStuckInEnemy);
+    public List<Quill> GetQuillsStuckInEnemy()
+    {
+        if (quillsStuckInEnemy == null) return new List<Quill>();
+        else return new List<Quill>(quillsStuckInEnemy);
+    }
 
     /// <summary>
     /// Removes all Quills stuck in this Enemy by setting them to exploded.

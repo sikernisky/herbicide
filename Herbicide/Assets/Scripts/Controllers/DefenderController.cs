@@ -40,21 +40,6 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     public DefenderController(Defender defender) : base(defender) { }
 
     /// <summary>
-    /// Updates the Defender controlled by this DefenderController.
-    /// </summary>
-    /// <param name="targets">A complete list of ITargetables in the scene.</param>
-    protected override void UpdateMob()
-    {
-        if (!ValidModel()) return;
-
-        base.UpdateMob();
-
-        if (GetGameState() != GameState.ONGOING) return;
-
-        UpdateSynergies();
-    }
-
-    /// <summary>
     /// Returns this DefenderController's Defender reference. 
     /// </summary>
     /// <returns>the reference to this DefenderController's defender.</returns>
@@ -66,7 +51,7 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     /// </summary>
     /// <param name="target">The Model object to check for targetability.</param>
     /// <returns></returns>
-    protected override bool CanTargetModel(Model target)
+    protected override bool CanTargetOtherModel(Model target)
     {
         Enemy enemyTarget = target as Enemy;
 
@@ -156,15 +141,6 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
 
             return distanceA.CompareTo(distanceB);
         });
-    }
-
-    /// <summary>
-    /// Checks for synergies and buffs/defuffs its Defender accordingly.
-    /// </summary>
-    private void UpdateSynergies()
-    {
-        /*        ModelCounts counts = GetModelCounts();
-                if(counts.GetCount(ModelType.SQUIRREL) == 2) BuffAttackSpeed(2);*/
     }
 
     /// <summary>

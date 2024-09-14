@@ -48,7 +48,7 @@ public abstract class TreeController<T> : MobController<T> where T : Enum
     /// </summary>
     /// <param name="target">The Model to check for targetability.</param>
     /// <returns>true if the Tree can target the Model; otherwise, false. </returns>
-    protected override bool CanTargetModel(Model target) => false;
+    protected override bool CanTargetOtherModel(Model target) => false;
 
     /// <summary>
     /// Updates the Model's sorting order so that it appears behind Models

@@ -43,7 +43,7 @@ public class NexusHoleController : MobController<NexusHoleController.NexusHoleSt
     /// </summary>
     /// <param name="target">The Placeable object to check for targetability.</param>
     /// <returns>true if the NexusHole can target the Model; otherwise, false. </returns>
-    protected override bool CanTargetModel(Model target) => false;
+    protected override bool CanTargetOtherModel(Model target) => false;
 
     /// <summary>
     /// Returns true if the NexusHole should be removed.
@@ -73,7 +73,7 @@ public class NexusHoleController : MobController<NexusHoleController.NexusHoleSt
     /// EMPTY --> FILLED : when nexus dropped in hole
     /// FILLED --> EMPTY : when nexus removed from hole 
     /// </summary>
-    public override void UpdateStateFSM()
+    public override void UpdateFSM()
     {
         switch (GetState())
         {

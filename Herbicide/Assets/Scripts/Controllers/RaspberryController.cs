@@ -105,7 +105,7 @@ public class RaspberryController : ProjectileController<RaspberryController.Rasp
     /// 
     /// SPAWN --> MOVING : when fired from source
     /// </summary>
-    public override void UpdateStateFSM()
+    public override void UpdateFSM()
     {
         if (!ValidModel()) return;
 

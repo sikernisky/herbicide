@@ -570,7 +570,7 @@
                         {
                          "name":"enemySpawnData",
                          "type":"string",
-                         "value":"kudzu1-3,kudzu1-9.5, kudzu2-4, kudzu3-2, kudzu3-5, kudzu4-2, kudzu4-9, kudzu4-10, kudzu5-1, kudzu5-3, kudzu5-4, kudzu5-6,"
+                         "value":"spurge1-3, spurge1-10"
                         }, 
                         {
                          "name":"markerName",
@@ -593,7 +593,7 @@
                         {
                          "name":"enemySpawnData",
                          "type":"string",
-                         "value":"kudzu1-3,kudzu1-9.5, kudzu2-4, kudzu3-2, kudzu3-5, kudzu4-2, kudzu4-9, kudzu4-10, kudzu5-1, kudzu5-3, kudzu5-4, kudzu5-6,"
+                         "value":"knotwood1-2, knotwood1-4, knotwood1-6"
                         }, 
                         {
                          "name":"markerName",

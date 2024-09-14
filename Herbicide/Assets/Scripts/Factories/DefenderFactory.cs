@@ -37,6 +37,11 @@ public class DefenderFactory : Factory
     [SerializeField]
     private DefenderAnimationSet raccoonAnimationSet;
 
+    /// <summary>
+    /// Animation set for a Owl.
+    /// </summary>
+    [SerializeField]
+    private DefenderAnimationSet owlAnimationSet;
 
     #endregion
 
@@ -92,6 +97,8 @@ public class DefenderFactory : Factory
                 return instance.porcupineAnimationSet.GetAttackAnimation(d, tier);
             case ModelType.RACCOON:
                 return instance.raccoonAnimationSet.GetAttackAnimation(d, tier);
+            case ModelType.OWL:
+                return instance.owlAnimationSet.GetAttackAnimation(d, tier);
             default:
                 throw new System.Exception("Invalid ModelType");
         }
@@ -118,6 +125,8 @@ public class DefenderFactory : Factory
                 return instance.porcupineAnimationSet.GetIdleAnimation(d, tier);
             case ModelType.RACCOON:
                 return instance.raccoonAnimationSet.GetIdleAnimation(d, tier);
+            case ModelType.OWL:
+                return instance.owlAnimationSet.GetIdleAnimation(d, tier);
             default:
                 throw new System.Exception("Invalid ModelType");
         }
@@ -141,6 +150,8 @@ public class DefenderFactory : Factory
                 return instance.porcupineAnimationSet.GetPlacementAnimation(tier);
             case ModelType.RACCOON:
                 return instance.raccoonAnimationSet.GetPlacementAnimation(tier);
+            case ModelType.OWL:
+                return instance.owlAnimationSet.GetPlacementAnimation(tier);
             default:
                 throw new System.Exception("Invalid ModelType");
         }

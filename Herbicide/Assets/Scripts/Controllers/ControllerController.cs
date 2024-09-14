@@ -153,6 +153,12 @@ public class ControllerController : MonoBehaviour
                 NexusHoleController nhc = new NexusHoleController(nexusHole);
                 instance.structureControllers.Add(nhc);
                 break;
+            case ModelType.OWL:
+                Owl owl = model as Owl;
+                Assert.IsNotNull(owl, "Owl is null.");
+                OwlController oc = new OwlController(owl);
+                instance.defenderControllers.Add(oc);
+                break;
             case ModelType.PORCUPINE:
                 Porcupine porcupine = model as Porcupine;
                 Assert.IsNotNull(porcupine, "Porcupine is null.");
@@ -171,6 +177,18 @@ public class ControllerController : MonoBehaviour
                 FlooringController sfc = new FlooringController(soilFlooring);
                 instance.structureControllers.Add(sfc);
                 break;
+            case ModelType.SPURGE:
+                Spurge spurge = model as Spurge;
+                Assert.IsNotNull(spurge, "Spurge is null.");
+                SpurgeController spc = new SpurgeController(spurge);
+                instance.enemyControllers.Add(spc);
+                break;
+            case ModelType.SPURGE_MINION:
+                SpurgeMinion spurgeMinion = model as SpurgeMinion;
+                Assert.IsNotNull(spurgeMinion, "SpurgeMinion is null.");
+                SpurgeMinionController smc = new SpurgeMinionController(spurgeMinion);
+                instance.enemyControllers.Add(smc);
+                break;
             case ModelType.SQUIRREL:
                 Squirrel squirrel = model as Squirrel;
                 Assert.IsNotNull(squirrel);
@@ -183,6 +201,8 @@ public class ControllerController : MonoBehaviour
                 WallController swc = new WallController(stonewall);
                 instance.structureControllers.Add(swc);
                 break;
+            default:
+                throw new Exception("ModelType " + model.TYPE + " has no implementation in ControllerController."); 
         }
 
         instance.counts.SetCount(instance, model.TYPE, instance.counts.GetCount(model.TYPE) + 1);
@@ -335,28 +355,52 @@ public class ControllerController : MonoBehaviour
         instance.UpdateModelCounts();
 
         // Update EnemyControllers
-        instance.enemyControllers.ForEach(ec => ec.UpdateController(gameState));
+        for (int i = 0; i < instance.enemyControllers.Count; i++)
+        {
+            instance.enemyControllers[i].UpdateController(gameState);
+        }
 
         // Update DefenderControllers
-        instance.defenderControllers.ForEach(dc => dc.UpdateController(gameState));
+        for (int i = 0; i < instance.defenderControllers.Count; i++)
+        {
+            instance.defenderControllers[i].UpdateController(gameState);
+        }
 
         // Update TreeControllers
-        instance.treeControllers.ForEach(tc => tc.UpdateController(gameState));
+        for (int i = 0; i < instance.treeControllers.Count; i++)
+        {
+            instance.treeControllers[i].UpdateController(gameState);
+        }
 
         // Update ProjectileControllers
-        instance.projectileControllers.ForEach(pc => pc.UpdateController(gameState));
+        for (int i = 0; i < instance.projectileControllers.Count; i++)
+        {
+            instance.projectileControllers[i].UpdateController(gameState);
+        }
 
         // Update HazardControllers
-        instance.hazardControllers.ForEach(hc => hc.UpdateController(gameState));
+        for (int i = 0; i < instance.hazardControllers.Count; i++)
+        {
+            instance.hazardControllers[i].UpdateController(gameState);
+        }
 
         // Update CollectableControllers
-        instance.collectableControllers.ForEach(cc => cc.UpdateController(gameState));
+        for (int i = 0; i < instance.collectableControllers.Count; i++)
+        {
+            instance.collectableControllers[i].UpdateController(gameState);
+        }
 
         // Update StructureControllers
-        instance.structureControllers.ForEach(sc => sc.UpdateController(gameState));
+        for (int i = 0; i < instance.structureControllers.Count; i++)
+        {
+            instance.structureControllers[i].UpdateController(gameState);
+        }
 
         // Update EmanationControllers
-        instance.emanationControllers.ForEach(emc => emc.UpdateEmanation());
+        for (int i = 0; i < instance.emanationControllers.Count; i++)
+        {
+            instance.emanationControllers[i].UpdateEmanation();
+        }
     }
 
     /// <summary>

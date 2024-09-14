@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using System.Linq;
+using System;
 
 /// <summary>
 /// Controls an Enemy. <br></br>
@@ -12,75 +13,14 @@ using System.Linq;
 /// </summary>
 /// <typeparam name="T">The type of enum that represents distinct states or attributes
 /// of the Enemy.</typeparam>
-public abstract class EnemyController : MobController<EnemyController.EnemyState>
+public abstract class EnemyController<T> : MobController<T> where T : Enum
 {
     #region Fields
-
-    /// <summary>
-    /// All possible states of an Enemy. In the future,
-    /// enemies will define their own states just like
-    /// Defenders do.
-    /// </summary>
-    public enum EnemyState
-    {
-        INACTIVE, // Not spawned yet.
-        ENTERING, // Entering map.
-        IDLE, // Static, nothing to do.
-        CHASE, // Pursuing target.
-        ATTACK, // Attacking target.
-        ESCAPE, // Running back to start.
-        PROTECT, // Protecting other escaping enemies.
-        EXITING, // Leaving map.
-        DEAD, // Dead.
-        INVALID // Something went wrong.
-    }
 
     /// <summary>
     /// true if the Enemy has popped out of a NexusHole and is fully spawned.
     /// </summary>
     private bool poppedOutOfHole;
-
-    /// <summary>
-    /// Counts the number of seconds in the spawn animation; resets
-    /// on step.
-    /// </summary>
-    protected float spawnAnimationCounter;
-
-    /// <summary>
-    /// Counts the number of seconds in the idle animation; resets
-    /// on step.
-    /// </summary>
-    protected float idleAnimationCounter;
-
-    /// <summary>
-    /// Counts the number of seconds in the chase animation; resets
-    /// on step.
-    /// </summary>
-    protected float chaseAnimationCounter;
-
-    /// <summary>
-    /// Counts the number of seconds in the attack animation; resets
-    /// on step.
-    /// </summary>
-    protected float attackAnimationCounter;
-
-    /// <summary>
-    /// Counts the number of seconds in the protect animation; resets
-    /// on step.
-    /// </summary>
-    protected float protectAnimationCounter;
-
-    /// <summary>
-    /// Counts the number of seconds in the escape animation; resets
-    /// on step.
-    /// </summary>
-    protected float escapeAnimationCounter;
-
-    /// <summary>
-    /// Counts the number of seconds in the exiting animation; resets
-    /// on step.
-    /// </summary>
-    protected float exitingAnimationCounter;
 
     /// <summary>
     /// Enemies find targets.
@@ -112,16 +52,21 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
         UpdateEnemyHealthState();
         UpdateEnemyCollider();
         GetEnemy().UpdateDamageOverTimeEffects();
-        GetEnemy().ToggleHealthBar(SettingsController.SHOW_HEALTH_BARS);
+    }
 
-        ExecuteInactiveState();
-        ExecuteEnteringState();
-        ExecuteIdleState();
-        ExecuteChaseState();
-        ExecuteAttackState();
-        ExecuteProtectState();
-        ExecuteEscapeState();
-        ExecuteExitState();
+    /// <summary>
+    /// Sorts the targets in ascending order of priority. The
+    /// target at the 0th index is the highest priority target.
+    /// </summary>
+    /// <param name="targets">The list of targets to sort. </param>
+    protected override void SortTargets(List<Model> targets)
+    {
+        targets.Sort((a, b) =>
+        {
+            float distA = Vector2.Distance(GetEnemy().GetPosition(), a.GetPosition());
+            float distB = Vector2.Distance(GetEnemy().GetPosition(), b.GetPosition());
+            return distA.CompareTo(distB);
+        });
     }
 
     /// <summary>
@@ -153,6 +98,14 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
     private void UpdateEnemyCollider() => GetEnemy().SetColliderProperties();
 
     /// <summary>
+    /// Returns true if the Enemy's current state renders it immune
+    /// to damage.
+    /// </summary>
+    /// <returns>true if the Enemy's current state renders it immune
+    /// to damage; otherwise, false. </returns>
+    protected abstract bool IsCurrentStateImmune();
+
+    /// <summary>
     /// Returns true if this controller's Enemy should be destoyed and
     /// set to null.
     /// </summary>
@@ -161,6 +114,7 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
     public override bool ValidModel()
     {
         if (!GetEnemy().Spawned()) return true;
+        if (IsCurrentStateImmune()) return true;
 
         if (!TileGrid.OnWalkableTile(GetEnemy().GetPosition())) return false;
         else if (GetEnemy().Dead()) return false;
@@ -180,6 +134,10 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
             case ModelType.QUILL:
                 Quill quill = projectile as Quill;
                 if(quill != null) GetEnemy().StickWithQuill(quill);
+                TakeProjectileHit(projectile);
+                break;
+            case ModelType.ICE_CHUNK:
+                GetEnemy().AddEffect(new IceChunkEffect());
                 TakeProjectileHit(projectile);
                 break;
             default:
@@ -203,6 +161,42 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
     }
 
     /// <summary>
+    /// Destroys the Enemy and removes it from the scene.
+    /// </summary>
+    protected override void DestroyAndRemoveModel()
+    {
+        if(GetEnemy() == null) return;
+        if (GetEnemy().GetQuillsStuckInEnemy() != null)
+        {
+            List<Quill> quillsStuck = GetEnemy().GetQuillsStuckInEnemy();
+            GetEnemy().RemoveQuills();
+            int totalQuills = quillsStuck.Sum(quill => quill.IsDoubleQuill() ? 2 : 1);
+            float angleStep = 360.0f / totalQuills;
+            Vector3 enemyPosition = GetEnemy().GetPosition();
+            int quillIndex = 0;
+
+            foreach (Quill stuckQuill in quillsStuck)
+            {
+                int quillsToCreate = stuckQuill.IsDoubleQuill() ? 2 : 1;
+                for (int j = 0; j < quillsToCreate; j++)
+                {
+                    float angle = quillIndex * angleStep;
+                    Vector3 direction = Quaternion.Euler(0, 0, angle) * Vector3.right;
+                    Vector3 targetPosition = enemyPosition + direction * 1000; // Arbitrary distance multiplier
+                    GameObject quillPrefab = ProjectileFactory.GetProjectilePrefab(ModelType.QUILL);
+                    Assert.IsNotNull(quillPrefab);
+                    Quill quillComp = quillPrefab.GetComponent<Quill>();
+                    Assert.IsNotNull(quillComp);
+                    QuillController quillController = new QuillController(quillComp, enemyPosition, targetPosition, false);
+                    ControllerController.AddModelController(quillController);
+                    quillIndex++;
+                }
+            }
+        }
+        base.DestroyAndRemoveModel();
+    }
+
+    /// <summary>
     /// Performs logic right before the Enemy is destroyed.
     /// </summary>
     protected override void OnDestroyModel()
@@ -219,32 +213,6 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
                 else TileGrid.PlaceOnTile(new Vector2Int(GetEnemy().GetX(), GetEnemy().GetY()), nexusTarget);
             }
 
-        }
-
-        // Explode quills.
-        List<Quill> quillsStuck = GetEnemy().GetQuillsStuckInEnemy();
-        GetEnemy().RemoveQuills();
-        int totalQuills = quillsStuck.Sum(quill => quill.IsDoubleQuill() ? 2 : 1);
-        float angleStep = 360.0f / totalQuills;
-        Vector3 enemyPosition = GetEnemy().GetPosition();
-        int quillIndex = 0;
-
-        foreach (Quill stuckQuill in quillsStuck)
-        {
-            int quillsToCreate = stuckQuill.IsDoubleQuill() ? 2 : 1;
-            for (int j = 0; j < quillsToCreate; j++)
-            {
-                float angle = quillIndex * angleStep;
-                Vector3 direction = Quaternion.Euler(0, 0, angle) * Vector3.right;
-                Vector3 targetPosition = enemyPosition + direction * 1000; // Arbitrary distance multiplier
-                GameObject quillPrefab = ProjectileFactory.GetProjectilePrefab(ModelType.QUILL);
-                Assert.IsNotNull(quillPrefab);
-                Quill quillComp = quillPrefab.GetComponent<Quill>();
-                Assert.IsNotNull(quillComp);
-                QuillController quillController = new QuillController(quillComp, enemyPosition, targetPosition, false);
-                ControllerController.AddModelController(quillController);
-                quillIndex++;
-            }
         }
         base.OnDestroyModel();
     }
@@ -330,7 +298,7 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
     protected bool IsClosestDroppedNexus(Nexus nexus)
     {
         Assert.IsNotNull(nexus);
-        if (nexus.CashedIn() || nexus.PickedUp()) return false;
+        if (nexus.CashedIn() || nexus.PickedUp()) return false; 
 
         Nexus closestNexus = null;
         double minDistance = double.MaxValue;
@@ -387,110 +355,6 @@ public abstract class EnemyController : MobController<EnemyController.EnemyState
     /// Returns the Enemy prefab to the EnemyFactory object pool.
     /// </summary>
     public override void ReturnModelToFactory() => EnemyFactory.ReturnEnemyPrefab(GetEnemy().gameObject);
-
-    #endregion
-
-    #region State Logic
-
-    /// <summary>
-    /// Returns true if two EnemyStates are equal.
-    /// </summary>
-    /// <param name="stateA">The first EnemyState</param>
-    /// <param name="stateB">The second EnemyState</param>
-    /// <returns>true if two EnemyStates are equal; otherwise, false. </returns>
-    public override bool StateEquals(EnemyState stateA, EnemyState stateB) => stateA == stateB;
-
-    /// <summary>
-    /// Executes the logic for the INACTIVE state.
-    /// </summary>
-    protected abstract void ExecuteInactiveState();
-
-    /// <summary>
-    /// Executes the logic for the ENTERING state.
-    /// </summary> 
-    protected abstract void ExecuteEnteringState();
-
-    /// <summary>
-    /// Executes the logic for the IDLE state.
-    /// </summary> 
-    protected abstract void ExecuteIdleState();
-
-    /// <summary>
-    /// Executes the logic for the CHASE state.
-    /// </summary> 
-    protected abstract void ExecuteChaseState();
-
-    /// <summary>
-    /// Executes the logic for the ATTACK state.
-    /// </summary> 
-    protected abstract void ExecuteAttackState();
-
-    /// <summary>
-    /// Executes the logic for the PROTECT state.
-    /// </summary> 
-    protected abstract void ExecuteProtectState();
-
-    /// <summary>
-    /// Executes the logic for the ESCAPE state.
-    /// </summary> 
-    protected abstract void ExecuteEscapeState();
-
-    /// <summary>
-    /// Executes the logic for the EXIT state.
-    /// </summary> 
-    protected abstract void ExecuteExitState();
-
-    #endregion
-
-    #region Animation Logic
-
-    /// <summary>
-    /// Adds one chunk of Time.deltaTime to the animation
-    /// counter that tracks the current state.
-    /// </summary>
-    public override void AgeAnimationCounter()
-    {
-        EnemyState state = GetState();
-        if (state == EnemyState.ENTERING) spawnAnimationCounter += Time.deltaTime;
-        else if (state == EnemyState.IDLE) idleAnimationCounter += Time.deltaTime;
-        else if (state == EnemyState.CHASE) chaseAnimationCounter += Time.deltaTime;
-        else if (state == EnemyState.ATTACK) attackAnimationCounter += Time.deltaTime;
-        else if (state == EnemyState.PROTECT) protectAnimationCounter += Time.deltaTime;
-        else if (state == EnemyState.ESCAPE) escapeAnimationCounter += Time.deltaTime;
-        else if (state == EnemyState.EXITING) exitingAnimationCounter += Time.deltaTime;
-    }
-
-    /// <summary>
-    /// Returns the animation counter for the current state.
-    /// </summary>
-    /// <returns>the animation counter for the current state.</returns>
-    public override float GetAnimationCounter()
-    {
-        EnemyState state = GetState();
-        if (state == EnemyState.ENTERING) return spawnAnimationCounter;
-        else if (state == EnemyState.IDLE) return idleAnimationCounter;
-        else if (state == EnemyState.CHASE) return chaseAnimationCounter;
-        else if (state == EnemyState.ATTACK) return attackAnimationCounter;
-        else if (state == EnemyState.PROTECT) return protectAnimationCounter;
-        else if (state == EnemyState.ESCAPE) return escapeAnimationCounter;
-        else if (state == EnemyState.EXITING) return exitingAnimationCounter;
-        else return 0;
-    }
-
-    /// <summary>
-    /// Sets the animation counter for the current state to 0.
-    /// </summary>
-    public override void ResetAnimationCounter()
-    {
-        EnemyState state = GetState();
-        if (state == EnemyState.ENTERING) spawnAnimationCounter = 0;
-        else if (state == EnemyState.IDLE) idleAnimationCounter = 0;
-        else if (state == EnemyState.CHASE) chaseAnimationCounter = 0;
-        else if (state == EnemyState.ATTACK) attackAnimationCounter = 0;
-        else if (state == EnemyState.PROTECT) protectAnimationCounter = 0;
-        else if (state == EnemyState.ESCAPE) escapeAnimationCounter = 0;
-        else if (state == EnemyState.EXITING) exitingAnimationCounter = 0;
-    }
 
     #endregion
 }

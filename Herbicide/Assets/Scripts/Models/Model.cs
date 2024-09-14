@@ -37,11 +37,6 @@ public abstract class Model : MonoBehaviour
     private Vector2Int coordinates;
 
     /// <summary>
-    /// Coordinates of all Tiles on which this Model rests.
-    /// </summary>
-    private HashSet<Vector2Int> expandedCoordinates;
-
-    /// <summary>
     /// This Model's Collider component. 
     /// </summary>
     [SerializeField]
@@ -61,6 +56,23 @@ public abstract class Model : MonoBehaviour
     /// The number of cycles of the current animation completed.
     /// </summary>
     private int numCyclesOfCurrentAnimationCompleted;
+
+    /// <summary>
+    /// All IEffect instances on this Model.
+    /// </summary>
+    private List<IEffect> effects = new List<IEffect>();
+
+    /// <summary>
+    /// All IEffect instances to add to this Model before the current
+    /// logic of ProcessEffects.
+    /// </summary>
+    private List<IEffect> effectsToAddSafely = new List<IEffect>();
+
+    /// <summary>
+    /// All IEffect instances to remove from this Model after the current
+    /// logic of ProcessEffects.
+    /// </summary>
+    private List<IEffect> effectsToRemoveSafely = new List<IEffect>();
 
     #endregion
 
@@ -153,6 +165,12 @@ public abstract class Model : MonoBehaviour
     public virtual void SetColor(Color32 newColor) => modelRenderer.color = modelRenderer != null ? newColor : modelRenderer.color;
 
     /// <summary>
+    /// Returns this Model's SpriteRenderer's color.
+    /// </summary>
+    /// <returns>this Model's SpriteRenderer's color. </returns>
+    public Color GetColor() => modelRenderer.color;
+
+    /// <summary>
     /// Sets this Model's SpriteRenderer component's sorting
     /// order (order in layer).
     /// </summary>
@@ -239,36 +257,6 @@ public abstract class Model : MonoBehaviour
     /// <param name="x">The X-Coordinate.</param>
     /// <param name="y">The Y-Coordinate.</param>
     public void SetTileCoordinates(int x, int y) => coordinates = new Vector2Int(x, y);
-
-    /// <summary>
-    /// Adds all of the (X, Y) Tile coordinates this Model expands on.
-    /// </summary>
-    /// <param name="x">The expanded X-Coordinate.</param>
-    /// <param name="y">The expanded Y-Coordinate.</param>
-    public void AddExpandedTileCoordinate(int x, int y)
-    {
-        if (expandedCoordinates == null) expandedCoordinates = new HashSet<Vector2Int>();
-        expandedCoordinates.Add(new Vector2Int(x, y));
-    }
-
-    /// <summary>
-    /// Returns a copy of the HashSet of this Model's expanded Tile coordinates.
-    /// </summary>
-    /// <returns>a copy of the HashSet of this Model's expanded Tile coordinates.</returns>
-    public virtual HashSet<Vector2Int> GetExpandedTileCoordinates()
-    {
-        if (expandedCoordinates == null) return new HashSet<Vector2Int>();
-        return new HashSet<Vector2Int>(expandedCoordinates);
-    }
-
-    /// <summary>
-    /// Removes all stored (X, Y) Tile coordinates this Model expands on.
-    /// </summary>
-    public void WipeExpandedCoordinates()
-    {
-        if (expandedCoordinates == null) expandedCoordinates = new HashSet<Vector2Int>();
-        expandedCoordinates.Clear();
-    }
 
     /// <summary>
     /// Sets the world position of this Model.
@@ -395,7 +383,7 @@ public abstract class Model : MonoBehaviour
     /// Returns the Collider2D component used by this Model.
     /// </summary>
     /// <returns>the Collider2D component used by this Model.</returns>
-    public Collider2D GetColllider() => modelCollider;
+    public Collider2D GetCollider() => modelCollider;
 
     /// <summary>
     /// Sets this Model's Collider2D properties, such as its position,
@@ -470,6 +458,65 @@ public abstract class Model : MonoBehaviour
     /// </summary>
     /// <returns></returns>
     public bool IsHoldingNexus() => holdingNexus;
+
+    #endregion
+
+    #region Effects
+
+    /// <summary>
+    /// Returns all IEffect instances on this Model.
+    /// </summary>
+    /// <returns>a list of IEffect instances on this Model. </returns>
+    protected List<IEffect> GetEffects() => effects;
+
+    /// <summary>
+    /// Adds an IEffect instance to this Model.
+    /// </summary>
+    /// <param name="effect">the effect to add.</param>
+    public void AddEffect(IEffect effect)
+    {
+        Assert.IsNotNull(effect, "Cannot add a null effect.");
+        if(!effect.CanAfflict(this)) return;
+
+        effectsToAddSafely.Add(effect);
+    }
+
+    /// <summary>
+    /// Removes an IEffect instance from this Model if it
+    /// is expired.
+    /// </summary>
+    /// <param name="effect">the effect to remove. </param>
+    private void TryRemoveEffect(IEffect effect)
+    {
+        Assert.IsNotNull(effect, "Cannot remove a null effect.");
+        Assert.IsTrue(effects.Contains(effect), "Effect not found on this model.");
+
+        if(!effect.IsEffectActive) effectsToRemoveSafely.Add(effect);
+    }
+
+    /// <summary>
+    /// Processes all IEffect instances on this Model. Takes
+    /// care of removing expired effects and updating the timers
+    /// of active effects.
+    /// </summary>
+    /// <param name="effects">The effects to process.</param>
+    public virtual void ProcessEffects()
+    {
+        foreach(IEffect effect in effectsToAddSafely)
+        {
+            effects.Add(effect);
+        }
+        effectsToAddSafely.Clear();
+
+        GetEffects().ForEach(effect=>TryRemoveEffect(effect));
+        GetEffects().ForEach(effect=>effect.UpdateEffect(this));
+        
+        foreach(IEffect effect in effectsToRemoveSafely)
+        {
+            effects.Remove(effect);
+        }
+        effectsToRemoveSafely.Clear();
+    }
 
     #endregion
 }

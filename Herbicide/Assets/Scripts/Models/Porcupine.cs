@@ -34,7 +34,7 @@ public class Porcupine : Defender
     /// <summary>
     /// Starting attack speed of a Porcupine.
     /// </summary>
-    public override float BASE_ATTACK_SPEED => .8f;
+    public override float BASE_ATTACK_SPEED => 1.6f;
 
     /// <summary>
     /// Maximum attack speed of a Porcupine.

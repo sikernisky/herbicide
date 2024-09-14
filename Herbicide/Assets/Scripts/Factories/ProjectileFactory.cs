@@ -43,6 +43,12 @@ public class ProjectileFactory : Factory
     [SerializeField]
     private ProjectileAnimationSet salmonberryAnimationSet;
 
+    /// <summary>
+    /// The animation set for an IceChunk.
+    /// </summary>
+    [SerializeField]
+    private ProjectileAnimationSet iceChunkAnimationSet;
+
     #endregion
 
     #region Methods
@@ -98,6 +104,8 @@ public class ProjectileFactory : Factory
                 return instance.raspberryAnimationSet.GetPlacementAnimation();
             case ModelType.SALMONBERRY:
                 return instance.salmonberryAnimationSet.GetPlacementAnimation();
+            case ModelType.ICE_CHUNK:
+                return instance.iceChunkAnimationSet.GetPlacementAnimation();
             default:
                 throw new System.Exception("Invalid ModelType");
         }
@@ -125,6 +133,8 @@ public class ProjectileFactory : Factory
                 return instance.raspberryAnimationSet.GetMidAirAnimation();
             case ModelType.SALMONBERRY:
                 return instance.salmonberryAnimationSet.GetMidAirAnimation();
+            case ModelType.ICE_CHUNK:
+                return instance.iceChunkAnimationSet.GetMidAirAnimation();
             default:
                 throw new System.Exception("Invalid ModelType");
         }

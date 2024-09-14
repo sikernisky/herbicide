@@ -24,7 +24,7 @@ public interface IStateTracker<T> where T : System.Enum
     /// correct state. Takes the current state and chooses whether
     /// or not to switch to another based on game conditions. /// 
     /// </summary>
-    public void UpdateStateFSM();
+    public void UpdateFSM();
 
     /// <summary>
     /// Returns true if two states are equal.

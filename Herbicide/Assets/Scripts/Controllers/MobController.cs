@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using static UnityEngine.GraphicsBuffer;
 
 /// <summary>
 /// Controls a Mob. The T generic Enum represents the Mob's State. 
@@ -54,9 +55,9 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     private T state;
 
     /// <summary>
-    /// Where this Mob moves next.
+    /// Where this Mob is moving towards.
     /// </summary>
-    private Vector3? nextMovePos;
+    private Vector3? movementDestinationPosition;
 
     /// <summary>
     /// All the attack speed buff multipliers currently affecting this Mob.
@@ -85,6 +86,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
         targets = new List<Model>();
         modelsHolding = new List<Model>();
         attackSpeedBuffMultipliers = new HashSet<float>();
+        
         SpawnMob();
     }
 
@@ -97,7 +99,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
         base.UpdateController(gameState);
         UpdateDamageFlash();
         UpdateMob();
-        UpdateStateFSM();
+        UpdateFSM();
     }
 
     /// <summary>
@@ -108,7 +110,6 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
         if (!ValidModel()) return;
         if (FINDS_TARGETS) UpdateTargets(GetAllModels(), TileGrid.GetAllTiles());
         GetMob().StepAttackCooldown();
-        CalculateAndApplyBuffs();
     }
 
     /// <summary>
@@ -147,42 +148,26 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     }
 
     /// <summary>
-    /// Returns the closest position from the Mob to some PlaceableObject.<br></br>
-    /// 
-    /// This is needed because some Models are larger than 1x1. So traditional distance
-    /// calculations don't work anymore because they always used bottom left corner.
-    /// For example: <br></br>
-    /// 
-    /// [][]        [][]
-    /// [][x]       [x][]
-    /// [][] 
-    /// <br></br>
-    ///</summary>
-    /// <param name="target"></param>
-    /// <returns></returns>
-    protected Vector3 ClosestPositionToTarget(PlaceableObject target)
+    /// Returns the closest Tile coordinate position from the Mob to some PlaceableObject.
+    /// </summary>
+    /// <param name="target">The PlaceableObject to find the closest Tile coordinate position to.</param>
+    /// <returns>The closest Tile coordinate position from the Mob to some PlaceableObject.</returns>
+    protected Vector3 ClosestTileCoordinatePositionToTarget(PlaceableObject target) => ClosestTileCoordinatePositionToTarget(target.transform.position);
+
+    /// <summary>
+    /// Returns the closest Tile coordinate position from the Mob to a given position.
+    /// </summary>
+    /// <param name="targetPosition">The position to find the closest Tile coordinate position to.</param>
+    /// <returns>The closest Tile coordinate position from the Mob to the given position.</returns>
+    protected Vector3 ClosestTileCoordinatePositionToTarget(Vector3 targetPosition)
     {
-        float minDistance = float.MaxValue;
-        Vector2Int closestPosition = new Vector2Int();
-        Vector3 mobPosition = GetMob().transform.position;  // Get the Mob's position
+        Vector2Int mobPosition = new Vector2Int(Mathf.FloorToInt(GetMob().transform.position.x), Mathf.FloorToInt(GetMob().transform.position.y));
+        Vector2Int targetTilePosition = new Vector2Int(Mathf.FloorToInt(targetPosition.x), Mathf.FloorToInt(targetPosition.y));
+        Vector3 convertedMobPosition = new Vector3(mobPosition.x, mobPosition.y, 1);
+        Vector3 convertedTargetPosition = new Vector3(targetTilePosition.x, targetTilePosition.y, 1);
+        if (TileGrid.CanReach(convertedMobPosition, convertedTargetPosition)) return convertedTargetPosition;
 
-        foreach (var thisCoord in GetMob().GetExpandedTileCoordinates())
-        {
-            foreach (var targetCoord in target.GetExpandedTileCoordinates())
-            {
-                float distance = Vector2Int.Distance(thisCoord, targetCoord);
-                Vector3 convertedThis = new Vector3(thisCoord.x, thisCoord.y, 1);
-                Vector3 targetPosition = new Vector3(targetCoord.x, targetCoord.y, 1);
-
-                if (distance < minDistance && TileGrid.CanReach(mobPosition, targetPosition))
-                {
-                    minDistance = distance;
-                    closestPosition = targetCoord;
-                }
-            }
-        }
-
-        return new Vector3(closestPosition.x, closestPosition.y, 1);
+        return convertedMobPosition;
     }
 
     /// <summary>
@@ -194,34 +179,6 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
         GetMob().RefreshRenderer();
         GetMob().OnSpawn();
         GetMob().gameObject.SetActive(true);
-    }
-
-    /// <summary>
-    /// Adds an attack speed multiplier to the Mob.
-    /// </summary>
-    /// <param name="multiplier">The attack speed multiplier.</param>
-    protected void BuffAttackSpeed(float multiplier)
-    {
-        Assert.IsTrue(multiplier > 0, "Multiplier must be positive.");
-        attackSpeedBuffMultipliers.Add(multiplier);
-    }
-
-    /// <summary>
-    /// Calculates the combined multiplier for each buff type and applies it to the Mob.
-    /// Clears each list of multipliers after applying them.
-    /// </summary>
-    private void CalculateAndApplyBuffs()
-    {
-        // Attack speed
-        float combinedAttackSpeedBuff = 1f;
-        foreach (float multiplier in attackSpeedBuffMultipliers)
-        {
-            combinedAttackSpeedBuff *= multiplier;
-        }
-        GetMob().SetAttackSpeed(GetMob().BASE_ATTACK_SPEED * combinedAttackSpeedBuff);
-        attackSpeedBuffMultipliers.Clear();
-
-        // Put other buffs here
     }
 
     /// <summary>
@@ -256,7 +213,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// correct state. Takes the current state and chooses whether
     /// or not to switch to another based on game conditions. /// 
     /// </summary>
-    public abstract void UpdateStateFSM();
+    public abstract void UpdateFSM();
 
     /// <summary>
     /// Returns true if two states are equal.
@@ -277,7 +234,6 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// 
     /// TODO: Add priority logic, put the most prio targets at the front of the list.
     /// This works with mobs who have multiple targets. 
-    /// 
     /// 
     /// </summary>
     /// <returns>this MobController's target.</returns>
@@ -303,7 +259,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
         Assert.IsNotNull(targetable, "Target cannot be null.");
         Assert.IsFalse(NumTargets() >= MAX_TARGETS, GetMob() +
             " already has " + NumTargets() + " targets.");
-        Assert.IsTrue(CanTargetModel(targetable), "Not a valid target.");
+        Assert.IsTrue(CanTargetOtherModel(targetable), "Not a valid target.");
 
         targets.Add(targetable);
     }
@@ -322,7 +278,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
 
         foreach (Model targetable in nonTiles)
         {
-            if (CanTargetModel(targetable) && NumTargets() < MAX_TARGETS)
+            if (CanTargetOtherModel(targetable) && NumTargets() < MAX_TARGETS)
             {
                 AddTarget(targetable);
             }
@@ -330,7 +286,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
 
         foreach (Model targetable in tiles)
         {
-            if (CanTargetModel(targetable) && NumTargets() < MAX_TARGETS)
+            if (CanTargetOtherModel(targetable) && NumTargets() < MAX_TARGETS)
             {
                 AddTarget(targetable);
             }
@@ -354,7 +310,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// <param name="target">A potential target.</param>
     /// <returns>true if the Mob is allowed to target a Model; otherwise,
     /// false.</returns>
-    protected abstract bool CanTargetModel(Model target);
+    protected abstract bool CanTargetOtherModel(Model target);
 
     /// <summary>
     /// Returns the current number of targets the Mob has
@@ -447,8 +403,8 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// </summary>
     protected void MoveLinearlyTowardsMovePos()
     {
-        if (GetNextMovePos() == null) return;
-        MoveLinearlyTowards(GetNextMovePos().Value, GetMob().GetMovementSpeed());
+        if (GetMovementDestinationPosition() == null) return;
+        MoveLinearlyTowards(GetMovementDestinationPosition().Value, GetMob().GetMovementSpeed());
     }
 
     /// <summary>
@@ -459,8 +415,8 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
 
     protected void FallIntoMovePos(float acceleration)
     {
-        if (GetNextMovePos() == null) return;
-        FallTowards(GetNextMovePos().Value, GetMob().GetMovementSpeed(), acceleration);
+        if (GetMovementDestinationPosition() == null) return;
+        FallTowards(GetMovementDestinationPosition().Value, GetMob().GetMovementSpeed(), acceleration);
     }
 
     /// <summary>
@@ -470,8 +426,8 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// <param name="startPosition">Where the mob is popping from.</param>
     protected void PopOutOfMovePos(Vector3 startPosition)
     {
-        if (GetNextMovePos() == null) return;
-        PopFrom(startPosition, GetNextMovePos().Value, GetMob().GetMovementSpeed());
+        if (GetMovementDestinationPosition() == null) return;
+        PopFrom(startPosition, GetMovementDestinationPosition().Value, GetMob().ENTERING_MOVEMENT_SPEED);
     }
 
     /// <summary>
@@ -479,8 +435,8 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// </summary>
     protected void MoveParabolicallyTowardsMovePos()
     {
-        if (GetNextMovePos() == null) return;
-        MoveParabolicallyTowards(GetNextMovePos().Value, GetMob().GetMovementSpeed());
+        if (GetMovementDestinationPosition() == null) return;
+        MoveParabolicallyTowards(GetMovementDestinationPosition().Value, GetMob().GetMovementSpeed());
     }
 
     /// <summary>
@@ -489,9 +445,8 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// <param name="nextPos">where the Mob should move next.</param>
     protected virtual void SetNextMovePos(Vector3? nextPos)
     {
-        nextMovePos = nextPos;
-
-        Vector3 newParabolicTarget = new Vector3(nextMovePos.Value.x, nextMovePos.Value.y, 1);
+        movementDestinationPosition = nextPos;
+        Vector3 newParabolicTarget = new Vector3(movementDestinationPosition.Value.x, movementDestinationPosition.Value.y, 1);
         float newParabolicScale = GetMob().GetMovementSpeed() /
             Vector3.Distance(GetMob().GetPosition(), newParabolicTarget);
 
@@ -499,10 +454,10 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     }
 
     /// <summary>
-    /// Returns where the Mob should move next.
+    /// Returns where the Mob is moving towards. 
     /// </summary>
-    /// <returns>where the Mob should move next.</returns>
-    protected Vector3? GetNextMovePos() { return nextMovePos; }
+    /// <returns>where the Mob is moving towards. .</returns>
+    protected Vector3? GetMovementDestinationPosition() { return movementDestinationPosition; }
 
     /// <summary>
     /// Returns true if the Mob's position is at the spot it
@@ -512,15 +467,15 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// otherwise, false. </returns>
     protected bool ReachedMovementTarget()
     {
-        if (GetNextMovePos() == null) return true;
+        if (GetMovementDestinationPosition() == null) return true;
 
         Vector3 nextMovePos = new Vector3(
-            GetNextMovePos().Value.x,
-            GetNextMovePos().Value.y,
+            GetMovementDestinationPosition().Value.x,
+            GetMovementDestinationPosition().Value.y,
             1
         );
 
-        return Vector3.Distance(GetMob().GetPosition(), nextMovePos) < 0.1f;
+        return Vector3.Distance(GetMob().GetPosition(), nextMovePos) < 0.01f;
     }
 
     #endregion

@@ -105,7 +105,7 @@ public class BlackberryController : ProjectileController<BlackberryController.Bl
     /// 
     /// SPAWN --> MOVING : when fired from source
     /// </summary>
-    public override void UpdateStateFSM()
+    public override void UpdateFSM()
     {
         if (!ValidModel()) return;
 

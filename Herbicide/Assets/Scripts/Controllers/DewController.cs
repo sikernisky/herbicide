@@ -74,7 +74,7 @@ public class DewController : CollectableController<DewController.DewState>
     /// BOBBING --> COLLECTING : when being collected <br></br>
     /// COLLECTING --> DEAD : when collected. <br></br>
     /// </summary>
-    public override void UpdateStateFSM()
+    public override void UpdateFSM()
     {
         switch (GetState())
         {

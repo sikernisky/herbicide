@@ -94,6 +94,8 @@ public class ShopCard : UIModel
                 return ModelType.SHOP_CARD_SQUIRREL;
             case ModelType.RACCOON:
                 return ModelType.SHOP_CARD_RACCOON;
+            case ModelType.OWL:
+                return ModelType.SHOP_CARD_OWL;
             default:
                 return ModelType.SHOP_CARD_BLANK;
         }

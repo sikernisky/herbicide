@@ -93,7 +93,6 @@ public abstract class Tile : Model, ISurface
         if (defined) return;
 
         SetTileCoordinates(x, y);
-        AddExpandedTileCoordinate(x, y);
         name = type.ToString() + " (" + x + ", " + y + ")";
         defined = true;
     }
