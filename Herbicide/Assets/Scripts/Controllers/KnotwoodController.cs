@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using static KudzuController;
 
 /// <summary>
 /// Controls a Knotwood. <br></br>
@@ -103,8 +104,6 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
         ExecuteProtectState();
         ExecuteEscapeState();
         ExecuteExitState();
-
-        Debug.Log(GetKnotwood().GetPosition());
     }
 
     /// <summary>
@@ -167,29 +166,18 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
     }
 
     /// <summary>
-    /// Returns true if this controller's Knotwood should be destoyed and
-    /// set to null.
+    /// Returns true if the current KnotwoodState renders the Knotwood
+    /// immune to damage.
     /// </summary>
-    /// <returns>true if this controller's Knotwood should be destoyed and
-    /// set to null; otherwise, false.</returns>
-    public override bool ValidModel()
+    /// <returns>true if the current KnotwoodState renders the Knotwood
+    /// immune to damage; otherwise, false. </returns>
+    protected override bool IsCurrentStateImmune()
     {
-        if (!GetEnemy().Spawned()) return true;
-
-        HashSet<KnotwoodState> immuneStates = new HashSet<KnotwoodState>()
-        {
-            KnotwoodState.INACTIVE,
-            KnotwoodState.ENTERING,
-            KnotwoodState.EXITING,
-            KnotwoodState.INVALID
-        };
-
-        bool isImmune = immuneStates.Contains(GetState());
-        if (!isImmune && !TileGrid.OnWalkableTile(GetEnemy().GetPosition())) return false;
-        else if (GetKnotwood().Dead()) return false;
-        else if (GetKnotwood().Exited()) return false;
-
-        return true;
+        KnotwoodState state = GetState();
+        return state == KnotwoodState.INACTIVE ||
+               state == KnotwoodState.ENTERING ||
+               state == KnotwoodState.EXITING ||
+               state == KnotwoodState.INVALID;
     }
 
     #endregion

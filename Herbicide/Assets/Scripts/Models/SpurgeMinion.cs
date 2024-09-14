@@ -26,7 +26,7 @@ public class SpurgeMinion : Enemy
     /// <summary>
     /// Base health of a SpurgeMinion.
     /// </summary>
-    public override float BASE_HEALTH => 100; // NORMAL VALUE: 100
+    public override float BASE_HEALTH => 25; // NORMAL VALUE: 100
 
     /// <summary>
     /// Upper bound of a SpurgeMinion's health. 
@@ -114,18 +114,6 @@ public class SpurgeMinion : Enemy
     #endregion
 
     #region Methods
-
-    /// <summary>
-    /// Gives the SpurgeMinion a reference to the Transform of the Spurge it is following.
-    /// </summary>
-    /// <param name="spurgeTransform">the Transform of the Spurge it is following.</param>
-    public void SetSpurgeTransform(Transform spurgeTransform) => this.spurgeTransform = spurgeTransform;
-
-    /// <summary>
-    /// Returns the position of the Spurge that this SpurgeMinion is following.
-    /// </summary>
-    /// <returns>the position of the Spurge that this SpurgeMinion is following.</returns>
-    public Vector3 GetPositionOfSpurgeFollowing() => spurgeTransform.position;
 
     #endregion
 }

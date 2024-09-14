@@ -57,6 +57,23 @@ public abstract class Model : MonoBehaviour
     /// </summary>
     private int numCyclesOfCurrentAnimationCompleted;
 
+    /// <summary>
+    /// All IEffect instances on this Model.
+    /// </summary>
+    private List<IEffect> effects = new List<IEffect>();
+
+    /// <summary>
+    /// All IEffect instances to add to this Model before the current
+    /// logic of ProcessEffects.
+    /// </summary>
+    private List<IEffect> effectsToAddSafely = new List<IEffect>();
+
+    /// <summary>
+    /// All IEffect instances to remove from this Model after the current
+    /// logic of ProcessEffects.
+    /// </summary>
+    private List<IEffect> effectsToRemoveSafely = new List<IEffect>();
+
     #endregion
 
     #region Stats
@@ -146,6 +163,12 @@ public abstract class Model : MonoBehaviour
     /// </summary>
     /// <param name="color">the color to set to.</param>
     public virtual void SetColor(Color32 newColor) => modelRenderer.color = modelRenderer != null ? newColor : modelRenderer.color;
+
+    /// <summary>
+    /// Returns this Model's SpriteRenderer's color.
+    /// </summary>
+    /// <returns>this Model's SpriteRenderer's color. </returns>
+    public Color GetColor() => modelRenderer.color;
 
     /// <summary>
     /// Sets this Model's SpriteRenderer component's sorting
@@ -435,6 +458,65 @@ public abstract class Model : MonoBehaviour
     /// </summary>
     /// <returns></returns>
     public bool IsHoldingNexus() => holdingNexus;
+
+    #endregion
+
+    #region Effects
+
+    /// <summary>
+    /// Returns all IEffect instances on this Model.
+    /// </summary>
+    /// <returns>a list of IEffect instances on this Model. </returns>
+    protected List<IEffect> GetEffects() => effects;
+
+    /// <summary>
+    /// Adds an IEffect instance to this Model.
+    /// </summary>
+    /// <param name="effect">the effect to add.</param>
+    public void AddEffect(IEffect effect)
+    {
+        Assert.IsNotNull(effect, "Cannot add a null effect.");
+        if(!effect.CanAfflict(this)) return;
+
+        effectsToAddSafely.Add(effect);
+    }
+
+    /// <summary>
+    /// Removes an IEffect instance from this Model if it
+    /// is expired.
+    /// </summary>
+    /// <param name="effect">the effect to remove. </param>
+    private void TryRemoveEffect(IEffect effect)
+    {
+        Assert.IsNotNull(effect, "Cannot remove a null effect.");
+        Assert.IsTrue(effects.Contains(effect), "Effect not found on this model.");
+
+        if(!effect.IsEffectActive) effectsToRemoveSafely.Add(effect);
+    }
+
+    /// <summary>
+    /// Processes all IEffect instances on this Model. Takes
+    /// care of removing expired effects and updating the timers
+    /// of active effects.
+    /// </summary>
+    /// <param name="effects">The effects to process.</param>
+    public virtual void ProcessEffects()
+    {
+        foreach(IEffect effect in effectsToAddSafely)
+        {
+            effects.Add(effect);
+        }
+        effectsToAddSafely.Clear();
+
+        GetEffects().ForEach(effect=>TryRemoveEffect(effect));
+        GetEffects().ForEach(effect=>effect.UpdateEffect(this));
+        
+        foreach(IEffect effect in effectsToRemoveSafely)
+        {
+            effects.Remove(effect);
+        }
+        effectsToRemoveSafely.Clear();
+    }
 
     #endregion
 }

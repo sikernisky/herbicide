@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 /// <summary>
 /// Represents a living, reactive PlaceableObject.
@@ -238,6 +240,36 @@ public abstract class Mob : PlaceableObject
         ResetChaseRange();
         ResetMovementSpeed();
         ResetAttackSpeed();
+    }
+
+    #endregion
+
+    #region Effects
+
+    /// <summary>
+    /// Processes all IEffect instances on this Model.
+    /// </summary>
+    public override void ProcessEffects()
+    {
+        base.ProcessEffects();
+        ProcessSpeedEffects();
+    }
+
+    /// <summary>
+    /// Processes all SpeedEffect instances on this Model.
+    /// Updates the Model's movement speed based on the effects.
+    /// </summary>
+    protected virtual void ProcessSpeedEffects()
+    {
+        float totalSpeedModifier = 0;
+        foreach (IEffect effect in GetEffects())
+        {
+            if (effect is SpeedEffect speedEffect)
+            {
+                totalSpeedModifier += speedEffect.GetEffectMagnitude();
+            }
+        }
+        movementSpeed = Mathf.Clamp(BASE_MOVEMENT_SPEED * (1 + totalSpeedModifier), MIN_MOVEMENT_SPEED, MAX_MOVEMENT_SPEED);
     }
 
     #endregion

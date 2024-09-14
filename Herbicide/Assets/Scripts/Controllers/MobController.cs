@@ -110,7 +110,6 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
         if (!ValidModel()) return;
         if (FINDS_TARGETS) UpdateTargets(GetAllModels(), TileGrid.GetAllTiles());
         GetMob().StepAttackCooldown();
-        CalculateAndApplyBuffs();
     }
 
     /// <summary>
@@ -180,34 +179,6 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
         GetMob().RefreshRenderer();
         GetMob().OnSpawn();
         GetMob().gameObject.SetActive(true);
-    }
-
-    /// <summary>
-    /// Adds an attack speed multiplier to the Mob.
-    /// </summary>
-    /// <param name="multiplier">The attack speed multiplier.</param>
-    protected void BuffAttackSpeed(float multiplier)
-    {
-        Assert.IsTrue(multiplier > 0, "Multiplier must be positive.");
-        attackSpeedBuffMultipliers.Add(multiplier);
-    }
-
-    /// <summary>
-    /// Calculates the combined multiplier for each buff type and applies it to the Mob.
-    /// Clears each list of multipliers after applying them.
-    /// </summary>
-    private void CalculateAndApplyBuffs()
-    {
-        // Attack speed
-        float combinedAttackSpeedBuff = 1f;
-        foreach (float multiplier in attackSpeedBuffMultipliers)
-        {
-            combinedAttackSpeedBuff *= multiplier;
-        }
-        GetMob().SetAttackSpeed(GetMob().BASE_ATTACK_SPEED * combinedAttackSpeedBuff);
-        attackSpeedBuffMultipliers.Clear();
-
-        // Put other buffs here
     }
 
     /// <summary>

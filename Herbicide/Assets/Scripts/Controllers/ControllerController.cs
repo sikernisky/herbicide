@@ -153,6 +153,12 @@ public class ControllerController : MonoBehaviour
                 NexusHoleController nhc = new NexusHoleController(nexusHole);
                 instance.structureControllers.Add(nhc);
                 break;
+            case ModelType.OWL:
+                Owl owl = model as Owl;
+                Assert.IsNotNull(owl, "Owl is null.");
+                OwlController oc = new OwlController(owl);
+                instance.defenderControllers.Add(oc);
+                break;
             case ModelType.PORCUPINE:
                 Porcupine porcupine = model as Porcupine;
                 Assert.IsNotNull(porcupine, "Porcupine is null.");
@@ -195,6 +201,8 @@ public class ControllerController : MonoBehaviour
                 WallController swc = new WallController(stonewall);
                 instance.structureControllers.Add(swc);
                 break;
+            default:
+                throw new Exception("ModelType " + model.TYPE + " has no implementation in ControllerController."); 
         }
 
         instance.counts.SetCount(instance, model.TYPE, instance.counts.GetCount(model.TYPE) + 1);

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -78,16 +77,6 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
     /// </summary>
     protected float exitingAnimationCounter;
 
-    /// <summary>
-    /// How far the Spurge spawns its minions from itself.
-    /// </summary>
-    private float SPURGE_MINION_SPAWN_DISTANCE => 0.5f;
-
-    /// <summary>
-    /// The SpurgeMinions spawned by this Spurge.
-    /// </summary>
-    private HashSet<SpurgeMinion> spurgeMinions;
-
     #endregion
 
     #region Methods
@@ -121,6 +110,7 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
         ExecuteExitState();
     }
 
+
     /// <summary>
     /// Returns the spawn position of the Spurge when in a NexusHole.
     /// </summary>
@@ -134,29 +124,18 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
     }
 
     /// <summary>
-    /// Returns true if this controller's Spurge should be destoyed and
-    /// set to null.
+    /// Returns true if the current SpurgeState renders the Spurge
+    /// immune to damage.
     /// </summary>
-    /// <returns>true if this controller's Spurge should be destoyed and
-    /// set to null; otherwise, false.</returns>
-    public override bool ValidModel()
+    /// <returns>true if the current SpurgeState renders the Spurge
+    /// immune to damage; otherwise, false. </returns>
+    protected override bool IsCurrentStateImmune()
     {
-        if (!GetEnemy().Spawned()) return true;
-
-        HashSet<SpurgeState> immuneStates = new HashSet<SpurgeState>()
-        {
-            SpurgeState.INACTIVE,
-            SpurgeState.ENTERING,
-            SpurgeState.EXITING,
-            SpurgeState.INVALID
-        };
-
-        bool isImmune = immuneStates.Contains(GetState());
-        if (!isImmune && !TileGrid.OnWalkableTile(GetEnemy().GetPosition())) return false;
-        else if (GetSpurge().Dead()) return false;
-        else if (GetSpurge().Exited()) return false;
-
-        return true;
+        SpurgeState state = GetState();
+        return state == SpurgeState.INACTIVE ||
+               state == SpurgeState.ENTERING ||
+               state == SpurgeState.EXITING ||
+               state == SpurgeState.INVALID;
     }
 
     /// <summary>
@@ -202,7 +181,15 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
         throw new System.Exception("Something wrong happened.");
     }
 
-
+    /// <summary>
+    /// Performs logic right before the Enemy is destroyed.
+    /// </summary>
+    protected override void OnDestroyModel()
+    {
+        // Kill any alive SpurgeMinions that belong to this Spurge.
+        GetSpurge().KillMinions();
+        base.OnDestroyModel();
+    }
 
     #endregion
 
@@ -339,19 +326,6 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
 
         // We have fully popped out of the hole.
         SetPoppedOutOfHole();
-
-        Vector3 movementDestPos = GetMovementDestinationPosition().Value;
-        if (movementDestPos == null) return;
-
-        spurgeMinions = new HashSet<SpurgeMinion>();
-        GameObject minion = EnemyFactory.GetEnemyPrefab(ModelType.SPURGE_MINION);
-        Assert.IsNotNull(minion);
-        SpurgeMinion minionComp = minion.GetComponent<SpurgeMinion>();
-        minionComp.SetSpurgeTransform(GetSpurge().transform);
-        minion.gameObject.SetActive(false);
-        minionComp.GetCollider().enabled = false;
-        minionComp.SetSpawnPos(GetSpurge().GetPosition());
-        ControllerController.MakeModelController(minionComp);
     }
 
     /// <summary>

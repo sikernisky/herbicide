@@ -129,29 +129,18 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     }
 
     /// <summary>
-    /// Returns true if this controller's Kudzu should be destoyed and
-    /// set to null.
+    /// Returns true if the current KudzuState renders the Kudzu
+    /// immune to damage.
     /// </summary>
-    /// <returns>true if this controller's Kudzu should be destoyed and
-    /// set to null; otherwise, false.</returns>
-    public override bool ValidModel()
+    /// <returns>true if the current KudzuState renders the Kudzu
+    /// immune to damage; otherwise, false. </returns>
+    protected override bool IsCurrentStateImmune()
     {
-        if (!GetEnemy().Spawned()) return true;
-
-        HashSet<KudzuState> immuneStates = new HashSet<KudzuState>()
-        {
-            KudzuState.INACTIVE,
-            KudzuState.ENTERING,
-            KudzuState.EXITING,
-            KudzuState.INVALID
-        };
-
-        bool isImmune = immuneStates.Contains(GetState());
-        if (!isImmune && !TileGrid.OnWalkableTile(GetEnemy().GetPosition())) return false;
-        else if (GetKudzu().Dead()) return false;
-        else if (GetKudzu().Exited()) return false;
-
-        return true;
+        KudzuState state = GetState();
+        return state == KudzuState.INACTIVE ||
+               state == KudzuState.ENTERING ||
+               state == KudzuState.EXITING ||
+               state == KudzuState.INVALID;
     }
 
     /// <summary>

@@ -1026,7 +1026,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 631068794}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1882,7 +1882,7 @@ RectTransform:
   m_Children:
   - {fileID: 189471472}
   m_Father: {fileID: 631068794}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2034,11 +2034,13 @@ MonoBehaviour:
   - {fileID: 8079875932440872871, guid: 0c54ae2e29b788740822bfd3196c5234, type: 3}
   - {fileID: 8079875932440872871, guid: 4d16a7bb6f88e2d4eb25bf990a24eef0, type: 3}
   - {fileID: 8079875932440872871, guid: a01e21bce76022a449153c962d0810f4, type: 3}
+  - {fileID: 8079875932440872871, guid: 2fa5d54940c560f4b895ac86eaadfc48, type: 3}
   acornAnimationSet: {fileID: 11400000, guid: e05583944e8bb454ea20cf5db7ac8ffc, type: 2}
   quillAnimationSet: {fileID: 11400000, guid: 982e2fad998e003449bb1dcdfbbd9ed7, type: 2}
   blackberryAnimationSet: {fileID: 11400000, guid: c1d7c88038fd1274495aa654582f46f0, type: 2}
   raspberryAnimationSet: {fileID: 11400000, guid: 9e3f4bd10b89dbc4b8c2fbe9101c75c1, type: 2}
   salmonberryAnimationSet: {fileID: 11400000, guid: 0625bf8846cfd0b4b9da599deba08fef, type: 2}
+  iceChunkAnimationSet: {fileID: 11400000, guid: 23dd4dcac4b1ccd4dbd2504514cb5fae, type: 2}
 --- !u!1 &503143294
 GameObject:
   m_ObjectHideFlags: 0
@@ -2288,13 +2290,13 @@ RectTransform:
   m_LocalScale: {x: 6, y: 6, z: 6}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1838144982}
   - {fileID: 1916068700}
   - {fileID: 474005472}
   - {fileID: 1513332656}
   - {fileID: 1871011723}
   - {fileID: 1059415868}
   - {fileID: 213945745}
-  - {fileID: 1838144982}
   m_Father: {fileID: 374179633}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3573,7 +3575,7 @@ RectTransform:
   m_Children:
   - {fileID: 2089459147}
   m_Father: {fileID: 631068794}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -3847,10 +3849,12 @@ MonoBehaviour:
   - {fileID: 4258100568393254862, guid: 9a19eef9d372a4ae194ccfbc10988af8, type: 3}
   - {fileID: 2896626616884615408, guid: d18944798889143a1a432dc9a5c367d2, type: 3}
   - {fileID: 2896626616884615408, guid: 04b71c03941782e4ebf45b005124f11c, type: 3}
+  - {fileID: 4258100568393254862, guid: 8b0257bcea082a7499eb28c1f4047dc0, type: 3}
   squirrelAnimationSet: {fileID: 11400000, guid: 7f4b6d2871eb04c8cb30a3b72bbaf4f5, type: 2}
   bearAnimationSet: {fileID: 11400000, guid: e7e2075b53eac4ce1a6d626d618576ec, type: 2}
   porcupineAnimationSet: {fileID: 11400000, guid: 29d479b7f116e45c19bad45985be25ff, type: 2}
   raccoonAnimationSet: {fileID: 11400000, guid: 94dc4b13178a73048a0e7a2ae08a0699, type: 2}
+  owlAnimationSet: {fileID: 11400000, guid: de3fb3858a2d887428f56fe1d9b01de8, type: 2}
 --- !u!1 &1130661420
 GameObject:
   m_ObjectHideFlags: 0
@@ -3900,6 +3904,7 @@ MonoBehaviour:
   - {fileID: 8243588634895102957, guid: 2fd948259679640fc87149ce1291f5ed, type: 3}
   - {fileID: 8243588634895102957, guid: 45e5c8c7b3e2f244dbefe0abcefd9c95, type: 3}
   - {fileID: 8243588634895102957, guid: 525cf3365afe5444ba9eeade424a5f9b, type: 3}
+  - {fileID: 8243588634895102957, guid: 2866966f0f2469449b9186fd91ae79d3, type: 3}
   - {fileID: 8243588634895102957, guid: 87bb6a3f14829144cbb232dc73ef9e98, type: 3}
 --- !u!1 &1139417026
 GameObject:
@@ -5089,7 +5094,7 @@ RectTransform:
   m_Children:
   - {fileID: 818060255}
   m_Father: {fileID: 631068794}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -5886,7 +5891,7 @@ RectTransform:
   m_Children:
   - {fileID: 1989734246}
   m_Father: {fileID: 631068794}
-  m_RootOrder: 6
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -5964,7 +5969,7 @@ RectTransform:
   m_Children:
   - {fileID: 1085931837}
   m_Father: {fileID: 631068794}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -6102,7 +6107,7 @@ RectTransform:
   m_Children:
   - {fileID: 410056900}
   m_Father: {fileID: 631068794}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}

@@ -68,10 +68,6 @@ public abstract class ModelController
     /// </summary>
     Vector3 parabolaStartPos;
 
-    private float popLerp;
-
-    private float POP_HEIGHT => 0.5f;
-
     #endregion
 
     #region Methods
@@ -119,6 +115,7 @@ public abstract class ModelController
         UpdateTilePositions();
         FixSortingOrder();
         StepAnimation();
+        GetModel().ProcessEffects();
     }
 
     /// <summary>

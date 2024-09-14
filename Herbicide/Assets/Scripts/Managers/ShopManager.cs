@@ -171,6 +171,7 @@ public class ShopManager : MonoBehaviour
                 ModelType.SHOP_CARD_SQUIRREL,
                 ModelType.SHOP_CARD_BEAR,
                 ModelType.SHOP_CARD_PORCUPINE,
+                ModelType.SHOP_CARD_OWL,
                 ModelType.SHOP_CARD_RACCOON
             };
             }

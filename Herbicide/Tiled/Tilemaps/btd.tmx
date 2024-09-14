@@ -247,13 +247,13 @@
   </properties>
   <object id="774" type="Marker" gid="68" x="32" y="80" width="16" height="16">
    <properties>
-    <property name="enemySpawnData" value="spurge1-3"/>
+    <property name="enemySpawnData" value="spurge1-3, spurge1-10"/>
     <property name="markerName" value="enemySpawn"/>
    </properties>
   </object>
   <object id="790" type="Marker" gid="68" x="32" y="112" width="16" height="16">
    <properties>
-    <property name="enemySpawnData" value=""/>
+    <property name="enemySpawnData" value="knotwood1-2, knotwood1-4, knotwood1-6"/>
     <property name="markerName" value="enemySpawn"/>
    </properties>
   </object>

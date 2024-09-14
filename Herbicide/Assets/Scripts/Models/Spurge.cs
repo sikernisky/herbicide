@@ -1,6 +1,14 @@
+using System.Collections.Generic;
+using UnityEngine.Assertions;
+
 public class Spurge : Enemy
 {
     #region Fields
+
+    /// <summary>
+    /// The SpurgeMinions spawned by this Spurge.
+    /// </summary>
+    private HashSet<SpurgeMinion> spurgeMinions;
 
     #endregion
 
@@ -107,6 +115,30 @@ public class Spurge : Enemy
     #endregion
 
     #region Methods
+
+    /// <summary>
+    /// Adds a SpurgeMinion to this Spurge.
+    /// </summary>
+    /// <param name="minion">the SpurgeMinion to add. </param>
+    public void AddMinion(SpurgeMinion minion)
+    {
+        if(spurgeMinions == null) spurgeMinions = new HashSet<SpurgeMinion>();
+        Assert.IsNotNull(minion);
+        Assert.IsFalse(spurgeMinions.Contains(minion));
+        spurgeMinions.Add(minion);
+    }
+
+    /// <summary>
+    /// Kills all SpurgeMinions spawned by this Spurge by setting their health to 0.
+    /// </summary>
+    public void KillMinions()
+    {
+        Assert.IsNotNull(spurgeMinions);
+        foreach (SpurgeMinion minion in spurgeMinions)
+        {
+            minion.AdjustHealth(-minion.GetHealth());
+        }
+    }
 
     #endregion
 }

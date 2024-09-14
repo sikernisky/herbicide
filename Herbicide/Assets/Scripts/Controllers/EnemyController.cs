@@ -98,6 +98,14 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     private void UpdateEnemyCollider() => GetEnemy().SetColliderProperties();
 
     /// <summary>
+    /// Returns true if the Enemy's current state renders it immune
+    /// to damage.
+    /// </summary>
+    /// <returns>true if the Enemy's current state renders it immune
+    /// to damage; otherwise, false. </returns>
+    protected abstract bool IsCurrentStateImmune();
+
+    /// <summary>
     /// Returns true if this controller's Enemy should be destoyed and
     /// set to null.
     /// </summary>
@@ -106,6 +114,7 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     public override bool ValidModel()
     {
         if (!GetEnemy().Spawned()) return true;
+        if (IsCurrentStateImmune()) return true;
 
         if (!TileGrid.OnWalkableTile(GetEnemy().GetPosition())) return false;
         else if (GetEnemy().Dead()) return false;
@@ -125,6 +134,10 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
             case ModelType.QUILL:
                 Quill quill = projectile as Quill;
                 if(quill != null) GetEnemy().StickWithQuill(quill);
+                TakeProjectileHit(projectile);
+                break;
+            case ModelType.ICE_CHUNK:
+                GetEnemy().AddEffect(new IceChunkEffect());
                 TakeProjectileHit(projectile);
                 break;
             default:

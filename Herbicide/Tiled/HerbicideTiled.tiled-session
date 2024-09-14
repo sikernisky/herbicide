@@ -13,10 +13,10 @@
     "fileStates": {
         "Tilemaps/btd.tmx": {
             "scale": 3,
-            "selectedLayer": 4,
+            "selectedLayer": 5,
             "viewCenter": {
-                "x": 153.5,
-                "y": 127.33333333333331
+                "x": 152.16666666666663,
+                "y": 126.66666666666669
             }
         },
         "Tilemaps/btd.tmx#Enemies": {
@@ -110,8 +110,8 @@
             "scale": 4,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 190.875,
-                "y": 111
+                "x": 190.375,
+                "y": 110.5
             }
         },
         "Tilemaps/level1.tmj": {
@@ -145,8 +145,8 @@
         "Tilemaps/level2.tmx": {
             "expandedObjectLayers": [
                 16,
-                15,
-                13
+                13,
+                15
             ],
             "scale": 5.5,
             "selectedLayer": 5,
@@ -158,8 +158,8 @@
         "Tilemaps/level3.tmx": {
             "expandedObjectLayers": [
                 16,
-                15,
-                13
+                13,
+                15
             ],
             "scale": 1.6635,
             "selectedLayer": 5,
@@ -171,8 +171,8 @@
         "Tilemaps/level4.tmx": {
             "expandedObjectLayers": [
                 16,
-                15,
-                13
+                13,
+                15
             ],
             "scale": 2,
             "selectedLayer": 5,
@@ -188,8 +188,8 @@
             "scale": 2,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 162.75,
-                "y": 73.5
+                "x": 161.75,
+                "y": 72.5
             }
         },
         "Tilemaps/level5.tmx#Enemies": {

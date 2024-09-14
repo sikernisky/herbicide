@@ -163,10 +163,11 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
         if (model == null) return;
         if (lobLerp > 0 && lobLerp < .75f) return; // Keep the lob illusion
         if (IgnoreCollider(other)) return;
+        if (GetProjectile().Collided()) return;
 
         model.TriggerProjectileCollision(GetProjectile());
-        DetonateProjectile(other);
         GetProjectile().SetCollided(true);
+        DetonateProjectile(other);
         AddColliderToIgnore(other);
     }
 
