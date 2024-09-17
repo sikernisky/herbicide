@@ -262,13 +262,20 @@ public abstract class Mob : PlaceableObject
     protected virtual void ProcessSpeedEffects()
     {
         float totalSpeedModifier = 0;
+        bool chilled = false;
         foreach (IEffect effect in GetEffects())
         {
             if (effect is SpeedEffect speedEffect)
             {
                 totalSpeedModifier += speedEffect.GetEffectMagnitude();
             }
+            if (effect is IceChunkEffect)
+            {
+                chilled = true;
+            }
         }
+        if (chilled) SetBaseColor(new Color32(100, 100, 255, 255));
+        else SetBaseColor(BASE_COLOR);
         movementSpeed = Mathf.Clamp(BASE_MOVEMENT_SPEED * (1 + totalSpeedModifier), MIN_MOVEMENT_SPEED, MAX_MOVEMENT_SPEED);
     }
 

@@ -161,7 +161,7 @@ public class BearController : DefenderController<BearController.BearState>
         if (GetTarget() != null) FaceTarget();
         else GetBear().FaceDirection(Direction.SOUTH);
 
-        SetAnimation(GetBear().IDLE_ANIMATION_DURATION,
+        SetNextAnimation(GetBear().IDLE_ANIMATION_DURATION,
             DefenderFactory.GetIdleTrack(ModelType.BEAR,
                 GetBear().GetDirection(),
                 GetBear().GetTier()));
@@ -181,7 +181,7 @@ public class BearController : DefenderController<BearController.BearState>
 
         FaceTarget();
 
-        SetAnimation(GetBear().ATTACK_ANIMATION_DURATION,
+        SetNextAnimation(GetBear().ATTACK_ANIMATION_DURATION,
         DefenderFactory.GetAttackTrack(ModelType.BEAR, GetBear().GetDirection(), GetBear().GetTier()));
 
         if (!CanAttack()) return;

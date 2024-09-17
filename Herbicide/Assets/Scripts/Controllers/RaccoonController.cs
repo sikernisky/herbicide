@@ -92,7 +92,7 @@ public class RaccoonController : DefenderController<RaccoonController.RaccoonSta
             Enemy target = GetTarget() as Enemy;
             if (target == null || !target.Targetable()) yield break; // Invalid target.
 
-            SetAnimation(GetRaccoon().ATTACK_ANIMATION_DURATION / numBerries,
+            SetNextAnimation(GetRaccoon().ATTACK_ANIMATION_DURATION / numBerries,
                 DefenderFactory.GetAttackTrack(
                     ModelType.RACCOON,
                     GetRaccoon().GetDirection(), GetRaccoon().GetTier()));
@@ -269,7 +269,7 @@ public class RaccoonController : DefenderController<RaccoonController.RaccoonSta
             FaceTarget();
         else GetRaccoon().FaceDirection(Direction.SOUTH);
 
-        SetAnimation(GetRaccoon().IDLE_ANIMATION_DURATION,
+        SetNextAnimation(GetRaccoon().IDLE_ANIMATION_DURATION,
             DefenderFactory.GetIdleTrack(
                 ModelType.RACCOON,
                 GetRaccoon().GetDirection(), GetRaccoon().GetTier()));

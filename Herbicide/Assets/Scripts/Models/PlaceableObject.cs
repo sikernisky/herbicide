@@ -152,7 +152,7 @@ public abstract class PlaceableObject : Model
     /// </summary>
     /// <returns>the amount of time that remains in this PlaceableObject's
     /// flash animation</returns>
-    public float TimeRemaningInFlashAnimation() => remainingFlashAnimationTime;
+    public float TimeRemainingInFlashAnimation() => remainingFlashAnimationTime;
 
     /// <summary>
     /// Adds some amount (can be negative) of health to this PlaceableObject.

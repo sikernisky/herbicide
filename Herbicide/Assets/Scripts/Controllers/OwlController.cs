@@ -91,7 +91,7 @@ public class OwlController : DefenderController<OwlController.OwlState>
             Enemy target = GetTarget() as Enemy;
             if (target == null || !target.Targetable()) yield break; // Invalid target.
 
-            SetAnimation(GetOwl().ATTACK_ANIMATION_DURATION / numIceChunks,
+            SetNextAnimation(GetOwl().ATTACK_ANIMATION_DURATION / numIceChunks,
                 DefenderFactory.GetIdleTrack(
                     ModelType.OWL,
                     GetOwl().GetDirection(), GetOwl().GetTier()));
@@ -198,7 +198,7 @@ public class OwlController : DefenderController<OwlController.OwlState>
             FaceTarget();
         else GetOwl().FaceDirection(Direction.SOUTH);
 
-        SetAnimation(GetOwl().IDLE_ANIMATION_DURATION,
+        SetNextAnimation(GetOwl().IDLE_ANIMATION_DURATION,
             DefenderFactory.GetIdleTrack(
                 ModelType.OWL,
                 GetOwl().GetDirection(), GetOwl().GetTier()));

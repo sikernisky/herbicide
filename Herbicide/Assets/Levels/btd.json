@@ -570,7 +570,7 @@
                         {
                          "name":"enemySpawnData",
                          "type":"string",
-                         "value":"spurge1-3, spurge1-10"
+                         "value":""
                         }, 
                         {
                          "name":"markerName",
@@ -593,7 +593,7 @@
                         {
                          "name":"enemySpawnData",
                          "type":"string",
-                         "value":"knotwood1-2, knotwood1-4, knotwood1-6"
+                         "value":"knotwood1-2"
                         }, 
                         {
                          "name":"markerName",

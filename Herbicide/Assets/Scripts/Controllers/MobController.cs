@@ -29,11 +29,6 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     private List<Model> modelsHolding;
 
     /// <summary>
-    /// The color strength, from 0-1, of the damage flash animation.
-    /// </summary>
-    private const float FLASH_INTENSITY = .4f;
-
-    /// <summary>
     /// The total time in seconds, from start to finish, of a damage flash
     /// animation.
     /// </summary>
@@ -60,11 +55,6 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     private Vector3? movementDestinationPosition;
 
     /// <summary>
-    /// All the attack speed buff multipliers currently affecting this Mob.
-    /// </summary>
-    private HashSet<float> attackSpeedBuffMultipliers;
-
-    /// <summary>
     /// true if the Mob controlled by this MobController
     /// needs to parse through all possible targets. This exists
     /// so that we don't need to go through targeting logic for Mobs
@@ -85,7 +75,6 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
         Assert.IsNotNull(mob, "Mob cannot be null.");
         targets = new List<Model>();
         modelsHolding = new List<Model>();
-        attackSpeedBuffMultipliers = new HashSet<float>();
         
         SpawnMob();
     }
@@ -128,22 +117,26 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     {
         if (GetMob() == null || System.Object.Equals(null, GetMob())) return;
 
-        float remainingFlashTime = GetMob().TimeRemaningInFlashAnimation();
+        float remainingFlashTime = GetMob().TimeRemainingInFlashAnimation();
         if (remainingFlashTime <= 0)
         {
-            GetModel().SetColor(Color.white); // Explicitly set to white when the flash time ends
+            GetModel().SetColor(GetModel().GetBaseColor());
             return;
         }
+
         float newDamageFlashingTime = Mathf.Clamp(remainingFlashTime - Time.deltaTime, 0, FLASH_DURATION);
         GetMob().SetRemainingFlashAnimationTime(newDamageFlashingTime);
 
-        // Simplified lerp target calculation
-        float lerpFactor = Mathf.Cos((Mathf.PI * remainingFlashTime) / FLASH_DURATION);
-        lerpFactor = Mathf.Clamp(lerpFactor, 0, 1);
+        if (remainingFlashTime == FLASH_DURATION)
+        {
+            GetModel().SetColor(new Color32(255, 0, 0, 255));
+            return; // Skip lerping for the first frame
+        }
 
-        float score = Mathf.Lerp(FLASH_INTENSITY, 1f, lerpFactor);
-        byte greenBlueComponent = (byte)(score * 255);
-        Color32 color = new Color32(255, greenBlueComponent, greenBlueComponent, 255);
+        float lerpFactor = 1 - Mathf.Cos((Mathf.PI * remainingFlashTime) / FLASH_DURATION);
+        lerpFactor = Mathf.Clamp(lerpFactor, 0, 1);
+        Color32 hitColor = new Color32(255, 0, 0, 255);
+        Color32 color = Color32.Lerp(GetModel().GetBaseColor(), hitColor, lerpFactor);
         GetModel().SetColor(color);
     }
 
@@ -257,8 +250,6 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     private void AddTarget(Model targetable)
     {
         Assert.IsNotNull(targetable, "Target cannot be null.");
-        Assert.IsFalse(NumTargets() >= MAX_TARGETS, GetMob() +
-            " already has " + NumTargets() + " targets.");
         Assert.IsTrue(CanTargetOtherModel(targetable), "Not a valid target.");
 
         targets.Add(targetable);
@@ -278,18 +269,12 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
 
         foreach (Model targetable in nonTiles)
         {
-            if (CanTargetOtherModel(targetable) && NumTargets() < MAX_TARGETS)
-            {
-                AddTarget(targetable);
-            }
+            if (CanTargetOtherModel(targetable)) AddTarget(targetable);
         }
 
         foreach (Model targetable in tiles)
         {
-            if (CanTargetOtherModel(targetable) && NumTargets() < MAX_TARGETS)
-            {
-                AddTarget(targetable);
-            }
+            if (CanTargetOtherModel(targetable)) AddTarget(targetable);
         }
 
         SortTargets(targets);

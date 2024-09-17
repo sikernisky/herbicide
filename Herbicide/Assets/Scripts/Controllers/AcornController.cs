@@ -127,7 +127,7 @@ public class AcornController : ProjectileController<AcornController.AcornState>
         if (!ValidModel()) return;
         if (GetState() != AcornState.MOVING) return;
 
-        SetAnimation(GetAcorn().MID_AIR_ANIMATION_DURATION, ProjectileFactory.GetMidAirAnimationTrack(GetAcorn()));
+        SetNextAnimation(GetAcorn().MID_AIR_ANIMATION_DURATION, ProjectileFactory.GetMidAirAnimationTrack(GetAcorn()));
         LinearShot();
     }
 

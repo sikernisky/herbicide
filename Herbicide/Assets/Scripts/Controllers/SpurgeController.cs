@@ -25,7 +25,6 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
         ATTACK, // Attacking target.
         ESCAPE, // Running back to start.
         PROTECT, // Protecting other escaping enemies.
-        EXITING, // Leaving map.
         DEAD, // Dead.
         INVALID // Something went wrong.
     }
@@ -71,12 +70,6 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
     /// </summary>
     protected float escapeAnimationCounter;
 
-    /// <summary>
-    /// Counts the number of seconds in the exiting animation; resets
-    /// on step.
-    /// </summary>
-    protected float exitingAnimationCounter;
-
     #endregion
 
     #region Methods
@@ -107,7 +100,6 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
         ExecuteAttackState();
         ExecuteProtectState();
         ExecuteEscapeState();
-        ExecuteExitState();
     }
 
 
@@ -134,7 +126,6 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
         SpurgeState state = GetState();
         return state == SpurgeState.INACTIVE ||
                state == SpurgeState.ENTERING ||
-               state == SpurgeState.EXITING ||
                state == SpurgeState.INVALID;
     }
 
@@ -156,7 +147,7 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
         NexusHole nexusHoleTarget = target as NexusHole;
 
         // If escaping, only target NexusHoles.
-        if (GetState() == SpurgeState.ESCAPE || GetState() == SpurgeState.EXITING)
+        if (GetState() == SpurgeState.ESCAPE)
         {
             if (nexusHoleTarget == null) return false;
             if (!nexusHoleTarget.Targetable()) return false;
@@ -265,10 +256,7 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
 
                 if (!targetExists && !holdingTarget) SetState(carrierToProtect ? SpurgeState.PROTECT : SpurgeState.IDLE);
                 else if (!holdingTarget) SetState(SpurgeState.IDLE);
-                else if (Vector2.Distance(GetSpurge().GetPosition(), GetTarget().GetPosition()) < 0.05f)
-                {
-                    SetState(SpurgeState.EXITING);
-                }
+
                 break;
 
             case SpurgeState.PROTECT:
@@ -282,7 +270,6 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
                 }
                 break;
 
-            case SpurgeState.EXITING:
             case SpurgeState.INVALID:
                 break;
             default:
@@ -316,7 +303,7 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
         if (GetState() != SpurgeState.ENTERING) return;
 
         GetSpurge().SetEntering(GetSpurge().GetSpawnPos());
-        SetAnimation(GetSpurge().MOVE_ANIMATION_DURATION, EnemyFactory.GetSpawnTrack(
+        SetNextAnimation(GetSpurge().MOVE_ANIMATION_DURATION, EnemyFactory.GetSpawnTrack(
             GetSpurge().TYPE, GetSpurge().GetDirection(), GetSpurge().GetHealthState()));
 
         PopOutOfMovePos(NexusHoleSpawnPos(GetSpurge().GetSpawnPos()));
@@ -336,7 +323,7 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
         if (GetState() != SpurgeState.IDLE) return;
 
         GetSpurge().SetEntered();
-        SetAnimation(GetSpurge().IDLE_ANIMATION_DURATION, EnemyFactory.GetIdleTrack(
+        SetNextAnimation(GetSpurge().IDLE_ANIMATION_DURATION, EnemyFactory.GetIdleTrack(
             GetSpurge().TYPE,
             GetSpurge().GetDirection(), GetSpurge().GetHealthState()));
 
@@ -353,7 +340,7 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
     {
         if (GetState() != SpurgeState.CHASE) return;
 
-        SetAnimation(GetSpurge().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
+        SetNextAnimation(GetSpurge().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
             GetSpurge().TYPE,
             GetSpurge().GetDirection(), GetSpurge().GetHealthState()));
 
@@ -379,7 +366,7 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
     {
         if (GetState() != SpurgeState.PROTECT) return;
 
-        SetAnimation(GetSpurge().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
+        SetNextAnimation(GetSpurge().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
             GetSpurge().TYPE,
                        GetSpurge().GetDirection(), GetSpurge().GetHealthState()));
 
@@ -402,7 +389,7 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
     {
         if (GetState() != SpurgeState.ATTACK) return;
 
-        SetAnimation(GetSpurge().ATTACK_ANIMATION_DURATION, EnemyFactory.GetAttackTrack(
+        SetNextAnimation(GetSpurge().ATTACK_ANIMATION_DURATION, EnemyFactory.GetAttackTrack(
                 GetSpurge().TYPE,
                        GetSpurge().GetDirection(), GetSpurge().GetHealthState()));
 
@@ -427,47 +414,14 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
         if (!ValidModel()) return;
         if (GetTarget() == null) return;
 
-        SetAnimation(GetSpurge().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
+        SetNextAnimation(GetSpurge().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
             GetSpurge().TYPE,
                                   GetSpurge().GetDirection(), GetSpurge().GetHealthState()));
 
         // Move to target.
         MoveLinearlyTowardsMovePos();
 
-        // We reached our move target, so we need a new one.
-        if (!ReachedMovementTarget()) return;
-        SetNextMovePos(TileGrid.NextTilePosTowardsGoal(GetSpurge().GetPosition(), GetTarget().GetPosition()));
-    }
-
-    /// <summary>
-    /// Runs logic for the Spurge's Exit state.
-    /// </summary>
-    protected void ExecuteExitState()
-    {
-        if (GetState() != SpurgeState.EXITING) return;
-        if (GetSpurge().Exited()) return;
-        NexusHole nexusHoleTarget = GetTarget() as NexusHole;
-        if (nexusHoleTarget == null) return;
-
-        Assert.IsTrue(GetTarget() as NexusHole != null, "exit target needs to be a NH.");
-        Vector3 nexusHolePosition = GetTarget().GetPosition();
-        Vector3 jumpPosition = nexusHolePosition;
-        jumpPosition.y -= .5f;
-
-        if (!GetSpurge().IsExiting() && !GetSpurge().Exited()) GetSpurge().SetExiting(nexusHolePosition);
-
-        SetAnimation(GetSpurge().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
-                GetSpurge().TYPE,
-                       GetSpurge().GetDirection(), GetSpurge().GetHealthState()));
-
-        // Move to target.
-        GetSpurge().SetMaskInteraction(SpriteMaskInteraction.VisibleOutsideMask);
-        GetHeldTargets().ForEach(target => target.SetMaskInteraction(SpriteMaskInteraction.VisibleOutsideMask));
-        SetNextMovePos(jumpPosition);
-        FallIntoMovePos(3f);
-
-        if (!ReachedMovementTarget()) return;
-        if (GetSpurge().IsExiting() && GetSpurge().GetPosition() == jumpPosition)
+        if (Vector2.Distance(GetSpurge().GetPosition(), GetTarget().GetPosition()) < 0.05f)
         {
             GetSpurge().SetExited();
             foreach (Model target in GetHeldTargets())
@@ -477,7 +431,9 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
             }
         }
 
-        Assert.IsTrue(NumTargetsHolding() > 0, "You need to hold targets to exit.");
+        // We reached our move target, so we need a new one.
+        if (!ReachedMovementTarget()) return;
+        SetNextMovePos(TileGrid.NextTilePosTowardsGoal(GetSpurge().GetPosition(), GetTarget().GetPosition()));
     }
 
     #endregion
@@ -497,7 +453,6 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
         else if (state == SpurgeState.ATTACK) attackAnimationCounter += Time.deltaTime;
         else if (state == SpurgeState.PROTECT) protectAnimationCounter += Time.deltaTime;
         else if (state == SpurgeState.ESCAPE) escapeAnimationCounter += Time.deltaTime;
-        else if (state == SpurgeState.EXITING) exitingAnimationCounter += Time.deltaTime;
     }
 
     /// <summary>
@@ -513,7 +468,6 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
         else if (state == SpurgeState.ATTACK) return attackAnimationCounter;
         else if (state == SpurgeState.PROTECT) return protectAnimationCounter;
         else if (state == SpurgeState.ESCAPE) return escapeAnimationCounter;
-        else if (state == SpurgeState.EXITING) return exitingAnimationCounter;
         else return 0;
     }
 
@@ -529,7 +483,6 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
         else if (state == SpurgeState.ATTACK) attackAnimationCounter = 0;
         else if (state == SpurgeState.PROTECT) protectAnimationCounter = 0;
         else if (state == SpurgeState.ESCAPE) escapeAnimationCounter = 0;
-        else if (state == SpurgeState.EXITING) exitingAnimationCounter = 0;
     }
 
     #endregion

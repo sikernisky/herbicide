@@ -91,7 +91,7 @@ public class PorcupineController : DefenderController<PorcupineController.Porcup
             Enemy target = GetTarget() as Enemy;
             if (target == null || !target.Targetable()) yield break; // Invalid target.
 
-            SetAnimation(GetPorcupine().ATTACK_ANIMATION_DURATION / numQuills,
+            SetNextAnimation(GetPorcupine().ATTACK_ANIMATION_DURATION / numQuills,
                 DefenderFactory.GetAttackTrack(
                     ModelType.PORCUPINE,
                     GetPorcupine().GetDirection(), GetPorcupine().GetTier()));
@@ -199,7 +199,7 @@ public class PorcupineController : DefenderController<PorcupineController.Porcup
             FaceTarget();
         else GetPorcupine().FaceDirection(Direction.SOUTH);
 
-        SetAnimation(GetPorcupine().IDLE_ANIMATION_DURATION,
+        SetNextAnimation(GetPorcupine().IDLE_ANIMATION_DURATION,
             DefenderFactory.GetIdleTrack(
                 ModelType.PORCUPINE,
                 GetPorcupine().GetDirection(), GetPorcupine().GetTier()));

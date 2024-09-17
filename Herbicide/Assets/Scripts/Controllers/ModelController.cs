@@ -288,11 +288,28 @@ public abstract class ModelController
     public abstract void ResetAnimationCounter();
 
     /// <summary>
-    /// Sets the current animation to the given track.
+    /// Sets the Model's animation to the given track after the current
+    /// one finishes or immediately if the Model has changed directions
+    /// since the previous animation change. Starts from the beginning
+    /// of the track unless the given animation is already playing.
     /// </summary>
     /// <param name="cycleDuration">The duration of the animation cycle.</param>
     /// <param name="track">The track to animate.</param>
-    protected void SetAnimation(float cycleDuration, Sprite[] track)
+    protected void SetNextAnimation(float cycleDuration, Sprite[] track)
+    {
+        if (GetModel().HasAnimationTrack() && GetModel().GetNumCyclesOfCurrentAnimationCompleted() == 0
+              && GetModel().GetDirectionOfMostRecentAnimation() == GetModel().GetDirection()) return;
+        else SetCurrentAnimation(cycleDuration, track);
+    }
+
+    /// <summary>
+    /// Sets the Model's animation to the given track. Overrides any 
+    /// current animation. Starts from the beginning of the track unless
+    /// the given animation is already playing.
+    /// </summary>
+    /// <param name="cycleDuration">The duration of the animation cycle.</param>
+    /// <param name="track">The track to animate.</param>
+    protected void SetCurrentAnimation(float cycleDuration, Sprite[] track)
     {
         GetModel().SetAnimationDuration(cycleDuration);
         if (track != GetModel().CurrentAnimationTrack) GetModel().SetAnimationTrack(track);
@@ -308,7 +325,7 @@ public abstract class ModelController
         if (!GetModel().HasAnimationTrack()) return;
 
         AgeAnimationCounter();
-        if (GoNextFrame())
+        if (ShouldGoNextFrame())
         {
             GetModel().NextFrame();
             ResetAnimationCounter();
@@ -323,10 +340,11 @@ public abstract class ModelController
     /// </summary>
     /// <returns>true if the current animation cycle is finished; otherwise,
     /// false. </returns>
-    private bool GoNextFrame()
+    private bool ShouldGoNextFrame()
     {
         float stepTime = GetModel().CurrentAnimationDuration / GetModel().NumFrames();
-        return GetAnimationCounter() - stepTime > 0;
+        return GetAnimationCounter() >= stepTime;
+
     }
 
     #endregion
@@ -356,12 +374,6 @@ public abstract class ModelController
     protected void MoveParabolicallyTowards(Vector3 targetPosition, float speed)
     {
         parabolaTarget = new Vector3(targetPosition.x, targetPosition.y, 1);
-        if (GetModel().GetPosition() != parabolaTarget)
-        {
-            //reset
-
-        }
-
         parabolaProgress = Mathf.Min(parabolaProgress + Time.deltaTime * parabolaScale, 1.0f);
         float parabola = 1.0f - 4.0f * (parabolaProgress - 0.5f) * (parabolaProgress - 0.5f);
         Vector3 nextPos = Vector3.Lerp(parabolaStartPos, parabolaTarget, parabolaProgress);

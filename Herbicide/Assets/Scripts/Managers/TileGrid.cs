@@ -16,7 +16,7 @@ public class TileGrid : MonoBehaviour
     /// <summary>
     /// Width and height of a Tile in the TileGrid
     /// </summary>
-    public const float TILE_SIZE = 1f;
+    public const float TILE_SIZE = 1.0f;
 
     /// <summary>
     /// All Tile prefabs, indexed by their type
@@ -454,7 +454,7 @@ public class TileGrid : MonoBehaviour
     /// <param name="coord">the world position to convert.</param>
     /// <returns>the Tile coordinate representation of a world position.
     /// </returns>
-    public static int PositionToCoordinate(float pos) => (int)(MathF.Round(pos) / MathF.Round(TILE_SIZE));
+    public static int PositionToCoordinate(float pos) => (int)MathF.Floor((pos + TILE_SIZE / 2) / TILE_SIZE);
 
     /// <summary>
     /// Returns a Tile's neighboring ISurface in a given direction; returns null
@@ -1124,10 +1124,12 @@ public class TileGrid : MonoBehaviour
         }
 
         //From given positions, find the corresponding Tiles.
+
         int xStartCoord = PositionToCoordinate(startPos.x);
         int yStartCoord = PositionToCoordinate(startPos.y);
         int xGoalCoord = PositionToCoordinate(goalPos.x);
         int yGoalCoord = PositionToCoordinate(goalPos.y);
+
         Tile startTile = instance.TileExistsAt(xStartCoord, yStartCoord);
         Tile goalTile = instance.TileExistsAt(xGoalCoord, yGoalCoord);
 
@@ -1141,7 +1143,6 @@ public class TileGrid : MonoBehaviour
         Dictionary<Tile, Tile> cameFrom = new Dictionary<Tile, Tile>();
         Dictionary<Tile, float> gScore = new Dictionary<Tile, float> { { startTile, 0 } };
         Dictionary<Tile, float> fScore = new Dictionary<Tile, float>();
-        fScore.Add(startTile, instance.ManhattanDistance(startTile, goalTile));
 
         //Iterative A* Algorithm.
         while (openList.Count > 0)

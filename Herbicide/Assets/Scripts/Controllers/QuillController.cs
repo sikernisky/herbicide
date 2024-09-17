@@ -156,7 +156,7 @@ public class QuillController : ProjectileController<QuillController.QuillState>
         if (!ValidModel()) return;
         if (GetState() != QuillState.MOVING) return;
 
-        SetAnimation(GetQuill().MID_AIR_ANIMATION_DURATION, ProjectileFactory.GetMidAirAnimationTrack(GetQuill()));
+        SetNextAnimation(GetQuill().MID_AIR_ANIMATION_DURATION, ProjectileFactory.GetMidAirAnimationTrack(GetQuill()));
         LinearShot();
     }
 

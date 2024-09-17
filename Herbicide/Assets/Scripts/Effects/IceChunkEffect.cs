@@ -7,12 +7,12 @@ public class IceChunkEffect : SpeedEffect
     /// <summary>
     /// How long this effect lasts.
     /// </summary>
-    private const float ICE_CHUNK_DURATION = 5.0f;
+    private const float ICE_CHUNK_DURATION = 3.0f;
 
     /// <summary>
     /// The magnitude of the effect.
     /// </summary>
-    private const float ICE_CHUNK_MAGNITUDE = -0.1f;
+    private const float ICE_CHUNK_MAGNITUDE = -0.2f;
 
     /// <summary>
     /// Makes a new IceChunkEffect with the default duration and magnitude.

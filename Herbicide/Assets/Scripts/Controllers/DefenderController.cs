@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Assertions;
+using System.Linq;
 
 /// <summary>
 /// Controls a Defender. <br></br>
@@ -27,6 +28,12 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     /// Defenders find targets.
     /// </summary>
     protected override bool FINDS_TARGETS => true;
+
+    /// <summary>
+    /// The Defender's current target. We need this to implement
+    /// sticky targeting.
+    /// </summary>
+    private Enemy stickyTarget;
 
     #endregion
 
@@ -104,20 +111,6 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     }
 
     /// <summary>
-    /// Returns the distance from the Defender's tree to one of its
-    /// targets.
-    /// </summary>
-    /// <returns>the distance from the Defender's tree to one of its
-    /// targets. </returns>
-    protected float DistanceToTargetFromTree(Model target)
-    {
-        Assert.IsNotNull(target);
-        Assert.IsTrue(GetTargets().Contains(target));
-
-        return Vector3.Distance(GetDefender().GetTreePosition(), target.GetPosition());
-    }
-
-    /// <summary>
     /// Sorts the targets list. They are ordered by targeting priority.
     /// </summary>
     /// <param name="targets">The list of targets to sort. </param>
@@ -125,22 +118,42 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     {
         base.SortTargets(targets);
 
-        // Sort in the following order:
-        // (1) Enemies holding a Nexus
-        // (2) Enemies closest, by the TileGrid's walkable pathfinding logic, to a Nexus
-        targets.Sort((a, b) =>
+        Assert.IsTrue(targets.All(t => t is Enemy), "Not all targets are valid Enemies.");
+        List<Enemy> enemyTargets = targets.Cast<Enemy>().ToList();
+        Enemy nexusCarrier = null;
+
+        foreach (Enemy enemy in enemyTargets)
         {
-            Enemy enemyA = a as Enemy;
-            Enemy enemyB = b as Enemy;
+            Assert.IsNotNull(enemy, "Enemy is null.");
+            if (enemy.IsHoldingNexus())
+            {
+                nexusCarrier = enemy;
+                break;
+            }
+        }
 
-            if (enemyA.IsHoldingNexus() && !enemyB.IsHoldingNexus()) return -1;
-            if (!enemyA.IsHoldingNexus() && enemyB.IsHoldingNexus()) return 1;
+        if (nexusCarrier != null) stickyTarget = nexusCarrier;
+        else if (stickyTarget != null && enemyTargets.Contains(stickyTarget))
+        {
+            enemyTargets.Remove(stickyTarget);
+            enemyTargets.Insert(0, stickyTarget);
+            targets.Clear();
+            targets.AddRange(enemyTargets);
+            return;
+        }
+        else if (enemyTargets.Count > 0)
+        {
+            stickyTarget = enemyTargets[0];
+        }
 
-            float distanceA = DistanceToTargetFromTree(enemyA);
-            float distanceB = DistanceToTargetFromTree(enemyB);
+        if (stickyTarget != null)
+        {
+            enemyTargets.Remove(stickyTarget); 
+            enemyTargets.Insert(0, stickyTarget);
+        }
 
-            return distanceA.CompareTo(distanceB);
-        });
+        targets.Clear();
+        targets.AddRange(enemyTargets);
     }
 
     /// <summary>

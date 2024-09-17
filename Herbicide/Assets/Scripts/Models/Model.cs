@@ -21,6 +21,11 @@ public abstract class Model : MonoBehaviour
     public float CurrentAnimationDuration { get; private set; }
 
     /// <summary>
+    /// The Direction of the most recent animation track
+    /// </summary>
+    private Direction directionOfMostRecentAnimation;
+
+    /// <summary>
     /// The most up to date frame number of this Model's active animation.
     /// </summary>
     public int CurrentFrame { get; private set; }
@@ -74,6 +79,11 @@ public abstract class Model : MonoBehaviour
     /// </summary>
     private List<IEffect> effectsToRemoveSafely = new List<IEffect>();
 
+    /// <summary>
+    /// The current base color of this Model.
+    /// </summary>
+    private Color32 baseColor;
+
     #endregion
 
     #region Stats
@@ -103,6 +113,11 @@ public abstract class Model : MonoBehaviour
     /// The offset of this Model's held Nexii. 
     /// </summary>
     public virtual Vector2 HOLDER_OFFSET => new Vector2(0, 0);
+
+    /// <summary>
+    /// The base color of this Model.
+    /// </summary>
+    public virtual Color32 BASE_COLOR => new Color32(255, 255, 255, 255);
 
     #endregion
 
@@ -165,10 +180,22 @@ public abstract class Model : MonoBehaviour
     public virtual void SetColor(Color32 newColor) => modelRenderer.color = modelRenderer != null ? newColor : modelRenderer.color;
 
     /// <summary>
-    /// Returns this Model's SpriteRenderer's color.
+    /// Returns this Model's base color.
     /// </summary>
     /// <returns>this Model's SpriteRenderer's color. </returns>
     public Color GetColor() => modelRenderer.color;
+
+    /// <summary>
+    /// Sets this Model's base color.
+    /// </summary>
+    /// <param name="color">the base color to set to.</param>
+    public void SetBaseColor(Color32 color) => baseColor = color; 
+
+    /// <summary>
+    /// Returns this Model's base color.
+    /// </summary>
+    /// <returns>this model's base color. </returns>
+    public Color GetBaseColor() => baseColor;
 
     /// <summary>
     /// Sets this Model's SpriteRenderer component's sorting
@@ -181,75 +208,6 @@ public abstract class Model : MonoBehaviour
     /// </summary>
     /// <returns>this Model's sorting order.</returns>
     public int GetSortingOrder() => modelRenderer.sortingOrder;
-
-    /// <summary>
-    /// Sets this Model's current animation track.
-    /// </summary>
-    /// <param name="track">The current animation track.</param>
-    /// <param name="startFrame">optionally, choose which frame to start with.</param>
-    /// <param name="isNewTrack">optionally, set to true if this is a new track.</param>
-    public void SetAnimationTrack(Sprite[] track, int startFrame = 0, bool isNewTrack = true)
-    {
-        Assert.IsNotNull(track, "Cannot set to a null animation track.");
-        Assert.IsTrue(track.Length > 0, "Cannot have an empty animation track.");
-        CurrentAnimationTrack = track;
-        CurrentFrame = startFrame;
-        if (isNewTrack) numCyclesOfCurrentAnimationCompleted = 0;
-    }
-
-    /// <summary>
-    /// Returns the number of cycles of the current animation completed.
-    /// </summary>
-    /// <returns>the number of cycles of the current animation completed. </returns>
-    public int GetNumCyclesOfCurrentAnimationCompleted() => numCyclesOfCurrentAnimationCompleted;
-
-    /// <summary>
-    /// Increments the number of cycles of the current animation completed.
-    /// </summary>
-    public void IncrementNumCyclesOfCurrentAnimationCompleted() => numCyclesOfCurrentAnimationCompleted++;
-
-    /// <summary>
-    /// Returns true if this Model has a valid animation track set up.
-    /// </summary>
-    /// <returns> true if this Model has a valid animation track set up;
-    /// otherwise, false. /// </returns>
-    public bool HasAnimationTrack() => CurrentAnimationTrack != null;
-
-    /// <summary>
-    /// Sets the duration of this Model's current animation.
-    /// </summary>
-    /// <param name="duration">The duration of the current animation track.</param>
-    public void SetAnimationDuration(float duration)
-    {
-        Assert.IsTrue(duration > 0, "Must have positive animation duration.");
-        CurrentAnimationDuration = duration;
-    }
-
-    /// <summary>
-    /// Returns the length of this Model's current animationt track.
-    /// </summary>
-    /// <returns>the length of this Model's current animationt track;
-    /// 0 if null.</returns>
-    public int NumFrames() => HasAnimationTrack() ? CurrentAnimationTrack.Length : 0;
-
-
-    /// <summary>
-    /// Increments the frame count by one; or, if it is already
-    /// the final frame in the current animation, sets it to 0.
-    /// </summary>
-    public void NextFrame() => CurrentFrame = (CurrentFrame + 1 >= NumFrames()) ? 0 : CurrentFrame + 1;
-
-    /// <summary>
-    /// Returns the Sprite at the current frame of the current
-    /// animation.
-    /// </summary>
-    /// <returns>the Sprite at the current frame of the current
-    /// animation</returns>
-    public Sprite GetSpriteAtCurrentFrame()
-    {
-        Assert.IsTrue(HasAnimationTrack(), NAME + " has no animation set up.");
-        return CurrentAnimationTrack[CurrentFrame];
-    }
 
     /// <summary>
     /// Sets this Model's (X, Y) Tile coordinates.
@@ -398,6 +356,7 @@ public abstract class Model : MonoBehaviour
     {
         OnCollision = null;
         OnProjectileImpact = null;
+        SetColor(BASE_COLOR);
     }
 
     /// <summary>
@@ -460,6 +419,86 @@ public abstract class Model : MonoBehaviour
     public bool IsHoldingNexus() => holdingNexus;
 
     #endregion
+
+    #region Animation
+
+    /// <summary>
+    /// Sets this Model's current animation track.
+    /// </summary>
+    /// <param name="track">The current animation track.</param>
+    /// <param name="startFrame">optionally, choose which frame to start with.</param>
+    /// <param name="isNewTrack">optionally, set to true if this is a new track.</param>
+    public void SetAnimationTrack(Sprite[] track, int startFrame = 0, bool isNewTrack = true)
+    {
+        Assert.IsNotNull(track, "Cannot set to a null animation track.");
+        Assert.IsTrue(track.Length > 0, "Cannot have an empty animation track.");
+        CurrentAnimationTrack = track;
+        CurrentFrame = startFrame;
+        directionOfMostRecentAnimation = direction;
+        if (isNewTrack) numCyclesOfCurrentAnimationCompleted = 0;
+    }
+
+    /// <summary>
+    /// Returns the Direction of the most recent animation.
+    /// </summary>
+    /// <returns>the Direction of the most recent animation.</returns>
+    public Direction GetDirectionOfMostRecentAnimation() => directionOfMostRecentAnimation;
+
+    /// <summary>
+    /// Returns the number of cycles of the current animation completed.
+    /// </summary>
+    /// <returns>the number of cycles of the current animation completed. </returns>
+    public int GetNumCyclesOfCurrentAnimationCompleted() => numCyclesOfCurrentAnimationCompleted;
+
+    /// <summary>
+    /// Increments the number of cycles of the current animation completed.
+    /// </summary>
+    public void IncrementNumCyclesOfCurrentAnimationCompleted() => numCyclesOfCurrentAnimationCompleted++;
+
+    /// <summary>
+    /// Returns true if this Model has a valid animation track set up.
+    /// </summary>
+    /// <returns> true if this Model has a valid animation track set up;
+    /// otherwise, false. /// </returns>
+    public bool HasAnimationTrack() => CurrentAnimationTrack != null;
+
+    /// <summary>
+    /// Sets the duration of this Model's current animation.
+    /// </summary>
+    /// <param name="duration">The duration of the current animation track.</param>
+    public void SetAnimationDuration(float duration)
+    {
+        Assert.IsTrue(duration > 0, "Must have positive animation duration.");
+        CurrentAnimationDuration = duration;
+    }
+
+    /// <summary>
+    /// Returns the length of this Model's current animationt track.
+    /// </summary>
+    /// <returns>the length of this Model's current animationt track;
+    /// 0 if null.</returns>
+    public int NumFrames() => HasAnimationTrack() ? CurrentAnimationTrack.Length : 0;
+
+
+    /// <summary>
+    /// Increments the frame count by one; or, if it is already
+    /// the final frame in the current animation, sets it to 0.
+    /// </summary>
+    public void NextFrame() => CurrentFrame = (CurrentFrame + 1 >= NumFrames()) ? 0 : CurrentFrame + 1;
+
+    /// <summary>
+    /// Returns the Sprite at the current frame of the current
+    /// animation.
+    /// </summary>
+    /// <returns>the Sprite at the current frame of the current
+    /// animation</returns>
+    public Sprite GetSpriteAtCurrentFrame()
+    {
+        Assert.IsTrue(HasAnimationTrack(), NAME + " has no animation set up.");
+        return CurrentAnimationTrack[CurrentFrame];
+    }
+
+    #endregion  
 
     #region Effects
 

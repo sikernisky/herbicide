@@ -135,7 +135,7 @@ public class RaspberryController : ProjectileController<RaspberryController.Rasp
         if (!ValidModel()) return;
         if (GetState() != RaspberryState.MOVING) return;
 
-        SetAnimation(GetRaspberry().MID_AIR_ANIMATION_DURATION, ProjectileFactory.GetMidAirAnimationTrack(GetRaspberry()));
+        SetNextAnimation(GetRaspberry().MID_AIR_ANIMATION_DURATION, ProjectileFactory.GetMidAirAnimationTrack(GetRaspberry()));
         LobShot();
     }
 

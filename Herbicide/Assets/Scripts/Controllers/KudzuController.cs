@@ -292,7 +292,6 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
             default:
                 throw new System.Exception("Invalid state.");
         }
-
     }
 
     /// <summary>
@@ -322,7 +321,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
 
         GetKudzu().SetEntering(GetKudzu().GetSpawnPos());
 
-        SetAnimation(GetKudzu().MOVE_ANIMATION_DURATION, EnemyFactory.GetSpawnTrack(
+        SetNextAnimation(GetKudzu().MOVE_ANIMATION_DURATION, EnemyFactory.GetSpawnTrack(
             GetKudzu().TYPE, GetKudzu().GetDirection(), GetKudzu().GetHealthState()));
 
         PopOutOfMovePos(NexusHoleSpawnPos(GetKudzu().GetSpawnPos()));
@@ -342,7 +341,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         if (GetState() != KudzuState.IDLE) return;
 
         GetKudzu().SetEntered();
-        SetAnimation(GetKudzu().IDLE_ANIMATION_DURATION, EnemyFactory.GetIdleTrack(
+        SetNextAnimation(GetKudzu().IDLE_ANIMATION_DURATION, EnemyFactory.GetIdleTrack(
             GetKudzu().TYPE,
             GetKudzu().GetDirection(), GetKudzu().GetHealthState()));
 
@@ -359,7 +358,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     {
         if (GetState() != KudzuState.CHASE) return;
 
-        SetAnimation(GetKudzu().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
+        SetNextAnimation(GetKudzu().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
             GetKudzu().TYPE,
             GetKudzu().GetDirection(), GetKudzu().GetHealthState()));
 
@@ -390,7 +389,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     {
         if (GetState() != KudzuState.PROTECT) return;
 
-        SetAnimation(GetKudzu().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
+        SetNextAnimation(GetKudzu().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
             GetKudzu().TYPE,
                        GetKudzu().GetDirection(), GetKudzu().GetHealthState()));
 
@@ -418,7 +417,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
     {
         if (GetState() != KudzuState.ATTACK) return;
 
-        SetAnimation(GetKudzu().ATTACK_ANIMATION_DURATION, EnemyFactory.GetAttackTrack(
+        SetNextAnimation(GetKudzu().ATTACK_ANIMATION_DURATION, EnemyFactory.GetAttackTrack(
             GetKudzu().TYPE,
                        GetKudzu().GetDirection(), GetKudzu().GetHealthState()));
 
@@ -444,7 +443,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         if (!ValidModel()) return;
         if (GetTarget() == null) return;
 
-        SetAnimation(GetKudzu().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
+        SetNextAnimation(GetKudzu().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
             GetEnemy().TYPE,
                                   GetKudzu().GetDirection(), GetKudzu().GetHealthState()));
 
@@ -477,7 +476,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
 
         if (!GetKudzu().IsExiting() && !GetKudzu().Exited()) GetKudzu().SetExiting(nexusHolePosition);
 
-        SetAnimation(GetKudzu().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
+        SetNextAnimation(GetKudzu().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
             GetKudzu().TYPE,
                        GetKudzu().GetDirection(), GetKudzu().GetHealthState()));
 

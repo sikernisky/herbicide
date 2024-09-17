@@ -136,7 +136,7 @@ public class SalmonberryController : ProjectileController<SalmonberryController.
         if (!ValidModel()) return;
         if (GetState() != SalmonberryState.MOVING) return;
 
-        SetAnimation(GetSalmonberry().MID_AIR_ANIMATION_DURATION, ProjectileFactory.GetMidAirAnimationTrack(GetSalmonberry()));
+        SetNextAnimation(GetSalmonberry().MID_AIR_ANIMATION_DURATION, ProjectileFactory.GetMidAirAnimationTrack(GetSalmonberry()));
         LobShot();
     }
 
