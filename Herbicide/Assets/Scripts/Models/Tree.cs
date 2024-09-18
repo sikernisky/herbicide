@@ -90,10 +90,10 @@ public abstract class Tree : Mob, ISurface
         SoundController.PlaySoundEffect(placeName);
         defender.SetTreePosition(GetPosition());
         candidate.transform.SetParent(transform);
+        candidate.SetLocalScale(Vector3.one);
         Vector2 defenderOffset = GetOffsetOfDefenderOnTree(candidate.TYPE);
         candidate.transform.localPosition =
             new Vector3(defenderOffset.x, defenderOffset.y, 1);
-        candidate.transform.localScale = defender.GetPlacementScale();
         candidate.OnPlace(new Vector2Int(GetX(), GetY()));
     }
 
@@ -211,9 +211,9 @@ public abstract class Tree : Mob, ISurface
         hollowRenderer.sortingOrder = GetSortingOrder() + 1;
         hollowRenderer.color = new Color32(255, 255, 255, 200);
         hollowCopy.transform.SetParent(transform);
+        hollowCopy.transform.localScale = Vector3.one;
         Vector2 defenderOffset = GetOffsetOfDefenderOnTree(ghost.TYPE);
         hollowCopy.transform.localPosition = new Vector3(defenderOffset.x, defenderOffset.y, 1);
-        hollowCopy.transform.localScale = Vector3.one;
         hollowCopy.transform.SetParent(transform);
         hollowCopy.name = "Ghost " + ghost.NAME;
 

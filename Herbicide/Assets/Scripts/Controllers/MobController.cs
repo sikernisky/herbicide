@@ -158,6 +158,10 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
         Vector2Int targetTilePosition = new Vector2Int(Mathf.FloorToInt(targetPosition.x), Mathf.FloorToInt(targetPosition.y));
         Vector3 convertedMobPosition = new Vector3(mobPosition.x, mobPosition.y, 1);
         Vector3 convertedTargetPosition = new Vector3(targetTilePosition.x, targetTilePosition.y, 1);
+
+
+
+
         if (TileGrid.CanReach(convertedMobPosition, convertedTargetPosition)) return convertedTargetPosition;
 
         return convertedMobPosition;

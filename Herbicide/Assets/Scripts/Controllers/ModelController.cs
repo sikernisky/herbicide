@@ -83,6 +83,7 @@ public abstract class ModelController
         GetModel().ResetModel();
         GetModel().SubscribeToCollision(HandleCollision);
         GetModel().SubscribeToProjectileCollisionEvent(HandleProjectileCollision);
+        
         ALL_MODELS.Add(model);
     }
 
@@ -413,8 +414,8 @@ public abstract class ModelController
         GetModel().SetWorldPosition(newPosition);
 
         float scaleStep = 3.5f * Time.deltaTime;
-        Vector3 newScale = Vector3.Lerp(GetModel().transform.localScale, Vector3.zero, scaleStep);
-        GetModel().transform.localScale = newScale;
+        Vector3 newScale = Vector3.Lerp(GetModel().GetLocalScale(), Vector3.zero, scaleStep);
+        GetModel().SetLocalScale(newScale);
     }
 
     /// <summary>
@@ -444,7 +445,7 @@ public abstract class ModelController
 
         // Calculate the new scale
         Vector3 newScale = Vector3.Lerp(new Vector3(0.1f, 0.1f, 0.1f), Vector3.one, scaleFraction);
-        GetModel().transform.localScale = newScale;
+        GetModel().SetLocalScale(newScale);
     }
 
     #endregion

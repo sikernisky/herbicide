@@ -297,7 +297,6 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
 
         PopOutOfMovePos(NexusHoleSpawnPos(GetKnotwood().GetSpawnPos()));
         GetKnotwood().FaceDirection(Direction.SOUTH);
-        Debug.Log(GetKnotwood().GetPosition());
 
         if (!ReachedMovementTarget()) return;
 
@@ -344,8 +343,7 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
 
         if (DistanceToTarget() <= GetKnotwood().GetAttackRange()) return;
 
-        Vector3 closest = ClosestTileCoordinatePositionToTarget(target);
-        Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetKnotwood().GetPosition(), closest);
+        Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetKnotwood().GetPosition(), GetTarget().GetPosition());
         SetNextMovePos(nextMove);
     }
 
@@ -367,8 +365,7 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
         if (!ReachedMovementTarget()) return;
         if (GetNearestCarrier() == null) return;
 
-        Vector3 closest = GetNearestCarrier().GetPosition();
-        Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetKnotwood().GetPosition(), closest);
+        Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetKnotwood().GetPosition(), GetNearestCarrier().GetPosition());
         SetNextMovePos(nextMove);
     }
 

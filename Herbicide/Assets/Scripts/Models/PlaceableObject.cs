@@ -54,11 +54,6 @@ public abstract class PlaceableObject : Model
     public abstract float MIN_HEALTH { get; }
 
     /// <summary>
-    /// The scale of this PlaceableObject when placed.
-    /// </summary>
-    protected virtual Vector3 PLACEMENT_SCALE => Vector3.one;
-
-    /// <summary>
     /// true if this PlaceableObject occupies a Tile, preventing
     /// further placement; otherwise, false.
     /// </summary>
@@ -73,12 +68,6 @@ public abstract class PlaceableObject : Model
     #region Methods
 
     /// <summary>
-    /// Returns this PlaceableObject's placement scale.
-    /// </summary>
-    /// <returns>this PlaceableObject's placement scale.</returns>
-    public Vector3 GetPlacementScale() { return PLACEMENT_SCALE; }
-
-    /// <summary>
     /// Returns a GameObject that holds a SpriteRenderer component with
     /// this PlaceableObject's placed Sprite. No other components are
     /// copied. 
@@ -90,7 +79,7 @@ public abstract class PlaceableObject : Model
         SpriteRenderer hollowRenderer = hollowCopy.AddComponent<SpriteRenderer>();
         hollowRenderer.sprite = GetSprite();
         hollowCopy.transform.position = transform.position;
-        hollowCopy.transform.localScale = transform.localScale;
+        // hollowCopy.transform.localScale = transform.localScale;
         return hollowCopy;
     }
 

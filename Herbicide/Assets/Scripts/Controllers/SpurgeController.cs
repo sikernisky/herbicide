@@ -354,8 +354,7 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
 
         if (DistanceToTarget() <= GetSpurge().GetAttackRange()) return;
 
-        Vector3 closest = ClosestTileCoordinatePositionToTarget(target);
-        Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetSpurge().GetPosition(), closest);
+        Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetSpurge().GetPosition(), GetTarget().GetPosition());
         SetNextMovePos(nextMove);
     }
 
@@ -377,8 +376,7 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
         if (!ReachedMovementTarget()) return;
         if (GetNearestCarrier() == null) return;
 
-        Vector3 closest = GetNearestCarrier().GetPosition();
-        Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetSpurge().GetPosition(), closest);
+        Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetSpurge().GetPosition(), GetNearestCarrier().GetPosition());
         SetNextMovePos(nextMove);
     }
 

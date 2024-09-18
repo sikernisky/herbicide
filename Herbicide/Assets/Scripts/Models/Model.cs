@@ -233,10 +233,25 @@ public abstract class Model : MonoBehaviour
     public Vector3 GetPosition() => transform.position;
 
     /// <summary>
-    /// Sets this Model's Transform's local scale.
+    /// Sets this Model's Transform's local scale. The scale is
+    /// dependent on the TileGrid's TILE_SIZE.
     /// </summary>
-    /// <param name="scale">The scale to set to.</param>
-    public void SetSize(Vector3 scale) => transform.localScale = scale;
+    /// <param name="x">The X-Scale.</param>
+    /// <param name="y">The Y-Scale.</param>
+    public void SetLocalScale(float x, float y) => transform.localScale = new Vector3(x, y, 1);
+
+    /// <summary>
+    /// Sets this Model's Transform's local scale. The scale is
+    /// dependent on the TileGrid's TILE_SIZE.
+    /// </summary>
+    /// <param name="newSize">The new scale.</param>
+    public void SetLocalScale(Vector3 newSize) => SetLocalScale(newSize.x, newSize.y);
+
+    /// <summary>
+    /// Returns the local scale of this Model.
+    /// </summary>
+    /// <returns>the local scale of this Model. </returns>
+    public Vector3 GetLocalScale() => transform.localScale;
 
     /// <summary>
     /// Sets this Model's Transform's local rotation.

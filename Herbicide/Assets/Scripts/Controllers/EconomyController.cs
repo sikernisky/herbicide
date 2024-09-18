@@ -126,7 +126,18 @@ public class EconomyController : MonoBehaviour
     public static void CashIn(Currency currency)
     {
         Assert.IsNotNull(currency, "Currency is null.");
-        Deposit(currency.GetValue());
+
+        switch(currency.TYPE)
+        {
+            case ModelType.DEW:
+                Dew dew = currency as Dew;
+                Deposit(dew.GetValue());
+                break;
+            case ModelType.BASIC_TREE_SEED:
+            default:
+                Debug.Log("Not yet supported: " + currency.TYPE);
+                break;
+        }
     }
 
     /// <summary>

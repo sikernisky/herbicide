@@ -347,8 +347,7 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
 
         if (DistanceToTarget() <= GetSpurgeMinion().GetAttackRange()) return;
 
-        Vector3 closest = ClosestTileCoordinatePositionToTarget(target);
-        Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetSpurgeMinion().GetPosition(), closest);
+        Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetSpurgeMinion().GetPosition(), GetTarget().GetPosition());
         SetNextMovePos(nextMove);
     }
 
@@ -370,8 +369,7 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
         if (!ReachedMovementTarget()) return;
         if (GetNearestCarrier() == null) return;
 
-        Vector3 closest = GetNearestCarrier().GetPosition();
-        Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetSpurgeMinion().GetPosition(), closest);
+        Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetSpurgeMinion().GetPosition(), GetNearestCarrier().GetPosition());
         SetNextMovePos(nextMove);
     }
 

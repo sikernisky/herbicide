@@ -240,6 +240,7 @@ public abstract class Mob : PlaceableObject
         ResetChaseRange();
         ResetMovementSpeed();
         ResetAttackSpeed();
+        SetLocalScale(TileGrid.TILE_SIZE, TileGrid.TILE_SIZE);
     }
 
     #endregion

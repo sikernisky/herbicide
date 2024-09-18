@@ -1,20 +1,20 @@
 using UnityEngine;
 
 /// <summary>
-/// Controls a Dew. <br></br>
+/// Controls a BasicTreeSeed. <br></br>
 /// 
-/// The DewController is responsible for manipulating its Dew and bringing
+/// The BasicTreeSeedController is responsible for manipulating its BasicTreeSeed and bringing
 /// it to life. This includes moving it playing animations, and more.
 /// </summary>
-/// <![CDATA[<param name="DewState">]]>
-public class DewController : CollectableController<DewController.DewState>
+/// <![CDATA[<param name="BasicTreeSeedState">]]>
+public class BasicTreeSeedController : CollectableController<BasicTreeSeedController.BasicTreeSeedState>    
 {
     #region Fields
 
     /// <summary>
-    /// State of a Dew.
+    /// State of a BasicTreeSeed.
     /// </summary>
-    public enum DewState
+    public enum BasicTreeSeedState
     {
         SPAWN,
         BOBBING,
@@ -26,19 +26,18 @@ public class DewController : CollectableController<DewController.DewState>
     #region Methods
 
     /// <summary>
-    /// Assigns a Dew to a DewController.
+    /// Assigns a BasicTreeSeed to a BasicTreeSeedController.
     /// </summary>
-    /// <param name="dew">The Dew to assign.</param>
-    /// <param name="dropPos">Where the Dew first dropped.</param>
-    /// <param name="value">How much the Dew collectable is worth..</param>
-    public DewController(Dew dew, Vector3 dropPos, int value) : base(dew, dropPos)
+    /// <param name="basicTreeSeed">The BasicTreeSeed to assign.</param>
+    /// <param name="dropPos">Where the BasicTreeSeed first dropped.</param>
+    public BasicTreeSeedController(BasicTreeSeed basicTreeSeed, Vector3 dropPos) : base(basicTreeSeed, dropPos)
     {
-        GetDew().SetWorldPosition(dropPos);
-        GetDew().AdjustValue(value);
+        GetBasicTreeSeed().SetWorldPosition(dropPos);
+        GetBasicTreeSeed().AdjustValue(1);
     }
 
     /// <summary>
-    /// Main update loop for the Dew.
+    /// Main update loop for the BasicTreeSeed.
     /// </summary>
     /// <param name="gameState">The most recent GameState.</param>
     public override void UpdateController(GameState gameState)
@@ -49,25 +48,25 @@ public class DewController : CollectableController<DewController.DewState>
     }
 
     /// <summary>
-    /// Returns this controller's Dew model.
+    /// Returns this controller's BasicTreeSeed model.
     /// </summary>
-    /// <returns>this controller's Dew model.</returns>
-    private Dew GetDew() => GetCollectable() as Dew;
+    /// <returns>this controller's BasicTreeSeed model.</returns>
+    private BasicTreeSeed GetBasicTreeSeed() => GetCollectable() as BasicTreeSeed;
 
     #endregion
 
     #region State Logic
 
     /// <summary>
-    /// Returns true if two DewStates are equal.
+    /// Returns true if two BasicTreeSeedStates are equal.
     /// </summary>
     /// <param name="stateA">The first state.</param>
     /// <param name="stateB">The second state.</param>
-    /// <returns>true if the two DewStates are equal.</returns>
-    public override bool StateEquals(DewState stateA, DewState stateB) => stateA == stateB;
+    /// <returns>true if the two BasicTreeSeedStates are equal.</returns>
+    public override bool StateEquals(BasicTreeSeedState stateA, BasicTreeSeedState stateB) => stateA == stateB;
 
     /// <summary>
-    /// Updates the state of this DewController's Dew model.
+    /// Updates the state of this BasicTreeSeedController's BasicTreeSeed model.
     /// The transitions are: <br></br>
     /// 
     /// SPAWN --> BOBBING : when dropped from source <br></br>
@@ -78,40 +77,40 @@ public class DewController : CollectableController<DewController.DewState>
     {
         switch (GetState())
         {
-            case DewState.SPAWN:
-                SetState(DewState.BOBBING);
+            case BasicTreeSeedState.SPAWN:
+                SetState(BasicTreeSeedState.BOBBING);
                 break;
-            case DewState.BOBBING:
-                if (InHomingRange()) SetState(DewState.COLLECTING);
+            case BasicTreeSeedState.BOBBING:
+                if (InHomingRange()) SetState(BasicTreeSeedState.COLLECTING);
                 break;
-            case DewState.COLLECTING:
+            case BasicTreeSeedState.COLLECTING:
                 break;
         }
     }
 
     /// <summary>
-    /// Runs logic for the Dew's bobbing state.
+    /// Runs logic for the BasicTreeSeed's bobbing state.
     /// </summary>
     protected virtual void ExecuteBobbingState()
     {
         if (!ValidModel()) return;
-        if (GetState() != DewState.BOBBING) return;
+        if (GetState() != BasicTreeSeedState.BOBBING) return;
 
         BobUpAndDown();
     }
 
     /// <summary>
-    /// Runs logic for the Dew's collecting state.
+    /// Runs logic for the BasicTreeSeed's collecting state.
     /// </summary>
     protected virtual void ExecuteCollectingState()
     {
         if (!ValidModel()) return;
-        if (GetState() != DewState.COLLECTING) return;
+        if (GetState() != BasicTreeSeedState.COLLECTING) return;
 
         if (InCollectionRange())
         {
-            EconomyController.CashIn(GetDew());
-            GetDew().OnCollect();
+            EconomyController.CashIn(GetBasicTreeSeed());
+            GetBasicTreeSeed().OnCollect();
         }
         else MoveTowardsCursor();
     }

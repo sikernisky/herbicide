@@ -1,7 +1,7 @@
 /// <summary>
-/// Represents a Dew currency.
+/// Represents a Basic Tree Seed currency.
 /// </summary>
-public class Dew : Currency
+public class BasicTreeSeed : Currency
 {
     #region Fields
 
@@ -10,24 +10,24 @@ public class Dew : Currency
     #region Stats
 
     /// <summary>
-    /// Starting value of a Dew.
+    /// Starting value of a BasicTreeSeed.
     /// </summary>
     public override int BASE_VALUE => 0;
 
     /// <summary>
-    /// Maximum value of a Dew.
+    /// Maximum value of a BasicTreeSeed.
     /// </summary>
     public override int MAX_VALUE => int.MaxValue;
 
     /// <summary>
-    /// Mimimum value of a Dew.
+    /// Mimimum value of a BasicTreeSeed.
     /// </summary>
     public override int MIN_VALUE => 0;
 
     /// <summary>
-    /// Type of a Dew.
+    /// Type of a BasicTreeSeed.
     /// </summary>
-    public override ModelType TYPE => ModelType.DEW;
+    public override ModelType TYPE => ModelType.BASIC_TREE_SEED;
 
     #endregion
 }
