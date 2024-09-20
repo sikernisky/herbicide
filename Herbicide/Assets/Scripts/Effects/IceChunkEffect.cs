@@ -2,7 +2,7 @@
 /// Represents an Ice Chunk effect that can be applied to a Model.
 /// Slows down the Model's movement speed.
 /// </summary>
-public class IceChunkEffect : SpeedEffect
+public class IceChunkEffect : MovementSpeedEffect
 {
     /// <summary>
     /// How long this effect lasts.

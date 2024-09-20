@@ -1,19 +1,19 @@
 /// <summary>
-/// Controls a BasicTree. <br></br>
+/// Controls a SpeedTree. <br></br>
 /// 
-/// The BasicTreeController is responsible for manipulating its BasicTree and bringing
+/// The SpeedTreeController is responsible for manipulating its SpeedTree and bringing
 /// it to life. This includes moving it, choosing targets, playing animations,
 /// and more.
 /// </summary>
-/// <![CDATA[<param name="BasicTreeState">]]>
-public class BasicTreeController : TreeController<BasicTreeController.BasicTreeState>
+/// <![CDATA[<param name="SpeedTreeState">]]>
+public class SpeedTreeController : TreeController<SpeedTreeController.SpeedTreeState>
 {
     #region Fields 
-    
+
     /// <summary>
-    /// State of a BasicTree.
+    /// State of a SpeedTree.
     /// </summary>
-    public enum BasicTreeState
+    public enum SpeedTreeState
     {
         SPAWN,
         IDLE,
@@ -25,13 +25,13 @@ public class BasicTreeController : TreeController<BasicTreeController.BasicTreeS
     #region Methods
 
     /// <summary>
-    /// Makes a new BasicTreeController.
+    /// Makes a new SpeedTreeController.
     /// </summary>
-    /// <param name="basicTree">The BasicTree model.</param>
-    public BasicTreeController(BasicTree basicTree) : base(basicTree) { }
+    /// <param name="speedTree">The SpeedTree model.</param>
+    public SpeedTreeController(SpeedTree speedTree) : base(speedTree) { }
 
     /// <summary>
-    /// Main update loop for the BasicTree.
+    /// Main update loop for the SpeedTree.
     /// </summary>
     protected override void UpdateMob()
     {
@@ -42,30 +42,30 @@ public class BasicTreeController : TreeController<BasicTreeController.BasicTreeS
     }
 
     /// <summary>
-    /// Returns the BasicTree model.
+    /// Returns the SpeedTree model.
     /// </summary>
-    /// <returns>the BasicTree model.</returns>
-    protected BasicTree GetBasicTree() => GetTree() as BasicTree;
+    /// <returns>the SpeedTree model.</returns>
+    protected SpeedTree GetSpeedTree() => GetTree() as SpeedTree;
 
     /// <summary>
-    /// Returns the BasicTree prefab to the BasicTreeFactory singleton.
+    /// Returns the SpeedTree prefab to the SpeedTreeFactory singleton.
     /// </summary>
-    public override void ReturnModelToFactory() => TreeFactory.ReturnTreePrefab(GetBasicTree().gameObject);
+    public override void ReturnModelToFactory() => TreeFactory.ReturnTreePrefab(GetSpeedTree().gameObject);
 
     #endregion
 
     #region State Logic
 
     /// <summary>
-    /// Returns true if two BasicTreeStates are equal.
+    /// Returns true if two SpeedTreeStates are equal.
     /// </summary>
     /// <param name="stateA">The first state.</param>
     /// <param name="stateB">The second state.</param>
-    /// <returns>true if two BasicTreeStates are equal; otherwise, false.</returns>
-    public override bool StateEquals(BasicTreeState stateA, BasicTreeState stateB) => stateA == stateB;
+    /// <returns>true if two SpeedTreeStates are equal; otherwise, false.</returns>
+    public override bool StateEquals(SpeedTreeState stateA, SpeedTreeState stateB) => stateA == stateB;
 
     /// <summary>
-    /// Updates the state of this BasicTreeController's Tree model.
+    /// Updates the state of this SpeedTreeController's Tree model.
     /// The transitions are: <br></br>
     /// 
     /// SPAWN --> IDLE : always <br></br>
@@ -74,22 +74,22 @@ public class BasicTreeController : TreeController<BasicTreeController.BasicTreeS
     {
         switch (GetState())
         {
-            case BasicTreeState.SPAWN:
-                SetState(BasicTreeState.IDLE);
+            case SpeedTreeState.SPAWN:
+                SetState(SpeedTreeState.IDLE);
                 break;
-            case BasicTreeState.IDLE:
+            case SpeedTreeState.IDLE:
                 break;
-            case BasicTreeState.INVALID:
+            case SpeedTreeState.INVALID:
                 throw new System.Exception("Invalid State.");
         }
     }
 
     /// <summary>
-    /// Runs logic relevant to the BasicTree's IDLE state.
+    /// Runs logic relevant to the SpeedTree's IDLE state.
     /// </summary>
     protected virtual void ExecuteIdleState()
     {
-        if (GetState() != BasicTreeState.IDLE) return;
+        if (GetState() != SpeedTreeState.IDLE) return;
         if (!ValidModel()) return;
     }
 

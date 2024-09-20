@@ -177,6 +177,12 @@ public class ControllerController : MonoBehaviour
                 FlooringController sfc = new FlooringController(soilFlooring);
                 instance.structureControllers.Add(sfc);
                 break;
+            case ModelType.SPEED_TREE:
+                SpeedTree speedTree = model as SpeedTree;
+                Assert.IsNotNull(speedTree, "SpeedTree is null.");
+                SpeedTreeController stc = new SpeedTreeController(speedTree);
+                instance.treeControllers.Add(stc);
+                break;
             case ModelType.SPURGE:
                 Spurge spurge = model as Spurge;
                 Assert.IsNotNull(spurge, "Spurge is null.");

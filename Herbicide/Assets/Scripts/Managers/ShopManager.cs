@@ -126,14 +126,14 @@ public class ShopManager : MonoBehaviour
         }
 
         // Enable / Disable reroll button depending on balance
-        if (EconomyController.GetBalance() < REROLL_COST) instance.rerollButton.interactable = false;
+        if (EconomyController.GetBalance(ModelType.DEW) < REROLL_COST) instance.rerollButton.interactable = false;
         else instance.rerollButton.interactable = true;
 
         // Lighten / Darken shop cards depending on if player can afford
         foreach (ShopSlot shopSlot in instance.shopSlots)
         {
             if (shopSlot.Empty()) continue;
-            if (!shopSlot.CanBuy(EconomyController.GetBalance())) shopSlot.DarkenSlot();
+            if (!shopSlot.CanBuy(EconomyController.GetBalance(ModelType.DEW))) shopSlot.DarkenSlot();
             else shopSlot.LightenSlot();
         }
 
@@ -205,9 +205,9 @@ public class ShopManager : MonoBehaviour
     {
         if (!free)
         {
-            bool canReroll = EconomyController.GetBalance() >= REROLL_COST;
+            bool canReroll = EconomyController.GetBalance(ModelType.DEW) >= REROLL_COST;
             if (!canReroll) return;
-            EconomyController.Withdraw(REROLL_COST);
+            EconomyController.Withdraw(ModelType.DEW, REROLL_COST);
         }
 
         foreach (ShopSlot cardSlot in shopSlots)
@@ -240,7 +240,7 @@ public class ShopManager : MonoBehaviour
         if (clickedSlot.Empty()) return;
         if (PlacementController.IsPlacing()) return;
         if(PlacementController.IsCombining()) return;
-        if (!clickedSlot.CanBuy(EconomyController.GetBalance())) return;
+        if (!clickedSlot.CanBuy(EconomyController.GetBalance(ModelType.DEW))) return;
 
         // Get a fresh copy of the Model we bought
         GameObject slotPrefab = clickedSlot.GetCardPrefab();
@@ -249,7 +249,7 @@ public class ShopManager : MonoBehaviour
         Assert.IsNotNull(slotModel);
 
         PlacementController.StartPlacingObject(slotModel);
-        EconomyController.Withdraw(clickedSlot.Buy(EconomyController.GetBalance()));
+        EconomyController.Withdraw(ModelType.DEW, clickedSlot.Buy(EconomyController.GetBalance(ModelType.DEW)));
 
         // The ControllerController handles upgrading and combination logic
         OnBuyModel?.Invoke(slotModel);

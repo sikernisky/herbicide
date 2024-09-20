@@ -190,7 +190,10 @@ public abstract class Flooring : Model, ISurface
         if (candidate == null || neighbors == null) return false;
 
         HashSet<ModelType> validPlacements = new HashSet<ModelType>(){
-            ModelType.BASIC_TREE
+            ModelType.BASIC_TREE,
+            ModelType.BASIC_TREE_SEED,
+            ModelType.SPEED_TREE,
+            ModelType.SPEED_TREE_SEED
         };
 
         if (Occupied())

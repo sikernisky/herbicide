@@ -137,7 +137,7 @@ public class ShopCard : UIModel
     /// </summary>
     public void ClickShopCard()
     {
-        if (EconomyController.GetBalance() < model.COST) return;
+        if (EconomyController.GetBalance(ModelType.DEW) < model.COST) return;
         clicked = true;
     }
 

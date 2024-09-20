@@ -312,24 +312,6 @@
                 {
                  "gid":75,
                  "height":16,
-                 "id":763,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"BasicTree"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":192,
-                 "y":128
-                }, 
-                {
-                 "gid":75,
-                 "height":16,
                  "id":764,
                  "name":"",
                  "properties":[
@@ -348,24 +330,6 @@
                 {
                  "gid":75,
                  "height":16,
-                 "id":765,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"BasicTree"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":256,
-                 "y":64
-                }, 
-                {
-                 "gid":75,
-                 "height":16,
                  "id":766,
                  "name":"",
                  "properties":[
@@ -380,60 +344,6 @@
                  "width":16,
                  "x":192,
                  "y":64
-                }, 
-                {
-                 "gid":75,
-                 "height":16,
-                 "id":767,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"BasicTree"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":128,
-                 "y":64
-                }, 
-                {
-                 "gid":75,
-                 "height":16,
-                 "id":768,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"BasicTree"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":224,
-                 "y":96
-                }, 
-                {
-                 "gid":75,
-                 "height":16,
-                 "id":769,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"BasicTree"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":160,
-                 "y":96
                 }, 
                 {
                  "gid":72,
@@ -542,6 +452,42 @@
                  "width":16,
                  "x":112,
                  "y":96
+                }, 
+                {
+                 "gid":74,
+                 "height":16,
+                 "id":791,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"SpeedTree"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":128,
+                 "y":64
+                }, 
+                {
+                 "gid":74,
+                 "height":16,
+                 "id":792,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"SpeedTree"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":160,
+                 "y":96
                 }],
          "opacity":1,
          "properties":[
@@ -620,7 +566,7 @@
          "y":0
         }],
  "nextlayerid":17,
- "nextobjectid":791,
+ "nextobjectid":793,
  "orientation":"orthogonal",
  "properties":[
         {
@@ -1012,6 +958,16 @@
                          "name":"structureName",
                          "type":"string",
                          "value":"NexusHole"
+                        }],
+                 "type":"Structure"
+                }, 
+                {
+                 "id":2,
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"SpeedTree"
                         }],
                  "type":"Structure"
                 }, 

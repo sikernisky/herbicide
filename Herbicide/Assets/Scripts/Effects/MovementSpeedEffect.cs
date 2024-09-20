@@ -1,7 +1,7 @@
 /// <summary>
 /// Represents an effect that increases or decreases a Model's movement speed.
 /// </summary>
-public class SpeedEffect : TimedEffect
+public class MovementSpeedEffect : TimedEffect
 {
     #region Fields
 
@@ -21,7 +21,7 @@ public class SpeedEffect : TimedEffect
     /// </summary>
     /// <param name="duration">how long the effect lasts</param>
     /// <param name="effectMagnitude">how much to change the Model's move speed</param>
-    public SpeedEffect(float duration, float effectMagnitude) : base(duration)
+    public MovementSpeedEffect(float duration, float effectMagnitude) : base(duration)
     {
         speedAdjustmentMagnitude = effectMagnitude;
     }

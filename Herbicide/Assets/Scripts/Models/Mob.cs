@@ -266,7 +266,7 @@ public abstract class Mob : PlaceableObject
         bool chilled = false;
         foreach (IEffect effect in GetEffects())
         {
-            if (effect is SpeedEffect speedEffect)
+            if (effect is MovementSpeedEffect speedEffect)
             {
                 totalSpeedModifier += speedEffect.GetEffectMagnitude();
             }

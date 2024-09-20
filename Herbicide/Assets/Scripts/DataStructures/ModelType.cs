@@ -31,6 +31,8 @@ public enum ModelType
     SHOP_CARD_SQUIRREL,
     SHORE_TILE,
     SOIL_FLOORING,
+    SPEED_TREE,
+    SPEED_TREE_SEED,
     SPURGE,
     SPURGE_MINION,
     SQUIRREL,

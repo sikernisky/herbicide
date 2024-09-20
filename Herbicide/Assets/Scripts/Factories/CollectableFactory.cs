@@ -27,6 +27,12 @@ public class CollectableFactory : Factory
     [SerializeField]
     private Sprite[] basicTreeSeedPlacementTrack;
 
+    /// <summary>
+    /// Animation track when placing a SpeedTreeSeed.
+    /// </summary>
+    [SerializeField]
+    private Sprite[] speedTreeSeedPlacementTrack;
+
     #endregion
 
     #region Methods
@@ -73,6 +79,8 @@ public class CollectableFactory : Factory
                 return instance.dewPlacementTrack;
             case ModelType.BASIC_TREE_SEED:
                 return instance.basicTreeSeedPlacementTrack;
+            case ModelType.SPEED_TREE_SEED:
+                return instance.speedTreeSeedPlacementTrack;
             default:
                 throw new System.Exception("Invalid ModelType");
         }

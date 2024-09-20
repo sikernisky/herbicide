@@ -219,7 +219,9 @@ public class TileGrid : MonoBehaviour
             case "nexushole":
                 return NexusHoleFactory.GetNexusHolePrefab();
             case "basictree":
-                return BasicTreeFactory.GetBasicTreePrefab();
+                return TreeFactory.GetTreePrefab(ModelType.BASIC_TREE);
+            case "speedtree":
+                return TreeFactory.GetTreePrefab(ModelType.SPEED_TREE);
             case "stonewall":
                 return WallFactory.GetWallPrefab(ModelType.STONE_WALL);
             default:
