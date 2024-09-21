@@ -43,6 +43,12 @@ public class DefenderFactory : Factory
     [SerializeField]
     private DefenderAnimationSet owlAnimationSet;
 
+    /// <summary>
+    /// Animation set for a Bunny.
+    /// </summary>
+    [SerializeField]
+    private DefenderAnimationSet bunnyAnimationSet;
+
     #endregion
 
     #region Methods
@@ -77,28 +83,30 @@ public class DefenderFactory : Factory
     public static void ReturnDefenderPrefab(GameObject prefab) => instance.ReturnObject(prefab);
 
     /// <summary>
-    /// Returns the animation track that represents the Defender attacking.
+    /// Returns the animation track that represents the Defender during its main action.
     /// </summary>
-    /// <returns>the animation track that represents the Defender attacking.</returns>
+    /// <returns>the animation track that represents the Defender during its main action.</returns>
     /// <param name="m">The ModelType of the Defender.</param>
     /// <param name="d">The Defender's Direction.</param>
     /// <param name="tier">The Defender's tier.</param>
-    public static Sprite[] GetAttackTrack(ModelType m, Direction d, int tier)
+    public static Sprite[] GetMainActionTrack(ModelType m, Direction d, int tier)
     {
         Assert.IsTrue(tier >= Defender.MIN_TIER && tier <= Defender.MAX_TIER, "Invalid tier.");
 
         switch (m)
         {
             case ModelType.SQUIRREL:
-                return instance.squirrelAnimationSet.GetAttackAnimation(d, tier);
+                return instance.squirrelAnimationSet.GetMainActionAnimation(d, tier);
             case ModelType.BEAR:
-                return instance.bearAnimationSet.GetAttackAnimation(d, tier);
+                return instance.bearAnimationSet.GetMainActionAnimation(d, tier);
             case ModelType.PORCUPINE:
-                return instance.porcupineAnimationSet.GetAttackAnimation(d, tier);
+                return instance.porcupineAnimationSet.GetMainActionAnimation(d, tier);
             case ModelType.RACCOON:
-                return instance.raccoonAnimationSet.GetAttackAnimation(d, tier);
+                return instance.raccoonAnimationSet.GetMainActionAnimation(d, tier);
             case ModelType.OWL:
-                return instance.owlAnimationSet.GetAttackAnimation(d, tier);
+                return instance.owlAnimationSet.GetMainActionAnimation(d, tier);
+            case ModelType.BUNNY:
+                return instance.bunnyAnimationSet.GetMainActionAnimation(d, tier);
             default:
                 throw new System.Exception("Invalid ModelType");
         }
@@ -127,6 +135,8 @@ public class DefenderFactory : Factory
                 return instance.raccoonAnimationSet.GetIdleAnimation(d, tier);
             case ModelType.OWL:
                 return instance.owlAnimationSet.GetIdleAnimation(d, tier);
+            case ModelType.BUNNY:
+                return instance.bunnyAnimationSet.GetIdleAnimation(d, tier);
             default:
                 throw new System.Exception("Invalid ModelType");
         }
@@ -152,6 +162,8 @@ public class DefenderFactory : Factory
                 return instance.raccoonAnimationSet.GetPlacementAnimation(tier);
             case ModelType.OWL:
                 return instance.owlAnimationSet.GetPlacementAnimation(tier);
+            case ModelType.BUNNY:
+                return instance.bunnyAnimationSet.GetPlacementAnimation(tier);
             default:
                 throw new System.Exception("Invalid ModelType");
         }

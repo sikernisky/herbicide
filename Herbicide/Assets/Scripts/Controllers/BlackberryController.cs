@@ -135,7 +135,7 @@ public class BlackberryController : ProjectileController<BlackberryController.Bl
         if (!ValidModel()) return;
         if (GetState() != BlackberryState.MOVING) return;
 
-        SetAnimation(GetBlackberry().MID_AIR_ANIMATION_DURATION, ProjectileFactory.GetMidAirAnimationTrack(GetBlackberry()));
+        SetNextAnimation(GetBlackberry().MID_AIR_ANIMATION_DURATION, ProjectileFactory.GetMidAirAnimationTrack(GetBlackberry()));
         LobShot();
     }
 

@@ -16,7 +16,7 @@ public class TileGrid : MonoBehaviour
     /// <summary>
     /// Width and height of a Tile in the TileGrid
     /// </summary>
-    public const float TILE_SIZE = 1f;
+    public const float TILE_SIZE = 0.9f;
 
     /// <summary>
     /// All Tile prefabs, indexed by their type
@@ -79,12 +79,6 @@ public class TileGrid : MonoBehaviour
     /// All GrassTiles in this TileGrid.
     /// </summary>
     private HashSet<Tile> grassTiles;
-
-    /// <summary>
-    /// Tiles occupied by enemies, mapped to by the Enemies that
-    /// occupy them.
-    /// </summary>
-    private Dictionary<Enemy, Tile> enemyLocations;
 
     /// <summary>
     /// Tiles on the edge of the TileGrid.
@@ -173,7 +167,6 @@ public class TileGrid : MonoBehaviour
         instance.tileMap = new Dictionary<Vector2Int, Tile>();
         instance.tiles = new List<Tile>();
         instance.grassTiles = new HashSet<Tile>();
-        instance.enemyLocations = new Dictionary<Enemy, Tile>();
         instance.edgeTiles = new HashSet<Tile>();
         instance.nexusHoleHosts = new Dictionary<Tile, NexusHole>();
         instance.objectPositions = new List<Vector3>();
@@ -192,19 +185,19 @@ public class TileGrid : MonoBehaviour
 
         foreach (Vector2 pos in objectPositions)
         {
-            minX = Mathf.Min(minX, pos.x);
-            maxX = Mathf.Max(maxX, pos.x);
-            minY = Mathf.Min(minY, pos.y);
-            maxY = Mathf.Max(maxY, pos.y);
+            minX = Mathf.Min(minX, pos.x * TILE_SIZE);
+            maxX = Mathf.Max(maxX, pos.x * TILE_SIZE);
+            minY = Mathf.Min(minY, pos.y * TILE_SIZE);
+            maxY = Mathf.Max(maxY, pos.y * TILE_SIZE);
         }
 
         float centerXPos = (minX + maxX) / 2f;
         float centerYPos = (minY + maxY) / 2f;
 
         // Add a vertical offset because the shop sits at the bottom.
-        centerYPos -= 1f;
+        centerYPos -= TILE_SIZE;
 
-        return new Vector2(centerXPos, centerYPos);
+        return new Vector2(centerXPos + TILE_SIZE/2f, centerYPos + TILE_SIZE/2f);
     }
 
     /// <summary>
@@ -226,7 +219,9 @@ public class TileGrid : MonoBehaviour
             case "nexushole":
                 return NexusHoleFactory.GetNexusHolePrefab();
             case "basictree":
-                return BasicTreeFactory.GetBasicTreePrefab();
+                return TreeFactory.GetTreePrefab(ModelType.BASIC_TREE);
+            case "speedtree":
+                return TreeFactory.GetTreePrefab(ModelType.SPEED_TREE);
             case "stonewall":
                 return WallFactory.GetWallPrefab(ModelType.STONE_WALL);
             default:
@@ -279,8 +274,8 @@ public class TileGrid : MonoBehaviour
     /// Left and top-most tiles get priority in the case of even numbers.
     /// </summary>
     /// <param name="gridData">The (X, Y) dimensions of the TileGrid.</param>
-    private void SetCenterCoordinates(Vector2Int dims) => instance.center = new Vector2Int(Mathf.FloorToInt(dims.x) / 2,
-                                                            Mathf.FloorToInt(dims.y) / 2);
+    private void SetCenterCoordinates(Vector2Int dims) => instance.center = new Vector2Int(Mathf.FloorToInt(dims.x * TILE_SIZE) / 2,
+                                                            Mathf.FloorToInt(dims.y * TILE_SIZE) / 2);
 
     /// <summary>
     /// Returns the Tile at some coordinates; if it doesn't exist, returns
@@ -365,7 +360,7 @@ public class TileGrid : MonoBehaviour
                 Mob mob = placingSlottable as Mob;
                 if (mob != null)
                 {
-                    int ar = Mathf.FloorToInt(mob.BASE_ATTACK_RANGE);
+                    int ar = Mathf.FloorToInt(mob.BASE_MAIN_ACTION_RANGE);
                     if (ar == float.MaxValue || ar <= 0) return;
                     int mobX = tile.GetX();
                     int mobY = tile.GetY();
@@ -445,7 +440,7 @@ public class TileGrid : MonoBehaviour
     /// <param name="coord">the coordinate to convert.</param>
     /// <returns>the world position representation of a Tile coordinate.
     /// </returns>
-    public static float CoordinateToPosition(int coord) => coord * TILE_SIZE;
+    public static float CoordinateToPosition(int coord) => coord * TILE_SIZE + TILE_SIZE / 2;
 
     /// <summary>
     /// Returns a Tile coordinate that corresponds to a Tile's
@@ -454,7 +449,7 @@ public class TileGrid : MonoBehaviour
     /// <param name="coord">the world position to convert.</param>
     /// <returns>the Tile coordinate representation of a world position.
     /// </returns>
-    public static int PositionToCoordinate(float pos) => (int)(MathF.Round(pos) / MathF.Round(TILE_SIZE));
+    public static int PositionToCoordinate(float pos) => (int)MathF.Floor(pos / TILE_SIZE);
 
     /// <summary>
     /// Returns a Tile's neighboring ISurface in a given direction; returns null
@@ -607,11 +602,7 @@ public class TileGrid : MonoBehaviour
     /// <param name="targetCoords"> The coordinates of the Tile to remove from.</param>
     public static bool RemoveFromTile(Vector2Int targetCoords)
     {
-        //Safety checks
-        int xCoord = PositionToCoordinate(targetCoords.x);
-        int yCoord = PositionToCoordinate(targetCoords.y);
-        Tile target = instance.TileExistsAt(xCoord, yCoord);
-
+        Tile target = instance.TileExistsAt(targetCoords.x, targetCoords.y);
         return RemoveFromTile(target);
     }
 
@@ -668,7 +659,7 @@ public class TileGrid : MonoBehaviour
     /// <param name="worldCoords">the coordinates to check.</param>
     /// <returns>true if some world coordinates lie within the range of a Tile
     /// in the TileGrid; otherwise, false.</returns>
-    public static bool OnTile(Vector2 worldCoords)
+    public static bool OnSomeTile(Vector2 worldCoords)
     {
         int coordX = PositionToCoordinate(worldCoords.x);
         int coordY = PositionToCoordinate(worldCoords.y);
@@ -686,7 +677,7 @@ public class TileGrid : MonoBehaviour
     /// that is walkable by some enemy; otherwise, false.</returns>
     public static bool OnWalkableTile(Vector2 worldCoords)
     {
-        if (!OnTile(worldCoords)) return false;
+        if (!OnSomeTile(worldCoords)) return false;
 
         int coordX = PositionToCoordinate(worldCoords.x);
         int coordY = PositionToCoordinate(worldCoords.y);
@@ -695,6 +686,7 @@ public class TileGrid : MonoBehaviour
         Assert.IsNotNull(t);
 
         //TODO: Eventually, incorporate Enemy checking.
+        //if(!t.WALKABLE) Debug.Log("Tile not walkable: " + t.GetX() + " " + t.GetY() + " " + t.WALKABLE);    
         return t.WALKABLE;
     }
 
@@ -707,7 +699,7 @@ public class TileGrid : MonoBehaviour
     /// of a NexusHole; otherwise, false. /// .</returns>
     public static bool IsNexusHole(Vector2 worldCoords)
     {
-        if (!OnTile(worldCoords)) return false;
+        if (!OnSomeTile(worldCoords)) return false;
 
         int coordX = PositionToCoordinate(worldCoords.x);
         int coordY = PositionToCoordinate(worldCoords.y);
@@ -1045,6 +1037,28 @@ public class TileGrid : MonoBehaviour
     }
 
     /// <summary>
+    /// Returns a Tile that should be in the TileGrid. Instantiates that
+    /// Tile.
+    /// </summary>
+    /// <param name="xPos">The X-world position of the Tile.</param>
+    /// <param name="yPos">The Y-world position of the Tile.</param>
+    /// <param name="type">The TileType of the Tile prefab.</param>
+    /// <returns>The instantiated Tile that should be in the TileGrid.
+    /// </returns>
+    private Tile MakeTile(float xPos, float yPos, Tile.TileType type)
+    {
+        GameObject prefab = TileTypeToPrefab(type);
+        Tile tile = Instantiate(prefab).GetComponent<Tile>();
+        Transform tileTransform = tile.transform;
+        tile.name = type.ToString();
+        tileTransform.position = new Vector3(xPos, yPos, 1);
+        tileTransform.localScale = Vector2.one * TILE_SIZE * 1.0001f; // This multiplier prevents tiny gaps
+        tileTransform.SetParent(instance.transform);
+
+        return tile;
+    }
+
+    /// <summary>
     /// Creates an Edge Tile of a certain type and adds it to the collection
     /// of Tiles in this TileGrid.
     /// </summary>
@@ -1073,28 +1087,6 @@ public class TileGrid : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Returns a Tile that should be in the TileGrid. Instantiates that
-    /// Tile.
-    /// </summary>
-    /// <param name="xPos">The X-world position of the Tile.</param>
-    /// <param name="yPos">The Y-world position of the Tile.</param>
-    /// <param name="type">The TileType of the Tile prefab.</param>
-    /// <returns>The instantiated Tile that should be in the TileGrid.
-    /// </returns>
-    private Tile MakeTile(float xPos, float yPos, Tile.TileType type)
-    {
-        GameObject prefab = TileTypeToPrefab(type);
-        Tile tile = Instantiate(prefab).GetComponent<Tile>();
-        Transform tileTransform = tile.transform;
-        tile.name = type.ToString();
-        tileTransform.position = new Vector3(xPos, yPos, 1);
-        tileTransform.localScale = Vector2.one * TILE_SIZE * 1.0001f; // This multiplier prevents tiny gaps
-        tileTransform.SetParent(instance.transform);
-
-        return tile;
-    }
-
     #endregion
 
     #region Pathfinding
@@ -1111,23 +1103,19 @@ public class TileGrid : MonoBehaviour
     /// <param name="goalPos">The ending position of the path. </param>
     public static Vector3 NextTilePosTowardsGoal(Vector3 startPos, Vector3 goalPos)
     {
-
-        // Check if the path is already cached
-        if (PathfindingCache.IsCacheValid(startPos, goalPos))
-        {
-            if (PathfindingCache.GetIsReachable(startPos, goalPos))
-            {
-                var nextTile = PathfindingCache.GetNextTilePosition(startPos, goalPos);
-                return new Vector3(nextTile.x, nextTile.y, 1);
-            }
-            return startPos; // If not reachable, return start position
-        }
-
         //From given positions, find the corresponding Tiles.
+
         int xStartCoord = PositionToCoordinate(startPos.x);
         int yStartCoord = PositionToCoordinate(startPos.y);
         int xGoalCoord = PositionToCoordinate(goalPos.x);
         int yGoalCoord = PositionToCoordinate(goalPos.y);
+
+        if (PathfindingCache.HasCachedNextPosition(xStartCoord, yStartCoord, xGoalCoord, yGoalCoord))
+        {
+            var nextPos = PathfindingCache.GetCachedNextPosition(xStartCoord, yStartCoord, xGoalCoord, yGoalCoord);
+            return new Vector3(CoordinateToPosition(nextPos.Item1), CoordinateToPosition(nextPos.Item2), 1);
+        }
+
         Tile startTile = instance.TileExistsAt(xStartCoord, yStartCoord);
         Tile goalTile = instance.TileExistsAt(xGoalCoord, yGoalCoord);
 
@@ -1140,8 +1128,10 @@ public class TileGrid : MonoBehaviour
         HashSet<Tile> closedList = new HashSet<Tile>();
         Dictionary<Tile, Tile> cameFrom = new Dictionary<Tile, Tile>();
         Dictionary<Tile, float> gScore = new Dictionary<Tile, float> { { startTile, 0 } };
-        Dictionary<Tile, float> fScore = new Dictionary<Tile, float>();
-        fScore.Add(startTile, instance.ManhattanDistance(startTile, goalTile));
+        Dictionary<Tile, float> fScore = new Dictionary<Tile, float>
+        {
+            { startTile, instance.ManhattanDistance(startTile, goalTile) }
+        };
 
         //Iterative A* Algorithm.
         while (openList.Count > 0)
@@ -1151,7 +1141,13 @@ public class TileGrid : MonoBehaviour
             if (current == goalTile)
             {
                 startTile.SetColor(Color.white);
-                return new Vector3(goalTile.GetX(), goalTile.GetY(), 1);
+                PathfindingCache.CacheNextPosition(xStartCoord, yStartCoord, xGoalCoord, yGoalCoord, current.GetX(), current.GetY());
+                PathfindingCache.CacheReachability(xStartCoord, yStartCoord, xGoalCoord, yGoalCoord, true);
+
+                // Convert goal tile to world position
+                float goalWorldX = CoordinateToPosition(goalTile.GetX());
+                float goalWorldY = CoordinateToPosition(goalTile.GetY());
+                return new Vector3(goalWorldX, goalWorldY, 1);
             }
 
             foreach (Tile neighbor in instance.GetNeighbors(current))
@@ -1172,7 +1168,9 @@ public class TileGrid : MonoBehaviour
                         Tile nextTile = path[1];
                         if (!nextTile.IsWalkable()) continue;
                         startTile.SetColor(Color.white);
-                        return new Vector3(nextTile.GetX(), nextTile.GetY(), 1);
+                        float nextWorldX = CoordinateToPosition(nextTile.GetX());
+                        float nextWorldY = CoordinateToPosition(nextTile.GetY());
+                        return new Vector3(nextWorldX, nextWorldY, 1);
                     }
                 }
             }
@@ -1201,7 +1199,8 @@ public class TileGrid : MonoBehaviour
             }
         }
 
-        PathfindingCache.UpdateCache(startPos, goalPos, false, new Vector2Int(int.MinValue, int.MinValue));
+        // No path found
+        PathfindingCache.CacheReachability(xStartCoord, yStartCoord, xGoalCoord, yGoalCoord, false);
         return new Vector3(int.MinValue, int.MinValue, int.MinValue);
     }
 
@@ -1257,20 +1256,19 @@ public class TileGrid : MonoBehaviour
     /// false. </returns>
     public static bool CanReach(Vector3 startPos, Vector3 goalPos)
     {
-        // Check if the pathfinding result is already cached
-        if (PathfindingCache.IsCacheValid(startPos, goalPos))
+        int xStartCoord = PositionToCoordinate(startPos.x);
+        int yStartCoord = PositionToCoordinate(startPos.y);
+        int xGoalCoord = PositionToCoordinate(goalPos.x);
+        int yGoalCoord = PositionToCoordinate(goalPos.y);
+
+        if (PathfindingCache.HasCachedReachability(xStartCoord, yStartCoord, xGoalCoord, yGoalCoord))
         {
-            return PathfindingCache.GetIsReachable(startPos, goalPos);
+            return PathfindingCache.GetCachedReachability(xStartCoord, yStartCoord, xGoalCoord, yGoalCoord);
         }
 
-        // Perform pathfinding and update the cache
-        Vector3 nextTilePos = NextTilePosTowardsGoal(startPos, goalPos);
-        bool isReachable = nextTilePos != new Vector3(int.MinValue, int.MinValue, int.MinValue);
-        PathfindingCache.UpdateCache(startPos, goalPos, isReachable, new Vector2Int((int)nextTilePos.x, (int)nextTilePos.y));
+        bool isReachable = NextTilePosTowardsGoal(startPos, goalPos) != new Vector3(int.MinValue, int.MinValue, int.MinValue);
+        PathfindingCache.CacheReachability(xStartCoord, yStartCoord, xGoalCoord, yGoalCoord, isReachable);
         return isReachable;
-        /*
-                Vector3 minVector = new Vector3(float.MinValue, float.MinValue, float.MinValue);
-                return NextTilePosTowardsGoal(startPos, goalPos) != minVector;*/
     }
 
     #endregion

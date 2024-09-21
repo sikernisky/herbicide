@@ -49,12 +49,12 @@ public class Kudzu : Enemy
     /// <summary>
     /// Amount of attack cooldown this Kudzu starts with.
     /// </summary>
-    public override float BASE_ATTACK_SPEED => 1f;
+    public override float BASE_MAIN_ACTION_SPEED => 1f;
 
     /// <summary>
     /// Most amount of attack cooldown this Kudzu can have.
     /// </summary>
-    public override float MAX_ATTACK_SPEED => float.MaxValue;
+    public override float MAX_MAIN_ACTION_SPEED => float.MaxValue;
 
     /// <summary>
     /// Damage a Kudzu does each attack.
@@ -64,17 +64,17 @@ public class Kudzu : Enemy
     /// <summary>
     /// Starting attack range of a Kudzu.
     /// </summary>
-    public override float BASE_ATTACK_RANGE => 1f;
+    public override float BASE_MAIN_ACTION_RANGE => 1f;
 
     /// <summary>
     /// Maximum attack range of a Kudzu.
     /// </summary>
-    public override float MAX_ATTACK_RANGE => float.MaxValue;
+    public override float MAX_MAIN_ACTION_RANGE => float.MaxValue;
 
     /// <summary>
     /// Minimum attack range of a Kudzu.
     /// </summary>
-    public override float MIN_ATTACK_RANGE => 0;
+    public override float MIN_MAIN_ACTION_RANGE => 0;
 
     /// <summary>
     /// Starting chase range of a Kudzu.

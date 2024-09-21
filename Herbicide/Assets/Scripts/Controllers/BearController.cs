@@ -76,9 +76,9 @@ public class BearController : DefenderController<BearController.BearState>
     /// </summary>
     /// <returns>true if the Bear can swipe its target; otherwise,
     /// false.</returns>
-    public override bool CanAttack()
+    public override bool CanPerformMainAction()
     {
-        if (!base.CanAttack()) return false; //Cooldown
+        if (!base.CanPerformMainAction()) return false; //Cooldown
         if (GetState() != BearState.ATTACK) return false; //Not in the attack state.
         Enemy target = GetTarget() as Enemy;
         if (GetTarget() == null || !target.Targetable()) return false; //Invalid target.
@@ -123,15 +123,15 @@ public class BearController : DefenderController<BearController.BearState>
             case BearState.IDLE:
                 if (GetTarget() == null || !target.Targetable()) break;
                 if (DistanceToTargetFromTree()
-                    <= GetBear().GetAttackRange() &&
-                    GetBear().GetAttackCooldown() <= 0) SetState(BearState.ATTACK);
+                    <= GetBear().GetMainActionRange() &&
+                    GetBear().GetMainActionCooldown() <= 0) SetState(BearState.ATTACK);
                 break;
             case BearState.ATTACK:
                 if (GetTarget() == null || !target.Targetable()) SetState(BearState.IDLE);
                 if (GetAnimationCounter() > 0) break;
-                if (GetBear().GetAttackCooldown() > 0) SetState(BearState.IDLE);
+                if (GetBear().GetMainActionCooldown() > 0) SetState(BearState.IDLE);
                 else if (DistanceToTargetFromTree()
-                    > GetBear().GetAttackRange()) SetState(BearState.IDLE);
+                    > GetBear().GetMainActionRange()) SetState(BearState.IDLE);
                 break;
             case BearState.INVALID:
                 throw new System.Exception("Invalid State.");
@@ -161,7 +161,7 @@ public class BearController : DefenderController<BearController.BearState>
         if (GetTarget() != null) FaceTarget();
         else GetBear().FaceDirection(Direction.SOUTH);
 
-        SetAnimation(GetBear().IDLE_ANIMATION_DURATION,
+        SetNextAnimation(GetBear().IDLE_ANIMATION_DURATION,
             DefenderFactory.GetIdleTrack(ModelType.BEAR,
                 GetBear().GetDirection(),
                 GetBear().GetTier()));
@@ -181,10 +181,10 @@ public class BearController : DefenderController<BearController.BearState>
 
         FaceTarget();
 
-        SetAnimation(GetBear().ATTACK_ANIMATION_DURATION,
-        DefenderFactory.GetAttackTrack(ModelType.BEAR, GetBear().GetDirection(), GetBear().GetTier()));
+        SetNextAnimation(GetBear().ATTACK_ANIMATION_DURATION,
+        DefenderFactory.GetMainActionTrack(ModelType.BEAR, GetBear().GetDirection(), GetBear().GetTier()));
 
-        if (!CanAttack()) return;
+        if (!CanPerformMainAction()) return;
 
         // Swipe at the target tile.
         EmanationController chompEmanationController = new EmanationController(
@@ -208,7 +208,7 @@ public class BearController : DefenderController<BearController.BearState>
         }
 
         // Reset attack animation.
-        GetBear().RestartAttackCooldown();
+        GetBear().RestartMainActionCooldown();
     }
 
     #endregion

@@ -1,100 +1,99 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 /// <summary>
-/// DataStructure to store frequently requested A* Pathfinding calls.
+/// Stores cached pathfinding data to reduce the number of pathfinding calls.
 /// </summary>
 public static class PathfindingCache
 {
-    #region CacheEntry
+    /// <summary>
+    /// Cache for the next position of a pathfinding call.
+    /// </summary>
+    private static Dictionary<(int, int, int, int), (int, int)> nextPositionCache = new Dictionary<(int, int, int, int), (int, int)>();
+    
+    /// <summary>
+    /// Cache for the reachability of a pathfinding call.
+    /// </summary>
+    private static Dictionary<(int, int, int, int), bool> reachabilityCache = new Dictionary<(int, int, int, int), bool>();
 
     /// <summary>
-    /// Represents a cache entry.
+    /// Caches the next position of a pathfinding call.
     /// </summary>
-    private class CacheEntry
+    /// <param name="goalX">The x-coordinate of the goal.</param>
+    /// <param name="goalY">The y-coordinate of the goal.</param>
+    /// <param name="nextX">The x-coordinate of the next position.</param>
+    /// <param name="nextY">The y-coordinate of the next position.</param>
+    /// <param name="startX">The x-coordinate of the start.</param>
+    /// <param name="startY">The y-coordinate of the start.</param>
+    public static void CacheNextPosition(int startX, int startY, int goalX, int goalY, int nextX, int nextY)
     {
-        /// <summary>
-        /// true if the goal is reachable from the start position;
-        /// otherwise, false. 
-        /// </summary>
-        public bool IsReachable { get; set; }
-
-        /// <summary>
-        /// The position of the next tile in the path.
-        /// </summary>
-        public Vector2Int NextTilePosition { get; set; }
-    }
-
-    #endregion
-
-    #region Fields
-
-    /// <summary>
-    /// The cache for pathfinding results.
-    /// </summary>
-    private static Dictionary<(Vector3 start, Vector3 goal), CacheEntry> cache = new Dictionary<(Vector3, Vector3), CacheEntry>();
-
-    #endregion
-
-    #region Methods
-
-    /// <summary>
-    /// Updates the cache with the pathfinding results.
-    /// </summary>
-    /// <param name="startPos">The starting position.</param>
-    /// <param name="goalPos">The goal position.</param>
-    /// <param name="reachable">True if the goal is reachable from the start position.</param>
-    /// <param name="nextPos">The position of the next tile in the path.</param>
-    public static void UpdateCache(Vector3 startPos, Vector3 goalPos, bool reachable, Vector2Int nextPos)
-    {
-        var key = (start: startPos, goal: goalPos);
-        cache[key] = new CacheEntry
-        {
-            IsReachable = reachable,
-            NextTilePosition = nextPos
-        };
+        nextPositionCache[(startX, startY, goalX, goalY)] = (nextX, nextY);
     }
 
     /// <summary>
-    /// Checks if the cache has valid data for the given start and goal positions.
+    /// Returns true if the next position of a pathfinding call is cached.
     /// </summary>
-    /// <param name="startPos">The starting position.</param>
-    /// <param name="goalPos">The goal position.</param>
-    /// <returns>True if the cache has valid data for the given positions; otherwise, false.</returns>
-    public static bool IsCacheValid(Vector3 startPos, Vector3 goalPos)
+    /// <param name="startX">The x-coordinate of the start.</param>
+    /// <param name="startY">The y-coordinate of the start.</param>
+    /// <param name="goalX">The x-coordinate of the goal.</param>
+    /// <param name="goalY">The y-coordinate of the goal.</param>
+    /// <returns>true if the next position of a pathfinding call is cached;
+    /// otherwise, false. </returns>
+    public static bool HasCachedNextPosition(int startX, int startY, int goalX, int goalY)
     {
-        var key = (start: startPos, goal: goalPos);
-        return cache.ContainsKey(key);
+        return nextPositionCache.ContainsKey((startX, startY, goalX, goalY));
     }
 
     /// <summary>
-    /// Gets the reachability status from the cache.
+    /// Returns the cached next position of a pathfinding call.
     /// </summary>
-    /// <param name="startPos">The starting position.</param>
-    /// <param name="goalPos">The goal position.</param>
-    /// <returns>True if the goal is reachable from the start position; otherwise, false.</returns>
-    public static bool GetIsReachable(Vector3 startPos, Vector3 goalPos)
+    /// <param name="startX">The x-coordinate of the start.</param>
+    /// <param name="startY">The y-coordinate of the start.</param>
+    /// <param name="goalX">The x-coordinate of the goal.</param>
+    /// <param name="goalY">The y-coordinate of the goal.</param>
+    /// <returns>the cached next position of a pathfinding call.</returns>
+    public static (int, int) GetCachedNextPosition(int startX, int startY, int goalX, int goalY)
     {
-        var key = (start: startPos, goal: goalPos);
-        return cache[key].IsReachable;
+        return nextPositionCache[(startX, startY, goalX, goalY)];
     }
 
     /// <summary>
-    /// Gets the next tile position from the cache.
+    /// Caches the reachability of a pathfinding call.
     /// </summary>
-    /// <param name="startPos">The starting position.</param>
-    /// <param name="goalPos">The goal position.</param>
-    /// <returns>The position of the next tile in the path.</returns>
-    public static Vector2Int GetNextTilePosition(Vector3 startPos, Vector3 goalPos)
+    /// <param name="startX">The x-coordinate of the start.</param>
+    /// <param name="startY">The y-coordinate of the start.</param>
+    /// <param name="goalX">The x-coordinate of the goal.</param>
+    /// <param name="goalY">The y-coordinate of the goal.</param>
+    /// <param name="isReachable">true if the goal is reachable from the start;
+    /// otherwise, false.</param>   
+    public static void CacheReachability(int startX, int startY, int goalX, int goalY, bool isReachable)
     {
-        var key = (start: startPos, goal: goalPos);
-        return cache[key].NextTilePosition;
+        reachabilityCache[(startX, startY, goalX, goalY)] = isReachable;
     }
 
     /// <summary>
-    /// Clears the cache.
+    /// Returns true if the reachability of a pathfinding call is cached.
     /// </summary>
-    public static void ClearCache() => cache.Clear();
+    /// <param name="startX">The x-coordinate of the start.</param>
+    /// <param name="startY">The y-coordinate of the start.</param>
+    /// <param name="goalX">The x-coordinate of the goal.</param>
+    /// <param name="goalY">The y-coordinate of the goal.</param>
+    /// <returns>true if the reachability of a pathfinding call is cached;
+    /// otherwise, false. </returns>    
+    public static bool HasCachedReachability(int startX, int startY, int goalX, int goalY)
+    {
+        return reachabilityCache.ContainsKey((startX, startY, goalX, goalY));
+    }
 
-    #endregion
+    /// <summary>
+    /// Returns the cached reachability of a pathfinding call.
+    /// </summary>
+    /// <param name="startX">The x-coordinate of the start.</param>
+    /// <param name="startY">The y-coordinate of the start.</param>
+    /// <param name="goalX">The x-coordinate of the goal.</param>
+    /// <param name="goalY">The y-coordinate of the goal.</param>
+    /// <returns>the cached reachability of a pathfinding call.</returns>
+    public static bool GetCachedReachability(int startX, int startY, int goalX, int goalY)
+    {
+        return reachabilityCache[(startX, startY, goalX, goalY)];
+    }
 }

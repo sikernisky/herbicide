@@ -1,5 +1,3 @@
-using UnityEngine;
-
 /// <summary>
 /// Controls a BasicTree. <br></br>
 /// 
@@ -52,7 +50,7 @@ public class BasicTreeController : TreeController<BasicTreeController.BasicTreeS
     /// <summary>
     /// Returns the BasicTree prefab to the BasicTreeFactory singleton.
     /// </summary>
-    public override void ReturnModelToFactory() => BasicTreeFactory.ReturnBasicTreePrefab(GetBasicTree().gameObject);
+    public override void ReturnModelToFactory() => TreeFactory.ReturnTreePrefab(GetBasicTree().gameObject);
 
     #endregion
 

@@ -16,10 +16,22 @@ public class CollectableFactory : Factory
     private static CollectableFactory instance;
 
     /// <summary>
-    /// Animation track when placing for a Dew.
+    /// Animation track when placing a Dew.
     /// </summary>
     [SerializeField]
     private Sprite[] dewPlacementTrack;
+
+    /// <summary>
+    /// Animation track when placing a BasicTreeSeed.
+    /// </summary>
+    [SerializeField]
+    private Sprite[] basicTreeSeedPlacementTrack;
+
+    /// <summary>
+    /// Animation track when placing a SpeedTreeSeed.
+    /// </summary>
+    [SerializeField]
+    private Sprite[] speedTreeSeedPlacementTrack;
 
     #endregion
 
@@ -65,6 +77,10 @@ public class CollectableFactory : Factory
         {
             case ModelType.DEW:
                 return instance.dewPlacementTrack;
+            case ModelType.BASIC_TREE_SEED:
+                return instance.basicTreeSeedPlacementTrack;
+            case ModelType.SPEED_TREE_SEED:
+                return instance.speedTreeSeedPlacementTrack;
             default:
                 throw new System.Exception("Invalid ModelType");
         }

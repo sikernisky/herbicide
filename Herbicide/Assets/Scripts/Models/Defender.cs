@@ -82,7 +82,7 @@ public abstract class Defender : Mob
         Assert.IsTrue(tier >= MIN_TIER, "Cannot upgrade a Defender that is at a tier less than 1.");
 
         if (tier < MAX_TIER) tier++;
-        RestartAttackCooldown();
+        RestartMainActionCooldown();
     }
 
     /// <summary>

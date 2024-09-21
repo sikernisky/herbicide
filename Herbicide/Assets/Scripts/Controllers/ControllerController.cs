@@ -129,6 +129,12 @@ public class ControllerController : MonoBehaviour
                 BearController bc = new BearController(bear);
                 instance.defenderControllers.Add(bc);
                 break;
+            case ModelType.BUNNY:
+                Bunny bunny = model as Bunny;
+                Assert.IsNotNull(bunny);
+                BunnyController bnc = new BunnyController(bunny);
+                instance.defenderControllers.Add(bnc);
+                break;
             case ModelType.KNOTWOOD:
                 Knotwood knotwood = model as Knotwood;
                 Assert.IsNotNull(knotwood, "Knotwood is null.");
@@ -176,6 +182,12 @@ public class ControllerController : MonoBehaviour
                 Assert.IsNotNull(soilFlooring);
                 FlooringController sfc = new FlooringController(soilFlooring);
                 instance.structureControllers.Add(sfc);
+                break;
+            case ModelType.SPEED_TREE:
+                SpeedTree speedTree = model as SpeedTree;
+                Assert.IsNotNull(speedTree, "SpeedTree is null.");
+                SpeedTreeController stc = new SpeedTreeController(speedTree);
+                instance.treeControllers.Add(stc);
                 break;
             case ModelType.SPURGE:
                 Spurge spurge = model as Spurge;

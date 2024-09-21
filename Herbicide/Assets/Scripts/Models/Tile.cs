@@ -152,7 +152,7 @@ public abstract class Tile : Model, ISurface
     public bool Floored()
     {
         AssertDefined();
-        return flooring != null;
+        return GetFlooring() != null;
     }
 
     /// <summary>
@@ -203,8 +203,8 @@ public abstract class Tile : Model, ISurface
         //Setup the new flooring on this Tile.
         flooring.Define(GetX(), GetY(), GetTileType(), GetFlooringNeighbors());
         flooring.transform.position = transform.position;
-        flooring.transform.localScale = transform.localScale;
         flooring.transform.SetParent(transform);
+        flooring.SetLocalScale(Vector3.one);
         this.flooring = flooring;
     }
 
@@ -263,8 +263,8 @@ public abstract class Tile : Model, ISurface
 
         prefabRenderer.sortingOrder = GetY();
         candidate.transform.position = transform.position;
-        candidate.transform.localScale = candidate.GetPlacementScale();
         candidate.transform.SetParent(transform);
+        candidate.SetLocalScale(Vector3.one);
         candidate.OnPlace(new Vector2Int(GetX(), GetY()));
         if (candidate.OCCUPIER) SetOccupant(candidate);
 
@@ -484,7 +484,6 @@ public abstract class Tile : Model, ISurface
         hollowRenderer.sortingOrder = GetY();
         hollowRenderer.color = new Color32(255, 255, 255, 200);
         hollowCopy.transform.position = transform.position;
-        hollowCopy.transform.localScale = Vector3.one;
         hollowCopy.transform.SetParent(transform);
 
         ghostOccupant = hollowCopy;

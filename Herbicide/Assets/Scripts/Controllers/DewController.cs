@@ -6,7 +6,7 @@ using UnityEngine;
 /// The DewController is responsible for manipulating its Dew and bringing
 /// it to life. This includes moving it playing animations, and more.
 /// </summary>
-/// <![CDATA[<param name="Dew">]]>
+/// <![CDATA[<param name="DewState">]]>
 public class DewController : CollectableController<DewController.DewState>
 {
     #region Fields

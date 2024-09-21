@@ -15,27 +15,27 @@ public class Knotwood : Enemy
     /// <summary>
     /// Starting attack range of a Knotwood. 
     /// </summary>
-    public override float BASE_ATTACK_RANGE => 1f;
+    public override float BASE_MAIN_ACTION_RANGE => 1f;
 
     /// <summary>
     /// Maximum attack range of a Knotwood.
     /// </summary>
-    public override float MAX_ATTACK_RANGE => float.MaxValue;
+    public override float MAX_MAIN_ACTION_RANGE => float.MaxValue;
 
     /// <summary>
     /// Minimum attack range of a Knotwood.
     /// </summary>
-    public override float MIN_ATTACK_RANGE => 0f;
+    public override float MIN_MAIN_ACTION_RANGE => 0f;
 
     /// <summary>
     /// Starting attack speed of a Knotwood.
     /// </summary>
-    public override float BASE_ATTACK_SPEED => 1f;
+    public override float BASE_MAIN_ACTION_SPEED => 1f;
 
     /// <summary>
     /// Maximum attack speed of a Knotwood.
     /// </summary>
-    public override float MAX_ATTACK_SPEED => float.MaxValue;
+    public override float MAX_MAIN_ACTION_SPEED => float.MaxValue;
 
     /// <summary>
     /// Starting chase range of a Knotwood.
@@ -55,7 +55,7 @@ public class Knotwood : Enemy
     /// <summary>
     /// Starting movement speed of a Knotwood.
     /// </summary>
-    public override float BASE_MOVEMENT_SPEED => 4f;
+    public override float BASE_MOVEMENT_SPEED => 2f;
 
     /// <summary>
     /// Maximum movement speed of a Knotwood.
@@ -70,7 +70,7 @@ public class Knotwood : Enemy
     /// <summary>
     /// Starting health of a Knotwood.
     /// </summary>
-    public override float BASE_HEALTH => 25;
+    public override float BASE_HEALTH => 20;
 
     /// <summary>
     /// Maximum health of a Knotwood.

@@ -25,27 +25,27 @@ public class NexusHole : Mob
     /// <summary>
     /// Starting attack range of a NexusHole.
     /// </summary>
-    public override float BASE_ATTACK_RANGE => 0f;
+    public override float BASE_MAIN_ACTION_RANGE => 0f;
 
     /// <summary>
     /// Maximum attack range of a NexusHole.
     /// </summary>
-    public override float MAX_ATTACK_RANGE => float.MaxValue;
+    public override float MAX_MAIN_ACTION_RANGE => float.MaxValue;
 
     /// <summary>
     /// Minimum attack range of a NexusHole.
     /// </summary>
-    public override float MIN_ATTACK_RANGE => 0f;
+    public override float MIN_MAIN_ACTION_RANGE => 0f;
 
     /// <summary>
     /// Starting attack cooldown of a NexusHole.
     /// </summary>
-    public override float BASE_ATTACK_SPEED => float.MaxValue;
+    public override float BASE_MAIN_ACTION_SPEED => float.MaxValue;
 
     /// <summary>
     /// Maximum attack cooldown of a NexusHole.
     /// </summary>
-    public override float MAX_ATTACK_SPEED => float.MaxValue;
+    public override float MAX_MAIN_ACTION_SPEED => float.MaxValue;
 
     /// <summary>
     /// Starting chase range of a NexusHole.

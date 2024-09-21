@@ -27,7 +27,6 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
         ATTACK, // Attacking target.
         ESCAPE, // Running back to start.
         PROTECT, // Protecting other escaping enemies.
-        EXITING, // Leaving map.
         DEAD, // Dead.
         INVALID // Something went wrong.
     }
@@ -73,12 +72,6 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
     /// </summary>
     protected float escapeAnimationCounter;
 
-    /// <summary>
-    /// Counts the number of seconds in the exiting animation; resets
-    /// on step.
-    /// </summary>
-    protected float exitingAnimationCounter;
-
     #endregion
 
     #region Methods
@@ -103,7 +96,6 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
         ExecuteAttackState();
         ExecuteProtectState();
         ExecuteEscapeState();
-        ExecuteExitState();
     }
 
     /// <summary>
@@ -140,7 +132,7 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
         NexusHole nexusHoleTarget = target as NexusHole;
 
         // If escaping, only target NexusHoles.
-        if (GetState() == KnotwoodState.ESCAPE || GetState() == KnotwoodState.EXITING)
+        if (GetState() == KnotwoodState.ESCAPE)
         {
             if (nexusHoleTarget == null) return false;
             if (!nexusHoleTarget.Targetable()) return false;
@@ -176,7 +168,6 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
         KnotwoodState state = GetState();
         return state == KnotwoodState.INACTIVE ||
                state == KnotwoodState.ENTERING ||
-               state == KnotwoodState.EXITING ||
                state == KnotwoodState.INVALID;
     }
 
@@ -211,7 +202,7 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
         bool targetExists = target != null && target.Targetable();
         bool carrierToProtect = GetNearestCarrier() != null;
         bool withinChaseRange = targetExists && DistanceToTarget() <= GetKnotwood().GetChaseRange();
-        bool withinAttackRange = targetExists && DistanceToTarget() <= GetKnotwood().GetAttackRange();
+        bool withinAttackRange = targetExists && DistanceToTarget() <= GetKnotwood().GetMainActionRange();
         bool holdingTarget = NumTargetsHolding() > 0;
 
         switch (GetState())
@@ -254,10 +245,6 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
 
                 if (!targetExists && !holdingTarget) SetState(carrierToProtect ? KnotwoodState.PROTECT : KnotwoodState.IDLE);
                 else if (!holdingTarget) SetState(KnotwoodState.IDLE);
-                else if (Vector2.Distance(GetKnotwood().GetPosition(), GetTarget().GetPosition()) < 0.05f)
-                {
-                    SetState(KnotwoodState.EXITING);
-                }
                 break;
 
             case KnotwoodState.PROTECT:
@@ -271,7 +258,6 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
                 }
                 break;
 
-            case KnotwoodState.EXITING:
             case KnotwoodState.INVALID:
                 break;
             default:
@@ -305,7 +291,7 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
         if (GetState() != KnotwoodState.ENTERING) return;
 
         GetKnotwood().SetEntering(GetKnotwood().GetSpawnPos());
-        SetAnimation(GetKnotwood().MOVE_ANIMATION_DURATION, EnemyFactory.GetSpawnTrack(
+        SetNextAnimation(GetKnotwood().MOVE_ANIMATION_DURATION, EnemyFactory.GetSpawnTrack(
             GetKnotwood().TYPE,
                                   GetKnotwood().GetDirection(), GetKnotwood().GetHealthState()));
 
@@ -326,7 +312,7 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
         if (GetState() != KnotwoodState.IDLE) return;
 
         GetKnotwood().SetEntered();
-        SetAnimation(GetKnotwood().IDLE_ANIMATION_DURATION, EnemyFactory.GetIdleTrack(
+        SetNextAnimation(GetKnotwood().IDLE_ANIMATION_DURATION, EnemyFactory.GetIdleTrack(
             GetKnotwood().TYPE,
             GetKnotwood().GetDirection(), GetKnotwood().GetHealthState()));
 
@@ -343,7 +329,7 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
     {
         if (GetState() != KnotwoodState.CHASE) return;
 
-        SetAnimation(GetKnotwood().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
+        SetNextAnimation(GetKnotwood().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
             GetKnotwood().TYPE,
             GetKnotwood().GetDirection(), GetKnotwood().GetHealthState()));
 
@@ -355,10 +341,9 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
         Mob target = GetTarget() as Mob;
         if (target == null || !target.Targetable()) return;
 
-        if (DistanceToTarget() <= GetKnotwood().GetAttackRange()) return;
+        if (DistanceToTarget() <= GetKnotwood().GetMainActionRange()) return;
 
-        Vector3 closest = ClosestTileCoordinatePositionToTarget(target);
-        Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetKnotwood().GetPosition(), closest);
+        Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetKnotwood().GetPosition(), GetTarget().GetPosition());
         SetNextMovePos(nextMove);
     }
 
@@ -369,7 +354,7 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
     {
         if (GetState() != KnotwoodState.PROTECT) return;
 
-        SetAnimation(GetKnotwood().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
+        SetNextAnimation(GetKnotwood().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
             GetKnotwood().TYPE,
                        GetKnotwood().GetDirection(), GetKnotwood().GetHealthState()));
 
@@ -380,8 +365,7 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
         if (!ReachedMovementTarget()) return;
         if (GetNearestCarrier() == null) return;
 
-        Vector3 closest = GetNearestCarrier().GetPosition();
-        Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetKnotwood().GetPosition(), closest);
+        Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetKnotwood().GetPosition(), GetNearestCarrier().GetPosition());
         SetNextMovePos(nextMove);
     }
 
@@ -392,21 +376,21 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
     {
         if (GetState() != KnotwoodState.ATTACK) return;
 
-        SetAnimation(GetKnotwood().ATTACK_ANIMATION_DURATION, EnemyFactory.GetAttackTrack(
+        SetNextAnimation(GetKnotwood().ATTACK_ANIMATION_DURATION, EnemyFactory.GetAttackTrack(
                 GetKnotwood().TYPE,
                        GetKnotwood().GetDirection(), GetKnotwood().GetHealthState()));
 
         //Attack Logic : Only if target is valid.
         Mob target = GetTarget() as Mob;
         bool validTarget = GetTarget() != null && target.Targetable();
-        if (!CanAttack()) return;
+        if (!CanPerformMainAction()) return;
         if (!validTarget) return;
 
         FaceTarget();
         if (CanHoldTarget(target as Nexus)) HoldTarget(target as Nexus); // Hold.
         else target.AdjustHealth(-GetKnotwood().KICK_DAMAGE); // Kick.
         GetHeldTargets().ForEach(target => target.SetMaskInteraction(SpriteMaskInteraction.None));
-        GetKnotwood().RestartAttackCooldown();
+        GetKnotwood().RestartMainActionCooldown();
     }
 
     /// <summary>
@@ -418,47 +402,14 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
         if (!ValidModel()) return;
         if (GetTarget() == null) return;
 
-        SetAnimation(GetKnotwood().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
+        SetNextAnimation(GetKnotwood().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
             GetKnotwood().TYPE,
                                   GetKnotwood().GetDirection(), GetKnotwood().GetHealthState()));
 
         // Move to target.
         MoveLinearlyTowardsMovePos();
 
-        // We reached our move target, so we need a new one.
-        if (!ReachedMovementTarget()) return;
-        SetNextMovePos(TileGrid.NextTilePosTowardsGoal(GetKnotwood().GetPosition(), GetTarget().GetPosition()));
-    }
-
-    /// <summary>
-    /// Runs logic for the Knotwood's Exit state.
-    /// </summary>
-    protected void ExecuteExitState()
-    {
-        if (GetState() != KnotwoodState.EXITING) return;
-        if (GetKnotwood().Exited()) return;
-        NexusHole nexusHoleTarget = GetTarget() as NexusHole;
-        if (nexusHoleTarget == null) return;
-
-        Assert.IsTrue(GetTarget() as NexusHole != null, "exit target needs to be a NH.");
-        Vector3 nexusHolePosition = GetTarget().GetPosition();
-        Vector3 jumpPosition = nexusHolePosition;
-        jumpPosition.y -= .5f;
-
-        if (!GetKnotwood().IsExiting() && !GetKnotwood().Exited()) GetKnotwood().SetExiting(nexusHolePosition);
-
-        SetAnimation(GetKnotwood().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
-                GetKnotwood().TYPE,
-                       GetKnotwood().GetDirection(), GetKnotwood().GetHealthState()));
-
-        // Move to target.
-        GetKnotwood().SetMaskInteraction(SpriteMaskInteraction.VisibleOutsideMask);
-        GetHeldTargets().ForEach(target => target.SetMaskInteraction(SpriteMaskInteraction.VisibleOutsideMask));
-        SetNextMovePos(jumpPosition);
-        FallIntoMovePos(3f);
-
-        if (!ReachedMovementTarget()) return;
-        if (GetKnotwood().IsExiting() && GetKnotwood().GetPosition() == jumpPosition)
+        if(Vector2.Distance(GetKnotwood().GetPosition(), GetTarget().GetPosition()) < 0.05f)
         {
             GetKnotwood().SetExited();
             foreach (Model target in GetHeldTargets())
@@ -468,7 +419,9 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
             }
         }
 
-        Assert.IsTrue(NumTargetsHolding() > 0, "You need to hold targets to exit.");
+        // We reached our move target, so we need a new one.
+        if (!ReachedMovementTarget()) return;
+        SetNextMovePos(TileGrid.NextTilePosTowardsGoal(GetKnotwood().GetPosition(), GetTarget().GetPosition()));
     }
 
     #endregion
@@ -488,7 +441,6 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
         else if (state == KnotwoodState.ATTACK) attackAnimationCounter += Time.deltaTime;
         else if (state == KnotwoodState.PROTECT) protectAnimationCounter += Time.deltaTime;
         else if (state == KnotwoodState.ESCAPE) escapeAnimationCounter += Time.deltaTime;
-        else if (state == KnotwoodState.EXITING) exitingAnimationCounter += Time.deltaTime;
     }
 
     /// <summary>
@@ -504,7 +456,6 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
         else if (state == KnotwoodState.ATTACK) return attackAnimationCounter;
         else if (state == KnotwoodState.PROTECT) return protectAnimationCounter;
         else if (state == KnotwoodState.ESCAPE) return escapeAnimationCounter;
-        else if (state == KnotwoodState.EXITING) return exitingAnimationCounter;
         else return 0;
     }
 
@@ -520,7 +471,6 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
         else if (state == KnotwoodState.ATTACK) attackAnimationCounter = 0;
         else if (state == KnotwoodState.PROTECT) protectAnimationCounter = 0;
         else if (state == KnotwoodState.ESCAPE) escapeAnimationCounter = 0;
-        else if (state == KnotwoodState.EXITING) exitingAnimationCounter = 0;
     }
 
     #endregion

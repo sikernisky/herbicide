@@ -96,6 +96,8 @@ public class ShopCard : UIModel
                 return ModelType.SHOP_CARD_RACCOON;
             case ModelType.OWL:
                 return ModelType.SHOP_CARD_OWL;
+            case ModelType.BUNNY:
+                return ModelType.SHOP_CARD_BUNNY;
             default:
                 return ModelType.SHOP_CARD_BLANK;
         }
@@ -137,7 +139,7 @@ public class ShopCard : UIModel
     /// </summary>
     public void ClickShopCard()
     {
-        if (EconomyController.GetBalance() < model.COST) return;
+        if (EconomyController.GetBalance(ModelType.DEW) < model.COST) return;
         clicked = true;
     }
 

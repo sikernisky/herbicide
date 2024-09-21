@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="25" height="11" tilewidth="16" tileheight="16" infinite="0" nextlayerid="17" nextobjectid="791">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="25" height="11" tilewidth="16" tileheight="16" infinite="0" nextlayerid="17" nextobjectid="793">
  <editorsettings>
   <export target="../../Assets/Levels/btd.json" format="json"/>
  </editorsettings>
@@ -227,19 +227,16 @@
    <property name="layerClass" value="StructureLayer"/>
   </properties>
   <object id="762" gid="75" x="128" y="128" width="16" height="16"/>
-  <object id="763" gid="75" x="192" y="128" width="16" height="16"/>
   <object id="764" gid="75" x="256" y="128" width="16" height="16"/>
-  <object id="765" gid="75" x="256" y="64" width="16" height="16"/>
   <object id="766" gid="75" x="192" y="64" width="16" height="16"/>
-  <object id="767" gid="75" x="128" y="64" width="16" height="16"/>
-  <object id="768" gid="75" x="224" y="96" width="16" height="16"/>
-  <object id="769" gid="75" x="160" y="96" width="16" height="16"/>
   <object id="770" gid="72" x="352" y="80" width="16" height="16"/>
   <object id="771" gid="72" x="352" y="112" width="16" height="16"/>
   <object id="772" gid="73" x="32" y="80" width="16" height="16"/>
   <object id="773" gid="73" x="32" y="112" width="16" height="16"/>
   <object id="788" gid="62" x="272" y="96" width="16" height="16"/>
   <object id="789" gid="62" x="112" y="96" width="16" height="16"/>
+  <object id="791" gid="74" x="128" y="64" width="16" height="16"/>
+  <object id="792" gid="74" x="160" y="96" width="16" height="16"/>
  </objectgroup>
  <objectgroup id="16" name="Markers" class="MarkerLayer">
   <properties>
@@ -247,13 +244,13 @@
   </properties>
   <object id="774" type="Marker" gid="68" x="32" y="80" width="16" height="16">
    <properties>
-    <property name="enemySpawnData" value="spurge1-3, spurge1-10"/>
+    <property name="enemySpawnData" value=""/>
     <property name="markerName" value="enemySpawn"/>
    </properties>
   </object>
   <object id="790" type="Marker" gid="68" x="32" y="112" width="16" height="16">
    <properties>
-    <property name="enemySpawnData" value="knotwood1-2, knotwood1-4, knotwood1-6"/>
+    <property name="enemySpawnData" value="spurge1-2"/>
     <property name="markerName" value="enemySpawn"/>
    </properties>
   </object>

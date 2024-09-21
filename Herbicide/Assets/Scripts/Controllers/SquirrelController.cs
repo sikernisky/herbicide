@@ -83,9 +83,9 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     /// </summary>
     /// <returns>true if the Squirrel can shoot an acorn; otherwise,
     /// false.</returns>
-    public override bool CanAttack()
+    public override bool CanPerformMainAction()
     {
-        if (!base.CanAttack()) return false; //Cooldown
+        if (!base.CanPerformMainAction()) return false; //Cooldown
         if (GetState() != SquirrelState.ATTACK) return false; //Not in the attack state.
         Enemy target = GetTarget() as Enemy;
         if (target == null || !target.Targetable()) return false; //Invalid target.
@@ -106,8 +106,8 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
             Enemy target = GetTarget() as Enemy;
             if (target == null || !target.Targetable()) yield break; // Invalid target.
 
-            SetAnimation(GetSquirrel().ATTACK_ANIMATION_DURATION / numAcorns,
-                DefenderFactory.GetAttackTrack(
+            SetNextAnimation(GetSquirrel().ATTACK_ANIMATION_DURATION / numAcorns,
+                DefenderFactory.GetMainActionTrack(
                     ModelType.SQUIRREL,
                     GetSquirrel().GetDirection(), GetSquirrel().GetTier()));
 
@@ -165,14 +165,14 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
                 break;
             case SquirrelState.IDLE:
                 if (target == null || !target.Targetable()) break;
-                if (DistanceToTargetFromTree() <= GetSquirrel().GetAttackRange() &&
-                    GetSquirrel().GetAttackCooldown() <= 0) SetState(SquirrelState.ATTACK);
+                if (DistanceToTargetFromTree() <= GetSquirrel().GetMainActionRange() &&
+                    GetSquirrel().GetMainActionCooldown() <= 0) SetState(SquirrelState.ATTACK);
                 break;
             case SquirrelState.ATTACK:
                 if (target == null || !target.Targetable()) SetState(SquirrelState.IDLE);
                 if (GetAnimationCounter() > 0) break;
-                if (GetSquirrel().GetAttackCooldown() > 0) SetState(SquirrelState.IDLE);
-                else if (DistanceToTarget() > GetSquirrel().GetAttackRange()) SetState(SquirrelState.IDLE);
+                if (GetSquirrel().GetMainActionCooldown() > 0) SetState(SquirrelState.IDLE);
+                else if (DistanceToTarget() > GetSquirrel().GetMainActionRange()) SetState(SquirrelState.IDLE);
                 break;
             case SquirrelState.INVALID:
                 throw new System.Exception("Invalid State.");
@@ -199,11 +199,11 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         if (!ValidModel()) return;
         if (GetState() != SquirrelState.IDLE) return;
         Enemy target = GetTarget() as Enemy;
-        if (target != null && DistanceToTargetFromTree() <= GetSquirrel().GetAttackRange())
+        if (target != null && DistanceToTargetFromTree() <= GetSquirrel().GetMainActionRange())
             FaceTarget();
         else GetSquirrel().FaceDirection(Direction.SOUTH);
 
-        SetAnimation(GetSquirrel().IDLE_ANIMATION_DURATION,
+        SetNextAnimation(GetSquirrel().IDLE_ANIMATION_DURATION,
             DefenderFactory.GetIdleTrack(
                 ModelType.SQUIRREL,
                 GetSquirrel().GetDirection(), GetSquirrel().GetTier()));
@@ -220,7 +220,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         if (GetState() != SquirrelState.ATTACK) return;
 
         FaceTarget();
-        if (!CanAttack()) return;
+        if (!CanPerformMainAction()) return;
 
         // Calculate the number of acorns to fire based on the Squirrel's tier.
         int tier = GetSquirrel().GetTier();
@@ -230,7 +230,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         GetSquirrel().StartCoroutine(FireAcorns(numAcornsToFire));
 
         // Reset attack animation.
-        GetSquirrel().RestartAttackCooldown();
+        GetSquirrel().RestartMainActionCooldown();
     }
 
     #endregion

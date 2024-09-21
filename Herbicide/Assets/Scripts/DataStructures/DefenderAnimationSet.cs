@@ -26,67 +26,67 @@ public class DefenderAnimationSet : ScriptableObject
 
     #endregion
 
-    #region Attack Tracks
+    #region Main Action Tracks
 
     /// <summary>
-    /// Attack animations for the tier 1 Defender facing north.
+    /// Main action animations for the tier 1 Defender facing north.
     /// </summary>
-    public Sprite[] attackAnimationNorthTier1;
+    public Sprite[] mainActionAnimationNorthTier1;
 
     /// <summary>
-    /// Attack animations for the tier 1 Defender facing east.
+    /// Main Action animations for the tier 1 Defender facing east.
     /// </summary>
-    public Sprite[] attackAnimationEastTier1;
+    public Sprite[] mainActionAnimationEastTier1;
 
     /// <summary>
-    /// Attack animations for the tier 1 Defender facing south.
+    /// Main Action animations for the tier 1 Defender facing south.
     /// </summary>
-    public Sprite[] attackAnimationSouthTier1;
+    public Sprite[] mainActionAnimationSouthTier1;
 
     /// <summary>
-    /// Attack animations for the tier 1 Defender facing west.
+    /// Main Action animations for the tier 1 Defender facing west.
     /// </summary>
-    public Sprite[] attackAnimationWestTier1;
+    public Sprite[] mainActionAnimationWestTier1;
 
     /// <summary>
-    /// Attack animations for the tier 2 Defender facing north.
+    /// Main Action animations for the tier 2 Defender facing north.
     /// </summary>
-    public Sprite[] attackAnimationNorthTier2;
+    public Sprite[] mainActionAnimationNorthTier2;
 
     /// <summary>
-    /// Attack animations for the tier 2 Defender facing east.
+    /// Main Action animations for the tier 2 Defender facing east.
     /// </summary>
-    public Sprite[] attackAnimationEastTier2;
+    public Sprite[] mainActionAnimationEastTier2;
 
     /// <summary>
-    /// Attack animations for the tier 2 Defender facing south.
+    /// Main Action animations for the tier 2 Defender facing south.
     /// </summary>
-    public Sprite[] attackAnimationSouthTier2;
+    public Sprite[] mainActionAnimationSouthTier2;
 
     /// <summary>
-    /// Attack animations for the tier 2 Defender facing west.
+    /// Main Action animations for the tier 2 Defender facing west.
     /// </summary>
-    public Sprite[] attackAnimationWestTier2;
+    public Sprite[] mainActionAnimationWestTier2;
 
     /// <summary>
-    /// Attack animations for the tier 3 Defender facing north.
+    /// Main Action animations for the tier 3 Defender facing north.
     /// </summary>
-    public Sprite[] attackAnimationNorthTier3;
+    public Sprite[] mainActionAnimationNorthTier3;
 
     /// <summary>
-    /// Attack animations for the tier 3 Defender facing east.
+    /// Main Action animations for the tier 3 Defender facing east.
     /// </summary>
-    public Sprite[] attackAnimationEastTier3;
+    public Sprite[] mainActionAnimationEastTier3;
 
     /// <summary>
-    /// Attack animations for the tier 3 Defender facing south.
+    /// Main Action animations for the tier 3 Defender facing south.
     /// </summary>
-    public Sprite[] attackAnimationSouthTier3;
+    public Sprite[] mainActionAnimationSouthTier3;
 
     /// <summary>
-    /// Attack animations for the tier 3 Defender facing west.
+    /// Main Action animations for the tier 3 Defender facing west.
     /// </summary>
-    public Sprite[] attackAnimationWestTier3;
+    public Sprite[] mainActionAnimationWestTier3;
 
     #endregion
 
@@ -157,31 +157,31 @@ public class DefenderAnimationSet : ScriptableObject
     #region Methods
 
     /// <summary>
-    /// Returns the attack animation track for the given direction.
+    /// Returns the main action animation track for the given direction.
     /// </summary>
     /// <param name="d">The direction of the track to get</param>
     /// <param name="tier">The tier of the track to get</param>
-    /// <returns>the attack animation track for the given direction </returns>
-    public Sprite[] GetAttackAnimation(Direction d, int tier)
+    /// <returns>the main action animation track for the given direction </returns>
+    public Sprite[] GetMainActionAnimation(Direction d, int tier)
     {
         switch (d)
         {
             case Direction.NORTH:
-                if (tier == 1) return attackAnimationNorthTier1;
-                else if (tier == 2) return attackAnimationNorthTier2;
-                else return attackAnimationNorthTier3;
+                if (tier == 1) return mainActionAnimationNorthTier1;
+                else if (tier == 2) return mainActionAnimationNorthTier2;
+                else return mainActionAnimationNorthTier3;
             case Direction.EAST:
-                if (tier == 1) return attackAnimationEastTier1;
-                else if (tier == 2) return attackAnimationEastTier2;
-                else return attackAnimationEastTier3;
+                if (tier == 1) return mainActionAnimationEastTier1;
+                else if (tier == 2) return mainActionAnimationEastTier2;
+                else return mainActionAnimationEastTier3;
             case Direction.SOUTH:
-                if (tier == 1) return attackAnimationSouthTier1;
-                else if (tier == 2) return attackAnimationSouthTier2;
-                else return attackAnimationSouthTier3;
+                if (tier == 1) return mainActionAnimationSouthTier1;
+                else if (tier == 2) return mainActionAnimationSouthTier2;
+                else return mainActionAnimationSouthTier3;
             case Direction.WEST:
-                if (tier == 1) return attackAnimationWestTier1;
-                else if (tier == 2) return attackAnimationWestTier2;
-                else return attackAnimationWestTier3;
+                if (tier == 1) return mainActionAnimationWestTier1;
+                else if (tier == 2) return mainActionAnimationWestTier2;
+                else return mainActionAnimationWestTier3;
             default:
                 throw new System.InvalidOperationException("Invalid direction.");
         }

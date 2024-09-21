@@ -162,8 +162,8 @@ public abstract class Flooring : Model, ISurface
 
         prefabRenderer.sortingOrder = GetY();
         candidate.transform.position = transform.position;
-        candidate.transform.localScale = candidate.GetPlacementScale();
         candidate.transform.SetParent(transform);
+        candidate.SetLocalScale(Vector3.one);
         if (candidate.OCCUPIER) occupant = candidate;
         candidate.OnPlace(new Vector2Int(GetX(), GetY()));
         SetTilingIndex(GetTilingIndex(neighbors));
@@ -190,7 +190,10 @@ public abstract class Flooring : Model, ISurface
         if (candidate == null || neighbors == null) return false;
 
         HashSet<ModelType> validPlacements = new HashSet<ModelType>(){
-            ModelType.BASIC_TREE
+            ModelType.BASIC_TREE,
+            ModelType.BASIC_TREE_SEED,
+            ModelType.SPEED_TREE,
+            ModelType.SPEED_TREE_SEED
         };
 
         if (Occupied())
@@ -309,8 +312,8 @@ public abstract class Flooring : Model, ISurface
         hollowRenderer.sortingOrder = GetY();
         hollowRenderer.color = new Color32(255, 255, 255, 200);
         hollowCopy.transform.position = transform.position;
-        hollowCopy.transform.localScale = Vector3.one;
         hollowCopy.transform.SetParent(transform);
+        hollowCopy.transform.localScale = Vector3.one;
 
         ghostOccupant = hollowCopy;
         return true;

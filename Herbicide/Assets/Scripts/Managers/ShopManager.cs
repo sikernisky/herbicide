@@ -126,14 +126,14 @@ public class ShopManager : MonoBehaviour
         }
 
         // Enable / Disable reroll button depending on balance
-        if (EconomyController.GetBalance() < REROLL_COST) instance.rerollButton.interactable = false;
+        if (EconomyController.GetBalance(ModelType.DEW) < REROLL_COST) instance.rerollButton.interactable = false;
         else instance.rerollButton.interactable = true;
 
         // Lighten / Darken shop cards depending on if player can afford
         foreach (ShopSlot shopSlot in instance.shopSlots)
         {
             if (shopSlot.Empty()) continue;
-            if (!shopSlot.CanBuy(EconomyController.GetBalance())) shopSlot.DarkenSlot();
+            if (!shopSlot.CanBuy(EconomyController.GetBalance(ModelType.DEW))) shopSlot.DarkenSlot();
             else shopSlot.LightenSlot();
         }
 
@@ -172,7 +172,8 @@ public class ShopManager : MonoBehaviour
                 ModelType.SHOP_CARD_BEAR,
                 ModelType.SHOP_CARD_PORCUPINE,
                 ModelType.SHOP_CARD_OWL,
-                ModelType.SHOP_CARD_RACCOON
+                ModelType.SHOP_CARD_RACCOON,
+                ModelType.SHOP_CARD_BUNNY
             };
             }
 
@@ -205,9 +206,9 @@ public class ShopManager : MonoBehaviour
     {
         if (!free)
         {
-            bool canReroll = EconomyController.GetBalance() >= REROLL_COST;
+            bool canReroll = EconomyController.GetBalance(ModelType.DEW) >= REROLL_COST;
             if (!canReroll) return;
-            EconomyController.Withdraw(REROLL_COST);
+            EconomyController.Withdraw(ModelType.DEW, REROLL_COST);
         }
 
         foreach (ShopSlot cardSlot in shopSlots)
@@ -228,6 +229,11 @@ public class ShopManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Called when the player finishes placing a Model.
+    /// </summary>
+    private void OnFinishPlacing(Model m) => Assert.IsNotNull(m, "Placed model is null.");
+
+    /// <summary>
     /// #BUTTON EVENT#
     /// 
     /// Called when a ShopSlot button is clicked. Starts placing
@@ -240,7 +246,7 @@ public class ShopManager : MonoBehaviour
         if (clickedSlot.Empty()) return;
         if (PlacementController.IsPlacing()) return;
         if(PlacementController.IsCombining()) return;
-        if (!clickedSlot.CanBuy(EconomyController.GetBalance())) return;
+        if (!clickedSlot.CanBuy(EconomyController.GetBalance(ModelType.DEW))) return;
 
         // Get a fresh copy of the Model we bought
         GameObject slotPrefab = clickedSlot.GetCardPrefab();
@@ -249,7 +255,7 @@ public class ShopManager : MonoBehaviour
         Assert.IsNotNull(slotModel);
 
         PlacementController.StartPlacingObject(slotModel);
-        EconomyController.Withdraw(clickedSlot.Buy(EconomyController.GetBalance()));
+        EconomyController.Withdraw(ModelType.DEW, clickedSlot.Buy(EconomyController.GetBalance(ModelType.DEW)));
 
         // The ControllerController handles upgrading and combination logic
         OnBuyModel?.Invoke(slotModel);
@@ -260,9 +266,18 @@ public class ShopManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Called when the player finishes placing a Model.
+    /// Subscribes a handler (the ControllerController) to the request upgrade event.
     /// </summary>
-    private void OnFinishPlacing(Model m) => Assert.IsNotNull(m, "Placed model is null.");
+    /// <param name="handler">The handler to subscribe.</param>
+    public static void SubscribeToBuyDefenderDelegate(BuyModelDelegate handler)
+    {
+        Assert.IsNotNull(handler, "Handler is null.");
+        instance.OnBuyModel += handler;
+    }
+
+    #endregion
+
+    #region Button Events
 
     /// <summary>
     /// #BUTTON EVENT#
@@ -272,15 +287,40 @@ public class ShopManager : MonoBehaviour
     /// </summary>
     public void ClickRerollButton() => Reroll(false);
 
+    /// <summary>
+    /// # BUTTON EVENT #
+    /// 
+    /// Called when the player clicks the BasicTreeSeed button.
+    /// If possible, the player will spend a BasicTreeSeed and
+    /// start placing a BasicTree.
+    /// </summary>
+    public void ClickBasicTreeSeedButton()
+    {
+        if (EconomyController.GetBalance(ModelType.BASIC_TREE_SEED) < 1) return;
+        EconomyController.Withdraw(ModelType.BASIC_TREE_SEED, 1);
+        GameObject basicTreePrefab = TreeFactory.GetTreePrefab(ModelType.BASIC_TREE);
+        Assert.IsNotNull(basicTreePrefab, "BasicTree prefab is null.");
+        Model basicTreeModel = basicTreePrefab.GetComponent<Model>();
+        Assert.IsNotNull(basicTreeModel, "BasicTree model is null.");
+        PlacementController.StartPlacingObject(basicTreeModel);
+    }
 
     /// <summary>
-    /// Subscribes a handler (the ControllerController) to the request upgrade event.
+    /// # BUTTON EVENT #
+    /// 
+    /// Called when the player clicks the BasicTreeSeed button.
+    /// If possible, the player will spend a BasicTreeSeed and
+    /// start placing a BasicTree.
     /// </summary>
-    /// <param name="handler">The handler to subscribe.</param>
-    public static void SubscribeToBuyDefenderDelegate(BuyModelDelegate handler)
+    public void ClickSpeedTreeSeedButton()
     {
-        Assert.IsNotNull(handler, "Handler is null.");
-        instance.OnBuyModel += handler;
+        if (EconomyController.GetBalance(ModelType.SPEED_TREE_SEED) < 1) return;
+        EconomyController.Withdraw(ModelType.SPEED_TREE_SEED, 1);
+        GameObject speedTreePrefab = TreeFactory.GetTreePrefab(ModelType.SPEED_TREE);
+        Assert.IsNotNull(speedTreePrefab, "SpeedTree prefab is null.");
+        Model speedTreeModel = speedTreePrefab.GetComponent<Model>();
+        Assert.IsNotNull(speedTreeModel, "SpeedTree model is null.");
+        PlacementController.StartPlacingObject(speedTreeModel);
     }
 
     #endregion

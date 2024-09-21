@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 using TMPro;
-using System;
+using System.Collections.Generic;
 
 /// <summary>
 /// Controls player balance and currency related events.
@@ -11,20 +11,27 @@ public class EconomyController : MonoBehaviour
     #region Fields
 
     /// <summary>
-    /// Upper bound of how much money the player can have at once.
+    /// The bank of currencies. 
     /// </summary>
-    public const int MAX_MONEY = 9999;
+    private static Dictionary<ModelType, int> currencies;
 
     /// <summary>
-    /// Lower bound of how much money the player can have at once.
-    /// </summary>
-    public const int MIN_MONEY = 0;
-
-    /// <summary>
-    /// Text component that displays the current amount of currency.
+    /// Text component that displays the current amount of Dew.
     /// </summary>
     [SerializeField]
-    private TMP_Text currencyText;
+    private TMP_Text dewBalanceText;
+
+    /// <summary>
+    /// Text component that displays the current amount of BasicTreeSeeds.
+    /// </summary>
+    [SerializeField]
+    private TMP_Text basicTreeSeedBalanceText;
+
+    /// <summary>
+    /// Text component that displays the current amount of SpeedTreeSeeds.
+    /// </summary>
+    [SerializeField]
+    private TMP_Text speedTreeSeedBalanceText;
 
     /// <summary>
     /// Reference to the EconomyController singleton.
@@ -32,31 +39,25 @@ public class EconomyController : MonoBehaviour
     private static EconomyController instance;
 
     /// <summary>
-    /// How much money the player has.
+    /// How much Dew the player gets per tick.
     /// </summary>
-    private static int currentMoney;
-
-    /// <summary>
-    /// Starting money for this level. (TODO: Data-Driven Design)
-    /// </summary>
-    [SerializeField]
-    private int startingMoney;
-
-    /// <summary>
-    /// How much currency the player gets per tick.
-    /// </summary>
-    private static readonly int PASSIVE_INCOME_AMOUNT = 10;
+    private static readonly int DEW_PASSIVE_INCOME = 25;
 
     /// <summary>
     /// The number of seconds the player must wait until they
-    /// recieve another passive income tick.
+    /// recieve another Dew passive income tick.
     /// </summary>
-    private static readonly float PASSIVE_INCOME_FREQUENCY = 10f;
+    private static readonly float DEW_PASSIVE_INCOME_FREQUENCY = 20f;
 
     /// <summary>
     /// Number of seconds since the last passive income tick occured.
     /// </summary>
-    private float timeSinceLastPassiveIncomeTick;
+    private float timeSinceLastDewPassiveIncomeTick;
+
+    /// <summary>
+    /// true if passive income is enabled; otherwise, false.
+    /// </summary>
+    private bool passiveIncomeEnabled;
 
     /// <summary>
     /// The most recent GameState.
@@ -80,7 +81,8 @@ public class EconomyController : MonoBehaviour
         Assert.IsNotNull(economyControllers, "Array of EconomyControllers is null.");
         Assert.AreEqual(1, economyControllers.Length);
         instance = economyControllers[0];
-        currentMoney = instance.startingMoney;
+        instance.InitializeCurrencies();
+        instance.passiveIncomeEnabled = true;
     }
 
     /// <summary>
@@ -94,28 +96,49 @@ public class EconomyController : MonoBehaviour
     {
         instance.gameState = gameState;
         instance.UpdateCurrencyText();
-        instance.PassiveIncome();
+        if(instance.passiveIncomeEnabled) instance.PassiveIncome();
     }
 
     /// <summary>
-    /// Updates the value and size of the text component that displays
-    /// the player's current currency balance.
+    /// Initializes the currency dictionary and adds the keys
+    /// that correspond to the currencies in the game.
+    /// </summary>
+    private void InitializeCurrencies()
+    {
+        currencies = new Dictionary<ModelType, int>
+        {
+            { ModelType.DEW, 100 },
+            { ModelType.BASIC_TREE_SEED, 0 },
+            { ModelType.SPEED_TREE_SEED, 0 }
+        };
+    }
+
+    /// <summary>
+    /// Updates the values of the currency text components.
     /// </summary>
     private void UpdateCurrencyText()
     {
-        currencyText.text = currentMoney.ToString();
-        if (GetBalance() > 999) currencyText.fontSize = 8;
-        else currencyText.fontSize = 11;
+        dewBalanceText.text = currencies[ModelType.DEW].ToString();
+        basicTreeSeedBalanceText.text = currencies[ModelType.BASIC_TREE_SEED].ToString();
+        speedTreeSeedBalanceText.text = currencies[ModelType.SPEED_TREE_SEED].ToString();
     }
 
     /// <summary>
-    /// Adds to the player's currency balance.
+    /// Adds to the player's currency balance. Precondition that
+    /// the currency exists in the dictionary.
     /// </summary>
-    /// <param name="amount">How much to add.</param>
-    private static void Deposit(int amount)
+    ///<param name="currencyType">The type of currency to add. </param>
+    /// <param name="amountToAdd">The amount of curenncy to add. </param>
+    private static void Deposit(ModelType currencyType, int amountToDeposit)
     {
-        int incremented = GetBalance() + amount;
-        currentMoney = Mathf.Clamp(incremented, MIN_MONEY, MAX_MONEY);
+        Assert.IsTrue(currencies.ContainsKey(currencyType), "Currency not found: " + currencyType);
+        if(amountToDeposit < 0)
+        {
+            Withdraw(currencyType, amountToDeposit);
+            return;
+        }
+        int incremented = currencies[currencyType] + amountToDeposit;
+        currencies[currencyType] = Mathf.Clamp(incremented, 0, int.MaxValue);
     }
 
     /// <summary>
@@ -126,24 +149,38 @@ public class EconomyController : MonoBehaviour
     public static void CashIn(Currency currency)
     {
         Assert.IsNotNull(currency, "Currency is null.");
-        Deposit(currency.GetValue());
+        if (!currencies.ContainsKey(currency.TYPE)) return;
+
+        if(currency.GetValue() > 0) Deposit(currency.TYPE, currency.GetValue());
+        else Withdraw(currency.TYPE, currency.GetValue());
     }
 
     /// <summary>
-    /// Removes some amount of money from the player's balance.
+    /// Removes some amount of currency from the player's balance.
     ///</summary>
-    /// <param name="amount">The amount of money to remove. </param>
-    public static void Withdraw(int amount)
+    ///<param name="currencyType">The type of currency to remove. </param>
+    /// <param name="amountToWithdraw">The amount of curenncy to remove. </param>
+    public static void Withdraw(ModelType currencyType, int amountToWithdraw)
     {
-        Assert.IsTrue(amount >= 0);
-        currentMoney = Math.Clamp(currentMoney - amount, 0, int.MaxValue);
+        if(amountToWithdraw < 0)
+        {
+            Deposit(currencyType, amountToWithdraw);
+            return;
+        }
+        int decremented = currencies[currencyType] - amountToWithdraw;
+        currencies[currencyType] = Mathf.Clamp(decremented, 0, int.MaxValue);
     }
 
     /// <summary>
-    /// Returns the amount of money the player currently has.
-    ///  </summary>
-    /// <returns>how much money the player has.</returns>
-    public static int GetBalance() => currentMoney;
+    /// Returns the balance of a currency.
+    /// </summary>
+    /// <param name="currencyType">the type of currency from which to get the balance. </param>
+    /// <returns>the current balance of a currency.</returns>
+    public static int GetBalance(ModelType currencyType)
+    {
+        Assert.IsTrue(currencies.ContainsKey(currencyType), "Currency not found: " + currencyType);
+        return currencies[currencyType];
+    }
 
     /// <summary>
     /// Updates the passive income counter and awards the player currency
@@ -153,14 +190,16 @@ public class EconomyController : MonoBehaviour
     {
         if (gameState != GameState.ONGOING) return;
 
-        timeSinceLastPassiveIncomeTick += Time.deltaTime;
+        timeSinceLastDewPassiveIncomeTick += Time.deltaTime;
 
-        if (timeSinceLastPassiveIncomeTick >= PASSIVE_INCOME_FREQUENCY)
+        if (timeSinceLastDewPassiveIncomeTick >= DEW_PASSIVE_INCOME_FREQUENCY)
         {
-            timeSinceLastPassiveIncomeTick = 0;
-            Deposit(PASSIVE_INCOME_AMOUNT);
+            timeSinceLastDewPassiveIncomeTick = 0;
+            Deposit(ModelType.DEW, DEW_PASSIVE_INCOME);
         }
     }
+
+
 
     #endregion
 }

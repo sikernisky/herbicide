@@ -21,6 +21,11 @@ public abstract class Model : MonoBehaviour
     public float CurrentAnimationDuration { get; private set; }
 
     /// <summary>
+    /// The Direction of the most recent animation track
+    /// </summary>
+    private Direction directionOfMostRecentAnimation;
+
+    /// <summary>
     /// The most up to date frame number of this Model's active animation.
     /// </summary>
     public int CurrentFrame { get; private set; }
@@ -74,6 +79,11 @@ public abstract class Model : MonoBehaviour
     /// </summary>
     private List<IEffect> effectsToRemoveSafely = new List<IEffect>();
 
+    /// <summary>
+    /// The current base color of this Model.
+    /// </summary>
+    private Color32 baseColor;
+
     #endregion
 
     #region Stats
@@ -103,6 +113,11 @@ public abstract class Model : MonoBehaviour
     /// The offset of this Model's held Nexii. 
     /// </summary>
     public virtual Vector2 HOLDER_OFFSET => new Vector2(0, 0);
+
+    /// <summary>
+    /// The base color of this Model.
+    /// </summary>
+    public virtual Color32 BASE_COLOR => new Color32(255, 255, 255, 255);
 
     #endregion
 
@@ -165,10 +180,22 @@ public abstract class Model : MonoBehaviour
     public virtual void SetColor(Color32 newColor) => modelRenderer.color = modelRenderer != null ? newColor : modelRenderer.color;
 
     /// <summary>
-    /// Returns this Model's SpriteRenderer's color.
+    /// Returns this Model's base color.
     /// </summary>
     /// <returns>this Model's SpriteRenderer's color. </returns>
     public Color GetColor() => modelRenderer.color;
+
+    /// <summary>
+    /// Sets this Model's base color.
+    /// </summary>
+    /// <param name="color">the base color to set to.</param>
+    public void SetBaseColor(Color32 color) => baseColor = color; 
+
+    /// <summary>
+    /// Returns this Model's base color.
+    /// </summary>
+    /// <returns>this model's base color. </returns>
+    public Color GetBaseColor() => baseColor;
 
     /// <summary>
     /// Sets this Model's SpriteRenderer component's sorting
@@ -181,75 +208,6 @@ public abstract class Model : MonoBehaviour
     /// </summary>
     /// <returns>this Model's sorting order.</returns>
     public int GetSortingOrder() => modelRenderer.sortingOrder;
-
-    /// <summary>
-    /// Sets this Model's current animation track.
-    /// </summary>
-    /// <param name="track">The current animation track.</param>
-    /// <param name="startFrame">optionally, choose which frame to start with.</param>
-    /// <param name="isNewTrack">optionally, set to true if this is a new track.</param>
-    public void SetAnimationTrack(Sprite[] track, int startFrame = 0, bool isNewTrack = true)
-    {
-        Assert.IsNotNull(track, "Cannot set to a null animation track.");
-        Assert.IsTrue(track.Length > 0, "Cannot have an empty animation track.");
-        CurrentAnimationTrack = track;
-        CurrentFrame = startFrame;
-        if (isNewTrack) numCyclesOfCurrentAnimationCompleted = 0;
-    }
-
-    /// <summary>
-    /// Returns the number of cycles of the current animation completed.
-    /// </summary>
-    /// <returns>the number of cycles of the current animation completed. </returns>
-    public int GetNumCyclesOfCurrentAnimationCompleted() => numCyclesOfCurrentAnimationCompleted;
-
-    /// <summary>
-    /// Increments the number of cycles of the current animation completed.
-    /// </summary>
-    public void IncrementNumCyclesOfCurrentAnimationCompleted() => numCyclesOfCurrentAnimationCompleted++;
-
-    /// <summary>
-    /// Returns true if this Model has a valid animation track set up.
-    /// </summary>
-    /// <returns> true if this Model has a valid animation track set up;
-    /// otherwise, false. /// </returns>
-    public bool HasAnimationTrack() => CurrentAnimationTrack != null;
-
-    /// <summary>
-    /// Sets the duration of this Model's current animation.
-    /// </summary>
-    /// <param name="duration">The duration of the current animation track.</param>
-    public void SetAnimationDuration(float duration)
-    {
-        Assert.IsTrue(duration > 0, "Must have positive animation duration.");
-        CurrentAnimationDuration = duration;
-    }
-
-    /// <summary>
-    /// Returns the length of this Model's current animationt track.
-    /// </summary>
-    /// <returns>the length of this Model's current animationt track;
-    /// 0 if null.</returns>
-    public int NumFrames() => HasAnimationTrack() ? CurrentAnimationTrack.Length : 0;
-
-
-    /// <summary>
-    /// Increments the frame count by one; or, if it is already
-    /// the final frame in the current animation, sets it to 0.
-    /// </summary>
-    public void NextFrame() => CurrentFrame = (CurrentFrame + 1 >= NumFrames()) ? 0 : CurrentFrame + 1;
-
-    /// <summary>
-    /// Returns the Sprite at the current frame of the current
-    /// animation.
-    /// </summary>
-    /// <returns>the Sprite at the current frame of the current
-    /// animation</returns>
-    public Sprite GetSpriteAtCurrentFrame()
-    {
-        Assert.IsTrue(HasAnimationTrack(), NAME + " has no animation set up.");
-        return CurrentAnimationTrack[CurrentFrame];
-    }
 
     /// <summary>
     /// Sets this Model's (X, Y) Tile coordinates.
@@ -275,10 +233,25 @@ public abstract class Model : MonoBehaviour
     public Vector3 GetPosition() => transform.position;
 
     /// <summary>
-    /// Sets this Model's Transform's local scale.
+    /// Sets this Model's Transform's local scale. The scale is
+    /// dependent on the TileGrid's TILE_SIZE.
     /// </summary>
-    /// <param name="scale">The scale to set to.</param>
-    public void SetSize(Vector3 scale) => transform.localScale = scale;
+    /// <param name="x">The X-Scale.</param>
+    /// <param name="y">The Y-Scale.</param>
+    public void SetLocalScale(float x, float y) => transform.localScale = new Vector3(x, y, 1);
+
+    /// <summary>
+    /// Sets this Model's Transform's local scale. The scale is
+    /// dependent on the TileGrid's TILE_SIZE.
+    /// </summary>
+    /// <param name="newSize">The new scale.</param>
+    public void SetLocalScale(Vector3 newSize) => SetLocalScale(newSize.x, newSize.y);
+
+    /// <summary>
+    /// Returns the local scale of this Model.
+    /// </summary>
+    /// <returns>the local scale of this Model. </returns>
+    public Vector3 GetLocalScale() => transform.localScale;
 
     /// <summary>
     /// Sets this Model's Transform's local rotation.
@@ -398,6 +371,7 @@ public abstract class Model : MonoBehaviour
     {
         OnCollision = null;
         OnProjectileImpact = null;
+        SetColor(BASE_COLOR);
     }
 
     /// <summary>
@@ -461,6 +435,86 @@ public abstract class Model : MonoBehaviour
 
     #endregion
 
+    #region Animation
+
+    /// <summary>
+    /// Sets this Model's current animation track.
+    /// </summary>
+    /// <param name="track">The current animation track.</param>
+    /// <param name="startFrame">optionally, choose which frame to start with.</param>
+    /// <param name="isNewTrack">optionally, set to true if this is a new track.</param>
+    public void SetAnimationTrack(Sprite[] track, int startFrame = 0, bool isNewTrack = true)
+    {
+        Assert.IsNotNull(track, "Cannot set to a null animation track.");
+        Assert.IsTrue(track.Length > 0, "Cannot have an empty animation track.");
+        CurrentAnimationTrack = track;
+        CurrentFrame = startFrame;
+        directionOfMostRecentAnimation = direction;
+        if (isNewTrack) numCyclesOfCurrentAnimationCompleted = 0;
+    }
+
+    /// <summary>
+    /// Returns the Direction of the most recent animation.
+    /// </summary>
+    /// <returns>the Direction of the most recent animation.</returns>
+    public Direction GetDirectionOfMostRecentAnimation() => directionOfMostRecentAnimation;
+
+    /// <summary>
+    /// Returns the number of cycles of the current animation completed.
+    /// </summary>
+    /// <returns>the number of cycles of the current animation completed. </returns>
+    public int GetNumCyclesOfCurrentAnimationCompleted() => numCyclesOfCurrentAnimationCompleted;
+
+    /// <summary>
+    /// Increments the number of cycles of the current animation completed.
+    /// </summary>
+    public void IncrementNumCyclesOfCurrentAnimationCompleted() => numCyclesOfCurrentAnimationCompleted++;
+
+    /// <summary>
+    /// Returns true if this Model has a valid animation track set up.
+    /// </summary>
+    /// <returns> true if this Model has a valid animation track set up;
+    /// otherwise, false. /// </returns>
+    public bool HasAnimationTrack() => CurrentAnimationTrack != null;
+
+    /// <summary>
+    /// Sets the duration of this Model's current animation.
+    /// </summary>
+    /// <param name="duration">The duration of the current animation track.</param>
+    public void SetAnimationDuration(float duration)
+    {
+        Assert.IsTrue(duration > 0, "Must have positive animation duration.");
+        CurrentAnimationDuration = duration;
+    }
+
+    /// <summary>
+    /// Returns the length of this Model's current animationt track.
+    /// </summary>
+    /// <returns>the length of this Model's current animationt track;
+    /// 0 if null.</returns>
+    public int NumFrames() => HasAnimationTrack() ? CurrentAnimationTrack.Length : 0;
+
+
+    /// <summary>
+    /// Increments the frame count by one; or, if it is already
+    /// the final frame in the current animation, sets it to 0.
+    /// </summary>
+    public void NextFrame() => CurrentFrame = (CurrentFrame + 1 >= NumFrames()) ? 0 : CurrentFrame + 1;
+
+    /// <summary>
+    /// Returns the Sprite at the current frame of the current
+    /// animation.
+    /// </summary>
+    /// <returns>the Sprite at the current frame of the current
+    /// animation</returns>
+    public Sprite GetSpriteAtCurrentFrame()
+    {
+        Assert.IsTrue(HasAnimationTrack(), NAME + " has no animation set up.");
+        return CurrentAnimationTrack[CurrentFrame];
+    }
+
+    #endregion  
+
     #region Effects
 
     /// <summary>
@@ -470,6 +524,15 @@ public abstract class Model : MonoBehaviour
     protected List<IEffect> GetEffects() => effects;
 
     /// <summary>
+    /// Returns true if this Model has the maximum number of stacks
+    /// of a given IEffect instance.
+    /// </summary>
+    /// <param name="effect">The IEffect to check. </param>
+    /// <returns>true if this Model has the maximum number of stacks
+    /// of a given IEffect instance; otherwise, false.</returns>
+    private bool HasMaximumStacksOfEffect(IEffect effect) => GetEffects().FindAll(e=>e.GetType() == effect.GetType()).Count >= effect.MaxStacks;
+
+    /// <summary>
     /// Adds an IEffect instance to this Model.
     /// </summary>
     /// <param name="effect">the effect to add.</param>
@@ -477,19 +540,19 @@ public abstract class Model : MonoBehaviour
     {
         Assert.IsNotNull(effect, "Cannot add a null effect.");
         if(!effect.CanAfflict(this)) return;
+        if(HasMaximumStacksOfEffect(effect)) return;
 
         effectsToAddSafely.Add(effect);
     }
 
     /// <summary>
-    /// Removes an IEffect instance from this Model if it
-    /// is expired.
+    /// Removes an IEffect instance from this Model.
     /// </summary>
     /// <param name="effect">the effect to remove. </param>
-    private void TryRemoveEffect(IEffect effect)
+    public void TryRemoveEffect(IEffect effect)
     {
         Assert.IsNotNull(effect, "Cannot remove a null effect.");
-        Assert.IsTrue(effects.Contains(effect), "Effect not found on this model.");
+        Assert.IsTrue(GetEffects().Contains(effect), "Effect not found on this model.");
 
         if(!effect.IsEffectActive) effectsToRemoveSafely.Add(effect);
     }
@@ -504,7 +567,7 @@ public abstract class Model : MonoBehaviour
     {
         foreach(IEffect effect in effectsToAddSafely)
         {
-            effects.Add(effect);
+            GetEffects().Add(effect);
         }
         effectsToAddSafely.Clear();
 
@@ -513,7 +576,7 @@ public abstract class Model : MonoBehaviour
         
         foreach(IEffect effect in effectsToRemoveSafely)
         {
-            effects.Remove(effect);
+            GetEffects().Remove(effect);
         }
         effectsToRemoveSafely.Clear();
     }

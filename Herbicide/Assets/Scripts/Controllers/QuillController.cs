@@ -88,7 +88,7 @@ public class QuillController : ProjectileController<QuillController.QuillState>
     protected override void DetonateProjectile(Collider2D other)
     {
         GetQuill().GetCollider().enabled = false;
-        GetQuill().SetSize(STUCK_SIZE);
+        GetQuill().SetLocalScale(STUCK_SIZE);
         Quaternion currentRotation = GetQuill().transform.rotation;
         float randomAdjustment = Random.Range(-20, 21);
         Quaternion newRotation = Quaternion.Euler(0, 0, currentRotation.eulerAngles.z + randomAdjustment);
@@ -156,7 +156,7 @@ public class QuillController : ProjectileController<QuillController.QuillState>
         if (!ValidModel()) return;
         if (GetState() != QuillState.MOVING) return;
 
-        SetAnimation(GetQuill().MID_AIR_ANIMATION_DURATION, ProjectileFactory.GetMidAirAnimationTrack(GetQuill()));
+        SetNextAnimation(GetQuill().MID_AIR_ANIMATION_DURATION, ProjectileFactory.GetMidAirAnimationTrack(GetQuill()));
         LinearShot();
     }
 

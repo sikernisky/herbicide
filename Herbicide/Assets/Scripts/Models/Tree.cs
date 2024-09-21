@@ -78,7 +78,7 @@ public abstract class Tree : Mob, ISurface
     /// <param name="neighbors">This Tree's neighboring ISurfaces.</param>
     /// <returns>true if a Defender was placed on this Tree; otherwise,
     /// false. </returns>
-    public void Place(PlaceableObject candidate, ISurface[] neighbors)
+    public virtual void Place(PlaceableObject candidate, ISurface[] neighbors)
     {
         Assert.IsNotNull(candidate, "Placement candidate can't be null.");
         Assert.IsNotNull(neighbors, "Placement candidate's neighbors can't be null.");
@@ -90,10 +90,10 @@ public abstract class Tree : Mob, ISurface
         SoundController.PlaySoundEffect(placeName);
         defender.SetTreePosition(GetPosition());
         candidate.transform.SetParent(transform);
+        candidate.SetLocalScale(Vector3.one);
         Vector2 defenderOffset = GetOffsetOfDefenderOnTree(candidate.TYPE);
         candidate.transform.localPosition =
             new Vector3(defenderOffset.x, defenderOffset.y, 1);
-        candidate.transform.localScale = defender.GetPlacementScale();
         candidate.OnPlace(new Vector2Int(GetX(), GetY()));
     }
 
@@ -211,9 +211,9 @@ public abstract class Tree : Mob, ISurface
         hollowRenderer.sortingOrder = GetSortingOrder() + 1;
         hollowRenderer.color = new Color32(255, 255, 255, 200);
         hollowCopy.transform.SetParent(transform);
+        hollowCopy.transform.localScale = Vector3.one;
         Vector2 defenderOffset = GetOffsetOfDefenderOnTree(ghost.TYPE);
         hollowCopy.transform.localPosition = new Vector3(defenderOffset.x, defenderOffset.y, 1);
-        hollowCopy.transform.localScale = Vector3.one;
         hollowCopy.transform.SetParent(transform);
         hollowCopy.name = "Ghost " + ghost.NAME;
 
@@ -291,6 +291,8 @@ public abstract class Tree : Mob, ISurface
                 return new Vector2(0.1f, 0.85f);
             case ModelType.OWL:
                 return new Vector2(0.0f, 0.90f);
+            case ModelType.BUNNY:
+                return new Vector2(0.0f, 1.10f);
             default:
                 return Vector2.zero;
         }

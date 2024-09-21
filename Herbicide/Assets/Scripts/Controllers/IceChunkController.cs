@@ -96,7 +96,7 @@ public class IceChunkController : ProjectileController<IceChunkController.IceChu
         if (!ValidModel()) return;
         if (GetState() != IceChunkState.MOVING) return;
 
-        SetAnimation(GetIceChunk().MID_AIR_ANIMATION_DURATION, ProjectileFactory.GetMidAirAnimationTrack(GetIceChunk()));
+        SetNextAnimation(GetIceChunk().MID_AIR_ANIMATION_DURATION, ProjectileFactory.GetMidAirAnimationTrack(GetIceChunk()));
         LinearShot();
     }
 

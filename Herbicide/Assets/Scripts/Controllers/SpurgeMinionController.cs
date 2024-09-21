@@ -27,7 +27,6 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
         ATTACK, // Attacking target.
         ESCAPE, // Running back to start.
         PROTECT, // Protecting other escaping enemies.
-        EXITING, // Leaving map.
         DEAD, // Dead.
         INVALID // Something went wrong.
     }
@@ -73,12 +72,6 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
     /// </summary>
     protected float escapeAnimationCounter;
 
-    /// <summary>
-    /// Counts the number of seconds in the exiting animation; resets
-    /// on step.
-    /// </summary>
-    protected float exitingAnimationCounter;
-
     #endregion
 
     #region Methods
@@ -94,7 +87,7 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
     /// Returns this SpurgeMinionController's SpurgeMinion model.
     /// </summary>
     /// <returns>this SpurgeMinionController's SpurgeMinion model.</returns>
-    private SpurgeMinion GetSpurge() => GetEnemy() as SpurgeMinion;
+    private SpurgeMinion GetSpurgeMinion() => GetEnemy() as SpurgeMinion;
 
     /// <summary>
     /// Updates the SpurgeMinion model controlled by this SpurgeMinionController.
@@ -109,7 +102,6 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
         ExecuteAttackState();
         ExecuteProtectState();
         ExecuteEscapeState();
-        ExecuteExitState();
     }
 
     /// <summary>
@@ -135,7 +127,6 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
         SpurgeMinionState state = GetState();
         return state == SpurgeMinionState.INACTIVE ||
                state == SpurgeMinionState.ENTERING ||
-               state == SpurgeMinionState.EXITING ||
                state == SpurgeMinionState.INVALID;
     }
 
@@ -148,7 +139,7 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
     /// into this method; otherwise, false. </returns>
     protected override bool CanTargetOtherModel(Model target)
     {
-        if (!GetSpurge().Spawned()) return false;
+        if (!GetSpurgeMinion().Spawned()) return false;
         if (GetState() == SpurgeMinionState.ENTERING ||
             GetState() == SpurgeMinionState.INACTIVE) return false;
 
@@ -157,11 +148,11 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
         NexusHole nexusHoleTarget = target as NexusHole;
 
         // If escaping, only target NexusHoles.
-        if (GetState() == SpurgeMinionState.ESCAPE || GetState() == SpurgeMinionState.EXITING)
+        if (GetState() == SpurgeMinionState.ESCAPE)
         {
             if (nexusHoleTarget == null) return false;
             if (!nexusHoleTarget.Targetable()) return false;
-            if (!GetSpurge().IsExiting() && !TileGrid.CanReach(GetSpurge().GetPosition(), nexusHoleTarget.GetPosition())) return false;
+            if (!GetSpurgeMinion().IsExiting() && !TileGrid.CanReach(GetSpurgeMinion().GetPosition(), nexusHoleTarget.GetPosition())) return false;
             if (!IsClosestNexusHole(nexusHoleTarget)) return false;
 
             return true;
@@ -174,7 +165,7 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
             if (!nexusTarget.Targetable()) return false;
             if (nexusTarget.PickedUp()) return false;
             if (nexusTarget.CashedIn()) return false;
-            if (!TileGrid.CanReach(GetSpurge().GetPosition(), nexusTarget.GetPosition())) return false;
+            if (!TileGrid.CanReach(GetSpurgeMinion().GetPosition(), nexusTarget.GetPosition())) return false;
 
             return true;
         }
@@ -214,14 +205,14 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
         Mob target = GetTarget() as Mob;
         bool targetExists = target != null && target.Targetable();
         bool carrierToProtect = GetNearestCarrier() != null;
-        bool withinChaseRange = targetExists && DistanceToTarget() <= GetSpurge().GetChaseRange();
-        bool withinAttackRange = targetExists && DistanceToTarget() <= GetSpurge().GetAttackRange();
+        bool withinChaseRange = targetExists && DistanceToTarget() <= GetSpurgeMinion().GetChaseRange();
+        bool withinAttackRange = targetExists && DistanceToTarget() <= GetSpurgeMinion().GetMainActionRange();
         bool holdingTarget = NumTargetsHolding() > 0;
 
         switch (GetState())
         {
             case SpurgeMinionState.INACTIVE:
-                if (GetSpurge().Spawned()) SetState(SpurgeMinionState.ENTERING);
+                if (GetSpurgeMinion().Spawned()) SetState(SpurgeMinionState.ENTERING);
                 break;
 
             case SpurgeMinionState.ENTERING:
@@ -258,10 +249,7 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
 
                 if (!targetExists && !holdingTarget) SetState(carrierToProtect ? SpurgeMinionState.PROTECT : SpurgeMinionState.IDLE);
                 else if (!holdingTarget) SetState(SpurgeMinionState.IDLE);
-                else if (Vector2.Distance(GetSpurge().GetPosition(), GetTarget().GetPosition()) < 0.05f)
-                {
-                    SetState(SpurgeMinionState.EXITING);
-                }
+   
                 break;
 
             case SpurgeMinionState.PROTECT:
@@ -275,7 +263,6 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
                 }
                 break;
 
-            case SpurgeMinionState.EXITING:
             case SpurgeMinionState.INVALID:
                 break;
             default:
@@ -298,7 +285,7 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
     {
         if (GetState() != SpurgeMinionState.INACTIVE) return;
 
-        SetNextMovePos(GetSpurge().GetSpawnPos());
+        SetNextMovePos(GetSpurgeMinion().GetSpawnPos());
     }
 
     /// <summary>
@@ -308,12 +295,12 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
     {
         if (GetState() != SpurgeMinionState.ENTERING) return;
 
-        GetSpurge().SetEntering(GetSpurge().GetSpawnPos());
-        SetAnimation(GetSpurge().MOVE_ANIMATION_DURATION, EnemyFactory.GetSpawnTrack(
-            GetSpurge().TYPE, GetSpurge().GetDirection(), GetSpurge().GetHealthState()));
+        GetSpurgeMinion().SetEntering(GetSpurgeMinion().GetSpawnPos());
+        SetNextAnimation(GetSpurgeMinion().MOVE_ANIMATION_DURATION, EnemyFactory.GetSpawnTrack(
+            GetSpurgeMinion().TYPE, GetSpurgeMinion().GetDirection(), GetSpurgeMinion().GetHealthState()));
 
-        PopOutOfMovePos(NexusHoleSpawnPos(GetSpurge().GetSpawnPos()));
-        GetSpurge().FaceDirection(Direction.SOUTH);
+        PopOutOfMovePos(NexusHoleSpawnPos(GetSpurgeMinion().GetSpawnPos()));
+        GetSpurgeMinion().FaceDirection(Direction.SOUTH);
 
         if (!ReachedMovementTarget()) return;
 
@@ -328,15 +315,15 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
     {
         if (GetState() != SpurgeMinionState.IDLE) return;
 
-        GetSpurge().SetEntered();
-        SetAnimation(GetSpurge().IDLE_ANIMATION_DURATION, EnemyFactory.GetIdleTrack(
-            GetSpurge().TYPE,
-            GetSpurge().GetDirection(), GetSpurge().GetHealthState()));
+        GetSpurgeMinion().SetEntered();
+        SetNextAnimation(GetSpurgeMinion().IDLE_ANIMATION_DURATION, EnemyFactory.GetIdleTrack(
+            GetSpurgeMinion().TYPE,
+            GetSpurgeMinion().GetDirection(), GetSpurgeMinion().GetHealthState()));
 
-        SetNextMovePos(GetSpurge().GetPosition());
+        SetNextMovePos(GetSpurgeMinion().GetPosition());
         MoveLinearlyTowardsMovePos();
 
-        GetSpurge().FaceDirection(Direction.SOUTH);
+        GetSpurgeMinion().FaceDirection(Direction.SOUTH);
     }
 
     /// <summary>
@@ -346,9 +333,9 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
     {
         if (GetState() != SpurgeMinionState.CHASE) return;
 
-        SetAnimation(GetSpurge().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
-            GetSpurge().TYPE,
-            GetSpurge().GetDirection(), GetSpurge().GetHealthState()));
+        SetNextAnimation(GetSpurgeMinion().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
+            GetSpurgeMinion().TYPE,
+            GetSpurgeMinion().GetDirection(), GetSpurgeMinion().GetHealthState()));
 
         // Move to target.
         MoveLinearlyTowardsMovePos();
@@ -358,10 +345,9 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
         Mob target = GetTarget() as Mob;
         if (target == null || !target.Targetable()) return;
 
-        if (DistanceToTarget() <= GetSpurge().GetAttackRange()) return;
+        if (DistanceToTarget() <= GetSpurgeMinion().GetMainActionRange()) return;
 
-        Vector3 closest = ClosestTileCoordinatePositionToTarget(target);
-        Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetSpurge().GetPosition(), closest);
+        Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetSpurgeMinion().GetPosition(), GetTarget().GetPosition());
         SetNextMovePos(nextMove);
     }
 
@@ -372,9 +358,9 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
     {
         if (GetState() != SpurgeMinionState.PROTECT) return;
 
-        SetAnimation(GetSpurge().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
-            GetSpurge().TYPE,
-                       GetSpurge().GetDirection(), GetSpurge().GetHealthState()));
+        SetNextAnimation(GetSpurgeMinion().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
+            GetSpurgeMinion().TYPE,
+                       GetSpurgeMinion().GetDirection(), GetSpurgeMinion().GetHealthState()));
 
         // Move to target.
         MoveLinearlyTowardsMovePos();
@@ -383,8 +369,7 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
         if (!ReachedMovementTarget()) return;
         if (GetNearestCarrier() == null) return;
 
-        Vector3 closest = GetNearestCarrier().GetPosition();
-        Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetSpurge().GetPosition(), closest);
+        Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetSpurgeMinion().GetPosition(), GetNearestCarrier().GetPosition());
         SetNextMovePos(nextMove);
     }
 
@@ -395,20 +380,20 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
     {
         if (GetState() != SpurgeMinionState.ATTACK) return;
 
-        SetAnimation(GetSpurge().ATTACK_ANIMATION_DURATION, EnemyFactory.GetAttackTrack(
-                GetSpurge().TYPE,
-                       GetSpurge().GetDirection(), GetSpurge().GetHealthState()));
+        SetNextAnimation(GetSpurgeMinion().ATTACK_ANIMATION_DURATION, EnemyFactory.GetAttackTrack(
+                GetSpurgeMinion().TYPE,
+                       GetSpurgeMinion().GetDirection(), GetSpurgeMinion().GetHealthState()));
 
         //Attack Logic : Only if target is valid.
         Mob target = GetTarget() as Mob;
         bool validTarget = GetTarget() != null && target.Targetable();
-        if (!CanAttack()) return;
+        if (!CanPerformMainAction()) return;
         if (!validTarget) return;
 
         FaceTarget();
         if (CanHoldTarget(target as Nexus)) HoldTarget(target as Nexus); // Hold.
         GetHeldTargets().ForEach(target => target.SetMaskInteraction(SpriteMaskInteraction.None));
-        GetSpurge().RestartAttackCooldown();
+        GetSpurgeMinion().RestartMainActionCooldown();
     }
 
     /// <summary>
@@ -420,49 +405,16 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
         if (!ValidModel()) return;
         if (GetTarget() == null) return;
 
-        SetAnimation(GetSpurge().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
-            GetSpurge().TYPE,
-                                  GetSpurge().GetDirection(), GetSpurge().GetHealthState()));
+        SetNextAnimation(GetSpurgeMinion().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
+            GetSpurgeMinion().TYPE,
+                                  GetSpurgeMinion().GetDirection(), GetSpurgeMinion().GetHealthState()));
 
         // Move to target.
         MoveLinearlyTowardsMovePos();
 
-        // We reached our move target, so we need a new one.
-        if (!ReachedMovementTarget()) return;
-        SetNextMovePos(TileGrid.NextTilePosTowardsGoal(GetSpurge().GetPosition(), GetTarget().GetPosition()));
-    }
-
-    /// <summary>
-    /// Runs logic for the SpurgeMinion's Exit state.
-    /// </summary>
-    protected void ExecuteExitState()
-    {
-        if (GetState() != SpurgeMinionState.EXITING) return;
-        if (GetSpurge().Exited()) return;
-        NexusHole nexusHoleTarget = GetTarget() as NexusHole;
-        if (nexusHoleTarget == null) return;
-
-        Assert.IsTrue(GetTarget() as NexusHole != null, "exit target needs to be a NH.");
-        Vector3 nexusHolePosition = GetTarget().GetPosition();
-        Vector3 jumpPosition = nexusHolePosition;
-        jumpPosition.y -= .5f;
-
-        if (!GetSpurge().IsExiting() && !GetSpurge().Exited()) GetSpurge().SetExiting(nexusHolePosition);
-
-        SetAnimation(GetSpurge().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
-                GetSpurge().TYPE,
-                       GetSpurge().GetDirection(), GetSpurge().GetHealthState()));
-
-        // Move to target.
-        GetSpurge().SetMaskInteraction(SpriteMaskInteraction.VisibleOutsideMask);
-        GetHeldTargets().ForEach(target => target.SetMaskInteraction(SpriteMaskInteraction.VisibleOutsideMask));
-        SetNextMovePos(jumpPosition);
-        FallIntoMovePos(3f);
-
-        if (!ReachedMovementTarget()) return;
-        if (GetSpurge().IsExiting() && GetSpurge().GetPosition() == jumpPosition)
+        if (Vector2.Distance(GetSpurgeMinion().GetPosition(), GetTarget().GetPosition()) < 0.05f)
         {
-            GetSpurge().SetExited();
+            GetSpurgeMinion().SetExited();
             foreach (Model target in GetHeldTargets())
             {
                 Nexus nexusTarget = target as Nexus;
@@ -470,7 +422,9 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
             }
         }
 
-        Assert.IsTrue(NumTargetsHolding() > 0, "You need to hold targets to exit.");
+        // We reached our move target, so we need a new one.
+        if (!ReachedMovementTarget()) return;
+        SetNextMovePos(TileGrid.NextTilePosTowardsGoal(GetSpurgeMinion().GetPosition(), GetTarget().GetPosition()));
     }
 
     #endregion
@@ -490,7 +444,6 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
         else if (state == SpurgeMinionState.ATTACK) attackAnimationCounter += Time.deltaTime;
         else if (state == SpurgeMinionState.PROTECT) protectAnimationCounter += Time.deltaTime;
         else if (state == SpurgeMinionState.ESCAPE) escapeAnimationCounter += Time.deltaTime;
-        else if (state == SpurgeMinionState.EXITING) exitingAnimationCounter += Time.deltaTime;
     }
 
     /// <summary>
@@ -506,7 +459,6 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
         else if (state == SpurgeMinionState.ATTACK) return attackAnimationCounter;
         else if (state == SpurgeMinionState.PROTECT) return protectAnimationCounter;
         else if (state == SpurgeMinionState.ESCAPE) return escapeAnimationCounter;
-        else if (state == SpurgeMinionState.EXITING) return exitingAnimationCounter;
         else return 0;
     }
 
@@ -522,7 +474,6 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
         else if (state == SpurgeMinionState.ATTACK) attackAnimationCounter = 0;
         else if (state == SpurgeMinionState.PROTECT) protectAnimationCounter = 0;
         else if (state == SpurgeMinionState.ESCAPE) escapeAnimationCounter = 0;
-        else if (state == SpurgeMinionState.EXITING) exitingAnimationCounter = 0;
     }
 
     #endregion
