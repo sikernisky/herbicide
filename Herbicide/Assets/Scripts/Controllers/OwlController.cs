@@ -116,9 +116,9 @@ public class OwlController : DefenderController<OwlController.OwlState>
     /// </summary>
     /// <returns>true if the Owl can shoot an quill; otherwise,
     /// false.</returns>
-    public override bool CanAttack()
+    public override bool CanPerformMainAction()
     {
-        if (!base.CanAttack()) return false; //Cooldown
+        if (!base.CanPerformMainAction()) return false; //Cooldown
         if (GetState() != OwlState.ATTACK) return false; //Not in the attack state.
         Enemy target = GetTarget() as Enemy;
         if (target == null || !target.Targetable()) return false; //Invalid target.
@@ -160,14 +160,14 @@ public class OwlController : DefenderController<OwlController.OwlState>
                 break;
             case OwlState.IDLE:
                 if (target == null || !target.Targetable()) break;
-                if (DistanceToTargetFromTree() <= GetOwl().GetAttackRange() &&
-                    GetOwl().GetAttackCooldown() <= 0) SetState(OwlState.ATTACK);
+                if (DistanceToTargetFromTree() <= GetOwl().GetMainActionRange() &&
+                    GetOwl().GetMainActionCooldown() <= 0) SetState(OwlState.ATTACK);
                 break;
             case OwlState.ATTACK:
                 if (target == null || !target.Targetable()) SetState(OwlState.IDLE);
                 if (GetAnimationCounter() > 0) break;
-                if (GetOwl().GetAttackCooldown() > 0) SetState(OwlState.IDLE);
-                else if (DistanceToTarget() > GetOwl().GetAttackRange()) SetState(OwlState.IDLE);
+                if (GetOwl().GetMainActionCooldown() > 0) SetState(OwlState.IDLE);
+                else if (DistanceToTarget() > GetOwl().GetMainActionRange()) SetState(OwlState.IDLE);
                 break;
             case OwlState.INVALID:
                 throw new System.Exception("Invalid State.");
@@ -194,7 +194,7 @@ public class OwlController : DefenderController<OwlController.OwlState>
         if (!ValidModel()) return;
         if (GetState() != OwlState.IDLE) return;
         Enemy target = GetTarget() as Enemy;
-        if (target != null && DistanceToTargetFromTree() <= GetOwl().GetAttackRange())
+        if (target != null && DistanceToTargetFromTree() <= GetOwl().GetMainActionRange())
             FaceTarget();
         else GetOwl().FaceDirection(Direction.SOUTH);
 
@@ -215,7 +215,7 @@ public class OwlController : DefenderController<OwlController.OwlState>
         if (GetState() != OwlState.ATTACK) return;
 
         FaceTarget();
-        if (!CanAttack()) return;
+        if (!CanPerformMainAction()) return;
 
         // Calculate the number of quills to fire based on the Owl's tier.
         int tier = GetOwl().GetTier();
@@ -225,7 +225,7 @@ public class OwlController : DefenderController<OwlController.OwlState>
         GetOwl().StartCoroutine(FireIceChunks(numQuillsToFire));
 
         // Reset attack animation.
-        GetOwl().RestartAttackCooldown();
+        GetOwl().RestartMainActionCooldown();
     }
 
     #endregion

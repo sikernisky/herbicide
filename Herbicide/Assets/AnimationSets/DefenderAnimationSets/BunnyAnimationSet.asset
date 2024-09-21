@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5837862bc1c5224b89b71003e42d5db, type: 3}
+  m_Name: BunnyAnimationSet
+  m_EditorClassIdentifier: 
+  placementTrackTier1:
+  - {fileID: 21300000, guid: 698d01965cfd29544bb56ceeaa89683e, type: 3}
+  placementTrackTier2:
+  - {fileID: 21300000, guid: 698d01965cfd29544bb56ceeaa89683e, type: 3}
+  placementTrackTier3:
+  - {fileID: 21300000, guid: 698d01965cfd29544bb56ceeaa89683e, type: 3}
+  attackAnimationNorthTier1: []
+  attackAnimationEastTier1: []
+  attackAnimationSouthTier1: []
+  attackAnimationWestTier1: []
+  attackAnimationNorthTier2: []
+  attackAnimationEastTier2: []
+  attackAnimationSouthTier2: []
+  attackAnimationWestTier2: []
+  attackAnimationNorthTier3: []
+  attackAnimationEastTier3: []
+  attackAnimationSouthTier3: []
+  attackAnimationWestTier3: []
+  idleAnimationNorthTier1:
+  - {fileID: 21300000, guid: 698d01965cfd29544bb56ceeaa89683e, type: 3}
+  idleAnimationEastTier1:
+  - {fileID: 21300000, guid: 698d01965cfd29544bb56ceeaa89683e, type: 3}
+  idleAnimationSouthTier1:
+  - {fileID: 21300000, guid: 698d01965cfd29544bb56ceeaa89683e, type: 3}
+  idleAnimationWestTier1:
+  - {fileID: 21300000, guid: 698d01965cfd29544bb56ceeaa89683e, type: 3}
+  idleAnimationNorthTier2:
+  - {fileID: 21300000, guid: 698d01965cfd29544bb56ceeaa89683e, type: 3}
+  idleAnimationEastTier2:
+  - {fileID: 21300000, guid: 698d01965cfd29544bb56ceeaa89683e, type: 3}
+  idleAnimationSouthTier2:
+  - {fileID: 21300000, guid: 698d01965cfd29544bb56ceeaa89683e, type: 3}
+  idleAnimationWestTier2:
+  - {fileID: 21300000, guid: 698d01965cfd29544bb56ceeaa89683e, type: 3}
+  idleAnimationNorthTier3:
+  - {fileID: 21300000, guid: 698d01965cfd29544bb56ceeaa89683e, type: 3}
+  idleAnimationEastTier3:
+  - {fileID: 21300000, guid: 698d01965cfd29544bb56ceeaa89683e, type: 3}
+  idleAnimationSouthTier3:
+  - {fileID: 21300000, guid: 698d01965cfd29544bb56ceeaa89683e, type: 3}
+  idleAnimationWestTier3:
+  - {fileID: 21300000, guid: 698d01965cfd29544bb56ceeaa89683e, type: 3}

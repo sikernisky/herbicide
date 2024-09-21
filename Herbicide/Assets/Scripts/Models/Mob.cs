@@ -10,19 +10,19 @@ public abstract class Mob : PlaceableObject
     #region Fields
 
     /// <summary>
-    /// This Mob's current attack range. 
+    /// This Mob's current main action range. 
     /// </summary>
-    private float attackRange;
+    private float mainActionRange;
 
     /// <summary>
-    /// Current number of attacks this Mob can make per second.
+    /// Current number of times this Mob can perform its main action per second.
     /// </summary>
-    private float attackSpeed;
+    private float mainActionSpeed;
 
     /// <summary>
-    /// How many seconds this Mob has to wait before attacking again.
+    /// How many seconds this Mob has to wait before performing its main action again.
     /// </summary>
-    private float attackCooldownTimer;
+    private float mainActionCooldownTimer;
 
     /// <summary>
     /// This Mob's current chase range. 
@@ -49,34 +49,34 @@ public abstract class Mob : PlaceableObject
     #region Stats
 
     /// <summary>
-    /// Amount of attack range this Mob starts with.
+    /// Starting amount of range from which this Mob can perform its main action on a target.
     /// </summary>
-    public abstract float BASE_ATTACK_RANGE { get; }
+    public abstract float BASE_MAIN_ACTION_RANGE { get; }
 
     /// <summary>
-    /// Most amount of attack range this Mob can have.
+    /// Maximum amount of range from which this Mob can perform its main action on a target.
     /// </summary>
-    public abstract float MAX_ATTACK_RANGE { get; }
+    public abstract float MAX_MAIN_ACTION_RANGE { get; }
 
     /// <summary>
-    /// Least amount of attack range this Mob can have.
+    /// Minimum amount of range from which this Mob can perform its main action on a target.
     /// </summary>
-    public abstract float MIN_ATTACK_RANGE { get; }
+    public abstract float MIN_MAIN_ACTION_RANGE { get; }
 
     /// <summary>
-    /// Starting number of attacks this Mob can make per second.
+    /// Starting number of times this Mob can perform its main action per second.
     /// </summary>
-    public abstract float BASE_ATTACK_SPEED { get; }
+    public abstract float BASE_MAIN_ACTION_SPEED { get; }
 
     /// <summary>
-    /// Max number of attacks this Mob can make per second.
+    /// Max number of times this Mob can perform its main action per second.
     /// </summary>
-    public abstract float MAX_ATTACK_SPEED { get; }
+    public abstract float MAX_MAIN_ACTION_SPEED { get; }
 
     /// <summary>
-    /// Min number of attacks this Mob can make per second.
+    /// Min number of times this Mob can perform its main action per second.
     /// </summary>
-    public float MIN_ATTACK_SPEED => 0f;
+    public float MIN_MAIN_ACTION_SPEED => 0f;
 
     /// <summary>
     /// Amount of chase range this Mob starts with.
@@ -154,59 +154,50 @@ public abstract class Mob : PlaceableObject
     public bool Spawned() => spawned;
 
     /// <summary>
-    /// Returns true if this Mob can attack a target.
+    /// Returns this Mob's current main action range.
     /// </summary>
-    /// <param name="target">The Mob that this Mob is trying
-    /// to attack. </param>
-    /// <returns>true if this Mob can attack a target;
-    /// otherwise, false.</returns>
-    public virtual bool CanAttack(Mob target) => target != null;
+    /// <returns>this Mob's current main action range.</returns>
+    public float GetMainActionRange() => mainActionRange;
 
     /// <summary>
-    /// Returns this Mob's current attack range.
+    /// Resets this Mob's main action range to its starting value.
     /// </summary>
-    /// <returns>this Mob's current attack range.</returns>
-    public float GetAttackRange() => attackRange;
-
-    /// <summary>
-    /// Resets this Mob's attack range to its starting value.
-    /// </summary>
-    public void ResetAttackRange() => attackRange = BASE_ATTACK_RANGE;
+    public void ResetMainActionRange() => mainActionRange = BASE_MAIN_ACTION_RANGE;
 
     /// <summary>
     /// Returns the number of seconds this Mob has to wait before
-    /// attacking again.
+    /// performing its main action again.
     /// </summary>
     /// <returns>the number of seconds this Mob has to wait before
-    /// attacking again.</returns>
-    public float GetAttackCooldown() => attackCooldownTimer;
+    /// performing its main action again.</returns>
+    public float GetMainActionCooldown() => mainActionCooldownTimer;
 
     /// <summary>
-    /// Reduces this Mob's attack cooldown by Time.deltaTime.
+    /// Reduces this Mob's main action cooldown by Time.deltaTime.
     /// </summary>
-    public void StepAttackCooldown() => attackCooldownTimer = Mathf.Clamp(GetAttackCooldown() - Time.deltaTime,
-            MIN_ATTACK_SPEED, 1f / attackSpeed);
+    public void StepMainActionCooldown() => mainActionCooldownTimer = Mathf.Clamp(GetMainActionCooldown() - Time.deltaTime,
+            MIN_MAIN_ACTION_SPEED, 1f / mainActionSpeed);
 
     /// <summary>
-    /// Sets the number of attacks this Mob can make per second.
+    /// Sets the number of times this Mob can perform its main action per second.
     /// </summary>
-    public void SetAttackSpeed(float attackSpeed) => this.attackSpeed = attackSpeed;
+    public void SetMainActionSpeed(float mainActionSpeed) => this.mainActionSpeed = mainActionSpeed;
 
     /// <summary>
-    /// Returns this Mob's current attack speed.
+    /// Returns this Mob's current main action speed.
     /// </summary>
-    /// <returns>this Mob's current attack speed.</returns>
-    public float GetAttackSpeed() => attackSpeed;
+    /// <returns>this Mob's current main action speed.</returns>
+    public float GetMainActionSpeed() => mainActionSpeed;
 
     /// <summary>
-    /// Resets this Mob's attack cooldown to its currently capped value.
+    /// Resets this Mob's main action cooldown to its currently capped value.
     /// </summary>
-    public void RestartAttackCooldown() => attackCooldownTimer = 1f / attackSpeed;
+    public void RestartMainActionCooldown() => mainActionCooldownTimer = 1f / mainActionSpeed;
 
     /// <summary>
-    /// Resets this Mob's attack speed to its starting value.
+    /// Resets this Mob's main action speed to its starting value.
     /// </summary>
-    public void ResetAttackSpeed() => attackSpeed = BASE_ATTACK_SPEED;
+    public void ResetMainActionSpeed() => mainActionSpeed = BASE_MAIN_ACTION_SPEED;
 
     /// <summary>
     /// Returns this Mob's current chase range.
@@ -236,10 +227,10 @@ public abstract class Mob : PlaceableObject
     public override void ResetModel()
     {
         base.ResetModel();
-        ResetAttackRange();
+        ResetMainActionRange();
         ResetChaseRange();
         ResetMovementSpeed();
-        ResetAttackSpeed();
+        ResetMainActionSpeed();
         SetLocalScale(TileGrid.TILE_SIZE, TileGrid.TILE_SIZE);
     }
 
@@ -253,22 +244,23 @@ public abstract class Mob : PlaceableObject
     public override void ProcessEffects()
     {
         base.ProcessEffects();
-        ProcessSpeedEffects();
+        ProcessMovementSpeedEffects();
+        ProcessAttackSpeedEffects();
     }
 
     /// <summary>
-    /// Processes all SpeedEffect instances on this Model.
-    /// Updates the Model's movement speed based on the effects.
+    /// Processes all IMovementSpeedEffect instances on this Model.
+    /// Updates the Model's stats based on the effects.
     /// </summary>
-    protected virtual void ProcessSpeedEffects()
+    protected virtual void ProcessMovementSpeedEffects()
     {
         float totalSpeedModifier = 0;
         bool chilled = false;
         foreach (IEffect effect in GetEffects())
         {
-            if (effect is MovementSpeedEffect speedEffect)
+            if (effect is IMovementSpeedEffect speedEffect)
             {
-                totalSpeedModifier += speedEffect.GetEffectMagnitude();
+                totalSpeedModifier += speedEffect.MovementSpeedMagnitude;
             }
             if (effect is IceChunkEffect)
             {
@@ -278,6 +270,24 @@ public abstract class Mob : PlaceableObject
         if (chilled) SetBaseColor(new Color32(100, 100, 255, 255));
         else SetBaseColor(BASE_COLOR);
         movementSpeed = Mathf.Clamp(BASE_MOVEMENT_SPEED * (1 + totalSpeedModifier), MIN_MOVEMENT_SPEED, MAX_MOVEMENT_SPEED);
+    }
+
+    /// <summary>
+    /// Processes all IAttackSpeedEffect instances on this Model.
+    /// Updates the Model's stats based on the effects. Note that this
+    /// is specific to attacks and does not apply to all main actions.
+    /// </summary>
+    protected virtual void ProcessAttackSpeedEffects()
+    {
+        float totalAttackSpeedModifier = 0;
+        foreach (IEffect effect in GetEffects())
+        {
+            if (effect is IAttackSpeedEffect attackSpeedEffect)
+            {
+                totalAttackSpeedModifier += attackSpeedEffect.AttackSpeedMagnitude;
+            }
+        }
+        mainActionSpeed = Mathf.Clamp(BASE_MAIN_ACTION_SPEED * (1 + totalAttackSpeedModifier), MIN_MAIN_ACTION_SPEED, MAX_MAIN_ACTION_SPEED);
     }
 
     #endregion

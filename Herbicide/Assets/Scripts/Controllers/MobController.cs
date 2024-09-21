@@ -98,7 +98,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     {
         if (!ValidModel()) return;
         if (FINDS_TARGETS) UpdateTargets(GetAllModels(), TileGrid.GetAllTiles());
-        GetMob().StepAttackCooldown();
+        GetMob().StepMainActionCooldown();
     }
 
     /// <summary>
@@ -159,9 +159,6 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
         Vector3 convertedMobPosition = new Vector3(mobPosition.x, mobPosition.y, 1);
         Vector3 convertedTargetPosition = new Vector3(targetTilePosition.x, targetTilePosition.y, 1);
 
-
-
-
         if (TileGrid.CanReach(convertedMobPosition, convertedTargetPosition)) return convertedTargetPosition;
 
         return convertedMobPosition;
@@ -179,11 +176,11 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     }
 
     /// <summary>
-    /// Returns true if the Mob can attack this frame.
+    /// Returns true if the Mob can perform its main action this frame.
     /// </summary>
-    /// <returns>true if the Mob can attack this frame; 
+    /// <returns>true if the Mob can perform its main action this frame; 
     /// otherwise, false. </returns>
-    public virtual bool CanAttack() { return GetMob().GetAttackCooldown() <= 0; }
+    public virtual bool CanPerformMainAction() { return GetMob().GetMainActionCooldown() <= 0; }
 
     #endregion
 

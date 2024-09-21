@@ -172,7 +172,8 @@ public class ShopManager : MonoBehaviour
                 ModelType.SHOP_CARD_BEAR,
                 ModelType.SHOP_CARD_PORCUPINE,
                 ModelType.SHOP_CARD_OWL,
-                ModelType.SHOP_CARD_RACCOON
+                ModelType.SHOP_CARD_RACCOON,
+                ModelType.SHOP_CARD_BUNNY
             };
             }
 
@@ -228,6 +229,11 @@ public class ShopManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Called when the player finishes placing a Model.
+    /// </summary>
+    private void OnFinishPlacing(Model m) => Assert.IsNotNull(m, "Placed model is null.");
+
+    /// <summary>
     /// #BUTTON EVENT#
     /// 
     /// Called when a ShopSlot button is clicked. Starts placing
@@ -260,9 +266,18 @@ public class ShopManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Called when the player finishes placing a Model.
+    /// Subscribes a handler (the ControllerController) to the request upgrade event.
     /// </summary>
-    private void OnFinishPlacing(Model m) => Assert.IsNotNull(m, "Placed model is null.");
+    /// <param name="handler">The handler to subscribe.</param>
+    public static void SubscribeToBuyDefenderDelegate(BuyModelDelegate handler)
+    {
+        Assert.IsNotNull(handler, "Handler is null.");
+        instance.OnBuyModel += handler;
+    }
+
+    #endregion
+
+    #region Button Events
 
     /// <summary>
     /// #BUTTON EVENT#
@@ -272,15 +287,40 @@ public class ShopManager : MonoBehaviour
     /// </summary>
     public void ClickRerollButton() => Reroll(false);
 
+    /// <summary>
+    /// # BUTTON EVENT #
+    /// 
+    /// Called when the player clicks the BasicTreeSeed button.
+    /// If possible, the player will spend a BasicTreeSeed and
+    /// start placing a BasicTree.
+    /// </summary>
+    public void ClickBasicTreeSeedButton()
+    {
+        if (EconomyController.GetBalance(ModelType.BASIC_TREE_SEED) < 1) return;
+        EconomyController.Withdraw(ModelType.BASIC_TREE_SEED, 1);
+        GameObject basicTreePrefab = TreeFactory.GetTreePrefab(ModelType.BASIC_TREE);
+        Assert.IsNotNull(basicTreePrefab, "BasicTree prefab is null.");
+        Model basicTreeModel = basicTreePrefab.GetComponent<Model>();
+        Assert.IsNotNull(basicTreeModel, "BasicTree model is null.");
+        PlacementController.StartPlacingObject(basicTreeModel);
+    }
 
     /// <summary>
-    /// Subscribes a handler (the ControllerController) to the request upgrade event.
+    /// # BUTTON EVENT #
+    /// 
+    /// Called when the player clicks the BasicTreeSeed button.
+    /// If possible, the player will spend a BasicTreeSeed and
+    /// start placing a BasicTree.
     /// </summary>
-    /// <param name="handler">The handler to subscribe.</param>
-    public static void SubscribeToBuyDefenderDelegate(BuyModelDelegate handler)
+    public void ClickSpeedTreeSeedButton()
     {
-        Assert.IsNotNull(handler, "Handler is null.");
-        instance.OnBuyModel += handler;
+        if (EconomyController.GetBalance(ModelType.SPEED_TREE_SEED) < 1) return;
+        EconomyController.Withdraw(ModelType.SPEED_TREE_SEED, 1);
+        GameObject speedTreePrefab = TreeFactory.GetTreePrefab(ModelType.SPEED_TREE);
+        Assert.IsNotNull(speedTreePrefab, "SpeedTree prefab is null.");
+        Model speedTreeModel = speedTreePrefab.GetComponent<Model>();
+        Assert.IsNotNull(speedTreeModel, "SpeedTree model is null.");
+        PlacementController.StartPlacingObject(speedTreeModel);
     }
 
     #endregion

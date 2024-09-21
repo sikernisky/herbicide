@@ -213,7 +213,7 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
         bool targetExists = target != null && target.Targetable();
         bool carrierToProtect = GetNearestCarrier() != null;
         bool withinChaseRange = targetExists && DistanceToTarget() <= GetSpurge().GetChaseRange();
-        bool withinAttackRange = targetExists && DistanceToTarget() <= GetSpurge().GetAttackRange();
+        bool withinAttackRange = targetExists && DistanceToTarget() <= GetSpurge().GetMainActionRange();
         bool holdingTarget = NumTargetsHolding() > 0;
 
         switch (GetState())
@@ -352,7 +352,7 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
         Mob target = GetTarget() as Mob;
         if (target == null || !target.Targetable()) return;
 
-        if (DistanceToTarget() <= GetSpurge().GetAttackRange()) return;
+        if (DistanceToTarget() <= GetSpurge().GetMainActionRange()) return;
 
         Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetSpurge().GetPosition(), GetTarget().GetPosition());
         SetNextMovePos(nextMove);
@@ -394,13 +394,13 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
         //Attack Logic : Only if target is valid.
         Mob target = GetTarget() as Mob;
         bool validTarget = GetTarget() != null && target.Targetable();
-        if (!CanAttack()) return;
+        if (!CanPerformMainAction()) return;
         if (!validTarget) return;
 
         FaceTarget();
         if (CanHoldTarget(target as Nexus)) HoldTarget(target as Nexus); // Hold.
         GetHeldTargets().ForEach(target => target.SetMaskInteraction(SpriteMaskInteraction.None));
-        GetSpurge().RestartAttackCooldown();
+        GetSpurge().RestartMainActionCooldown();
     }
 
     /// <summary>

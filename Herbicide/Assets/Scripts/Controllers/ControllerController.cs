@@ -129,6 +129,12 @@ public class ControllerController : MonoBehaviour
                 BearController bc = new BearController(bear);
                 instance.defenderControllers.Add(bc);
                 break;
+            case ModelType.BUNNY:
+                Bunny bunny = model as Bunny;
+                Assert.IsNotNull(bunny);
+                BunnyController bnc = new BunnyController(bunny);
+                instance.defenderControllers.Add(bnc);
+                break;
             case ModelType.KNOTWOOD:
                 Knotwood knotwood = model as Knotwood;
                 Assert.IsNotNull(knotwood, "Knotwood is null.");

@@ -41,18 +41,23 @@ public class EconomyController : MonoBehaviour
     /// <summary>
     /// How much Dew the player gets per tick.
     /// </summary>
-    private static readonly int DEW_PASSIVE_INCOME = 10;
+    private static readonly int DEW_PASSIVE_INCOME = 25;
 
     /// <summary>
     /// The number of seconds the player must wait until they
     /// recieve another Dew passive income tick.
     /// </summary>
-    private static readonly float DEW_PASSIVE_INCOME_FREQUENCY = 10f;
+    private static readonly float DEW_PASSIVE_INCOME_FREQUENCY = 20f;
 
     /// <summary>
     /// Number of seconds since the last passive income tick occured.
     /// </summary>
     private float timeSinceLastDewPassiveIncomeTick;
+
+    /// <summary>
+    /// true if passive income is enabled; otherwise, false.
+    /// </summary>
+    private bool passiveIncomeEnabled;
 
     /// <summary>
     /// The most recent GameState.
@@ -77,6 +82,7 @@ public class EconomyController : MonoBehaviour
         Assert.AreEqual(1, economyControllers.Length);
         instance = economyControllers[0];
         instance.InitializeCurrencies();
+        instance.passiveIncomeEnabled = true;
     }
 
     /// <summary>
@@ -90,7 +96,7 @@ public class EconomyController : MonoBehaviour
     {
         instance.gameState = gameState;
         instance.UpdateCurrencyText();
-        instance.PassiveIncome();
+        if(instance.passiveIncomeEnabled) instance.PassiveIncome();
     }
 
     /// <summary>
@@ -101,7 +107,7 @@ public class EconomyController : MonoBehaviour
     {
         currencies = new Dictionary<ModelType, int>
         {
-            { ModelType.DEW, 9999 },
+            { ModelType.DEW, 100 },
             { ModelType.BASIC_TREE_SEED, 0 },
             { ModelType.SPEED_TREE_SEED, 0 }
         };
@@ -193,41 +199,7 @@ public class EconomyController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// # BUTTON EVENT #
-    /// 
-    /// Called when the player clicks the BasicTreeSeed button.
-    /// If possible, the player will spend a BasicTreeSeed and
-    /// start placing a BasicTree.
-    /// </summary>
-    public void ClickBasicTreeSeedButton()
-    {
-        if(GetBalance(ModelType.BASIC_TREE_SEED) < 1) return;
-        Withdraw(ModelType.BASIC_TREE_SEED, 1);
-        GameObject basicTreePrefab = TreeFactory.GetTreePrefab(ModelType.BASIC_TREE);
-        Assert.IsNotNull(basicTreePrefab, "BasicTree prefab is null.");
-        Model basicTreeModel = basicTreePrefab.GetComponent<Model>();
-        Assert.IsNotNull(basicTreeModel, "BasicTree model is null.");
-        PlacementController.StartPlacingObject(basicTreeModel);
-    }
 
-    /// <summary>
-    /// # BUTTON EVENT #
-    /// 
-    /// Called when the player clicks the BasicTreeSeed button.
-    /// If possible, the player will spend a BasicTreeSeed and
-    /// start placing a BasicTree.
-    /// </summary>
-    public void ClickSpeedTreeSeedButton()
-    {
-        if(GetBalance(ModelType.SPEED_TREE_SEED) < 1) return;
-        Withdraw(ModelType.SPEED_TREE_SEED, 1);
-        GameObject speedTreePrefab = TreeFactory.GetTreePrefab(ModelType.SPEED_TREE);
-        Assert.IsNotNull(speedTreePrefab, "SpeedTree prefab is null.");
-        Model speedTreeModel = speedTreePrefab.GetComponent<Model>();
-        Assert.IsNotNull(speedTreeModel, "SpeedTree model is null.");
-        PlacementController.StartPlacingObject(speedTreeModel);
-    }
 
     #endregion
 }

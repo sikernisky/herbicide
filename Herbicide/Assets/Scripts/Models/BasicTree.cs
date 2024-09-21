@@ -39,27 +39,27 @@ public class BasicTree : Tree
     /// <summary>
     /// Starting attack range of a BasicTree.
     /// </summary>
-    public override float BASE_ATTACK_RANGE => 0;
+    public override float BASE_MAIN_ACTION_RANGE => 0;
 
     /// <summary>
     /// Maximum attack range of a BasicTree.
     /// </summary>
-    public override float MAX_ATTACK_RANGE => 0;
+    public override float MAX_MAIN_ACTION_RANGE => 0;
 
     /// <summary>
     /// Minimum attack range of a BasicTree.
     /// </summary>
-    public override float MIN_ATTACK_RANGE => 0;
+    public override float MIN_MAIN_ACTION_RANGE => 0;
 
     /// <summary>
     /// Amount of attack cooldown this BasicTree starts with.
     /// </summary>
-    public override float BASE_ATTACK_SPEED => 0;
+    public override float BASE_MAIN_ACTION_SPEED => 0;
 
     /// <summary>
     /// Most amount of attack cooldown this BasicTree can have.
     /// </summary>
-    public override float MAX_ATTACK_SPEED => 0;
+    public override float MAX_MAIN_ACTION_SPEED => 0;
 
     /// <summary>
     /// Starting chase range of a BasicTree.

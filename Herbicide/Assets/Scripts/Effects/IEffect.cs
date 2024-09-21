@@ -34,4 +34,9 @@ public interface IEffect
     /// true if this effect is currently active; otherwise, false.
     /// </summary>
     bool IsEffectActive { get; }
+
+    /// <summary>
+    /// The number of IEffect instances that can be applied to a Model.
+    /// </summary>
+    int MaxStacks { get; }
 }

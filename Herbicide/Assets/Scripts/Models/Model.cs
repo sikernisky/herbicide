@@ -524,6 +524,15 @@ public abstract class Model : MonoBehaviour
     protected List<IEffect> GetEffects() => effects;
 
     /// <summary>
+    /// Returns true if this Model has the maximum number of stacks
+    /// of a given IEffect instance.
+    /// </summary>
+    /// <param name="effect">The IEffect to check. </param>
+    /// <returns>true if this Model has the maximum number of stacks
+    /// of a given IEffect instance; otherwise, false.</returns>
+    private bool HasMaximumStacksOfEffect(IEffect effect) => GetEffects().FindAll(e=>e.GetType() == effect.GetType()).Count >= effect.MaxStacks;
+
+    /// <summary>
     /// Adds an IEffect instance to this Model.
     /// </summary>
     /// <param name="effect">the effect to add.</param>
@@ -531,19 +540,19 @@ public abstract class Model : MonoBehaviour
     {
         Assert.IsNotNull(effect, "Cannot add a null effect.");
         if(!effect.CanAfflict(this)) return;
+        if(HasMaximumStacksOfEffect(effect)) return;
 
         effectsToAddSafely.Add(effect);
     }
 
     /// <summary>
-    /// Removes an IEffect instance from this Model if it
-    /// is expired.
+    /// Removes an IEffect instance from this Model.
     /// </summary>
     /// <param name="effect">the effect to remove. </param>
-    private void TryRemoveEffect(IEffect effect)
+    public void TryRemoveEffect(IEffect effect)
     {
         Assert.IsNotNull(effect, "Cannot remove a null effect.");
-        Assert.IsTrue(effects.Contains(effect), "Effect not found on this model.");
+        Assert.IsTrue(GetEffects().Contains(effect), "Effect not found on this model.");
 
         if(!effect.IsEffectActive) effectsToRemoveSafely.Add(effect);
     }
@@ -558,7 +567,7 @@ public abstract class Model : MonoBehaviour
     {
         foreach(IEffect effect in effectsToAddSafely)
         {
-            effects.Add(effect);
+            GetEffects().Add(effect);
         }
         effectsToAddSafely.Clear();
 
@@ -567,7 +576,7 @@ public abstract class Model : MonoBehaviour
         
         foreach(IEffect effect in effectsToRemoveSafely)
         {
-            effects.Remove(effect);
+            GetEffects().Remove(effect);
         }
         effectsToRemoveSafely.Clear();
     }

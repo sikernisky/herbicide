@@ -93,7 +93,7 @@ public class RaccoonController : DefenderController<RaccoonController.RaccoonSta
             if (target == null || !target.Targetable()) yield break; // Invalid target.
 
             SetNextAnimation(GetRaccoon().ATTACK_ANIMATION_DURATION / numBerries,
-                DefenderFactory.GetAttackTrack(
+                DefenderFactory.GetMainActionTrack(
                     ModelType.RACCOON,
                     GetRaccoon().GetDirection(), GetRaccoon().GetTier()));
 
@@ -187,9 +187,9 @@ public class RaccoonController : DefenderController<RaccoonController.RaccoonSta
     /// </summary>
     /// <returns>true if the Raccoon can shoot an quill; otherwise,
     /// false.</returns>
-    public override bool CanAttack()
+    public override bool CanPerformMainAction()
     {
-        if (!base.CanAttack()) return false; //Cooldown
+        if (!base.CanPerformMainAction()) return false; //Cooldown
         if (GetState() != RaccoonState.ATTACK) return false; //Not in the attack state.
         Enemy target = GetTarget() as Enemy;
         if (target == null || !target.Targetable()) return false; //Invalid target.
@@ -231,14 +231,14 @@ public class RaccoonController : DefenderController<RaccoonController.RaccoonSta
                 break;
             case RaccoonState.IDLE:
                 if (target == null || !target.Targetable()) break;
-                if (DistanceToTargetFromTree() <= GetRaccoon().GetAttackRange() &&
-                    GetRaccoon().GetAttackCooldown() <= 0) SetState(RaccoonState.ATTACK);
+                if (DistanceToTargetFromTree() <= GetRaccoon().GetMainActionRange() &&
+                    GetRaccoon().GetMainActionCooldown() <= 0) SetState(RaccoonState.ATTACK);
                 break;
             case RaccoonState.ATTACK:
                 if (target == null || !target.Targetable()) SetState(RaccoonState.IDLE);
                 if (GetAnimationCounter() > 0) break;
-                if (GetRaccoon().GetAttackCooldown() > 0) SetState(RaccoonState.IDLE);
-                else if (DistanceToTarget() > GetRaccoon().GetAttackRange()) SetState(RaccoonState.IDLE);
+                if (GetRaccoon().GetMainActionCooldown() > 0) SetState(RaccoonState.IDLE);
+                else if (DistanceToTarget() > GetRaccoon().GetMainActionRange()) SetState(RaccoonState.IDLE);
                 break;
             case RaccoonState.INVALID:
                 throw new System.Exception("Invalid State.");
@@ -265,7 +265,7 @@ public class RaccoonController : DefenderController<RaccoonController.RaccoonSta
         if (!ValidModel()) return;
         if (GetState() != RaccoonState.IDLE) return;
         Enemy target = GetTarget() as Enemy;
-        if (target != null && DistanceToTargetFromTree() <= GetRaccoon().GetAttackRange())
+        if (target != null && DistanceToTargetFromTree() <= GetRaccoon().GetMainActionRange())
             FaceTarget();
         else GetRaccoon().FaceDirection(Direction.SOUTH);
 
@@ -286,7 +286,7 @@ public class RaccoonController : DefenderController<RaccoonController.RaccoonSta
         if (GetState() != RaccoonState.ATTACK) return;
 
         FaceTarget();
-        if (!CanAttack()) return;
+        if (!CanPerformMainAction()) return;
 
         // Calculate the number of quills to fire based on the Raccoon's tier.
         int tier = GetRaccoon().GetTier();
@@ -296,7 +296,7 @@ public class RaccoonController : DefenderController<RaccoonController.RaccoonSta
         GetRaccoon().StartCoroutine(FireBerries(numBerriesToFire));
 
         // Reset attack animation.
-        GetRaccoon().RestartAttackCooldown();
+        GetRaccoon().RestartMainActionCooldown();
     }
 
     #endregion

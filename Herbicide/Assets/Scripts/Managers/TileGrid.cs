@@ -360,7 +360,7 @@ public class TileGrid : MonoBehaviour
                 Mob mob = placingSlottable as Mob;
                 if (mob != null)
                 {
-                    int ar = Mathf.FloorToInt(mob.BASE_ATTACK_RANGE);
+                    int ar = Mathf.FloorToInt(mob.BASE_MAIN_ACTION_RANGE);
                     if (ar == float.MaxValue || ar <= 0) return;
                     int mobX = tile.GetX();
                     int mobY = tile.GetY();

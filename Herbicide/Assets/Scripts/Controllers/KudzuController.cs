@@ -222,7 +222,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         bool targetExists = target != null && target.Targetable();
         bool carrierToProtect = GetNearestCarrier() != null;
         bool withinChaseRange = targetExists && DistanceToTarget() <= GetKudzu().GetChaseRange();
-        bool withinAttackRange = targetExists && DistanceToTarget() <= GetKudzu().GetAttackRange();
+        bool withinAttackRange = targetExists && DistanceToTarget() <= GetKudzu().GetMainActionRange();
         bool holdingTarget = NumTargetsHolding() > 0;
 
         switch (GetState())
@@ -374,7 +374,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         Mob target = GetTarget() as Mob;
         if (target == null || !target.Targetable()) return;
 
-        if (DistanceToTarget() <= GetKudzu().GetAttackRange()) return;
+        if (DistanceToTarget() <= GetKudzu().GetMainActionRange()) return;
 
         Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetKudzu().GetPosition(), GetTarget().GetPosition());
         SetNextMovePos(nextMove);
@@ -422,14 +422,14 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         //Attack Logic : Only if target is valid.
         Mob target = GetTarget() as Mob;
         bool validTarget = GetTarget() != null && target.Targetable();
-        if (!CanAttack()) return;
+        if (!CanPerformMainAction()) return;
         if (!validTarget) return;
 
         FaceTarget();
         if (CanHoldTarget(target as Nexus)) HoldTarget(target as Nexus); // Hold.
         else target.AdjustHealth(-GetKudzu().BONK_DAMAGE); // Bonk.
         GetHeldTargets().ForEach(target => target.SetMaskInteraction(SpriteMaskInteraction.None));
-        GetKudzu().RestartAttackCooldown();
+        GetKudzu().RestartMainActionCooldown();
     }
 
     /// <summary>

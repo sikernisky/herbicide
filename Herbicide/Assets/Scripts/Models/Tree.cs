@@ -78,7 +78,7 @@ public abstract class Tree : Mob, ISurface
     /// <param name="neighbors">This Tree's neighboring ISurfaces.</param>
     /// <returns>true if a Defender was placed on this Tree; otherwise,
     /// false. </returns>
-    public void Place(PlaceableObject candidate, ISurface[] neighbors)
+    public virtual void Place(PlaceableObject candidate, ISurface[] neighbors)
     {
         Assert.IsNotNull(candidate, "Placement candidate can't be null.");
         Assert.IsNotNull(neighbors, "Placement candidate's neighbors can't be null.");
@@ -291,6 +291,8 @@ public abstract class Tree : Mob, ISurface
                 return new Vector2(0.1f, 0.85f);
             case ModelType.OWL:
                 return new Vector2(0.0f, 0.90f);
+            case ModelType.BUNNY:
+                return new Vector2(0.0f, 1.10f);
             default:
                 return Vector2.zero;
         }

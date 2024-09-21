@@ -92,7 +92,7 @@ public class PorcupineController : DefenderController<PorcupineController.Porcup
             if (target == null || !target.Targetable()) yield break; // Invalid target.
 
             SetNextAnimation(GetPorcupine().ATTACK_ANIMATION_DURATION / numQuills,
-                DefenderFactory.GetAttackTrack(
+                DefenderFactory.GetMainActionTrack(
                     ModelType.PORCUPINE,
                     GetPorcupine().GetDirection(), GetPorcupine().GetTier()));
 
@@ -117,9 +117,9 @@ public class PorcupineController : DefenderController<PorcupineController.Porcup
     /// </summary>
     /// <returns>true if the Porcupine can shoot an quill; otherwise,
     /// false.</returns>
-    public override bool CanAttack()
+    public override bool CanPerformMainAction()
     {
-        if (!base.CanAttack()) return false; //Cooldown
+        if (!base.CanPerformMainAction()) return false; //Cooldown
         if (GetState() != PorcupineState.ATTACK) return false; //Not in the attack state.
         Enemy target = GetTarget() as Enemy;
         if (target == null || !target.Targetable()) return false; //Invalid target.
@@ -161,14 +161,14 @@ public class PorcupineController : DefenderController<PorcupineController.Porcup
                 break;
             case PorcupineState.IDLE:
                 if (target == null || !target.Targetable()) break;
-                if (DistanceToTargetFromTree() <= GetPorcupine().GetAttackRange() &&
-                    GetPorcupine().GetAttackCooldown() <= 0) SetState(PorcupineState.ATTACK);
+                if (DistanceToTargetFromTree() <= GetPorcupine().GetMainActionRange() &&
+                    GetPorcupine().GetMainActionCooldown() <= 0) SetState(PorcupineState.ATTACK);
                 break;
             case PorcupineState.ATTACK:
                 if (target == null || !target.Targetable()) SetState(PorcupineState.IDLE);
                 if (GetAnimationCounter() > 0) break;
-                if (GetPorcupine().GetAttackCooldown() > 0) SetState(PorcupineState.IDLE);
-                else if (DistanceToTarget() > GetPorcupine().GetAttackRange()) SetState(PorcupineState.IDLE);
+                if (GetPorcupine().GetMainActionCooldown() > 0) SetState(PorcupineState.IDLE);
+                else if (DistanceToTarget() > GetPorcupine().GetMainActionRange()) SetState(PorcupineState.IDLE);
                 break;
             case PorcupineState.INVALID:
                 throw new System.Exception("Invalid State.");
@@ -195,7 +195,7 @@ public class PorcupineController : DefenderController<PorcupineController.Porcup
         if (!ValidModel()) return;
         if (GetState() != PorcupineState.IDLE) return;
         Enemy target = GetTarget() as Enemy;
-        if (target != null && DistanceToTargetFromTree() <= GetPorcupine().GetAttackRange())
+        if (target != null && DistanceToTargetFromTree() <= GetPorcupine().GetMainActionRange())
             FaceTarget();
         else GetPorcupine().FaceDirection(Direction.SOUTH);
 
@@ -216,7 +216,7 @@ public class PorcupineController : DefenderController<PorcupineController.Porcup
         if (GetState() != PorcupineState.ATTACK) return;
 
         FaceTarget();
-        if (!CanAttack()) return;
+        if (!CanPerformMainAction()) return;
 
         // Calculate the number of quills to fire based on the Porcupine's tier.
         int tier = GetPorcupine().GetTier();
@@ -226,7 +226,7 @@ public class PorcupineController : DefenderController<PorcupineController.Porcup
         GetPorcupine().StartCoroutine(FireQuills(numQuillsToFire));
 
         // Reset attack animation.
-        GetPorcupine().RestartAttackCooldown();
+        GetPorcupine().RestartMainActionCooldown();
     }
 
     #endregion

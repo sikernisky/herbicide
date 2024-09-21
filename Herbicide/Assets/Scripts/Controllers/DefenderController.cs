@@ -70,7 +70,7 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
 
         Vector3 treePos = GetDefender().GetTreePosition();
         float distanceFromTree = Vector3.Distance(treePos, enemyTarget.GetPosition());
-        if (distanceFromTree > GetDefender().GetAttackRange()) return false;
+        if (distanceFromTree > GetDefender().GetMainActionRange()) return false;
 
         return true;
     }

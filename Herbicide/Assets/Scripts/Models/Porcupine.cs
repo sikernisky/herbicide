@@ -19,42 +19,42 @@ public class Porcupine : Defender
     /// <summary>
     /// Starting attack range of a Porcupine.
     /// </summary>
-    public override float BASE_ATTACK_RANGE => 5f;
+    public override float BASE_MAIN_ACTION_RANGE => 5f;
 
     /// <summary>
     /// Maximum attack range of a Porcupine.
     /// </summary>
-    public override float MAX_ATTACK_RANGE => float.MaxValue;
+    public override float MAX_MAIN_ACTION_RANGE => float.MaxValue;
 
     /// <summary>
     /// Minimum attack range of a Porcupine.
     /// </summary>
-    public override float MIN_ATTACK_RANGE => 0f;
+    public override float MIN_MAIN_ACTION_RANGE => 0f;
 
     /// <summary>
     /// Starting attack speed of a Porcupine.
     /// </summary>
-    public override float BASE_ATTACK_SPEED => 1.6f;
+    public override float BASE_MAIN_ACTION_SPEED => 1.6f;
 
     /// <summary>
     /// Maximum attack speed of a Porcupine.
     /// </summary>
-    public override float MAX_ATTACK_SPEED => float.MaxValue;
+    public override float MAX_MAIN_ACTION_SPEED => float.MaxValue;
 
     /// <summary>
     /// Starting chase range of a Porcupine.
     /// </summary>
-    public override float BASE_CHASE_RANGE => BASE_ATTACK_RANGE;
+    public override float BASE_CHASE_RANGE => BASE_MAIN_ACTION_RANGE;
 
     /// <summary>
     /// Maximum chase range of a Porcupine.
     /// </summary>
-    public override float MAX_CHASE_RANGE => MAX_ATTACK_RANGE;
+    public override float MAX_CHASE_RANGE => MAX_MAIN_ACTION_RANGE;
 
     /// <summary>
     /// Minimum chase range of a Porcupine.
     /// </summary>
-    public override float MIN_CHASE_RANGE => MIN_ATTACK_RANGE;
+    public override float MIN_CHASE_RANGE => MIN_MAIN_ACTION_RANGE;
 
     /// <summary>
     /// Starting movement speed of a Porcupine. 
@@ -96,7 +96,7 @@ public class Porcupine : Defender
     /// How many seconds a Porcupine's idle animation lasts,
     /// from start to finish. 
     /// </summary>
-    public float IDLE_ANIMATION_DURATION => Mathf.Clamp(GetAttackCooldown(), 0.0001f, float.MaxValue);
+    public float IDLE_ANIMATION_DURATION => Mathf.Clamp(GetMainActionCooldown(), 0.0001f, float.MaxValue);
 
     /// <summary>
     /// Type of a Porcupine.

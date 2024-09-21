@@ -39,42 +39,42 @@ public class Bear : Defender
     /// <summary>
     /// Starting attack range of a Bear.
     /// </summary>
-    public override float BASE_ATTACK_RANGE => 2f;
+    public override float BASE_MAIN_ACTION_RANGE => 2f;
 
     /// <summary>
     /// Maximum attack range of a Bear.
     /// </summary>
-    public override float MAX_ATTACK_RANGE => float.MaxValue;
+    public override float MAX_MAIN_ACTION_RANGE => float.MaxValue;
 
     /// <summary>
     /// Minimum attack range of a Bear.
     /// </summary>
-    public override float MIN_ATTACK_RANGE => 0f;
+    public override float MIN_MAIN_ACTION_RANGE => 0f;
 
     /// <summary>
     /// Starting attack cooldown of a Bear.
     /// </summary>
-    public override float BASE_ATTACK_SPEED => .8f;
+    public override float BASE_MAIN_ACTION_SPEED => .8f;
 
     /// <summary>
     /// Maximum attack cooldown of a Bear.
     /// </summary>
-    public override float MAX_ATTACK_SPEED => float.MaxValue;
+    public override float MAX_MAIN_ACTION_SPEED => float.MaxValue;
 
     /// <summary>
     /// Starting chase range of a Bear.
     /// </summary>
-    public override float BASE_CHASE_RANGE => BASE_ATTACK_RANGE;
+    public override float BASE_CHASE_RANGE => BASE_MAIN_ACTION_RANGE;
 
     /// <summary>
     /// Maximum chase range of a Bear.
     /// </summary>
-    public override float MAX_CHASE_RANGE => MAX_ATTACK_RANGE;
+    public override float MAX_CHASE_RANGE => MAX_MAIN_ACTION_RANGE;
 
     /// <summary>
     /// Minimum chase range of a Bear.
     /// </summary>
-    public override float MIN_CHASE_RANGE => MIN_ATTACK_RANGE;
+    public override float MIN_CHASE_RANGE => MIN_MAIN_ACTION_RANGE;
 
     /// <summary>
     /// Starting movement speed of a Bear.

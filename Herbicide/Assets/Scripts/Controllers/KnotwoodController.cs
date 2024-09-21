@@ -202,7 +202,7 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
         bool targetExists = target != null && target.Targetable();
         bool carrierToProtect = GetNearestCarrier() != null;
         bool withinChaseRange = targetExists && DistanceToTarget() <= GetKnotwood().GetChaseRange();
-        bool withinAttackRange = targetExists && DistanceToTarget() <= GetKnotwood().GetAttackRange();
+        bool withinAttackRange = targetExists && DistanceToTarget() <= GetKnotwood().GetMainActionRange();
         bool holdingTarget = NumTargetsHolding() > 0;
 
         switch (GetState())
@@ -341,7 +341,7 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
         Mob target = GetTarget() as Mob;
         if (target == null || !target.Targetable()) return;
 
-        if (DistanceToTarget() <= GetKnotwood().GetAttackRange()) return;
+        if (DistanceToTarget() <= GetKnotwood().GetMainActionRange()) return;
 
         Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetKnotwood().GetPosition(), GetTarget().GetPosition());
         SetNextMovePos(nextMove);
@@ -383,14 +383,14 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
         //Attack Logic : Only if target is valid.
         Mob target = GetTarget() as Mob;
         bool validTarget = GetTarget() != null && target.Targetable();
-        if (!CanAttack()) return;
+        if (!CanPerformMainAction()) return;
         if (!validTarget) return;
 
         FaceTarget();
         if (CanHoldTarget(target as Nexus)) HoldTarget(target as Nexus); // Hold.
         else target.AdjustHealth(-GetKnotwood().KICK_DAMAGE); // Kick.
         GetHeldTargets().ForEach(target => target.SetMaskInteraction(SpriteMaskInteraction.None));
-        GetKnotwood().RestartAttackCooldown();
+        GetKnotwood().RestartMainActionCooldown();
     }
 
     /// <summary>

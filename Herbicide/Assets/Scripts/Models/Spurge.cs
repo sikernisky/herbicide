@@ -27,12 +27,12 @@ public class Spurge : Enemy
     /// <summary>
     /// Base health of a Spurge.
     /// </summary>
-    public override float BASE_HEALTH => 100; // NORMAL VALUE: 100
+    public override float BASE_HEALTH => 50;
 
     /// <summary>
     /// Upper bound of a Spurge's health. 
     /// </summary>
-    public override float MAX_HEALTH => 100; // NORMAL VALUE: 100
+    public override float MAX_HEALTH => int.MaxValue;
 
     /// <summary>
     /// Minimum health of a Spurge
@@ -42,27 +42,27 @@ public class Spurge : Enemy
     /// <summary>
     /// Amount of attack cooldown this Spurge starts with.
     /// </summary>
-    public override float BASE_ATTACK_SPEED => 1f;
+    public override float BASE_MAIN_ACTION_SPEED => 1f;
 
     /// <summary>
     /// Most amount of attack cooldown this Spurge can have.
     /// </summary>
-    public override float MAX_ATTACK_SPEED => float.MaxValue;
+    public override float MAX_MAIN_ACTION_SPEED => float.MaxValue;
 
     /// <summary>
     /// Starting attack range of a Spurge.
     /// </summary>
-    public override float BASE_ATTACK_RANGE => 1f;
+    public override float BASE_MAIN_ACTION_RANGE => 1f;
 
     /// <summary>
     /// Maximum attack range of a Spurge.
     /// </summary>
-    public override float MAX_ATTACK_RANGE => float.MaxValue;
+    public override float MAX_MAIN_ACTION_RANGE => float.MaxValue;
 
     /// <summary>
     /// Minimum attack range of a Spurge.
     /// </summary>
-    public override float MIN_ATTACK_RANGE => 0;
+    public override float MIN_MAIN_ACTION_RANGE => 0;
 
     /// <summary>
     /// Starting chase range of a Spurge.

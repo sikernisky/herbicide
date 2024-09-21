@@ -722,7 +722,7 @@ Transform:
   - {fileID: 880554729}
   - {fileID: 270232374}
   m_Father: {fileID: 374179633}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &132748574
 MonoBehaviour:
@@ -1239,7 +1239,7 @@ RectTransform:
   m_Children:
   - {fileID: 427182374}
   m_Father: {fileID: 374179633}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1474,7 +1474,6 @@ RectTransform:
   m_Children:
   - {fileID: 1485651383}
   - {fileID: 2051107807}
-  - {fileID: 631068794}
   - {fileID: 132748573}
   - {fileID: 258530141}
   - {fileID: 458590368}
@@ -2062,8 +2061,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2051107808}
-        m_TargetAssemblyTypeName: EconomyController, Assembly-CSharp
+      - m_Target: {fileID: 631068797}
+        m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
         m_MethodName: ClickBasicTreeSeedButton
         m_Mode: 1
         m_Arguments:
@@ -2182,7 +2181,7 @@ Transform:
   - {fileID: 844058789}
   - {fileID: 2091387963}
   m_Father: {fileID: 374179633}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &458590369
 MonoBehaviour:
@@ -2714,8 +2713,8 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 631068793}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 6, y: 6, z: 6}
+  m_LocalPosition: {x: 0, y: 0, z: -0.007928283}
+  m_LocalScale: {x: 4.965112, y: 4.965112, z: 4.965112}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1838144982}
@@ -2725,12 +2724,12 @@ RectTransform:
   - {fileID: 1871011723}
   - {fileID: 1059415868}
   - {fileID: 213945745}
-  m_Father: {fileID: 374179633}
-  m_RootOrder: 2
+  m_Father: {fileID: 2051107807}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -59, y: -431}
+  m_AnchoredPosition: {x: 737.20746, y: 82.60858}
   m_SizeDelta: {x: 223, y: 34}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &631068795
@@ -3496,7 +3495,7 @@ RectTransform:
   m_Children:
   - {fileID: 374179633}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -3550,10 +3549,13 @@ MonoBehaviour:
   prefabs:
   - {fileID: 7255375230871180526, guid: 268bcc35a02fd48119a5e3cb9ae357e3, type: 3}
   - {fileID: 7255375230871180526, guid: 1235b50044e05244ea14724bde3c03b3, type: 3}
+  - {fileID: 7255375230871180526, guid: 878c51fd7012d094eadf3840dc2a04f0, type: 3}
   dewPlacementTrack:
   - {fileID: 21300000, guid: 505a9d28ed8b54032a938ef8f953c769, type: 3}
+  basicTreeSeedPlacementTrack:
   - {fileID: 21300000, guid: 262f6912e36a311498f5ed7bdda4dd01, type: 3}
-  basicTreeSeedPlacementTrack: []
+  speedTreeSeedPlacementTrack:
+  - {fileID: 21300000, guid: fe2af50f05af4d74c8b6c797aab17fa5, type: 3}
 --- !u!1 &880554728
 GameObject:
   m_ObjectHideFlags: 0
@@ -4281,6 +4283,7 @@ MonoBehaviour:
   - {fileID: 2896626616884615408, guid: d18944798889143a1a432dc9a5c367d2, type: 3}
   - {fileID: 2896626616884615408, guid: 04b71c03941782e4ebf45b005124f11c, type: 3}
   - {fileID: 4258100568393254862, guid: 8b0257bcea082a7499eb28c1f4047dc0, type: 3}
+  - {fileID: 2896626616884615408, guid: df6715f62006c504cbe9cc79ac04f2f8, type: 3}
   squirrelAnimationSet: {fileID: 11400000, guid: 7f4b6d2871eb04c8cb30a3b72bbaf4f5, type: 2}
   bearAnimationSet: {fileID: 11400000, guid: e7e2075b53eac4ce1a6d626d618576ec, type: 2}
   porcupineAnimationSet: {fileID: 11400000, guid: 29d479b7f116e45c19bad45985be25ff, type: 2}
@@ -4755,7 +4758,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1324430257
 GameObject:
@@ -5172,8 +5175,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2051107808}
-        m_TargetAssemblyTypeName: EconomyController, Assembly-CSharp
+      - m_Target: {fileID: 631068797}
+        m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
         m_MethodName: ClickSpeedTreeSeedButton
         m_Mode: 1
         m_Arguments:
@@ -5263,8 +5266,8 @@ Transform:
   - {fileID: 1130661421}
   - {fileID: 1874219992}
   - {fileID: 200278231}
-  m_Father: {fileID: 1414023762}
-  m_RootOrder: 0
+  m_Father: {fileID: 0}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1414023760
 GameObject:
@@ -5312,10 +5315,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1398493868}
+  m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1430527320
 GameObject:
@@ -6292,7 +6294,7 @@ RectTransform:
   m_Children:
   - {fileID: 80233037}
   m_Father: {fileID: 374179633}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -6921,7 +6923,7 @@ Transform:
   - {fileID: 484092435}
   - {fileID: 1486691648}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1926190824
 GameObject:
@@ -7385,6 +7387,7 @@ Transform:
   - {fileID: 1044661150}
   - {fileID: 540930919}
   - {fileID: 1447668062}
+  - {fileID: 631068794}
   m_Father: {fileID: 374179633}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
