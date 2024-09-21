@@ -61,7 +61,7 @@ public class LevelController : MonoBehaviour
         CameraController.MoveCamera(cameraPos);
 
         //(4) Load the Shop
-        ShopManager.LoadShop();
+        ShopController.LoadShop();
     }
 
     /// <summary>
@@ -107,7 +107,7 @@ public class LevelController : MonoBehaviour
         EconomyController.UpdateEconomy(gameState);
 
         //(6) Update Shop.
-        ShopManager.UpdateShop(gameState);
+        ShopController.UpdateShop(gameState);
 
         //(7) Update TileGrid.
         TileGrid.UpdateTiles();
@@ -129,6 +129,7 @@ public class LevelController : MonoBehaviour
     {
         Assert.IsNotNull(instance, "method SetSingleton() should set the " +
             "levelcontroller singleton (currently null.)");
+        SaveLoadManager.SetSingleton(instance);
         SceneController.SetSingleton(instance);
         JSONController.SetSingleton(instance);
         TileGrid.SetSingleton(instance);
@@ -137,6 +138,7 @@ public class LevelController : MonoBehaviour
         PlacementController.SetSingleton(instance);
         EnemyManager.SetSingleton(instance);
         ShopManager.SetSingleton(instance);
+        ShopController.SetSingleton(instance);
         ControllerController.SetSingleton(instance);
         EconomyController.SetSingleton(instance);
         CanvasController.SetSingleton(instance);

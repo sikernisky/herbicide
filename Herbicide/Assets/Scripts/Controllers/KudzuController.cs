@@ -403,7 +403,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         if (!ReachedMovementTarget()) return;
         if (GetNearestCarrier() == null) return;
 
-        Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetKudzu().GetPosition(), GetTarget().GetPosition());
+        Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetKudzu().GetPosition(), GetNearestCarrier().GetPosition());
         SetNextMovePos(nextMove);
         hopCooldownCounter = GetKudzu().HOP_COOLDOWN;
     }

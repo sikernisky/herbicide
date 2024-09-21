@@ -75,7 +75,7 @@ public class Knotwood : Enemy
     /// <summary>
     /// Maximum health of a Knotwood.
     /// </summary>
-    public override float MAX_HEALTH => 25;
+    public override float MAX_HEALTH => BASE_HEALTH;
 
     /// <summary>
     /// Minimum health of a Knotwood.

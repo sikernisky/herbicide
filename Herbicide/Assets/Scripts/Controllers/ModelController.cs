@@ -444,7 +444,8 @@ public abstract class ModelController
         scaleFraction = Mathf.Clamp01(scaleFraction);
 
         // Calculate the new scale
-        Vector3 newScale = Vector3.Lerp(new Vector3(0.1f, 0.1f, 0.1f), Vector3.one, scaleFraction);
+        Vector3 endScale = new Vector3(TileGrid.TILE_SIZE, TileGrid.TILE_SIZE, 1);
+        Vector3 newScale = Vector3.Lerp(new Vector3(0.1f, 0.1f, 0.1f), endScale, scaleFraction);
         GetModel().SetLocalScale(newScale);
     }
 

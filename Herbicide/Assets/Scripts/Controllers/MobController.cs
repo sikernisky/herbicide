@@ -360,14 +360,16 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// <returns>the distance from this Controller's Mob to its first target. </returns>
     protected float DistanceToTarget()
     {
-        Assert.IsNotNull(GetTargets());
-
+        Assert.IsNotNull(GetTargets(), "Targets list is null.");
         if (GetTargets().Count == 0) return float.MaxValue;
 
         Model target = GetTargets()[0];
-        Assert.IsNotNull(target);
-
-        return Vector2.Distance(GetModel().GetPosition(), target.GetPosition());
+        Assert.IsNotNull(target, "Target is null.");
+        Vector2 mobPosition = GetModel().GetPosition();  
+        Vector2 targetPosition = target.GetPosition();
+        float tileScale = TileGrid.TILE_SIZE;
+        float distance = Vector2.Distance(mobPosition, targetPosition);
+        return distance / tileScale; // Normalize the distance by the tile scale
     }
 
     /// <summary>

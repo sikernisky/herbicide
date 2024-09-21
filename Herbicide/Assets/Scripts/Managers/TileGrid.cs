@@ -16,7 +16,7 @@ public class TileGrid : MonoBehaviour
     /// <summary>
     /// Width and height of a Tile in the TileGrid
     /// </summary>
-    public const float TILE_SIZE = 0.9f;
+    public static float TILE_SIZE => GetTileSizeBasedOnCurrentLevel();
 
     /// <summary>
     /// All Tile prefabs, indexed by their type
@@ -121,30 +121,6 @@ public class TileGrid : MonoBehaviour
     #region Methods
 
     /// <summary>
-    /// Main update loop for the TileGrid; updates its Tiles.
-    /// </summary>
-    public static void UpdateTiles()
-    {
-        // Update GrassTiles
-        foreach (Tile t in instance.grassTiles)
-        {
-            t.UpdateTile();
-        }
-    }
-
-    /// <summary>
-    /// Detects any player input on a Tile and handles it based on the type
-    /// of input.
-    /// </summary>
-    public static void CheckTileInputEvents()
-    {
-        instance.CheckTileMouseDown();
-        instance.CheckTileMouseUp();
-        instance.CheckTileMouseEnter();
-        instance.CheckTileMouseExit();
-    }
-
-    /// <summary>
     /// Sets the `instance` field of the TileGrid class. If already set,
     /// does nothing. Also instantiates the 2D arrays to hold the Tiles
     /// and items placed on them.
@@ -173,6 +149,46 @@ public class TileGrid : MonoBehaviour
     }
 
     /// <summary>
+    /// Main update loop for the TileGrid; updates its Tiles.
+    /// </summary>
+    public static void UpdateTiles()
+    {
+        // Update GrassTiles
+        foreach (Tile t in instance.grassTiles)
+        {
+            t.UpdateTile();
+        }
+    }
+
+    /// <summary>
+    /// Detects any player input on a Tile and handles it based on the type
+    /// of input.
+    /// </summary>
+    public static void CheckTileInputEvents()
+    {
+        instance.CheckTileMouseDown();
+        instance.CheckTileMouseUp();
+        instance.CheckTileMouseEnter();
+        instance.CheckTileMouseExit();
+    }
+
+    /// <summary>
+    /// Returns the correct Tile size based on the current
+    /// level. 
+    /// </summary>
+    /// <returns>the correct Tile size based on the current level. </returns>
+    private static float GetTileSizeBasedOnCurrentLevel()
+    {
+        switch (SaveLoadManager.GetLevel())
+        {
+            case 0:
+                return 1.4f;
+            default:
+                return 1f;
+        }
+    }
+
+    /// <summary>
     /// Returns the Camera's position at the center of all objects in the TileGrid.
     /// </summary>
     /// <returns>the position for the Camera, that if set to, represents the center</returns>
@@ -193,9 +209,6 @@ public class TileGrid : MonoBehaviour
 
         float centerXPos = (minX + maxX) / 2f;
         float centerYPos = (minY + maxY) / 2f;
-
-        // Add a vertical offset because the shop sits at the bottom.
-        centerYPos -= TILE_SIZE;
 
         return new Vector2(centerXPos + TILE_SIZE/2f, centerYPos + TILE_SIZE/2f);
     }
@@ -564,12 +577,10 @@ public class TileGrid : MonoBehaviour
     /// <param name="candidate">The PlaceableObject to place.</param>
     /// <param name="targetCoords">The coordinates of the Tile to place on.</param>
     /// <returns>true if the PlaceableObject was placed; otherwise, false.</returns>
-    public static bool PlaceOnTile(Vector2Int targetCoords, PlaceableObject candidate)
+    public static bool PlaceOnTileUsingCoordinates(Vector2Int targetCoords, PlaceableObject candidate)
     {
         //Safety checks
-        int xCoord = PositionToCoordinate(targetCoords.x);
-        int yCoord = PositionToCoordinate(targetCoords.y);
-        Tile target = instance.TileExistsAt(xCoord, yCoord);
+        Tile target = instance.TileExistsAt(targetCoords.x, targetCoords.y);
 
         return PlaceOnTile(target, candidate);
     }

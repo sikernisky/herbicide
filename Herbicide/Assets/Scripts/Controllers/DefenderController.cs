@@ -67,10 +67,7 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
         if (!enemyTarget.Spawned()) return false;
         if (!enemyTarget.Targetable()) return false;
         if (!GetDefender().IsPlaced()) return false;
-
-        Vector3 treePos = GetDefender().GetTreePosition();
-        float distanceFromTree = Vector3.Distance(treePos, enemyTarget.GetPosition());
-        if (distanceFromTree > GetDefender().GetMainActionRange()) return false;
+        if (DistanceToPositionFromTree(enemyTarget.GetPosition()) > GetDefender().GetMainActionRange()) return false;
 
         return true;
     }
@@ -106,8 +103,20 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
         Assert.IsNotNull(GetTargets(), "Targets is null.");
         Model target = GetTargets()[0];
         Assert.IsNotNull(target, "Target is null.");
+        return DistanceToPositionFromTree(target.GetPosition());
+    }
 
-        return Vector3.Distance(GetDefender().GetTreePosition(), target.GetPosition());
+    /// <summary>
+    /// Returns the distance from the Defender's tree to some position.
+    /// </summary>
+    /// <returns>the distance from the Defender's tree to some position.
+    /// </returns>
+    protected float DistanceToPositionFromTree(Vector3 targetPosition)
+    {
+        float tileScale = TileGrid.TILE_SIZE;
+        Vector3 treePosition = GetDefender().GetTreePosition();
+        float distance = Vector3.Distance(treePosition, targetPosition);
+        return distance / tileScale; // Normalize the distance by the tile scale
     }
 
     /// <summary>

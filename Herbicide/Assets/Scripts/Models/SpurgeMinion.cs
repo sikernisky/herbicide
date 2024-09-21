@@ -26,12 +26,12 @@ public class SpurgeMinion : Enemy
     /// <summary>
     /// Base health of a SpurgeMinion.
     /// </summary>
-    public override float BASE_HEALTH => 25; // NORMAL VALUE: 100
+    public override float BASE_HEALTH => 10;
 
     /// <summary>
     /// Upper bound of a SpurgeMinion's health. 
     /// </summary>
-    public override float MAX_HEALTH => 100; // NORMAL VALUE: 100
+    public override float MAX_HEALTH => BASE_HEALTH;
 
     /// <summary>
     /// Minimum health of a SpurgeMinion

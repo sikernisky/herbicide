@@ -168,7 +168,11 @@ public abstract class PlaceableObject : Model
     /// <summary>
     /// Resets this PlaceableObject's stats to their default values.
     /// </summary>
-    public override void ResetModel() => ResetHealth();
+    public override void ResetModel()
+    {
+        base.ResetModel();
+        ResetHealth();
+    }
 
     /// <summary>
     /// Updates this PlaceableObject with its newest four neighbors.

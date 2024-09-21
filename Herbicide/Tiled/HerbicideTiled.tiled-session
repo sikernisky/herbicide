@@ -11,15 +11,50 @@
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
+        "C:/Users/teddy/OneDrive/Documents/GitHub/herbicide/Herbicide/Assets/Levels/level1.json": {
+            "expandedObjectLayers": [
+                15,
+                13,
+                16
+            ],
+            "scale": 5.5,
+            "selectedLayer": 5,
+            "viewCenter": {
+                "x": 105.36363636363637,
+                "y": 60.90909090909091
+            }
+        },
+        "C:/Users/teddy/OneDrive/Documents/GitHub/herbicide/Herbicide/Assets/Levels/level1.json#Enemies": {
+            "scaleInDock": 1
+        },
+        "C:/Users/teddy/OneDrive/Documents/GitHub/herbicide/Herbicide/Assets/Levels/level1.json#Grass": {
+            "scaleInDock": 1
+        },
+        "C:/Users/teddy/OneDrive/Documents/GitHub/herbicide/Herbicide/Assets/Levels/level1.json#Placeables": {
+            "scaleInDock": 1
+        },
+        "C:/Users/teddy/OneDrive/Documents/GitHub/herbicide/Herbicide/Assets/Levels/level1.json#Shore": {
+            "scaleInDock": 1
+        },
+        "C:/Users/teddy/OneDrive/Documents/GitHub/herbicide/Herbicide/Assets/Levels/level1.json#Soil": {
+            "scaleInDock": 1
+        },
+        "C:/Users/teddy/OneDrive/Documents/GitHub/herbicide/Herbicide/Assets/Levels/level1.json#Water": {
+            "scaleInDock": 1
+        },
+        "C:/Users/teddy/OneDrive/Documents/GitHub/herbicide/Herbicide/Assets/Levels/level1.json#markers": {
+            "scaleInDock": 1
+        },
         "Tilemaps/btd.tmx": {
             "expandedObjectLayers": [
-                13
+                13,
+                16
             ],
-            "scale": 3,
-            "selectedLayer": 4,
+            "scale": 2,
+            "selectedLayer": 5,
             "viewCenter": {
-                "x": 199.5,
-                "y": 87.66666666666669
+                "x": 161.75,
+                "y": 173
             }
         },
         "Tilemaps/btd.tmx#Enemies": {
@@ -130,12 +165,33 @@
                 13,
                 16
             ],
-            "scale": 2.8034,
+            "scale": 5.5,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 239.530570022116,
-                "y": 159.80594991795675
+                "x": 98.81818181818181,
+                "y": 72.54545454545455
             }
+        },
+        "Tilemaps/level1.tmx#Enemies": {
+            "scaleInDock": 1
+        },
+        "Tilemaps/level1.tmx#Grass": {
+            "scaleInDock": 1
+        },
+        "Tilemaps/level1.tmx#Placeables": {
+            "scaleInDock": 1
+        },
+        "Tilemaps/level1.tmx#Shore": {
+            "scaleInDock": 1
+        },
+        "Tilemaps/level1.tmx#Soil": {
+            "scaleInDock": 1
+        },
+        "Tilemaps/level1.tmx#Water": {
+            "scaleInDock": 1
+        },
+        "Tilemaps/level1.tmx#markers": {
+            "scaleInDock": 1
         },
         "Tilemaps/level2 copy.tmx": {
             "scale": 2.3249,
@@ -243,7 +299,7 @@
     "last.imagePath": "C:/Users/teddy/OneDrive/Desktop/Art/Herbicide Art/TileSets",
     "map.height": 15,
     "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
-    "map.lastUsedFormat": "tmx",
+    "map.lastUsedFormat": "json",
     "map.width": 10,
     "openFiles": [
         "Tilemaps/level1.json",
@@ -257,6 +313,7 @@
     ],
     "project": "HerbicideTiled.tiled-project",
     "recentFiles": [
+        "C:/Users/teddy/OneDrive/Documents/GitHub/herbicide/Herbicide/Assets/Levels/level1.json",
         "Tilemaps/level5.tmx",
         "Tilemaps/level4.tmx",
         "Tilemaps/level3.tmx",

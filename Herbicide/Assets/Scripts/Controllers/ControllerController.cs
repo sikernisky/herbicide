@@ -96,7 +96,7 @@ public class ControllerController : MonoBehaviour
 
         instance.counts = new ModelCounts();
 
-        ShopManager.SubscribeToBuyDefenderDelegate(instance.OnPurchaseModelFromShop);
+        ShopController.SubscribeToBuyDefenderDelegate(instance.OnPurchaseModelFromShop);
     }
 
     /// <summary>

@@ -32,7 +32,7 @@ public class Spurge : Enemy
     /// <summary>
     /// Upper bound of a Spurge's health. 
     /// </summary>
-    public override float MAX_HEALTH => int.MaxValue;
+    public override float MAX_HEALTH => BASE_HEALTH;
 
     /// <summary>
     /// Minimum health of a Spurge

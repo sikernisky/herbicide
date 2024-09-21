@@ -210,7 +210,7 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
             {
                 nexusTarget.SetDropped();
                 if (GetEnemy().Exited()) nexusTarget.CashIn();
-                else TileGrid.PlaceOnTile(new Vector2Int(GetEnemy().GetX(), GetEnemy().GetY()), nexusTarget);
+                else TileGrid.PlaceOnTileUsingCoordinates(new Vector2Int(GetEnemy().GetX(), GetEnemy().GetY()), nexusTarget);
             }
 
         }
@@ -225,8 +225,8 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
         if (DroppedDeathLoot()) return;
         if (GetEnemy().Exited()) return;
 
-        Vector3 lootPos = GetEnemy().Exited() ? GetEnemy().GetExitPos() : GetEnemy().GetPosition();
-        int value = GetEnemy().CURRENCY_VALUE_ON_DEATH;
+/*        Vector3 lootPos = GetEnemy().Exited() ? GetEnemy().GetExitPos() : GetEnemy().GetPosition();
+        int value = GetEnemy().CURRENCY_VALUE_ON_DEATH;*/
 
 /*        Dew dew = CollectableFactory.GetCollectablePrefab(ModelType.DEW).GetComponent<Dew>();
         DewController dewController = new DewController(dew, lootPos, value);
@@ -236,9 +236,9 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
         BasicTreeSeedController basicTreeSeedController = new BasicTreeSeedController(basicTreeSeed, lootPos);
         ControllerController.AddModelController(basicTreeSeedController);*/
 
-        SpeedTreeSeed speedTreeSeed = CollectableFactory.GetCollectablePrefab(ModelType.SPEED_TREE_SEED).GetComponent<SpeedTreeSeed>();
+/*        SpeedTreeSeed speedTreeSeed = CollectableFactory.GetCollectablePrefab(ModelType.SPEED_TREE_SEED).GetComponent<SpeedTreeSeed>();
         SpeedTreeSeedController speedTreeSeedController = new SpeedTreeSeedController(speedTreeSeed, lootPos);
-        ControllerController.AddModelController(speedTreeSeedController);
+        ControllerController.AddModelController(speedTreeSeedController);*/
 
         base.DropDeathLoot();
     }
