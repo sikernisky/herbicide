@@ -14,9 +14,12 @@ public class TileGrid : MonoBehaviour
     #region Fields
 
     /// <summary>
-    /// Width and height of a Tile in the TileGrid
+    /// Width and height of a Tile in the TileGrid. Currently,
+    /// we use Camera size to make the TileGrid bigger or smaller.
+    /// If you change TILE_SIZE, you may need to update methods
+    /// to account for this new scale (example: movement speeds).
     /// </summary>
-    public const float TILE_SIZE = 0.9f;
+    public static float TILE_SIZE => 1.0f;
 
     /// <summary>
     /// All Tile prefabs, indexed by their type
@@ -121,30 +124,6 @@ public class TileGrid : MonoBehaviour
     #region Methods
 
     /// <summary>
-    /// Main update loop for the TileGrid; updates its Tiles.
-    /// </summary>
-    public static void UpdateTiles()
-    {
-        // Update GrassTiles
-        foreach (Tile t in instance.grassTiles)
-        {
-            t.UpdateTile();
-        }
-    }
-
-    /// <summary>
-    /// Detects any player input on a Tile and handles it based on the type
-    /// of input.
-    /// </summary>
-    public static void CheckTileInputEvents()
-    {
-        instance.CheckTileMouseDown();
-        instance.CheckTileMouseUp();
-        instance.CheckTileMouseEnter();
-        instance.CheckTileMouseExit();
-    }
-
-    /// <summary>
     /// Sets the `instance` field of the TileGrid class. If already set,
     /// does nothing. Also instantiates the 2D arrays to hold the Tiles
     /// and items placed on them.
@@ -173,6 +152,30 @@ public class TileGrid : MonoBehaviour
     }
 
     /// <summary>
+    /// Main update loop for the TileGrid; updates its Tiles.
+    /// </summary>
+    public static void UpdateTiles()
+    {
+        // Update GrassTiles
+        foreach (Tile t in instance.grassTiles)
+        {
+            t.UpdateTile();
+        }
+    }
+
+    /// <summary>
+    /// Detects any player input on a Tile and handles it based on the type
+    /// of input.
+    /// </summary>
+    public static void CheckTileInputEvents()
+    {
+        instance.CheckTileMouseDown();
+        instance.CheckTileMouseUp();
+        instance.CheckTileMouseEnter();
+        instance.CheckTileMouseExit();
+    }
+
+    /// <summary>
     /// Returns the Camera's position at the center of all objects in the TileGrid.
     /// </summary>
     /// <returns>the position for the Camera, that if set to, represents the center</returns>
@@ -193,9 +196,6 @@ public class TileGrid : MonoBehaviour
 
         float centerXPos = (minX + maxX) / 2f;
         float centerYPos = (minY + maxY) / 2f;
-
-        // Add a vertical offset because the shop sits at the bottom.
-        centerYPos -= TILE_SIZE;
 
         return new Vector2(centerXPos + TILE_SIZE/2f, centerYPos + TILE_SIZE/2f);
     }
@@ -355,34 +355,6 @@ public class TileGrid : MonoBehaviour
             if (tile.GhostPlace(placingPlaceable))
             {
                 PlacementController.StartGhostPlacing(tile);
-
-                // Show attack range if Mob
-                Mob mob = placingSlottable as Mob;
-                if (mob != null)
-                {
-                    int ar = Mathf.FloorToInt(mob.BASE_MAIN_ACTION_RANGE);
-                    if (ar == float.MaxValue || ar <= 0) return;
-                    int mobX = tile.GetX();
-                    int mobY = tile.GetY();
-
-                    for (int x = mobX - ar; x <= mobX + ar; x++)
-                    {
-                        for (int y = mobY - ar; y <= mobY + ar; y++)
-                        {
-                            Tile rangeTile = TileExistsAt(x, y);
-                            if (rangeTile == null) continue;
-
-                            // Calculate the distance from the mob to this tile
-                            float distance = Mathf.Sqrt(Mathf.Pow(x - mobX, 2) + Mathf.Pow(y - mobY, 2));
-
-                            // Check if the tile is within the circular attack range
-                            if (distance <= ar && rangeTile.WALKABLE)
-                            {
-                                rangeTile.SetHighlighterColor(new Color32(50, 255, 0, 150));
-                            }
-                        }
-                    }
-                }
             }
         }
 
@@ -399,21 +371,6 @@ public class TileGrid : MonoBehaviour
 
         //Tile was dehovered, put logic below
         PlacementController.StopGhostPlacing();
-
-        UnhighlightTiles();
-    }
-
-    /// <summary>
-    /// Sets every Tile's highlighter layer to be white and invisible.
-    /// </summary>
-    private void UnhighlightTiles()
-    {
-        foreach (KeyValuePair<Vector2Int, Tile> kvp in instance.tileMap)
-        {
-            Tile t = kvp.Value;
-            if (t == null) continue;
-            t.SetHighlighterColor(new Color32(255, 255, 255, 0));
-        }
     }
 
     /// <summary>
@@ -564,12 +521,10 @@ public class TileGrid : MonoBehaviour
     /// <param name="candidate">The PlaceableObject to place.</param>
     /// <param name="targetCoords">The coordinates of the Tile to place on.</param>
     /// <returns>true if the PlaceableObject was placed; otherwise, false.</returns>
-    public static bool PlaceOnTile(Vector2Int targetCoords, PlaceableObject candidate)
+    public static bool PlaceOnTileUsingCoordinates(Vector2Int targetCoords, PlaceableObject candidate)
     {
         //Safety checks
-        int xCoord = PositionToCoordinate(targetCoords.x);
-        int yCoord = PositionToCoordinate(targetCoords.y);
-        Tile target = instance.TileExistsAt(xCoord, yCoord);
+        Tile target = instance.TileExistsAt(targetCoords.x, targetCoords.y);
 
         return PlaceOnTile(target, candidate);
     }

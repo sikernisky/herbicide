@@ -165,6 +165,8 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
                 break;
             case SquirrelState.IDLE:
                 if (target == null || !target.Targetable()) break;
+/*                Debug.Log("distance to target: " + DistanceToTargetFromTree());
+                Debug.Log("main action range: " + GetSquirrel().GetMainActionRange());*/
                 if (DistanceToTargetFromTree() <= GetSquirrel().GetMainActionRange() &&
                     GetSquirrel().GetMainActionCooldown() <= 0) SetState(SquirrelState.ATTACK);
                 break;

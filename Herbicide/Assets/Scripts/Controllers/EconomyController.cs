@@ -47,7 +47,7 @@ public class EconomyController : MonoBehaviour
     /// The number of seconds the player must wait until they
     /// recieve another Dew passive income tick.
     /// </summary>
-    private static readonly float DEW_PASSIVE_INCOME_FREQUENCY = 20f;
+    private static readonly float DEW_PASSIVE_INCOME_FREQUENCY = 40f;
 
     /// <summary>
     /// Number of seconds since the last passive income tick occured.
@@ -107,7 +107,7 @@ public class EconomyController : MonoBehaviour
     {
         currencies = new Dictionary<ModelType, int>
         {
-            { ModelType.DEW, 100 },
+            { ModelType.DEW, 50 },
             { ModelType.BASIC_TREE_SEED, 0 },
             { ModelType.SPEED_TREE_SEED, 0 }
         };

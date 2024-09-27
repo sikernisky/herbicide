@@ -18,30 +18,30 @@ MonoBehaviour:
   - {fileID: 2061260637, guid: 01970f2e7961561489d6127e7712fbb2, type: 3}
   placementTrackTier3:
   - {fileID: -2076439399, guid: 7cec5e00f0faf4d42a75fbde06f5d094, type: 3}
-  attackAnimationNorthTier1:
+  mainActionAnimationNorthTier1:
   - {fileID: 241803896, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
-  attackAnimationEastTier1:
+  mainActionAnimationEastTier1:
   - {fileID: 1842010287, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
-  attackAnimationSouthTier1:
+  mainActionAnimationSouthTier1:
   - {fileID: -1116763224, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
-  attackAnimationWestTier1:
+  mainActionAnimationWestTier1:
   - {fileID: 362384017, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
-  attackAnimationNorthTier2:
-  - {fileID: 1526493444, guid: 01970f2e7961561489d6127e7712fbb2, type: 3}
-  attackAnimationEastTier2:
-  - {fileID: 1471673049, guid: 01970f2e7961561489d6127e7712fbb2, type: 3}
-  attackAnimationSouthTier2:
-  - {fileID: -2056377725, guid: 01970f2e7961561489d6127e7712fbb2, type: 3}
-  attackAnimationWestTier2:
-  - {fileID: 1445336377, guid: 01970f2e7961561489d6127e7712fbb2, type: 3}
-  attackAnimationNorthTier3:
-  - {fileID: 767792262, guid: 7cec5e00f0faf4d42a75fbde06f5d094, type: 3}
-  attackAnimationEastTier3:
-  - {fileID: -476337369, guid: 7cec5e00f0faf4d42a75fbde06f5d094, type: 3}
-  attackAnimationSouthTier3:
-  - {fileID: -365496843, guid: 7cec5e00f0faf4d42a75fbde06f5d094, type: 3}
-  attackAnimationWestTier3:
-  - {fileID: 72878349, guid: 7cec5e00f0faf4d42a75fbde06f5d094, type: 3}
+  mainActionAnimationNorthTier2:
+  - {fileID: 241803896, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  mainActionAnimationEastTier2:
+  - {fileID: 1842010287, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  mainActionAnimationSouthTier2:
+  - {fileID: -1116763224, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  mainActionAnimationWestTier2:
+  - {fileID: 362384017, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  mainActionAnimationNorthTier3:
+  - {fileID: 241803896, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  mainActionAnimationEastTier3:
+  - {fileID: 1842010287, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  mainActionAnimationSouthTier3:
+  - {fileID: -1116763224, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  mainActionAnimationWestTier3:
+  - {fileID: 362384017, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
   idleAnimationNorthTier1:
   - {fileID: -1129439068, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
   idleAnimationEastTier1:

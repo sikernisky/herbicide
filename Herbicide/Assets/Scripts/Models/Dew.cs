@@ -1,3 +1,4 @@
+using UnityEngine;
 /// <summary>
 /// Represents a Dew currency.
 /// </summary>

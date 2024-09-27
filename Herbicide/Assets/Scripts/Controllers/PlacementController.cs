@@ -122,6 +122,7 @@ public class PlacementController : MonoBehaviour
         Assert.IsNotNull(instance.dummyImage);
         Assert.IsNotNull(instance.combinationDummies);
         Assert.IsNotNull(instance.combinationDummyImages);
+        Assert.IsNotNull(instance.combinationLerpCurve);
 
         instance.combinationStartTimes = new float[instance.combinationDummies.Length];
     }
@@ -152,13 +153,12 @@ public class PlacementController : MonoBehaviour
                 instance.lastPlacedPosition = instance.dummy.transform.position;
             }
 
-
             if (didEscape)
             {
                 if (IsPlacing()) StopPlacingObject();
-                if (GhostPlacing()) StopGhostPlacing();
+                if (IsGhostPlacing()) StopGhostPlacing();
             }
-            if (GhostPlacing() && !instance.ghostSubject.HasActiveGhostOccupant())
+            if (IsGhostPlacing() && !instance.ghostSubject.HasActiveGhostOccupant())
             {
                 StopGhostPlacing();
             }
@@ -219,7 +219,7 @@ public class PlacementController : MonoBehaviour
     /// </summary>
     /// <returns>true if the player is ghost placing; otherwise, false.
     /// </returns>
-    public static bool GhostPlacing() => instance.ghostSubject != null;
+    public static bool IsGhostPlacing() => instance.ghostSubject != null;
 
     /// <summary>
     /// Transforms the subject of an active place event such that it is centered on
@@ -233,7 +233,7 @@ public class PlacementController : MonoBehaviour
     /// <param name="subject">The Tile that the player is ghost placing on.</param>
     public static void StartGhostPlacing(Tile subject)
     {
-        if (GhostPlacing()) return;
+        if (IsGhostPlacing()) return;
         if (subject == null) return;
 
         instance.dummyImage.color = new Color(
@@ -252,7 +252,7 @@ public class PlacementController : MonoBehaviour
     /// <returns>The coordinates of the just-canceled ghost place.</returns>
     public static void StopGhostPlacing()
     {
-        if (!GhostPlacing()) return;
+        if (!IsGhostPlacing()) return;
 
         Assert.IsNotNull(instance.ghostSubject);
         Assert.IsNotNull(instance.dummyImage);

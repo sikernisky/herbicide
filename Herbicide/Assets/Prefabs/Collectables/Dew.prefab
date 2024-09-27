@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2748437994386802842}
   - component: {fileID: 8508223146317799375}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: DewShadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71,7 +71,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 294954647
-  m_SortingLayer: 6
+  m_SortingLayer: 8
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: dc6c8c16bb0c7409ba3f5444284e8b8a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 3689677139552565281}
   - component: {fileID: 8530000165711452335}
   - component: {fileID: 6226796122745432553}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Dew
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -181,6 +181,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  shadowRenderer: {fileID: 8530000165711452335}
 --- !u!212 &8530000165711452335
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -220,7 +221,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 294954647
-  m_SortingLayer: 6
+  m_SortingLayer: 8
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 505a9d28ed8b54032a938ef8f953c769, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

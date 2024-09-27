@@ -281,12 +281,15 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// </summary>
     protected virtual void LinearShot()
     {
-        if (GetProjectile() == null) return;
+        Projectile projectile = GetProjectile();
+        if (projectile == null) return;
 
-        Vector3 currentPosition = GetProjectile().GetPosition();
-        float step = GetProjectile().GetSpeed() * Time.deltaTime;
-        Vector3 newPosition = currentPosition + linearDirection * step;
-        GetProjectile().SetWorldPosition(newPosition);
+        Vector3 currentPosition = projectile.GetPosition();
+        float tileScale = TileGrid.TILE_SIZE;
+        float adjustedSpeed = projectile.GetSpeed() * tileScale; // Adjust speed based on tile scale
+        float step = adjustedSpeed * Time.deltaTime;
+        Vector3 newPosition = currentPosition + linearDirection.normalized * step;
+        projectile.SetWorldPosition(newPosition);
     }
 
     /// <summary>
@@ -306,6 +309,7 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
         }
 
         Vector3 linearProgress = Vector3.Lerp(start, destination, lobLerp);
+        float tileScale = TileGrid.TILE_SIZE;
         float height = Mathf.Sin(lobLerp * Mathf.PI) * GetProjectile().LOB_HEIGHT;
         Vector3 newProjectilePos = new Vector3(linearProgress.x, linearProgress.y + height, linearProgress.z);
         GetProjectile().SetWorldPosition(newProjectilePos);
@@ -315,7 +319,8 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
         Vector3 shadowPosition = new Vector3(linearProgress.x, linearProgress.y - shadowHeight, linearProgress.z);
         GetProjectile().SetShadowPosition(shadowPosition);
 
-        lobLerp += GetProjectile().GetSpeed() * Time.deltaTime;
+        // Adjust lobLerp to scale with the tile size, affecting the increment speed
+        lobLerp += GetProjectile().GetSpeed() * tileScale * Time.deltaTime;
         if (Vector3.Distance(GetProjectile().GetPosition(), destination) < 0.05f) lobLerp = 1;
     }
 

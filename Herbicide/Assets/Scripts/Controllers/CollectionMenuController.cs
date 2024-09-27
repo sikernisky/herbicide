@@ -20,14 +20,10 @@ public class CollectionMenuController : MonoBehaviour
     /// <summary>
     /// Sets up the Main Menu: <br></br>
     /// 
-    /// (0) Sets Unity properties.<br></br>
     /// (1) Instantiates all factories and singletons.<br></br>
     /// </summary>
     void Start()
     {
-        //(0) Set Unity Properties
-        SceneController.SetUnityProperties();
-
         //(1) Instantiate all factories and singletons
         SetSingleton();
         MakeSingletons();
@@ -62,11 +58,11 @@ public class CollectionMenuController : MonoBehaviour
     {
         Assert.IsNotNull(instance, "MainMenuController singleton not set: call " +
             " SetSingleton()");
-
+        
+        SceneController.SetSingleton(instance);
         CameraController.SetSingleton(instance);
         CanvasController.SetSingleton(instance);
         InputController.SetSingleton(instance);
-        SceneController.SetSingleton(instance);
         SoundController.SetSingleton(instance);
     }
 

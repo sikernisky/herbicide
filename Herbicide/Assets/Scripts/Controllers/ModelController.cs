@@ -360,7 +360,7 @@ public abstract class ModelController
     protected void MoveLinearlyTowards(Vector3 targetPosition, float speed)
     {
         Vector3 adjusted = new Vector3(targetPosition.x, targetPosition.y, 1);
-        float step = speed * Time.deltaTime;
+        float step = speed * Time.deltaTime * TileGrid.TILE_SIZE;
         step = Mathf.Clamp(step, 0f, step);
         Vector3 newPosition = Vector3.MoveTowards(GetModel().GetPosition(), adjusted, step);
         if (GetModel().GetPosition() != adjusted) GetModel().FaceDirection(adjusted);
@@ -444,7 +444,8 @@ public abstract class ModelController
         scaleFraction = Mathf.Clamp01(scaleFraction);
 
         // Calculate the new scale
-        Vector3 newScale = Vector3.Lerp(new Vector3(0.1f, 0.1f, 0.1f), Vector3.one, scaleFraction);
+        Vector3 endScale = new Vector3(TileGrid.TILE_SIZE, TileGrid.TILE_SIZE, 1);
+        Vector3 newScale = Vector3.Lerp(new Vector3(0.1f, 0.1f, 0.1f), endScale, scaleFraction);
         GetModel().SetLocalScale(newScale);
     }
 

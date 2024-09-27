@@ -154,7 +154,9 @@ public class NexusController : MobController<NexusController.NexusState>
         {
             lastStage = currentStage;
             Vector3 resetPos = GetNexus().GetSpawnPos();
-            TileGrid.PlaceOnTile(new Vector2Int((int)resetPos.x, (int)resetPos.y), GetNexus());
+            int resetXCoord = TileGrid.PositionToCoordinate(resetPos.x);
+            int resetYCoord = TileGrid.PositionToCoordinate(resetPos.y);
+            TileGrid.PlaceOnTileUsingCoordinates(new Vector2Int(resetXCoord, resetYCoord), GetNexus());
         }
 
     }

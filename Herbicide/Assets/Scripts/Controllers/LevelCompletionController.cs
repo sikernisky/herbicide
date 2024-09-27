@@ -65,7 +65,9 @@ public class LevelCompletionController : MonoBehaviour
                         gameState == GameState.WIN ||
                         gameState == GameState.TIE;
 
-        if (gameOver) instance.OpenLevelCompletePanel();
+        bool rewardCollected = ControllerController.LevelRewardCollected();
+
+        if (gameOver && rewardCollected) instance.OpenLevelCompletePanel();
     }
 
     /// <summary>

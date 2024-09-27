@@ -21,12 +21,15 @@ public abstract class Tile : Model, ISurface
     }
 
     /// <summary>
-    /// The Sprite above the Tile that is invisible by default
-    /// but can highlight to show attack ranges and other 
-    /// information.
+    /// Reference to the LineRenderer for this Tile.
     /// </summary>
     [SerializeField]
-    private SpriteRenderer highlighter;
+    private LineRenderer lineRenderer;
+
+    /// <summary>
+    /// Number of segments in the range indicator.
+    /// </summary>
+    private int RANGE_INDICATOR_SEGMENTS => 50;
 
     /// <summary>
     /// The PlaceableObject on this Tile; null if Tile is unoccupied.
@@ -68,6 +71,7 @@ public abstract class Tile : Model, ISurface
     /// </summary>
     protected abstract TileType type { get; }
 
+
     #endregion
 
     #region Stats
@@ -93,6 +97,7 @@ public abstract class Tile : Model, ISurface
         if (defined) return;
 
         SetTileCoordinates(x, y);
+        SetupRangeIndicator();
         name = type.ToString() + " (" + x + ", " + y + ")";
         defined = true;
     }
@@ -468,7 +473,12 @@ public abstract class Tile : Model, ISurface
     public bool GhostPlace(PlaceableObject ghost)
     {
         //Are we floored? If so, pass the event.
-        if (Floored()) return GetFlooring().GhostPlace(ghost);
+        if (Floored())
+        {
+            bool result = GetFlooring().GhostPlace(ghost);
+            if(result) DrawRangeIndicator(ghost as Defender);
+            return result;
+        }
 
         if (!CanGhostPlace(ghost)) return false;
 
@@ -486,6 +496,7 @@ public abstract class Tile : Model, ISurface
         hollowCopy.transform.position = transform.position;
         hollowCopy.transform.SetParent(transform);
 
+
         ghostOccupant = hollowCopy;
         return true;
     }
@@ -496,6 +507,7 @@ public abstract class Tile : Model, ISurface
     /// </summary>
     public void GhostRemove()
     {
+        EraseRangeIndicator();
         if (Floored()) GetFlooring().GhostRemove();
 
         if (ghostOccupant == null) return;
@@ -547,17 +559,54 @@ public abstract class Tile : Model, ISurface
     public override Sprite[] GetPlacementTrack() => throw new System.NotSupportedException("Tile placing not supported.");
 
     /// <summary>
-    /// Sets the color of this Tile's highlighter.
-    /// </summary>
-    /// <param name="color">The color to set to.</param>
-    public void SetHighlighterColor(Color32 color) => highlighter.color = color;
-
-    /// <summary>
     /// Returns true if there is a NexusHole on this Tile.
     /// </summary>
     /// <returns>true if there is a NexusHole on this Tile; otherwise,
     /// false. </returns>
     public bool HostsNexusHole() => nexusHoleOccupant != null;
+
+    /// <summary>
+    /// Sets the LineRenderer component values for the range
+    /// indicator LineRenderer.
+    /// </summary>
+    private void SetupRangeIndicator()
+    {
+        lineRenderer.useWorldSpace = false;
+        lineRenderer.startWidth = 0.05f; // Adjust width as needed
+        lineRenderer.endWidth = 0.05f;
+        lineRenderer.material = new Material(Shader.Find("Sprites/Default")); // Ensure this material supports transparency
+        lineRenderer.startColor = new Color(0.2f, 1f, 0f, 0.5f);
+        lineRenderer.endColor = new Color(0.2f, 1f, 0f, 0.5f);
+    }
+
+    /// <summary>
+    /// Draws a range indicator around this Mob.
+    /// </summary>
+    /// <param name="defender">The Defender to draw the range indicator for.</param>
+    private void DrawRangeIndicator(Defender defender)
+    {
+        if (defender == null) return;
+        if(!defender.DRAWS_RANGE_INDICATOR) return;
+
+        int ar = Mathf.FloorToInt(defender.BASE_MAIN_ACTION_RANGE);
+        if (ar == float.MaxValue || ar <= 0) return;
+
+        lineRenderer.positionCount = RANGE_INDICATOR_SEGMENTS + 1;
+
+        float lineAngle = 0f;
+        for (int i = 0; i <= RANGE_INDICATOR_SEGMENTS; i++)
+        {
+            float x = Mathf.Sin(Mathf.Deg2Rad * lineAngle) * ar;
+            float y = Mathf.Cos(Mathf.Deg2Rad * lineAngle) * ar;
+            lineRenderer.SetPosition(i, new Vector3(x, y, 1));
+            lineAngle += 360f / RANGE_INDICATOR_SEGMENTS;
+        }
+    }
+
+    /// <summary>
+    /// Erases the range indicator.
+    /// </summary>
+    private void EraseRangeIndicator() => lineRenderer.positionCount = 0;
 
     #endregion
 }

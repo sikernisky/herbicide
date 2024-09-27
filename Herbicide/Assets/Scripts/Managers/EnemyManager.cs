@@ -164,7 +164,7 @@ public class EnemyManager : MonoBehaviour
     /// <returns>the number of Enemies that have yet to be spawned 
     /// in this level. </returns>
     /// <param name="gameTime">Current game time. </param>
-    public static int EnemiesRemaining(float gameTime)
+    public static int NumEnemiesThatRemainToBeSpawned(float gameTime)
     {
         Assert.IsNotNull(instance.spawnTimes);
 

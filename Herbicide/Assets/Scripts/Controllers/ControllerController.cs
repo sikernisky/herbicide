@@ -22,6 +22,16 @@ public class ControllerController : MonoBehaviour
     /// </summary>
     private ModelCounts counts;
 
+    /// <summary>
+    /// true if the LevelReward has been spawned; otherwise, false.
+    /// </summary>
+    private static bool spawnedReward;
+
+    /// <summary>
+    /// true if the LevelReward has been collected; otherwise, false.
+    /// </summary>
+    private static bool collectedReward;
+
     #endregion
 
     #region Controller Lists
@@ -95,8 +105,10 @@ public class ControllerController : MonoBehaviour
         instance.emanationControllers = new List<EmanationController>();
 
         instance.counts = new ModelCounts();
+        collectedReward = false;
+        spawnedReward = false;
 
-        ShopManager.SubscribeToBuyDefenderDelegate(instance.OnPurchaseModelFromShop);
+        ShopController.SubscribeToBuyDefenderDelegate(instance.OnPurchaseModelFromShop);
     }
 
     /// <summary>
@@ -229,6 +241,13 @@ public class ControllerController : MonoBehaviour
         Assert.IsNotNull(modelController, "ModelController is null.");
 
         Model model = modelController.GetModel();
+
+        if (model as LevelReward != null)
+        {
+            Assert.IsFalse(spawnedReward, "LevelReward has already been spawned.");
+            spawnedReward = true;
+        }
+
         if (model as Projectile != null) instance.projectileControllers.Add(modelController);
         else if (model as Collectable != null) instance.collectableControllers.Add(modelController);
         else if (model as Tile != null) return;
@@ -296,6 +315,12 @@ public class ControllerController : MonoBehaviour
     }
 
     /// <summary>
+    /// Returns true if the LevelReward has been collected; otherwise, false.
+    /// </summary>
+    /// <returns>true if the LevelReward has been collected; otherwise, false.</returns>
+    public static bool LevelRewardCollected() => collectedReward;
+
+    /// <summary>
     /// Attempts to remove any unused or defunct Controllers. 
     /// For those Controllers that are to be removed, extricates any
     /// additional Controllers that Controller produced on death.
@@ -353,6 +378,13 @@ public class ControllerController : MonoBehaviour
     private void DiscardController(ModelController controllerToRemove)
     {
         counts.SetCount(instance, controllerToRemove.GetModel().TYPE, counts.GetCount(controllerToRemove.GetModel().TYPE) - 1);
+        Model modelToRemove = controllerToRemove.GetModel();
+        if(modelToRemove as LevelReward != null)
+        {
+            Assert.IsTrue(spawnedReward, "LevelReward has not been spawned.");
+            Assert.IsFalse(collectedReward, "LevelReward has already been collected.");
+            collectedReward = true;
+        }
         controllerToRemove.OnRemoveController();
     }
 

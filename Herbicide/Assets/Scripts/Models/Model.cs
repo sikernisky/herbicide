@@ -201,7 +201,7 @@ public abstract class Model : MonoBehaviour
     /// Sets this Model's SpriteRenderer component's sorting
     /// order (order in layer).
     /// </summary>
-    public void SetSortingOrder(int layer) => modelRenderer.sortingOrder = layer;
+    public virtual void SetSortingOrder(int order) => modelRenderer.sortingOrder = order;
 
     /// <summary>
     /// Returns this Model's sorting order.

@@ -1,30 +1,21 @@
 { "compressionlevel":-1,
- "height":20,
+ "height":11,
  "infinite":false,
  "layers":[
         {
          "class":"TileLayer",
-         "data":[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 3, 0, 0, 0, 0, 0, 3, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 3, 0, 0, 0, 0, 0, 3, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
-         "height":20,
+         "data":[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3,
+            3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3,
+            3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3,
+            3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3,
+            3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+         "height":11,
          "id":3,
          "name":"Water",
          "opacity":1,
@@ -36,32 +27,23 @@
                 }],
          "type":"tilelayer",
          "visible":true,
-         "width":30,
+         "width":17,
          "x":0,
          "y":0
         }, 
         {
-         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 27, 24, 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 25, 0, 28, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 30, 29, 26, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 27, 24, 31, 0, 27, 24, 24, 24, 31, 0, 27, 24, 31, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 25, 0, 28, 0, 25, 0, 0, 0, 28, 0, 25, 0, 28, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 30, 29, 26, 27, 33, 0, 0, 0, 35, 31, 30, 29, 26, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 27, 24, 24, 24, 24, 33, 0, 0, 0, 0, 0, 35, 24, 24, 24, 24, 31, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 25, 0, 0, 0, 0, 0, 0, 0, 40, 0, 0, 0, 0, 0, 0, 0, 28, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 30, 29, 29, 29, 29, 29, 29, 29, 41, 29, 29, 29, 29, 29, 29, 29, 26, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         "height":20,
+         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 86, 83, 83, 83, 83, 83, 83, 83, 91, 0, 0, 0, 0,
+            0, 0, 86, 83, 94, 0, 0, 0, 0, 0, 0, 0, 96, 83, 91, 0, 0,
+            0, 0, 84, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 88, 0, 0,
+            0, 0, 90, 89, 95, 0, 0, 0, 0, 0, 0, 0, 93, 89, 85, 0, 0,
+            0, 0, 0, 0, 90, 89, 89, 89, 89, 89, 89, 89, 85, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         "height":11,
          "id":10,
          "name":"Shore",
          "opacity":1,
@@ -73,33 +55,24 @@
                 }],
          "type":"tilelayer",
          "visible":true,
-         "width":30,
+         "width":17,
          "x":0,
          "y":0
         }, 
         {
          "class":"TileLayer",
-         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2, 1, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 2, 1, 2, 1, 0, 1, 2, 1, 2, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         "height":20,
+         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 81, 82, 81, 82, 81, 82, 81, 0, 0, 0, 0, 0,
+            0, 0, 0, 82, 81, 82, 81, 82, 81, 82, 81, 82, 81, 82, 0, 0, 0,
+            0, 0, 0, 0, 0, 81, 82, 81, 82, 81, 82, 81, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         "height":11,
          "id":1,
          "name":"Grass",
          "opacity":1,
@@ -111,7 +84,7 @@
                 }],
          "type":"tilelayer",
          "visible":true,
-         "width":30,
+         "width":17,
          "x":0,
          "y":0
         }, 
@@ -123,7 +96,7 @@
                 {
                  "gid":19,
                  "height":16,
-                 "id":345,
+                 "id":793,
                  "name":"",
                  "properties":[
                         {
@@ -135,13 +108,13 @@
                  "type":"Flooring",
                  "visible":true,
                  "width":16,
-                 "x":192,
-                 "y":160
+                 "x":160,
+                 "y":96
                 }, 
                 {
                  "gid":19,
                  "height":16,
-                 "id":346,
+                 "id":794,
                  "name":"",
                  "properties":[
                         {
@@ -153,13 +126,13 @@
                  "type":"Flooring",
                  "visible":true,
                  "width":16,
-                 "x":224,
-                 "y":160
+                 "x":128,
+                 "y":96
                 }, 
                 {
                  "gid":19,
                  "height":16,
-                 "id":347,
+                 "id":795,
                  "name":"",
                  "properties":[
                         {
@@ -171,13 +144,13 @@
                  "type":"Flooring",
                  "visible":true,
                  "width":16,
-                 "x":256,
-                 "y":160
+                 "x":96,
+                 "y":96
                 }, 
                 {
                  "gid":19,
                  "height":16,
-                 "id":350,
+                 "id":802,
                  "name":"",
                  "properties":[
                         {
@@ -189,13 +162,13 @@
                  "type":"Flooring",
                  "visible":true,
                  "width":16,
-                 "x":304,
-                 "y":128
+                 "x":112,
+                 "y":96
                 }, 
                 {
                  "gid":19,
                  "height":16,
-                 "id":351,
+                 "id":803,
                  "name":"",
                  "properties":[
                         {
@@ -208,7 +181,7 @@
                  "visible":true,
                  "width":16,
                  "x":144,
-                 "y":128
+                 "y":96
                 }],
          "opacity":1,
          "properties":[
@@ -229,63 +202,9 @@
          "name":"Structures",
          "objects":[
                 {
-                 "gid":49,
+                 "gid":62,
                  "height":16,
-                 "id":310,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"NexusHole"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":336,
-                 "y":176
-                }, 
-                {
-                 "gid":48,
-                 "height":16,
-                 "id":324,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"Nexus"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":112,
-                 "y":176
-                }, 
-                {
-                 "gid":48,
-                 "height":16,
-                 "id":329,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"Nexus"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":128,
-                 "y":176
-                }, 
-                {
-                 "gid":51,
-                 "height":16,
-                 "id":356,
+                 "id":796,
                  "name":"",
                  "properties":[
                         {
@@ -297,242 +216,116 @@
                  "type":"Structure",
                  "visible":true,
                  "width":16,
-                 "x":256,
-                 "y":160
+                 "x":160,
+                 "y":96
                 }, 
                 {
-                 "gid":52,
+                 "gid":62,
                  "height":16,
-                 "id":360,
+                 "id":797,
                  "name":"",
                  "properties":[
                         {
                          "name":"structureName",
                          "type":"string",
-                         "value":"StoneWall"
+                         "value":"BasicTree"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":128,
+                 "y":96
+                }, 
+                {
+                 "gid":62,
+                 "height":16,
+                 "id":798,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"BasicTree"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":96,
+                 "y":96
+                }, 
+                {
+                 "gid":60,
+                 "height":16,
+                 "id":799,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"NexusHole"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":48,
+                 "y":96
+                }, 
+                {
+                 "gid":59,
+                 "height":16,
+                 "id":800,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"Nexus"
                         }],
                  "rotation":0,
                  "type":"Structure",
                  "visible":true,
                  "width":16,
                  "x":208,
-                 "y":128
+                 "y":96
                 }, 
                 {
-                 "gid":52,
+                 "gid":75,
                  "height":16,
-                 "id":361,
+                 "id":804,
                  "name":"",
                  "properties":[
                         {
                          "name":"structureName",
                          "type":"string",
-                         "value":"StoneWall"
+                         "value":"BasicTree"
                         }],
                  "rotation":0,
                  "type":"Structure",
                  "visible":true,
                  "width":16,
-                 "x":224,
-                 "y":128
+                 "x":144,
+                 "y":96
                 }, 
                 {
-                 "gid":52,
+                 "gid":75,
                  "height":16,
-                 "id":362,
+                 "id":805,
                  "name":"",
                  "properties":[
                         {
                          "name":"structureName",
                          "type":"string",
-                         "value":"StoneWall"
+                         "value":"BasicTree"
                         }],
                  "rotation":0,
                  "type":"Structure",
                  "visible":true,
                  "width":16,
-                 "x":240,
-                 "y":128
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":363,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":208,
-                 "y":144
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":364,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":240,
-                 "y":144
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":365,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":224,
-                 "y":144
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":366,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":208,
-                 "y":160
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":367,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":208,
-                 "y":176
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":369,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":240,
-                 "y":176
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":370,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":256,
-                 "y":176
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":371,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":272,
-                 "y":176
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":372,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":192,
-                 "y":176
-                }, 
-                {
-                 "gid":52,
-                 "height":16,
-                 "id":373,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"StoneWall"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":176,
-                 "y":176
+                 "x":112,
+                 "y":96
                 }],
          "opacity":1,
          "properties":[
@@ -553,15 +346,15 @@
          "name":"Markers",
          "objects":[
                 {
-                 "gid":57,
+                 "gid":68,
                  "height":16,
-                 "id":349,
+                 "id":807,
                  "name":"",
                  "properties":[
                         {
                          "name":"enemySpawnData",
                          "type":"string",
-                         "value":"kudzu1"
+                         "value":"kudzu1-3, kudzu1-10\n"
                         }, 
                         {
                          "name":"markerName",
@@ -572,8 +365,8 @@
                  "type":"Marker",
                  "visible":true,
                  "width":16,
-                 "x":337,
-                 "y":176
+                 "x":48,
+                 "y":96
                 }],
          "opacity":1,
          "properties":[
@@ -588,8 +381,14 @@
          "y":0
         }],
  "nextlayerid":17,
- "nextobjectid":376,
+ "nextobjectid":808,
  "orientation":"orthogonal",
+ "properties":[
+        {
+         "name":"numStages",
+         "type":"int",
+         "value":3
+        }],
  "renderorder":"right-down",
  "tiledversion":"1.10.2",
  "tileheight":16,
@@ -824,15 +623,15 @@
          "tilewidth":16
         }, 
         {
-         "columns":4,
+         "columns":5,
          "firstgid":24,
          "image":"..\/..\/Tiled\/HerbicideArt\/TileSets\/tilesetShore.png",
-         "imageheight":96,
-         "imagewidth":64,
+         "imageheight":112,
+         "imagewidth":80,
          "margin":0,
          "name":"Shore",
          "spacing":0,
-         "tilecount":24,
+         "tilecount":35,
          "tileheight":16,
          "tiles":[
                 {
@@ -849,7 +648,7 @@
         }, 
         {
          "columns":3,
-         "firstgid":48,
+         "firstgid":59,
          "image":"..\/..\/Tiled\/HerbicideArt\/TileSets\/tileSetPlaceables.png",
          "imageheight":48,
          "imagewidth":48,
@@ -903,7 +702,7 @@
         }, 
         {
          "columns":2,
-         "firstgid":57,
+         "firstgid":68,
          "image":"..\/..\/Tiled\/HerbicideArt\/TileSets\/markers.png",
          "imageheight":32,
          "imagewidth":32,
@@ -944,9 +743,110 @@
                  "type":"Marker"
                 }],
          "tilewidth":16
+        }, 
+        {
+         "columns":3,
+         "firstgid":72,
+         "image":"..\/..\/Tiled\/HerbicideArt\/TileSets\/tileSetPlaceables.png",
+         "imageheight":48,
+         "imagewidth":48,
+         "margin":0,
+         "name":"Placeables",
+         "spacing":0,
+         "tilecount":9,
+         "tileheight":16,
+         "tiles":[
+                {
+                 "id":0,
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"Nexus"
+                        }],
+                 "type":"Structure"
+                }, 
+                {
+                 "id":1,
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"NexusHole"
+                        }],
+                 "type":"Structure"
+                }, 
+                {
+                 "id":2,
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"SpeedTree"
+                        }],
+                 "type":"Structure"
+                }, 
+                {
+                 "id":3,
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"BasicTree"
+                        }],
+                 "type":"Structure"
+                }, 
+                {
+                 "id":4,
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "type":"Structure"
+                }],
+         "tilewidth":16
+        }, 
+        {
+         "columns":2,
+         "firstgid":81,
+         "image":"..\/..\/Tiled\/HerbicideArt\/TileSets\/tileSetGrass.png",
+         "imageheight":16,
+         "imagewidth":32,
+         "margin":0,
+         "name":"Grass",
+         "spacing":0,
+         "tilecount":2,
+         "tileheight":16,
+         "tilewidth":16
+        }, 
+        {
+         "columns":5,
+         "firstgid":83,
+         "image":"..\/..\/Tiled\/HerbicideArt\/TileSets\/tilesetShore.png",
+         "imageheight":112,
+         "imagewidth":80,
+         "margin":0,
+         "name":"Shore",
+         "spacing":0,
+         "tilecount":35,
+         "tileheight":16,
+         "tiles":[
+                {
+                 "id":0,
+                 "properties":[
+                        {
+                         "name":"testtesttest",
+                         "type":"string",
+                         "value":"hello"
+                        }],
+                 "type":"EdgeLayer"
+                }],
+         "tilewidth":16
         }],
  "tilewidth":16,
  "type":"map",
  "version":"1.10",
- "width":30
+ "width":17
 }

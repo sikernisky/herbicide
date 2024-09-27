@@ -47,7 +47,7 @@ public class SettingsController : MonoBehaviour
     /// <summary>
     /// Finds and sets the SettingsController singleton for a level.
     /// </summary>
-    /// <param name="levelController">The SettingsController singleton.</param>
+    /// <param name="levelController">The LevelController singleton.</param>
     public static void SetSingleton(LevelController levelController)
     {
         if (levelController == null) return;

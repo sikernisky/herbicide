@@ -7,6 +7,11 @@ public class Bunny : Defender
 {
     #region Fields
 
+    /// <summary>
+    /// Bunnies do not draw a range indicator.
+    /// </summary>
+    public override bool DRAWS_RANGE_INDICATOR => false;
+
     #endregion
 
     #region Stats
@@ -35,7 +40,7 @@ public class Bunny : Defender
     /// <summary>
     /// Starting generation speed of a Bunny.
     /// </summary>
-    public override float BASE_MAIN_ACTION_SPEED => .025f;
+    public override float BASE_MAIN_ACTION_SPEED => .05f;
 
     /// <summary>
     /// Maximum generation speed of a Bunny.

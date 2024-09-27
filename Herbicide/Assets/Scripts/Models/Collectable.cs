@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Assertions;
 
 /// <summary>
 /// Represents a Model that can be collected.
@@ -23,6 +24,12 @@ public abstract class Collectable : Model
     /// </summary>
     [SerializeField]
     private AnimationCurve homingCurve;
+
+    /// <summary>
+    /// The SpriteRenderer for the shadow of this Collectable.
+    /// </summary>
+    [SerializeField]
+    private SpriteRenderer shadowRenderer;
 
     #endregion
 
@@ -83,6 +90,27 @@ public abstract class Collectable : Model
     /// <returns> a Sprite that represents this Collectable when it is
     /// being placed.</returns>
     public override Sprite[] GetPlacementTrack() => CollectableFactory.GetPlacementTrack(TYPE);
+
+    /// <summary>
+    /// Sets the shadow sprite for this Collectable.
+    /// </summary>
+    /// <param name="sprite"></param>
+    public void SetShadowSprite(Sprite sprite)
+    {
+        Assert.IsNotNull(sprite, "Sprite is null.");
+        shadowRenderer.sprite = sprite;
+    }
+
+    /// <summary>
+    /// Sets the sorting order for this Collectable.
+    /// Also sets the sorting order for the shadow.
+    /// </summary>
+    /// <param name="order">the new sorting order to set to. </param>
+    public override void SetSortingOrder(int order)
+    {
+        base.SetSortingOrder(order);
+        shadowRenderer.sortingOrder = order - 1;
+    }
 
     /// <summary>
     /// Resets this Collectable's state.

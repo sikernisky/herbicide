@@ -31,6 +31,11 @@ public abstract class Defender : Mob
     /// </summary>
     private int tier = MIN_TIER;
 
+    /// <summary>
+    /// true if this Defender draws a range indicator; false otherwise.
+    /// </summary>
+    public virtual bool DRAWS_RANGE_INDICATOR => true;
+
     #endregion
 
     #region Stats
