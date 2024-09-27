@@ -34,7 +34,7 @@ public class Kudzu : Enemy
     /// <summary>
     /// Base health of a Kudzu.
     /// </summary>
-    public override float BASE_HEALTH => 60;
+    public override float BASE_HEALTH => 40;
 
     /// <summary>
     /// Upper bound of a Kudzu's health. 

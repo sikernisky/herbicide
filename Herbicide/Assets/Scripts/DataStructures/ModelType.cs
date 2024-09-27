@@ -15,6 +15,7 @@ public enum ModelType
     ICE_CHUNK,
     KNOTWOOD,
     KUDZU,
+    LEVEL_REWARD,
     NEXUS,
     NEXUS_HOLE,
     OWL,

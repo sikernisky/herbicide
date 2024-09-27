@@ -118,6 +118,7 @@ public abstract class Mob : PlaceableObject
     /// </summary>
     public override bool OCCUPIER => false;
 
+
     #endregion
 
     #region Methods

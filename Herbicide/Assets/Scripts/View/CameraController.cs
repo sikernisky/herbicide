@@ -34,6 +34,7 @@ public class CameraController : MonoBehaviour
         Assert.AreEqual(1, cameraControllers.Length);
         instance = cameraControllers[0];
         instance.cam = Camera.main;
+        instance.SetCameraScaleBasedOnLevel();
     }
 
     /// <summary>
@@ -89,6 +90,32 @@ public class CameraController : MonoBehaviour
     /// <returns>the Camera controlled by the CameraController 
     /// singleton.</returns>
     private Camera GetCamera() => cam;
+
+
+    /// <summary>
+    /// Sets the correct Camera scale based on the current
+    /// level. 
+    /// </summary>
+    private void SetCameraScaleBasedOnLevel()
+    {
+        var camera = GetCamera();
+        if(camera == null) return;
+        switch (SaveLoadManager.GetLevel())
+        {
+            case 0:
+                camera.orthographicSize = 6.5f;
+                break;
+            case 1:
+                camera.orthographicSize = 7.0f;
+                break;
+            case 2:
+                camera.orthographicSize = 8.0f;
+                break;
+            default:
+                camera.orthographicSize = 8.0f;
+                break;
+        }
+    }
 
     #endregion
 }

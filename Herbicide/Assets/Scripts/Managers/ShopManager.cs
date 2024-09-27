@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -47,13 +48,15 @@ public class ShopManager : MonoBehaviour
         Assert.IsNotNull(shopManagers, "Array of ShopManagers is null.");
         Assert.AreEqual(1, shopManagers.Length);
         instance = shopManagers[0];
-        instance.LoadShopBasedOnLevel();
+        instance.ActivateShopPrefabBasedOnLevel();
     }
 
     /// <summary>
-    /// Loads the correct shop based on the current level.
+    /// Loads the correct shop prefab based on the current level.
+    /// Different prefabs have different numbers of slots and possibly
+    /// other features.
     /// </summary>
-    private void LoadShopBasedOnLevel()
+    private void ActivateShopPrefabBasedOnLevel()
     {
         shopTwoSlots.SetActive(false); 
         shopThreeSlots.SetActive(false);

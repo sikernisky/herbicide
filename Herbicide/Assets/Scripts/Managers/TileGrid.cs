@@ -14,9 +14,12 @@ public class TileGrid : MonoBehaviour
     #region Fields
 
     /// <summary>
-    /// Width and height of a Tile in the TileGrid
+    /// Width and height of a Tile in the TileGrid. Currently,
+    /// we use Camera size to make the TileGrid bigger or smaller.
+    /// If you change TILE_SIZE, you may need to update methods
+    /// to account for this new scale (example: movement speeds).
     /// </summary>
-    public static float TILE_SIZE => GetTileSizeBasedOnCurrentLevel();
+    public static float TILE_SIZE => 1.0f;
 
     /// <summary>
     /// All Tile prefabs, indexed by their type
@@ -170,22 +173,6 @@ public class TileGrid : MonoBehaviour
         instance.CheckTileMouseUp();
         instance.CheckTileMouseEnter();
         instance.CheckTileMouseExit();
-    }
-
-    /// <summary>
-    /// Returns the correct Tile size based on the current
-    /// level. 
-    /// </summary>
-    /// <returns>the correct Tile size based on the current level. </returns>
-    private static float GetTileSizeBasedOnCurrentLevel()
-    {
-        switch (SaveLoadManager.GetLevel())
-        {
-            case 0:
-                return 1.4f;
-            default:
-                return 1f;
-        }
     }
 
     /// <summary>
@@ -368,34 +355,6 @@ public class TileGrid : MonoBehaviour
             if (tile.GhostPlace(placingPlaceable))
             {
                 PlacementController.StartGhostPlacing(tile);
-
-                // Show attack range if Mob
-                Mob mob = placingSlottable as Mob;
-                if (mob != null)
-                {
-                    int ar = Mathf.FloorToInt(mob.BASE_MAIN_ACTION_RANGE);
-                    if (ar == float.MaxValue || ar <= 0) return;
-                    int mobX = tile.GetX();
-                    int mobY = tile.GetY();
-
-                    for (int x = mobX - ar; x <= mobX + ar; x++)
-                    {
-                        for (int y = mobY - ar; y <= mobY + ar; y++)
-                        {
-                            Tile rangeTile = TileExistsAt(x, y);
-                            if (rangeTile == null) continue;
-
-                            // Calculate the distance from the mob to this tile
-                            float distance = Mathf.Sqrt(Mathf.Pow(x - mobX, 2) + Mathf.Pow(y - mobY, 2));
-
-                            // Check if the tile is within the circular attack range
-                            if (distance <= ar && rangeTile.WALKABLE)
-                            {
-                                rangeTile.SetHighlighterColor(new Color32(50, 255, 0, 150));
-                            }
-                        }
-                    }
-                }
             }
         }
 
@@ -412,21 +371,6 @@ public class TileGrid : MonoBehaviour
 
         //Tile was dehovered, put logic below
         PlacementController.StopGhostPlacing();
-
-        UnhighlightTiles();
-    }
-
-    /// <summary>
-    /// Sets every Tile's highlighter layer to be white and invisible.
-    /// </summary>
-    private void UnhighlightTiles()
-    {
-        foreach (KeyValuePair<Vector2Int, Tile> kvp in instance.tileMap)
-        {
-            Tile t = kvp.Value;
-            if (t == null) continue;
-            t.SetHighlighterColor(new Color32(255, 255, 255, 0));
-        }
     }
 
     /// <summary>

@@ -727,7 +727,7 @@ Transform:
   - {fileID: 880554729}
   - {fileID: 270232374}
   m_Father: {fileID: 374179633}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &132748574
 MonoBehaviour:
@@ -785,6 +785,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  lineRenderer: {fileID: 2074973558}
 --- !u!1 &153838669
 GameObject:
   m_ObjectHideFlags: 0
@@ -1092,7 +1093,7 @@ RectTransform:
   m_Children:
   - {fileID: 427182374}
   m_Father: {fileID: 374179633}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1325,12 +1326,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1485651383}
   - {fileID: 2051107807}
   - {fileID: 132748573}
   - {fileID: 258530141}
   - {fileID: 458590368}
   - {fileID: 1687785372}
+  - {fileID: 1485651383}
   m_Father: {fileID: 850290207}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1973,7 +1974,7 @@ Transform:
   - {fileID: 844058789}
   - {fileID: 2091387963}
   m_Father: {fileID: 374179633}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &458590369
 MonoBehaviour:
@@ -2212,6 +2213,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tiledJSONLevels:
+  - {fileID: 4900000, guid: 25beaefd534abf841a73d29c62c5629a, type: 3}
   - {fileID: 4900000, guid: e1c19d2c9ab7b4de89f1a4effc75ef56, type: 3}
   - {fileID: 4900000, guid: d10a4859447e158499fa65f67ae286de, type: 3}
 --- !u!1 &519420028
@@ -3073,12 +3075,15 @@ MonoBehaviour:
   - {fileID: 7255375230871180526, guid: 268bcc35a02fd48119a5e3cb9ae357e3, type: 3}
   - {fileID: 7255375230871180526, guid: 1235b50044e05244ea14724bde3c03b3, type: 3}
   - {fileID: 7255375230871180526, guid: 878c51fd7012d094eadf3840dc2a04f0, type: 3}
+  - {fileID: 7255375230871180526, guid: a1b475a3bbb67cd4dadd4628b322e8ac, type: 3}
   dewPlacementTrack:
   - {fileID: 21300000, guid: 505a9d28ed8b54032a938ef8f953c769, type: 3}
   basicTreeSeedPlacementTrack:
   - {fileID: 21300000, guid: 262f6912e36a311498f5ed7bdda4dd01, type: 3}
   speedTreeSeedPlacementTrack:
   - {fileID: 21300000, guid: fe2af50f05af4d74c8b6c797aab17fa5, type: 3}
+  levelRewardPlacementTrack:
+  - {fileID: 21300000, guid: adaebf51aec00b8488794b4a20904b16, type: 3}
 --- !u!1 &880554728
 GameObject:
   m_ObjectHideFlags: 0
@@ -5283,7 +5288,7 @@ RectTransform:
   m_Children:
   - {fileID: 883189722}
   m_Father: {fileID: 374179633}
-  m_RootOrder: 0
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -5769,7 +5774,7 @@ RectTransform:
   m_Children:
   - {fileID: 80233037}
   m_Father: {fileID: 374179633}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -6476,8 +6481,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 484092436}
         m_TargetAssemblyTypeName: SceneController, Assembly-CSharp
-        m_MethodName: LoadScene
-        m_Mode: 5
+        m_MethodName: LoadNextLevel
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -6686,7 +6691,7 @@ Transform:
   - {fileID: 1447668062}
   - {fileID: 1888929138}
   m_Father: {fileID: 374179633}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2051107808
 MonoBehaviour:
@@ -6849,6 +6854,7 @@ GameObject:
   - component: {fileID: 2074973555}
   - component: {fileID: 2074973557}
   - component: {fileID: 2074973556}
+  - component: {fileID: 2074973558}
   m_Layer: 0
   m_Name: PlacementDummy
   m_TagString: Untagged
@@ -6914,6 +6920,105 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2074973554}
   m_CullTransparentMesh: 1
+--- !u!120 &2074973558
+LineRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2074973554}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 0
+  m_LightProbeUsage: 0
+  m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 1be9c6971c8f63843b4f1df74d4619d9, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 673403977
+  m_SortingLayer: 10
+  m_SortingOrder: 0
+  m_Positions:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 1}
+  m_Parameters:
+    serializedVersion: 3
+    widthMultiplier: 1
+    widthCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0.09876633
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    colorGradient:
+      serializedVersion: 2
+      key0: {r: 1, g: 1, b: 1, a: 1}
+      key1: {r: 1, g: 1, b: 1, a: 1}
+      key2: {r: 0, g: 0, b: 0, a: 0}
+      key3: {r: 0, g: 0, b: 0, a: 0}
+      key4: {r: 0, g: 0, b: 0, a: 0}
+      key5: {r: 0, g: 0, b: 0, a: 0}
+      key6: {r: 0, g: 0, b: 0, a: 0}
+      key7: {r: 0, g: 0, b: 0, a: 0}
+      ctime0: 0
+      ctime1: 65535
+      ctime2: 0
+      ctime3: 0
+      ctime4: 0
+      ctime5: 0
+      ctime6: 0
+      ctime7: 0
+      atime0: 0
+      atime1: 65535
+      atime2: 0
+      atime3: 0
+      atime4: 0
+      atime5: 0
+      atime6: 0
+      atime7: 0
+      m_Mode: 0
+      m_NumColorKeys: 2
+      m_NumAlphaKeys: 2
+    numCornerVertices: 0
+    numCapVertices: 0
+    alignment: 0
+    textureMode: 0
+    shadowBias: 0.5
+    generateLightingData: 0
+  m_UseWorldSpace: 0
+  m_Loop: 0
 --- !u!1 &2080927341
 GameObject:
   m_ObjectHideFlags: 0

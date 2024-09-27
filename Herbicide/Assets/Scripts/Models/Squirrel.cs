@@ -29,7 +29,7 @@ public class Squirrel : Defender
     /// <summary>
     /// Starting attack range of a Squirrel
     /// </summary>
-    public override float BASE_MAIN_ACTION_RANGE => 4f;
+    public override float BASE_MAIN_ACTION_RANGE => 3.5f;
 
     /// <summary>
     /// Maximum attack range of a Squirrel

@@ -152,7 +152,7 @@ public class ShopController : MonoBehaviour
     /// </summary>
     /// <param name="modelTypes">the types of ShopCards 
     /// the Shop can sell. If null, the Shop can sell all types.</param>
-    public static void LoadShop(HashSet<ModelType> modelTypes = null)
+    public static void LoadShop()
     {
         if (instance.shopActive) return;
 
@@ -165,28 +165,17 @@ public class ShopController : MonoBehaviour
                 slotCounter++;
             }
 
-            if (modelTypes == null)
+            HashSet<ModelType> modelTypesToLoad = new HashSet<ModelType>();
+            foreach(ModelType unlockedModelType in SaveLoadManager.GetUnlockedModels())
             {
-                int level = SaveLoadManager.GetLevel();
-                if (level == 0) modelTypes = new HashSet<ModelType>()
-                {
-                    ModelType.SHOP_CARD_RACCOON
-                };
-                else
-                {
-                    modelTypes = new HashSet<ModelType>(){
-                        ModelType.SHOP_CARD_SQUIRREL,
-                        ModelType.SHOP_CARD_BEAR,
-                        ModelType.SHOP_CARD_PORCUPINE,
-                        ModelType.SHOP_CARD_OWL,
-                        ModelType.SHOP_CARD_RACCOON,
-                        ModelType.SHOP_CARD_BUNNY
-                    };
-                }
+                modelTypesToLoad.Add(ShopCard.ModelTypeToShopCardModelType(unlockedModelType));
             }
 
-            Assert.IsNotNull(modelTypes);
-            foreach (ModelType modelType in modelTypes)
+            Assert.IsNotNull(modelTypesToLoad);
+            Assert.IsTrue(modelTypesToLoad.Count > 0);
+
+
+            foreach (ModelType modelType in modelTypesToLoad)
             {
                 instance.cardPool.Add(modelType, 5); //5 is placeholder.
             }
@@ -194,11 +183,7 @@ public class ShopController : MonoBehaviour
             instance.Reroll(true);
             instance.timeSinceLastReroll = AUTOMATIC_REROLL_TIME;
         }
-        else
-        {
-            instance.shopSlots.ForEach(ss => ss.EnableSlot());
-        }
-
+        else instance.shopSlots.ForEach(ss => ss.EnableSlot());
 
         instance.shopLoaded = true;
         instance.shopActive = true;

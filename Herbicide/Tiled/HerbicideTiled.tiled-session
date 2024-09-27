@@ -3,11 +3,11 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "Tilemaps/level1.json",
+    "activeFile": "Tilemaps/level1.tmx",
     "expandedProjectPaths": [
-        "Tilemaps",
         ".",
-        "Tilesets"
+        "Tilesets",
+        "Tilemaps"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -50,11 +50,11 @@
                 13,
                 16
             ],
-            "scale": 2,
+            "scale": 4,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 161.75,
-                "y": 173
+                "x": 193.875,
+                "y": 132.25
             }
         },
         "Tilemaps/btd.tmx#Enemies": {
@@ -165,11 +165,11 @@
                 13,
                 16
             ],
-            "scale": 5.5,
+            "scale": 4,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 98.81818181818181,
-                "y": 72.54545454545455
+                "x": 147.625,
+                "y": 42.75
             }
         },
         "Tilemaps/level1.tmx#Enemies": {
@@ -302,26 +302,20 @@
     "map.lastUsedFormat": "json",
     "map.width": 10,
     "openFiles": [
-        "Tilemaps/level1.json",
         "Tilemaps/level1.tmx",
-        "Tilemaps/level1.tmj",
-        "Tilemaps/level2.tmx",
-        "Tilemaps/level3.tmx",
-        "Tilemaps/level4.tmx",
-        "Tilemaps/level5.tmx",
         "Tilemaps/btd.tmx"
     ],
     "project": "HerbicideTiled.tiled-project",
     "recentFiles": [
+        "Tilemaps/btd.tmx",
+        "Tilemaps/level1.tmx",
         "C:/Users/teddy/OneDrive/Documents/GitHub/herbicide/Herbicide/Assets/Levels/level1.json",
         "Tilemaps/level5.tmx",
         "Tilemaps/level4.tmx",
         "Tilemaps/level3.tmx",
         "Tilemaps/level2.tmx",
         "Tilemaps/level1.tmj",
-        "Tilemaps/level1.tmx",
         "Tilemaps/level1.json",
-        "Tilemaps/btd.tmx",
         "Tilesets/Shore.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",

@@ -19,14 +19,7 @@ public class CanvasController : MonoBehaviour
     /// Number of seconds it takes for the Fader
     /// to fade in and out.
     /// </summary>
-    private const float DEFAULT_FADE_TIME = .5f;
-
-    /// <summary>
-    /// Number of seconds to wait before fading in the Fader
-    /// component after the player wins, loses, or ties a
-    /// level.
-    /// </summary>
-    private const float FADE_DELAY = 1.5f;
+    public static float FADE_TIME => .5f;
 
     /// <summary>
     /// The maximum alpha value (0-1) that the Fader component
@@ -53,12 +46,6 @@ public class CanvasController : MonoBehaviour
     private bool fading;
 
     /// <summary>
-    /// true if the Fader component has faded in after the GameState shifted
-    /// from ONGOING to WIN, LOSE, or TIE.
-    /// </summary>
-    private bool fadedAfterLevelEnd;
-
-    /// <summary>
     /// The alpha value that the Fader value is fading towards, from
     /// 0.0 - 1.0.
     /// </summary>
@@ -68,18 +55,6 @@ public class CanvasController : MonoBehaviour
     /// The current GameState.
     /// </summary>
     private GameState gameState;
-
-    /// <summary>
-    /// Number of seconds we have been waiting since a level has ended.
-    /// Used to queue in the Fader when this value hits a certain number
-    /// of seconds.
-    /// </summary>
-    private float fadeDelayTimer;
-
-    /// <summary>
-    /// true if debug mode is on.
-    /// </summary>
-    private bool isDebug;
 
     #endregion
 
@@ -174,23 +149,6 @@ public class CanvasController : MonoBehaviour
     {
         instance.gameState = gameState;
         instance.UpdateFader();
-
-        //Check to fade in after the player wins, loses, or ties
-        GameState gs = instance.gameState;
-        if (gs != GameState.ONGOING && gs != GameState.MENU)
-        {
-            instance.fadeDelayTimer = Mathf.Clamp(
-                instance.fadeDelayTimer + Time.deltaTime,
-                0f,
-                FADE_DELAY
-            );
-
-            if (!instance.fadedAfterLevelEnd && instance.fadeDelayTimer >= FADE_DELAY)
-            {
-                PlayFaderIn();
-                instance.fadedAfterLevelEnd = true;
-            }
-        }
     }
 
     /// <summary>
@@ -203,7 +161,7 @@ public class CanvasController : MonoBehaviour
         float newAlpha = Mathf.MoveTowards(
             faderColor.a,
             faderTargetAlpha,
-            Time.deltaTime * DEFAULT_FADE_TIME
+            Time.deltaTime * FADE_TIME
         );
         Color newFaderColor = new Color(faderColor.r, faderColor.g, faderColor.b, newAlpha);
         fader.color = newFaderColor;
@@ -236,15 +194,7 @@ public class CanvasController : MonoBehaviour
     public static void SetDebug(LevelController levelController, bool isOn)
     {
         Assert.IsNotNull(levelController);
-
-        instance.isDebug = isOn;
     }
-
-    /// <summary>
-    /// Returns true if debug mode is on.
-    /// </summary>
-    /// <returns>true if debug mode is on; otherwise, false.</returns>
-    private bool IsDebugging() => isDebug;
 
     #endregion
 }

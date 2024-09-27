@@ -68,3 +68,6 @@ TagManager:
   - name: emanations
     uniqueID: 1992083023
     locked: 0
+  - name: rangeindicators
+    uniqueID: 673403977
+    locked: 0

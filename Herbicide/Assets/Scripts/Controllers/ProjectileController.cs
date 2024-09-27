@@ -285,7 +285,7 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
         if (projectile == null) return;
 
         Vector3 currentPosition = projectile.GetPosition();
-        float tileScale = TileGrid.TILE_SIZE; // This method should return the current scale of your tiles
+        float tileScale = TileGrid.TILE_SIZE;
         float adjustedSpeed = projectile.GetSpeed() * tileScale; // Adjust speed based on tile scale
         float step = adjustedSpeed * Time.deltaTime;
         Vector3 newPosition = currentPosition + linearDirection.normalized * step;

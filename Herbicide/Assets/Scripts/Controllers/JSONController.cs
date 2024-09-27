@@ -71,7 +71,6 @@ public class JSONController : MonoBehaviour
     private void SetTranslatedJson(TiledData translatedJson)
     {
         if (translatedJson == null) return;
-        if (translatedTiledJson != null) return;
 
         translatedTiledJson = translatedJson;
     }
@@ -85,8 +84,17 @@ public class JSONController : MonoBehaviour
     public static TiledData GetTiledData()
     {
         Assert.IsNotNull(translatedTiledJson);
-
         return translatedTiledJson;
+    }
+
+    /// <summary>
+    /// Returns the maximum level index.
+    /// </summary>
+    /// <returns>the maximum level index.</returns>
+    public static int GetMaxLevelIndex()
+    {
+        Assert.IsNotNull(instance.tiledJSONLevels); 
+        return instance.tiledJSONLevels.Count - 1;
     }
 
     #endregion

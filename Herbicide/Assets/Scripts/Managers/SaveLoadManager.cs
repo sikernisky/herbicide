@@ -2,6 +2,7 @@ using UnityEngine;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine.Assertions;
+using System.Collections.Generic;
 
 /// <summary>
 /// Manages saving and loading PlayerData to and from a file.
@@ -73,7 +74,6 @@ public class SaveLoadManager : MonoBehaviour
             currentLoad = data;
         }
         else currentLoad = new PlayerData();
-        SetLevel(0); //temp
     }
 
     /// <summary>
@@ -82,8 +82,10 @@ public class SaveLoadManager : MonoBehaviour
     /// <param name="level">the level to set to.</param>
     public static void SetLevel(int level)
     {
-        if(level < 0) return;
+        Assert.IsNotNull(instance.currentLoad, "currentLoad is null.");
+        if (level < 0) return;
         instance.currentLoad.furthestLevel = level;
+        Save();
     }
 
     /// <summary>
@@ -91,7 +93,62 @@ public class SaveLoadManager : MonoBehaviour
     /// 0-indexed, so the first level is level 0.
     /// </summary>
     /// <returns>the level the player is currently on.</returns>
-    public static int GetLevel() => instance.currentLoad.furthestLevel;
+    public static int GetLevel() 
+    {
+        Assert.IsNotNull(instance.currentLoad, "currentLoad is null.");
+        return instance.currentLoad.furthestLevel; 
+    }
+
+    /// <summary>
+    /// Unlocks the given ModelType.
+    /// </summary>
+    /// <param name="typeToUnlock">the type of Model to unlock.</param>
+    public static void UnlockModel(ModelType typeToUnlock)
+    {
+        Assert.IsNotNull(instance.currentLoad, "currentLoad is null.");
+        if (instance.currentLoad.unlockedModels == null)
+        {
+            instance.currentLoad.unlockedModels = new List<ModelType>();
+            instance.currentLoad.unlockedModels.Add(ModelType.SQUIRREL);
+        }
+        if(instance.currentLoad.unlockedModels.Contains(typeToUnlock)) return;
+        instance.currentLoad.unlockedModels.Add(typeToUnlock);
+        Save();
+    }
+
+    /// <summary>
+    /// Clears all unlocked models except for the Squirrel.
+    /// </summary>
+    public static void WipeUnlockedModels()
+    {
+        Assert.IsNotNull(instance.currentLoad, "currentLoad is null.");
+        if (instance.currentLoad.unlockedModels != null)
+        {
+            instance.currentLoad.unlockedModels.Clear();
+            instance.currentLoad.unlockedModels.Add(ModelType.SQUIRREL);
+        }
+        else
+        {
+            instance.currentLoad.unlockedModels = new List<ModelType>();
+            instance.currentLoad.unlockedModels.Add(ModelType.SQUIRREL);
+        }
+        Save();
+    }
+
+    /// <summary>
+    /// Returns a list of ModelTypes that the player has unlocked.
+    /// </summary>
+    /// <returns>a list of ModelTypes that the player has unlocked.</returns>
+    public static List<ModelType> GetUnlockedModels()
+    {
+        Assert.IsNotNull(instance.currentLoad, "currentLoad is null.");
+        if (instance.currentLoad.unlockedModels == null)
+        {
+            instance.currentLoad.unlockedModels = new List<ModelType>();
+            instance.currentLoad.unlockedModels.Add(ModelType.SQUIRREL);
+        }
+        return new List<ModelType>(instance.currentLoad.unlockedModels);
+    }
 
     #endregion
 }

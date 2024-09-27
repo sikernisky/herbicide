@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2748437994386802842}
   - component: {fileID: 8508223146317799375}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 8530000165711452335}
   - component: {fileID: 6226796122745432553}
   - component: {fileID: 957793951317290597}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: BasicTreeSeed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -259,3 +259,4 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  shadowRenderer: {fileID: 8508223146317799375}

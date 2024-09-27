@@ -36,17 +36,14 @@ public class LevelController : MonoBehaviour
     /// <summary>
     /// Sets up the level: <br></br>
     /// 
-    /// (0) Sets Unity properties.<br></br>
     /// (1) Instantiates all factories and singletons.<br></br>
     /// (2) Parse all JSON data<br></br>
     /// (3) Spawns the TileGrid.<br></br>
     /// (4) Loads the Shop.<br></br>
+    /// (5) Set Reward as not yet claimed.
     /// </summary>
     void Start()
     {
-        //(0) Set Unity properties
-        SceneController.SetUnityProperties();
-
         //(1) Instantiate all factories and singletons
         SetSingleton();
         MakeFactories();
@@ -123,14 +120,25 @@ public class LevelController : MonoBehaviour
     }
 
     /// <summary>
+    /// Called when the application is quitting. Sets the player stats
+    /// back to the beginning.
+    /// </summary>
+    private void OnApplicationQuit()
+    {
+        SaveLoadManager.SetLevel(0);
+        SaveLoadManager.WipeUnlockedModels();
+        SaveLoadManager.Save();
+    }
+
+    /// <summary>
     /// Instantiates the necessary Singletons for the LevelController.
     /// </summary>
     private void MakeSingletons()
     {
         Assert.IsNotNull(instance, "method SetSingleton() should set the " +
             "levelcontroller singleton (currently null.)");
-        SaveLoadManager.SetSingleton(instance);
         SceneController.SetSingleton(instance);
+        SaveLoadManager.SetSingleton(instance);
         JSONController.SetSingleton(instance);
         TileGrid.SetSingleton(instance);
         CameraController.SetSingleton(instance);
@@ -192,7 +200,7 @@ public class LevelController : MonoBehaviour
     {
 
         int activeEnemies = ControllerController.NumEnemiesRemainingInclusive();
-        int enemiesRemaining = EnemyManager.EnemiesRemaining(SceneController.GetTimeElapsed());
+        int enemiesRemaining = EnemyManager.NumEnemiesThatRemainToBeSpawned(SceneController.GetTimeElapsed());
         bool enemiesPresent = (enemiesRemaining > 0 || activeEnemies > 0);
         bool nexusPresent = ControllerController.NumActiveNexii() > 0;
 

@@ -354,7 +354,7 @@
                         {
                          "name":"enemySpawnData",
                          "type":"string",
-                         "value":"kudzu1-10, kudzu1-40, kudzu1-70, kudzu1-95, kudzu1-105"
+                         "value":"kudzu1-3, kudzu1-10\n"
                         }, 
                         {
                          "name":"markerName",

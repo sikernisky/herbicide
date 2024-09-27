@@ -84,7 +84,18 @@ public class ShopCard : UIModel
     public override ModelType GetModelType()
     {
         if(model == null) return ModelType.SHOP_CARD_BLANK;
-        switch (model.TYPE)
+        return ModelTypeToShopCardModelType(model.TYPE);
+    }
+
+    /// <summary>
+    /// Returns the ShopCard ModelType based on the given ModelType.
+    /// </summary>
+    /// <param name="modelTypeToConvert">The Model from which to get the ShopCard
+    /// ModelType. </param>
+    /// <returns>the ShopCard ModelType based on the given ModelType.</returns>
+    public static ModelType ModelTypeToShopCardModelType(ModelType modelTypeToConvert)
+    {
+        switch(modelTypeToConvert)
         {
             case ModelType.BEAR:
                 return ModelType.SHOP_CARD_BEAR;

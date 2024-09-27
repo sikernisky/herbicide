@@ -360,7 +360,7 @@ public abstract class ModelController
     protected void MoveLinearlyTowards(Vector3 targetPosition, float speed)
     {
         Vector3 adjusted = new Vector3(targetPosition.x, targetPosition.y, 1);
-        float step = speed * Time.deltaTime;
+        float step = speed * Time.deltaTime * TileGrid.TILE_SIZE;
         step = Mathf.Clamp(step, 0f, step);
         Vector3 newPosition = Vector3.MoveTowards(GetModel().GetPosition(), adjusted, step);
         if (GetModel().GetPosition() != adjusted) GetModel().FaceDirection(adjusted);

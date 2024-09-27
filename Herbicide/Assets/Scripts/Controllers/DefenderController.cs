@@ -73,6 +73,17 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     }
 
     /// <summary>
+    /// Sets the Defender's sorting order to be correct
+    /// based on its position in the scene and placement
+    /// status.
+    /// </summary>
+    protected override void FixSortingOrder()
+    {
+        if(!ValidModel()) return;
+        GetModel().SetSortingOrder(-Mathf.FloorToInt(GetDefender().GetTreePosition().y));
+    }
+
+    /// <summary>
     /// Returns true if this controller's Defender should be destoyed and
     /// set to null.
     /// </summary>

@@ -240,6 +240,13 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
         SpeedTreeSeedController speedTreeSeedController = new SpeedTreeSeedController(speedTreeSeed, lootPos);
         ControllerController.AddModelController(speedTreeSeedController);*/
 
+        if(ControllerController.NumEnemiesRemainingInclusive() == 0)
+        {
+            LevelReward levelReward = CollectableFactory.GetCollectablePrefab(ModelType.LEVEL_REWARD).GetComponent<LevelReward>();
+            LevelRewardController levelRewardController = new LevelRewardController(levelReward, GetEnemy().GetPosition());
+            ControllerController.AddModelController(levelRewardController);
+        }
+
         base.DropDeathLoot();
     }
 
