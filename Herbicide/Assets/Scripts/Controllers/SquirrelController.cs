@@ -120,6 +120,8 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
             AcornController acornController = new AcornController(acornComp, GetSquirrel().GetPosition(), targetPosition, numSplits);
             ControllerController.AddModelController(acornController);
 
+            CollectionManager.AddModelUpgradePoints(ModelType.SQUIRREL, 1);
+
             if (i < numAcorns - 1) // Wait for the delay between shots unless it's the last one
             {
                 yield return new WaitForSeconds(delayBetweenAcorns);

@@ -37,10 +37,9 @@ public class LevelController : MonoBehaviour
     /// Sets up the level: <br></br>
     /// 
     /// (1) Instantiates all factories and singletons.<br></br>
-    /// (2) Parse all JSON data<br></br>
-    /// (3) Spawns the TileGrid.<br></br>
-    /// (4) Loads the Shop.<br></br>
-    /// (5) Set Reward as not yet claimed.
+    /// (2) Loads SaveManager data. <br></br>
+    /// (3) Parse all JSON data<br></br>
+    /// (4) Spawns the TileGrid.<br></br>
     /// </summary>
     void Start()
     {
@@ -49,16 +48,17 @@ public class LevelController : MonoBehaviour
         MakeFactories();
         MakeSingletons();
 
-        //(2) Parse JSON
+        //(2) Load SaveManager data
+        SubscribeControllersToSaveLoadEvents();
+        SaveLoadManager.Load();
+
+        //(3) Parse JSON
         JSONController.ParseTiledData();
 
-        //(3) Spawn the TileGrid and set the Camera
+        //(4) Spawn the TileGrid and set the Camera
         TiledData tiledData = JSONController.GetTiledData();
         Vector2 cameraPos = TileGrid.SpawnGrid(instance, tiledData);
         CameraController.MoveCamera(cameraPos);
-
-        //(4) Load the Shop
-        ShopController.LoadShop();
     }
 
     /// <summary>
@@ -67,13 +67,13 @@ public class LevelController : MonoBehaviour
     /// (1) Update and inform controllers of game state.<br></br>
     /// (2) Update Scene.<br></br>
     /// (3) Updates placement and input events.<br></br>
-    /// (4) Update Mob Controllers.<br></br>
+    /// (4) Update Model Controllers.<br></br>
     /// (5) Update Currencies.<br></br>
     /// (6) Update Balance.<br></br>
     /// (7) Update TileGrid.<br></br>
     /// (8) Update Canvas.<br></br>
     /// (9) Update StageController. <br></br>
-    /// (10) Update LevelCompletionController. 
+    /// (10) Update LevelCompletionController. <br></br>
     /// </summary>
     void Update()
     {
@@ -97,14 +97,14 @@ public class LevelController : MonoBehaviour
         PlacementController.UpdateCombinationEvents();
         UpdateInputEvents();
 
-        //(4) Update Controllers.
+        //(4) Update ModelControllers.
         ControllerController.UpdateModelControllers(gameState);
 
         //(5) Update the Economy.
         EconomyController.UpdateEconomy(gameState);
 
         //(6) Update Shop.
-        ShopController.UpdateShop(gameState);
+        ShopManager.UpdateShopManager(gameState);
 
         //(7) Update TileGrid.
         TileGrid.UpdateTiles();
@@ -123,11 +123,12 @@ public class LevelController : MonoBehaviour
     /// Called when the application is quitting. Sets the player stats
     /// back to the beginning.
     /// </summary>
-    private void OnApplicationQuit()
+    void OnApplicationQuit()
     {
-        SaveLoadManager.SetLevel(0);
-        SaveLoadManager.WipeUnlockedModels();
+        SaveLoadManager.SaveGameLevel(0);
         SaveLoadManager.Save();
+        SaveLoadManager.WipeCurrentSave(); // temporary
+
     }
 
     /// <summary>
@@ -137,8 +138,9 @@ public class LevelController : MonoBehaviour
     {
         Assert.IsNotNull(instance, "method SetSingleton() should set the " +
             "levelcontroller singleton (currently null.)");
-        SceneController.SetSingleton(instance);
+
         SaveLoadManager.SetSingleton(instance);
+        SceneController.SetSingleton(instance);
         JSONController.SetSingleton(instance);
         TileGrid.SetSingleton(instance);
         CameraController.SetSingleton(instance);
@@ -146,12 +148,12 @@ public class LevelController : MonoBehaviour
         PlacementController.SetSingleton(instance);
         EnemyManager.SetSingleton(instance);
         ShopManager.SetSingleton(instance);
-        ShopController.SetSingleton(instance);
         ControllerController.SetSingleton(instance);
         EconomyController.SetSingleton(instance);
         CanvasController.SetSingleton(instance);
         SettingsController.SetSingleton(instance);
         SoundController.SetSingleton(instance);
+        CollectionManager.SetSingleton(instance); 
         LevelCompletionController.SetSingleton(instance);
         StageController.SetSingleton(instance);
         ExplosionController.SetSingleton(instance);
@@ -174,6 +176,16 @@ public class LevelController : MonoBehaviour
         ShopFactory.SetSingleton(instance);
         TileFactory.SetSingleton(instance);
         WallFactory.SetSingleton(instance);
+    }
+
+    /// <summary>
+    /// Subscribes controllers to Save and Load events.
+    /// </summary>
+    private void SubscribeControllersToSaveLoadEvents()
+    {
+        CameraController.SubscribeToSaveLoadEvents(instance);
+        CollectionManager.SubscribeToSaveLoadEvents(instance);
+        ShopManager.SubscribeToSaveLoadEvents(instance);
     }
 
     /// <summary>

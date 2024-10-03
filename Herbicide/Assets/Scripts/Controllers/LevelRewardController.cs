@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Assertions;
 
 /// <summary>
 /// Controls a LevelReward. <br></br>
@@ -62,7 +61,7 @@ public class LevelRewardController : CollectableController<LevelRewardController
     /// based on the current level.</returns>
     private ModelType GetModelTypeRewardBasedOnLevel()
     {
-        switch (SaveLoadManager.GetLevel())
+        switch (SaveLoadManager.GetGameLevel())
         {
             case 0:
                 return ModelType.BUNNY;
@@ -134,7 +133,7 @@ public class LevelRewardController : CollectableController<LevelRewardController
         if (InCollectionRange())
         {
             GetLevelReward().OnCollect();
-            SaveLoadManager.UnlockModel(GetModelTypeRewardBasedOnLevel());
+            CollectionManager.UnlockModel(GetModelTypeRewardBasedOnLevel());
         }
         else MoveTowardsCursor();
     }

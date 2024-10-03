@@ -18,6 +18,11 @@ public class CameraController : MonoBehaviour
     /// </summary>
     private static CameraController instance;
 
+    /// <summary>
+    /// The current level.
+    /// </summary>
+    private int level;
+
     #endregion
 
     #region Methods
@@ -34,7 +39,18 @@ public class CameraController : MonoBehaviour
         Assert.AreEqual(1, cameraControllers.Length);
         instance = cameraControllers[0];
         instance.cam = Camera.main;
-        instance.SetCameraScaleBasedOnLevel();
+    }
+
+    /// <summary>
+    /// Subscribes to the SaveLoadManager's OnLoadRequested and OnSaveRequested events.
+    /// </summary>
+    /// <param name="levelController">The LevelController singleton.</param>
+    public static void SubscribeToSaveLoadEvents(LevelController levelController)
+    {
+        Assert.IsNotNull(levelController, "LevelController is null.");
+
+        SaveLoadManager.SubscribeToToLoadEvent(instance.LoadCameraData);
+        SaveLoadManager.SubscribeToToLoadEvent(instance.SaveCameraData);
     }
 
     /// <summary>
@@ -100,7 +116,7 @@ public class CameraController : MonoBehaviour
     {
         var camera = GetCamera();
         if(camera == null) return;
-        switch (SaveLoadManager.GetLevel())
+        switch (level)
         {
             case 0:
                 camera.orthographicSize = 6.5f;
@@ -115,6 +131,20 @@ public class CameraController : MonoBehaviour
                 camera.orthographicSize = 8.0f;
                 break;
         }
+    }
+
+    /// <summary>
+    /// Saves the Camera's data to the current PlayerData.
+    /// </summary>
+    private void SaveCameraData() { }
+
+    /// <summary>
+    /// Loads the Camera's data from the current PlayerData.
+    /// </summary>
+    private void LoadCameraData()
+    {
+        level = SaveLoadManager.GetGameLevel();
+        SetCameraScaleBasedOnLevel();
     }
 
     #endregion

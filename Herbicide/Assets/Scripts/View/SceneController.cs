@@ -35,7 +35,7 @@ public class SceneController : MonoBehaviour
     public static void UpdateScene()
     {
         timeElapsed += Time.deltaTime;
-        if (InputController.DidKeycodeDown(KeyCode.N)) instance.LoadNextLevel();
+        if (InputController.DidKeycodeDown(KeyCode.N)) LoadNextLevelWithFadeDelay();
     }
 
     /// <summary>
@@ -119,17 +119,17 @@ public class SceneController : MonoBehaviour
     /// 
     /// Loads the next level. If already loading, does nothing.
     /// </summary>
-    public void LoadNextLevel()
+    public static void LoadNextLevelWithFadeDelay()
     {
-        if (loadingScene) return;
-        int currentLevel = SaveLoadManager.GetLevel();
+        if (instance.loadingScene) return;
+        int currentLevel = SaveLoadManager.GetGameLevel();
         int maxLevel = JSONController.GetMaxLevelIndex();
-        if (currentLevel >= maxLevel) LoadScene("MainMenu");
+        if (currentLevel >= maxLevel) instance.LoadScene("MainMenu");
         else
         {
-            SaveLoadManager.SetLevel(currentLevel + 1);
+            SaveLoadManager.SaveGameLevel(currentLevel + 1);
             SaveLoadManager.Save();
-            StartCoroutine(ReloadSceneAfterFadeOut());
+            instance.StartCoroutine(instance.ReloadSceneAfterFadeOut());
         }
     }
 

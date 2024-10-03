@@ -53,8 +53,8 @@
             "scale": 4,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 193.875,
-                "y": 132.25
+                "x": 199.875,
+                "y": 88
             }
         },
         "Tilemaps/btd.tmx#Enemies": {
@@ -168,8 +168,8 @@
             "scale": 4,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 147.625,
-                "y": 42.75
+                "x": 146.875,
+                "y": 42
             }
         },
         "Tilemaps/level1.tmx#Enemies": {

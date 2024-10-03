@@ -107,7 +107,7 @@ public class EconomyController : MonoBehaviour
     {
         currencies = new Dictionary<ModelType, int>
         {
-            { ModelType.DEW, 50 },
+            { ModelType.DEW, 250 },
             { ModelType.BASIC_TREE_SEED, 0 },
             { ModelType.SPEED_TREE_SEED, 0 }
         };
