@@ -47,8 +47,8 @@
         },
         "Tilemaps/btd.tmx": {
             "expandedObjectLayers": [
-                13,
-                16
+                16,
+                13
             ],
             "scale": 4,
             "selectedLayer": 5,
@@ -162,14 +162,14 @@
         },
         "Tilemaps/level1.tmx": {
             "expandedObjectLayers": [
-                13,
-                16
+                16,
+                13
             ],
             "scale": 4,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 146.875,
-                "y": 42
+                "x": 146.375,
+                "y": 41.5
             }
         },
         "Tilemaps/level1.tmx#Enemies": {

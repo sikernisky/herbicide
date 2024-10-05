@@ -1,7 +1,9 @@
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions;
-using TMPro;
-using System.Collections.Generic;
+using UnityEngine.UI;
 using Requirements = ModelUpgradeRequirements.ModelUpgradeRequirementsData;
 
 /// <summary>
@@ -43,16 +45,16 @@ public class LevelCompletionController : MonoBehaviour
     private GameObject levelCompletionPanel;
 
     /// <summary>
-    /// The parent object for all display result objects.
-    /// </summary>
-    [SerializeField]
-    private GameObject displayResultObjects;
-
-    /// <summary>
     /// The parent object for all progress track objects.
     /// </summary>
     [SerializeField]
     private GameObject progressTrackObjects;
+
+    /// <summary>
+    /// The prefab for the progress track.
+    /// </summary>
+    [SerializeField]
+    private GameObject progressTrackPrefab;
 
     /// <summary>
     /// Text that displays whether the player won, lost, or tied.
@@ -61,36 +63,39 @@ public class LevelCompletionController : MonoBehaviour
     private TMP_Text resultText;
 
     /// <summary>
-    /// List of progress tracks.
-    /// </summary>
-    [SerializeField]
-    private List<ProgressTrack> progressTracks;
-
-    /// <summary>
-    /// true if the progress tracks have been updated and
-    /// completed their animations; false otherwise.
-    /// </summary>
-    private bool progressTracksUpdated;
-
-    /// <summary>
-    /// The number of progress points to feed the progress track per update tick.
-    /// </summary>
-    private int POINTS_PER_TICK => 1;
-
-    /// <summary>
-    /// The time between each tick of the progress track.
-    /// </summary>
-    private float timeBetweenTicks => 0.075f;
-
-    /// <summary>
-    /// The timer for the progress track tick.
-    /// </summary>
-    private float tickTimer;
-
-    /// <summary>
     /// true if the end game data has been loaded; false otherwise.
     /// </summary>
     private bool dataLoaded;
+
+    /// <summary>
+    /// The ordered list of UpgradeSaveData for each model that our progress tracks
+    /// will use.
+    /// </summary>
+    private List<ModelUpgradeSaveData> orderedUpgradeSaveData;
+
+    /// <summary>
+    /// The position the progress track moves towards after upgrading.
+    /// </summary>
+    [SerializeField]
+    private Transform postUpgradePosition;
+
+    /// <summary>
+    /// The position the progress track sits at while upgrading.
+    /// </summary>
+    [SerializeField]
+    private Transform currUpgradePosition;
+
+    /// <summary>
+    /// The position the progress track moves from before upgrading.
+    /// </summary>
+    [SerializeField]
+    private Transform preUpgradePosition;
+
+    /// <summary>
+    /// true if the coroutine for upgrading is running; false otherwise.
+    /// </summary>
+    private bool upgrading;
+
 
     #endregion
 
@@ -142,7 +147,7 @@ public class LevelCompletionController : MonoBehaviour
     {
         if (LevelCompletePanelOpen()) return;
 
-        if (!dataLoaded) PopulateLevelCompletionControllerData();
+        if (!dataLoaded) LoadUpgradeQueue();
         levelCompletionPanel.SetActive(true);
         if (gameState == GameState.WIN) resultText.text = "You Win!";
         else if (gameState == GameState.LOSE) resultText.text = "You Lose!";
@@ -170,51 +175,135 @@ public class LevelCompletionController : MonoBehaviour
             gameState == GameState.WIN ||
             gameState == GameState.TIE;
         bool rewardCollected = ControllerController.LevelRewardCollected();
-        return gameOver && rewardCollected;
+
+        if (gameState == GameState.WIN) return rewardCollected;
+        else return gameOver;
     }
 
     /// <summary>
-    /// Instantly completes the remaining progress for all progress tracks.
+    /// Initializes the progress tracks with the most recent data.
     /// </summary>
-    public void CompleteRemainingProgressInstantly()
+    private void LoadUpgradeQueue()
     {
-        foreach (ProgressTrack progressTrack in progressTracks)
+        orderedUpgradeSaveData = new List<ModelUpgradeSaveData>();
+        List<ModelType> unlockedModels = CollectionManager.GetAllUnlockedModelTypes(); 
+        foreach(ModelType unlockedModel in unlockedModels)
         {
-            if (!progressTrack.Initialized()) continue;
-
-            ModelType typeUpgrading = progressTrack.GetModelTypeTrackIsUpgrading();
-            int remainingPointsToAdd = CollectionManager.GetModelUpgradePoints(typeUpgrading);
-            if (remainingPointsToAdd > 0)
-            {
-                progressTrack.AddProgress(remainingPointsToAdd);
-                CollectionManager.RemoveModelUpgradePoints(typeUpgrading, remainingPointsToAdd);
-            }
+            orderedUpgradeSaveData.Add(CollectionManager.GetUnlockedModelUpgradeSaveData(unlockedModel));
         }
+    }
+
+    /// <summary>
+    /// Returns an instantiated progress track at the given position. Sets it up with the
+    /// correct upgrade requirements and save data.
+    /// </summary>
+    /// <param name="startPosition">The position to instantiate the progress track.</param>
+    private GameObject InstantiateAndSetupProgressTrack(Vector3 startPosition)
+    {
+        Assert.IsNotNull(orderedUpgradeSaveData, "orderedUpgradeSaveData is null.");
+        Assert.IsTrue(orderedUpgradeSaveData.Count > 0, "orderedUpgradeSaveData is empty.");
+
+        ModelUpgradeSaveData upgradeSaveData = orderedUpgradeSaveData[0];
+        orderedUpgradeSaveData.RemoveAt(0);
+        Requirements upgradeRequirements = CollectionManager.GetUpgradeRequirementsData(upgradeSaveData.GetModelType());
+        GameObject progressTrack = Instantiate(progressTrackPrefab, progressTrackObjects.transform);
+        progressTrack.transform.position = startPosition;
+        ProgressTrack progressComp = progressTrack.GetComponent<ProgressTrack>();  
+        progressComp.InitializeProgressTrack(upgradeSaveData, upgradeRequirements);
+
+        return progressTrack;
+    }
+
+    /// <summary>
+    /// Plays the entire upgrade animation for all progress tracks. Each
+    /// track starts at the bottom, moves to the middle, upgrades, then moves
+    /// to the top.
+    /// </summary>
+    /// <returns>A reference to the coroutine.</returns>
+    private IEnumerator PlayUpgradeAnimation()
+    {
+        if (upgrading) yield break;
+        upgrading = true;
+        while (orderedUpgradeSaveData.Count > 0)
+        {
+            GameObject progressTrack = InstantiateAndSetupProgressTrack(preUpgradePosition.position);
+            CanvasGroup progressTrackGroup = progressTrack.GetComponent<CanvasGroup>();
+            progressTrackGroup.alpha = 0f;
+
+            float POINT_INCREMENT_DELAY = 0.1f;
+            float MOVE_TIME = 1f;
+            float FADE_TIME = 1f;
+            ProgressTrack progressTrackComp = progressTrack.GetComponent<ProgressTrack>();
+
+            yield return MoveToPositionAndFade(progressTrack.transform, currUpgradePosition.position, MOVE_TIME, progressTrackGroup, FADE_TIME, true);
+            yield return UpgradeProgressTrackOverTime(progressTrackComp, POINT_INCREMENT_DELAY);
+            yield return MoveToPositionAndFade(progressTrack.transform, postUpgradePosition.position, MOVE_TIME, progressTrackGroup, FADE_TIME, false);
+        }
+        upgrading = false;
+        yield return new WaitForSeconds(0.5f);
         completionState = CompletionState.PROGRESS_TRACKS_UPDATED;
-        tickTimer = 0f;
+        CloseLevelCompletionPanel();
+        SceneController.LoadNextLevelWithFadeDelay();
+        yield return null;
     }
 
-    private void PopulateLevelCompletionControllerData()
+    /// <summary>
+    /// Moves a Transform (most likely a progress track) to a target position and
+    /// fades in or out via a CanvasGroup over time.
+    /// </summary>
+    /// <param name="objectToMove">The object to move.</param>
+    /// <param name="targetPosition">The target position to move to.</param>
+    /// <param name="moveTime">The time it takes to move to the target position.</param>
+    /// <param name="trackGroup">The CanvasGroup to fade in or out.</param>
+    /// <param name="fadeDuration">The time it takes to fade in or out.</param> 
+    /// <param name="fadeIn">true to fade in; false to fade out.</param>
+    /// <returns></returns>
+    private IEnumerator MoveToPositionAndFade(Transform objectToMove, Vector3 targetPosition,
+        float moveTime, CanvasGroup trackGroup, float fadeDuration, bool fadeIn)
     {
-        List<ModelType> unlockedModels = CollectionManager.GetAllUnlockedModelTypes();
-        for (int i = 0; i < instance.progressTracks.Count; i++)
+        Vector3 startPosition = objectToMove.position;
+        float elapsedTime = 0f;
+        float fadeElapsed = 0f;
+
+        if (fadeIn) trackGroup.alpha = 0f;
+        else trackGroup.alpha = 1f;
+
+        while (elapsedTime < moveTime)
         {
-            if (i >= unlockedModels.Count) break;
-            ModelType typeToLoadProgressTrackWith = unlockedModels[i];
-            ModelUpgradeSaveData saveDataForType = CollectionManager.GetUnlockedModelUpgradeSaveData(typeToLoadProgressTrackWith);
-            Requirements requirementsForType = CollectionManager.GetUpgradeRequirementsData(typeToLoadProgressTrackWith);
-            instance.progressTracks[i].InitializeProgressTrack(saveDataForType, requirementsForType);
+            float t = elapsedTime / moveTime;
+            objectToMove.position = Vector3.Lerp(startPosition, targetPosition, t);
+            fadeElapsed += Time.deltaTime;
+            if (fadeIn) trackGroup.alpha = Mathf.Clamp01(fadeElapsed / fadeDuration);
+            else trackGroup.alpha = Mathf.Clamp01(1f - (fadeElapsed / fadeDuration));
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
         }
 
-        foreach (ProgressTrack progressTrack in instance.progressTracks)
-        {
-            if (!progressTrack.Initialized()) progressTrack.gameObject.SetActive(false);
-        }
+        objectToMove.position = targetPosition;
+        if (fadeIn) trackGroup.alpha = 1f;
+        else trackGroup.alpha = 0f;
     }
 
-    #endregion
-
-    #region State Logic
+    /// <summary>
+    /// Upgrades an initialized progress track over time. This time
+    /// period is determined by the number of points required to upgrade.
+    /// </summary>
+    /// <param name="track">The progress track to upgrade.</param>
+    /// <param name="pointIncrementDelay">The seconds delay between each point increment.</param>
+    /// <returns>a reference to the coroutine.</returns>
+    private IEnumerator UpgradeProgressTrackOverTime(ProgressTrack track, float pointIncrementDelay)
+    {
+        ModelType typeUpgrading = track.GetModelTypeTrackIsUpgrading();
+        int totalPointsToAdd = CollectionManager.GetModelUpgradePoints(typeUpgrading);
+        while (totalPointsToAdd > 0)
+        {
+            int pointsToAdd = Mathf.Min(1, totalPointsToAdd);
+            track.AddProgress(pointsToAdd);
+            totalPointsToAdd -= pointsToAdd;
+            yield return new WaitForSeconds(pointsToAdd * pointIncrementDelay);
+        }
+    }
 
     /// <summary>
     /// Runs logic for the Initial Result state.
@@ -224,7 +313,6 @@ public class LevelCompletionController : MonoBehaviour
         if(completionState != CompletionState.INITIAL_RESULT) return;
 
         if(!LevelCompletePanelOpen()) OpenLevelCompletePanel();
-        if(!displayResultObjects.activeSelf) displayResultObjects.SetActive(true);
     }
 
     /// <summary>
@@ -235,30 +323,6 @@ public class LevelCompletionController : MonoBehaviour
         if (completionState != CompletionState.PROGRESS_TRACKS_UPDATING) return;
 
         if (!LevelCompletePanelOpen()) OpenLevelCompletePanel();
-
-        // Increment the tick timer by the time elapsed since the last frame
-        tickTimer += Time.deltaTime;
-
-        // Check if it's time to add points
-        if (tickTimer >= timeBetweenTicks)
-        {
-            progressTracksUpdated = true;
-            foreach (ProgressTrack progressTrack in progressTracks)
-            {
-                if (!progressTrack.Initialized()) continue;
-                ModelType typeUpgrading = progressTrack.GetModelTypeTrackIsUpgrading();
-                int totalPointsToAdd = CollectionManager.GetModelUpgradePoints(typeUpgrading);
-                if (totalPointsToAdd <= 0) continue;
-
-                progressTracksUpdated = false;
-                int pointsToAddThisTick = Mathf.Min(POINTS_PER_TICK, totalPointsToAdd);
-                progressTrack.AddProgress(pointsToAddThisTick);
-                CollectionManager.RemoveModelUpgradePoints(typeUpgrading, pointsToAddThisTick);
-            }
-            tickTimer = 0f;
-        }
-
-        if (progressTracksUpdated) completionState = CompletionState.PROGRESS_TRACKS_UPDATED;
     }
 
     /// <summary>
@@ -268,10 +332,6 @@ public class LevelCompletionController : MonoBehaviour
     {
         if(completionState != CompletionState.PROGRESS_TRACKS_UPDATED) return;
     }
-
-    #endregion
-
-    #region Button Events
 
     /// <summary>
     /// # BUTTON EVENT #
@@ -286,17 +346,25 @@ public class LevelCompletionController : MonoBehaviour
         switch (completionState)
         {
             case CompletionState.INITIAL_RESULT:
-                completionState = CompletionState.PROGRESS_TRACKS_UPDATING;
-                displayResultObjects.SetActive(false);
-                progressTrackObjects.SetActive(true);
+
+                if(gameState == GameState.WIN)
+                {
+                    completionState = CompletionState.PROGRESS_TRACKS_UPDATING;
+                    progressTrackObjects.SetActive(true);
+                    StartCoroutine(PlayUpgradeAnimation());
+                }
+                else
+                {
+                    CloseLevelCompletionPanel();
+                    SceneController.LoadSceneWithFadeDelay("MainMenu");
+                }
                 break;
             case CompletionState.PROGRESS_TRACKS_UPDATING:
-                CompleteRemainingProgressInstantly();
                 completionState = CompletionState.PROGRESS_TRACKS_UPDATED;
-                break;
-            case CompletionState.PROGRESS_TRACKS_UPDATED:
                 CloseLevelCompletionPanel();
                 SceneController.LoadNextLevelWithFadeDelay();
+                break;
+            case CompletionState.PROGRESS_TRACKS_UPDATED:
                 break;
         }
     }

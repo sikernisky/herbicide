@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -43,7 +44,51 @@ public class ShopFactory : Factory
     /// </summary>
     /// <param name="modelType">The type of ShopCard model to get.</param>
     /// <returns>a GameObject with a ShopCard component attached to it</returns>
-    public static GameObject GetShopCardPrefab(ModelType modelType) => instance.RequestObject(modelType);
+    public static GameObject GetShopCardPrefab(ModelType modelType)
+    {
+        return instance.RequestObject(GetShopCardModelTypeFromModelType(modelType));
+    }
+
+    /// <summary>
+    /// Returns the ShopCard ModelType based on the given ModelType.
+    /// </summary>
+    /// <param name="modelType">The ModelType to convert to a ShopCard ModelType.</param>
+    /// <returns>the ShopCard ModelType based on the given ModelType.</returns>
+    public static ModelType GetShopCardModelTypeFromModelType(ModelType modelType)
+    {
+        HashSet<ModelType> shopCardTypes = new HashSet<ModelType>
+        {
+            ModelType.SHOP_CARD_SQUIRREL,
+            ModelType.SHOP_CARD_BEAR,
+            ModelType.SHOP_CARD_BUNNY,
+            ModelType.SHOP_CARD_PORCUPINE,
+            ModelType.SHOP_CARD_RACCOON,
+            ModelType.SHOP_CARD_OWL,
+            ModelType.SHOP_CARD_BLANK
+        };
+
+        if (shopCardTypes.Contains(modelType)) return modelType;
+
+        switch (modelType)
+        {
+            case ModelType.SQUIRREL:
+                return ModelType.SHOP_CARD_SQUIRREL;
+            case ModelType.BEAR:
+                return ModelType.SHOP_CARD_BEAR;
+            case ModelType.BUNNY:
+                return ModelType.SHOP_CARD_BUNNY;
+            case ModelType.PORCUPINE:
+                return ModelType.SHOP_CARD_PORCUPINE;
+            case ModelType.RACCOON:
+                return ModelType.SHOP_CARD_RACCOON;
+            case ModelType.OWL:
+                return ModelType.SHOP_CARD_OWL;
+            default:
+                break;
+        }
+
+        throw new System.Exception("ModelType " + modelType + " does not have a corresponding ShopCard ModelType.");
+    }
 
     /// <summary>
     /// Accepts a ShopCard prefab that the caller no longer needs. Adds it back

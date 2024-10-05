@@ -149,7 +149,7 @@ public class ShopController : MonoBehaviour
             HashSet<ModelType> shopCardsToLoad = new HashSet<ModelType>();
             foreach(ModelType unlockedModelType in CollectionManager.GetAllUnlockedModelTypes())
             {
-                shopCardsToLoad.Add(ShopCard.ModelTypeToShopCardModelType(unlockedModelType));
+                shopCardsToLoad.Add(unlockedModelType);
             }
 
             Assert.IsNotNull(shopCardsToLoad);

@@ -29,10 +29,15 @@ public class ProgressTrack : MonoBehaviour
     private Image progressFillImage;
 
     /// <summary>
-    /// The text that displays what the ProgressTrack is upgrading.
+    /// The GameObject that holds the card that represents the Model being upgraded.
     /// </summary>
     [SerializeField]
-    private TMP_Text trackNameText;
+    private GameObject trackCardParentObject;
+
+    /// <summary>
+    /// The prefab for the card that represents the Model being upgraded.
+    /// </summary>
+    private GameObject trackCardPrefab;
 
     /// <summary>
     /// The text that displays the progress of the ProgressTrack.
@@ -61,6 +66,11 @@ public class ProgressTrack : MonoBehaviour
     /// </summary>
     private int maxFillAmount;
 
+    /// <summary>
+    /// true if the ProgressTrack has been fully upgraded; false otherwise.
+    /// </summary>
+    private bool doneUpgrading;
+
     #endregion
 
     #region Methods
@@ -86,7 +96,7 @@ public class ProgressTrack : MonoBehaviour
         maxFillAmount = maxProgressPointsForModelAtCurrentLevel;
         currentFillAmount = SavedModelUpgradeData.GetCurrentProgress();
 
-        UpdateText();
+        UpdateTrackDisplay();
     }
 
     /// <summary>
@@ -99,11 +109,19 @@ public class ProgressTrack : MonoBehaviour
     /// Updates the text of the ProgressTrack to display the current progress
     /// and name of the Model being upgraded.
     /// </summary>
-    private void UpdateText()
+    private void UpdateTrackDisplay()
     {
-        trackNameText.text = SavedModelUpgradeData.GetModelType().ToString();
+        if(trackCardPrefab == null)
+        {
+            ModelType modelType = SavedModelUpgradeData.GetModelType();
+            trackCardPrefab = ShopFactory.GetShopCardPrefab(modelType);
+        }
+
+        trackCardPrefab.transform.SetParent(trackCardParentObject.transform);
+        trackCardPrefab.transform.localScale = new Vector3(1, 1, 1);
+        trackCardPrefab.transform.position = trackCardParentObject.transform.position;
         trackProgressText.text = currentFillAmount + "/" + maxFillAmount;
-        trackProgressMadeText.text = totalProgressMade.ToString();
+        trackProgressMadeText.text = "+" + totalProgressMade.ToString();
     }
 
     /// <summary>
@@ -139,7 +157,7 @@ public class ProgressTrack : MonoBehaviour
             SavedModelUpgradeData.SetCurrentProgress(currentFillAmount);
         }
 
-        UpdateText();
+        UpdateTrackDisplay();
     }
 
     /// <summary>

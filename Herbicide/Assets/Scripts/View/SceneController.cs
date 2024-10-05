@@ -107,7 +107,7 @@ public class SceneController : MonoBehaviour
     /// Loads a scene. If already loading, does nothing.
     /// </summary>
     /// <param name="sceneName">The name of the scene to load.</param>
-    public void LoadScene(string sceneName)
+    private void LoadScene(string sceneName)
     {
         if (loadingScene) return;
         loadingScene = true;
@@ -117,7 +117,7 @@ public class SceneController : MonoBehaviour
     /// <summary>
     /// [!!BUTTON EVENT!!]
     /// 
-    /// Loads the next level. If already loading, does nothing.
+    /// Loads the next level with a fade delay. If already loading, does nothing.
     /// </summary>
     public static void LoadNextLevelWithFadeDelay()
     {
@@ -131,6 +131,16 @@ public class SceneController : MonoBehaviour
             SaveLoadManager.Save();
             instance.StartCoroutine(instance.ReloadSceneAfterFadeOut());
         }
+    }
+
+    /// <summary>
+    /// Loads a scene with a fade delay. If already loading, does nothing.
+    /// </summary>
+    /// <param name="sceneName">the name of the scene to load</param>
+    public static void LoadSceneWithFadeDelay(string sceneName)
+    {
+        if (instance.loadingScene) return;
+        instance.StartCoroutine(instance.LoadSceneAfterFadeOut(sceneName));
     }
 
     /// <summary>
@@ -177,6 +187,18 @@ public class SceneController : MonoBehaviour
         CanvasController.PlayFaderIn();
         yield return new WaitForSeconds(CanvasController.FADE_TIME);
         ReloadScene();
+    }
+
+    /// <summary>
+    /// Loads a scene after playing the Canvas fader out.
+    /// </summary>
+    /// <param name="sceneName">the name of the scene to load</param>
+    /// <returns>a reference to the coroutine</returns>
+    private IEnumerator LoadSceneAfterFadeOut(string sceneName)
+    {
+        CanvasController.PlayFaderIn();
+        yield return new WaitForSeconds(CanvasController.FADE_TIME);
+        LoadScene(sceneName);
     }
 
     #endregion

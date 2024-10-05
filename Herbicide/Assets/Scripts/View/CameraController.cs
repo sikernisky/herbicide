@@ -107,7 +107,6 @@ public class CameraController : MonoBehaviour
     /// singleton.</returns>
     private Camera GetCamera() => cam;
 
-
     /// <summary>
     /// Sets the correct Camera scale based on the current
     /// level. 
@@ -119,16 +118,16 @@ public class CameraController : MonoBehaviour
         switch (level)
         {
             case 0:
-                camera.orthographicSize = 6.5f;
+                camera.orthographicSize = 8.5f;
                 break;
             case 1:
-                camera.orthographicSize = 7.0f;
+                camera.orthographicSize = 8.5f;
                 break;
             case 2:
-                camera.orthographicSize = 8.0f;
+                camera.orthographicSize = 8.5f;
                 break;
             default:
-                camera.orthographicSize = 8.0f;
+                camera.orthographicSize = 8.5f;
                 break;
         }
     }
