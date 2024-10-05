@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using static ShopController;
 
 /// <summary>
 /// Sets up and manages the Shop. 
@@ -18,19 +19,29 @@ public class ShopManager : MonoBehaviour
     /// Prefab of the shop when it has two slots.
     /// </summary>
     [SerializeField]
-    private GameObject shopTwoSlots;
+    private ShopController shopTwoSlots;
 
     /// <summary>
     /// Prefab of the shop when it has three slots.
     /// </summary>
     [SerializeField]
-    private GameObject shopThreeSlots;
+    private ShopController shopThreeSlots;
 
     /// <summary>
     /// Prefab of the shop when it has four slots.
     /// </summary>
     [SerializeField]
-    private GameObject shopFourSlots;
+    private ShopController shopFourSlots;
+
+    /// <summary>
+    /// The currently active shop.
+    /// </summary>
+    private ShopController activeShop;
+
+    /// <summary>
+    /// The delegate to subscribe to the BuyModelDelegate.
+    /// </summary>
+    private BuyModelDelegate handlerToSubscribe;
 
     #endregion
 
@@ -48,36 +59,71 @@ public class ShopManager : MonoBehaviour
         Assert.IsNotNull(shopManagers, "Array of ShopManagers is null.");
         Assert.AreEqual(1, shopManagers.Length);
         instance = shopManagers[0];
-        instance.ActivateShopPrefabBasedOnLevel();
     }
 
     /// <summary>
-    /// Loads the correct shop prefab based on the current level.
-    /// Different prefabs have different numbers of slots and possibly
-    /// other features.
+    /// Subscribes to the SaveLoadManager's OnLoadRequested and OnSaveRequested events.
     /// </summary>
-    private void ActivateShopPrefabBasedOnLevel()
+    /// <param name="levelController">The LevelController singleton.</param>
+    public static void SubscribeToSaveLoadEvents(LevelController levelController)
     {
-        shopTwoSlots.SetActive(false); 
-        shopThreeSlots.SetActive(false);
-        shopFourSlots.SetActive(false);
+        Assert.IsNotNull(levelController, "LevelController is null.");
 
-        int level = SaveLoadManager.GetLevel();
+        SaveLoadManager.SubscribeToToLoadEvent(instance.LoadShopData);
+        SaveLoadManager.SubscribeToToLoadEvent(instance.SaveShopData);
+    }
+
+    /// <summary>
+    /// Loads the shop data.
+    /// </summary>
+    private void LoadShopData()
+    {
+        int level = SaveLoadManager.GetGameLevel();
         switch (level)
         {
             case 0:
-                shopTwoSlots.SetActive(true);
+                shopTwoSlots.gameObject.SetActive(true);
+                activeShop = shopTwoSlots;
                 break;
             case 1:
-                shopThreeSlots.SetActive(true);
+                shopThreeSlots.gameObject.SetActive(true);
+                activeShop = shopThreeSlots;
                 break;
             case 2:
-                shopFourSlots.SetActive(true);
+                shopFourSlots.gameObject.SetActive(true);
+                activeShop = shopFourSlots;
                 break;
             default:
-                shopFourSlots.SetActive(true);
+                shopFourSlots.gameObject.SetActive(true);
+                activeShop = shopFourSlots;
                 break;
         }
+
+        activeShop.LoadShop(instance);
+        activeShop.SubscribeToBuyDefenderDelegate(handlerToSubscribe);
+    }
+
+    /// <summary>
+    /// Saves the shop data.
+    /// </summary>
+    private void SaveShopData() { }
+    
+    /// <summary>
+    /// Updates the shop manager.
+    /// </summary>
+    /// <param name="gameState">The most recent game state. </param>
+    public static void UpdateShopManager(GameState gameState)
+    {
+        instance.activeShop.UpdateShop(gameState);
+    }
+
+    /// <summary>
+    /// Subscribes the active shop to the BuyDefenderDelegate.
+    /// </summary>
+    /// <param name="handler">the event handler</param>
+    public static void SubscribeToOnPurchaseShopCardDelegate(BuyModelDelegate handler)
+    {
+        instance.handlerToSubscribe = handler;
     }
 
     #endregion

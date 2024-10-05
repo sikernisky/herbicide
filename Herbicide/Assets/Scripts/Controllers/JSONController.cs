@@ -45,7 +45,6 @@ public class JSONController : MonoBehaviour
         instance = jsonControllers[0];
         Assert.IsNotNull(instance.tiledJSONLevels);
         Assert.IsTrue(instance.tiledJSONLevels.Count > 0, "No levels assigned to JSONController.");
-        SaveLoadManager.Save();
     }
 
     /// <summary>
@@ -54,7 +53,7 @@ public class JSONController : MonoBehaviour
     /// </summary>
     public static void ParseTiledData()
     {
-        int levelToLoad = SaveLoadManager.GetLevel();
+        int levelToLoad = SaveLoadManager.GetGameLevel();
         levelToLoad = Mathf.Clamp(levelToLoad, 0, instance.tiledJSONLevels.Count - 1); // clamp the level to the number of levels we have.
         TextAsset jsonTextAsset = instance.tiledJSONLevels[levelToLoad];
         string json = jsonTextAsset.text;

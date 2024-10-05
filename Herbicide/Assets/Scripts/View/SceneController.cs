@@ -35,7 +35,7 @@ public class SceneController : MonoBehaviour
     public static void UpdateScene()
     {
         timeElapsed += Time.deltaTime;
-        if (InputController.DidKeycodeDown(KeyCode.N)) instance.LoadNextLevel();
+        if (InputController.DidKeycodeDown(KeyCode.N)) LoadNextLevelWithFadeDelay();
     }
 
     /// <summary>
@@ -107,7 +107,7 @@ public class SceneController : MonoBehaviour
     /// Loads a scene. If already loading, does nothing.
     /// </summary>
     /// <param name="sceneName">The name of the scene to load.</param>
-    public void LoadScene(string sceneName)
+    private void LoadScene(string sceneName)
     {
         if (loadingScene) return;
         loadingScene = true;
@@ -117,20 +117,30 @@ public class SceneController : MonoBehaviour
     /// <summary>
     /// [!!BUTTON EVENT!!]
     /// 
-    /// Loads the next level. If already loading, does nothing.
+    /// Loads the next level with a fade delay. If already loading, does nothing.
     /// </summary>
-    public void LoadNextLevel()
+    public static void LoadNextLevelWithFadeDelay()
     {
-        if (loadingScene) return;
-        int currentLevel = SaveLoadManager.GetLevel();
+        if (instance.loadingScene) return;
+        int currentLevel = SaveLoadManager.GetGameLevel();
         int maxLevel = JSONController.GetMaxLevelIndex();
-        if (currentLevel >= maxLevel) LoadScene("MainMenu");
+        if (currentLevel >= maxLevel) instance.LoadScene("MainMenu");
         else
         {
-            SaveLoadManager.SetLevel(currentLevel + 1);
+            SaveLoadManager.SaveGameLevel(currentLevel + 1);
             SaveLoadManager.Save();
-            StartCoroutine(ReloadSceneAfterFadeOut());
+            instance.StartCoroutine(instance.ReloadSceneAfterFadeOut());
         }
+    }
+
+    /// <summary>
+    /// Loads a scene with a fade delay. If already loading, does nothing.
+    /// </summary>
+    /// <param name="sceneName">the name of the scene to load</param>
+    public static void LoadSceneWithFadeDelay(string sceneName)
+    {
+        if (instance.loadingScene) return;
+        instance.StartCoroutine(instance.LoadSceneAfterFadeOut(sceneName));
     }
 
     /// <summary>
@@ -177,6 +187,18 @@ public class SceneController : MonoBehaviour
         CanvasController.PlayFaderIn();
         yield return new WaitForSeconds(CanvasController.FADE_TIME);
         ReloadScene();
+    }
+
+    /// <summary>
+    /// Loads a scene after playing the Canvas fader out.
+    /// </summary>
+    /// <param name="sceneName">the name of the scene to load</param>
+    /// <returns>a reference to the coroutine</returns>
+    private IEnumerator LoadSceneAfterFadeOut(string sceneName)
+    {
+        CanvasController.PlayFaderIn();
+        yield return new WaitForSeconds(CanvasController.FADE_TIME);
+        LoadScene(sceneName);
     }
 
     #endregion

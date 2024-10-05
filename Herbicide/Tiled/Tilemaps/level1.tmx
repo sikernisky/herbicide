@@ -235,8 +235,7 @@
   </properties>
   <object id="807" type="Marker" gid="68" x="48" y="96" width="16" height="16">
    <properties>
-    <property name="enemySpawnData">kudzu1-3, kudzu1-10
-</property>
+    <property name="enemySpawnData" value="kudzu1-3"/>
     <property name="markerName" value="enemySpawn"/>
    </properties>
   </object>

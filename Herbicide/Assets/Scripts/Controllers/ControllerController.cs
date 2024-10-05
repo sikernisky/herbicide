@@ -108,7 +108,7 @@ public class ControllerController : MonoBehaviour
         collectedReward = false;
         spawnedReward = false;
 
-        ShopController.SubscribeToBuyDefenderDelegate(instance.OnPurchaseModelFromShop);
+        ShopManager.SubscribeToOnPurchaseShopCardDelegate(instance.OnPurchaseModelFromShop);
     }
 
     /// <summary>
@@ -274,9 +274,10 @@ public class ControllerController : MonoBehaviour
         int counter = 0;
         foreach (ModelController pc in instance.enemyControllers)
         {
-            if (pc == null || !pc.ValidModel()) continue;
+            if (pc == null) continue;
             Enemy model = pc.GetModel() as Enemy;
             if (model == null) continue;
+            if (!pc.ValidModel()) continue;
             if (!model.Dead() && !model.Exited()) counter++;
         }
         return counter;

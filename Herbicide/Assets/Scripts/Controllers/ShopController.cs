@@ -12,11 +12,6 @@ public class ShopController : MonoBehaviour
     #region Fields
 
     /// <summary>
-    /// Reference to the ShopManager singleton.
-    /// </summary>
-    private static ShopController instance;
-
-    /// <summary>
     /// Reference to the Shop's timer bar background Image component.
     /// </summary>
     [SerializeField]
@@ -89,48 +84,31 @@ public class ShopController : MonoBehaviour
     #region Methods
 
     /// <summary>
-    /// Finds and sets the ShopManager singleton.
-    /// </summary>
-    /// <param name="levelController">The LevelController singleton.</param>
-    public static void SetSingleton(LevelController levelController)
-    {
-        if (levelController == null) return;
-        if (instance != null) return;
-
-        ShopController[] shopManagers = FindObjectsOfType<ShopController>();
-        Assert.IsNotNull(shopManagers, "Array of ShopManagers is null.");
-        Assert.AreEqual(1, shopManagers.Length);
-        instance = shopManagers[0];
-        instance.cardPool = new Dictionary<ModelType, int>();
-        PlacementController.SubscribeToFinishPlacingDelegate(instance.OnFinishPlacing);
-    }
-
-    /// <summary>
     /// Main update loop for the ShopManager.
     /// </summary>
     /// <param name="gameState">The most recent GameState.</param>
-    public static void UpdateShop(GameState gameState)
+    public void UpdateShop(GameState gameState)
     {
         if (gameState != GameState.ONGOING) return;
 
-        if (InputController.DidKeycodeDown(KeyCode.S)) { instance.Reroll(false); } // TEMP
+        if (InputController.DidKeycodeDown(KeyCode.S)) { Reroll(false); } // TEMP
 
         // Check & Handle ShopCard click
-        foreach (ShopSlot shopSlot in instance.shopSlots)
+        foreach (ShopSlot shopSlot in shopSlots)
         {
             if (shopSlot.SlotClicked())
             {
-                instance.ClickShopSlotButton(shopSlot.GetSlotIndex());
+                ClickShopSlotButton(shopSlot.GetSlotIndex());
                 shopSlot.ResetSlotClickStatus();
             }
         }
 
         // Enable / Disable reroll button depending on balance
-        if (EconomyController.GetBalance(ModelType.DEW) < REROLL_COST) instance.rerollButton.interactable = false;
-        else instance.rerollButton.interactable = true;
+        if (EconomyController.GetBalance(ModelType.DEW) < REROLL_COST) rerollButton.interactable = false;
+        else rerollButton.interactable = true;
 
         // Lighten / Darken shop cards depending on if player can afford
-        foreach (ShopSlot shopSlot in instance.shopSlots)
+        foreach (ShopSlot shopSlot in shopSlots)
         {
             if (shopSlot.Empty()) continue;
             if (!shopSlot.CanBuy(EconomyController.GetBalance(ModelType.DEW))) shopSlot.DarkenSlot();
@@ -138,55 +116,58 @@ public class ShopController : MonoBehaviour
         }
 
         // Update reroll timer
-        float timePercentage = instance.timeSinceLastReroll / AUTOMATIC_REROLL_TIME;
-        instance.timerBarFill.transform.localScale = new Vector3(timePercentage, 1, 1);
-        if (instance.timeSinceLastReroll <= 0)
+        float timePercentage = timeSinceLastReroll / AUTOMATIC_REROLL_TIME;
+        timerBarFill.transform.localScale = new Vector3(timePercentage, 1, 1);
+        if (timeSinceLastReroll <= 0)
         {
-            instance.Reroll(true);
+            Reroll(true);
         }
-        else instance.timeSinceLastReroll -= Time.deltaTime;
+        else timeSinceLastReroll -= Time.deltaTime;
     }
 
     /// <summary>
     /// Loads the shop with the types of ShopCards it can sell.
     /// </summary>
-    /// <param name="modelTypes">the types of ShopCards 
+    /// <param name="shopManager">the ShopManager singleton</param>
     /// the Shop can sell. If null, the Shop can sell all types.</param>
-    public static void LoadShop()
+    public void LoadShop(ShopManager shopManager)
     {
-        if (instance.shopActive) return;
+        if (shopManager == null) return;
+        if (shopActive) return;
 
-        if (!instance.shopLoaded)
+        if (!shopLoaded)
         {
+            PlacementController.SubscribeToFinishPlacingDelegate(OnFinishPlacing);
+            cardPool = new Dictionary<ModelType, int>();
             int slotCounter = 0;
-            foreach (ShopSlot shopSlot in instance.shopSlots)
+            foreach (ShopSlot shopSlot in shopSlots)
             {
                 shopSlot.SetupSlot(slotCounter);
                 slotCounter++;
             }
 
-            HashSet<ModelType> modelTypesToLoad = new HashSet<ModelType>();
-            foreach(ModelType unlockedModelType in SaveLoadManager.GetUnlockedModels())
+            HashSet<ModelType> shopCardsToLoad = new HashSet<ModelType>();
+            foreach(ModelType unlockedModelType in CollectionManager.GetAllUnlockedModelTypes())
             {
-                modelTypesToLoad.Add(ShopCard.ModelTypeToShopCardModelType(unlockedModelType));
+                shopCardsToLoad.Add(unlockedModelType);
             }
 
-            Assert.IsNotNull(modelTypesToLoad);
-            Assert.IsTrue(modelTypesToLoad.Count > 0);
+            Assert.IsNotNull(shopCardsToLoad);
+            Assert.IsTrue(shopCardsToLoad.Count > 0);
 
 
-            foreach (ModelType modelType in modelTypesToLoad)
+            foreach (ModelType modelType in shopCardsToLoad)
             {
-                instance.cardPool.Add(modelType, 5); //5 is placeholder.
+                cardPool.Add(modelType, 5); //5 is placeholder.
             }
 
-            instance.Reroll(true);
-            instance.timeSinceLastReroll = AUTOMATIC_REROLL_TIME;
+            Reroll(true);
+            timeSinceLastReroll = AUTOMATIC_REROLL_TIME;
         }
-        else instance.shopSlots.ForEach(ss => ss.EnableSlot());
+        else shopSlots.ForEach(ss => ss.EnableSlot());
 
-        instance.shopLoaded = true;
-        instance.shopActive = true;
+        shopLoaded = true;
+        shopActive = true;
     }
 
     /// <summary>
@@ -217,8 +198,8 @@ public class ShopController : MonoBehaviour
             cardSlot.Fill(shopCardComp);
         }
 
-        instance.timeSinceLastReroll = AUTOMATIC_REROLL_TIME;
-        instance.shopActive = true;
+        timeSinceLastReroll = AUTOMATIC_REROLL_TIME;
+        shopActive = true;
     }
 
     /// <summary>
@@ -262,10 +243,10 @@ public class ShopController : MonoBehaviour
     /// Subscribes a handler (the ControllerController) to the request upgrade event.
     /// </summary>
     /// <param name="handler">The handler to subscribe.</param>
-    public static void SubscribeToBuyDefenderDelegate(BuyModelDelegate handler)
+    public void SubscribeToBuyDefenderDelegate(BuyModelDelegate handler)
     {
         Assert.IsNotNull(handler, "Handler is null.");
-        instance.OnBuyModel += handler;
+        OnBuyModel += handler;
     }
 
     #endregion
