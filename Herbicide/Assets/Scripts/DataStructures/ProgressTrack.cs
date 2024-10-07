@@ -136,13 +136,16 @@ public class ProgressTrack : MonoBehaviour
         int overflow = currentFillAmount + progressToAdd - maxFillAmount;
         if (overflow >= 0)
         {
+            // Level up and set current progress to 0 on overflow
+            currentFillAmount = 0;
+            totalProgressMade += (progressToAdd - overflow); // Only count the progress that filled the current level
 
             int newLevel = SavedModelUpgradeData.GetLevel() + 1;
-            if(UpgradeRequirementsData.ValidLevel(newLevel))
+            if (UpgradeRequirementsData.ValidLevel(newLevel))
             {
                 SavedModelUpgradeData.SetLevel(newLevel);
                 maxFillAmount = UpgradeRequirementsData.GetPointRequirementsByLevel(newLevel);
-                AddProgress(overflow);
+                AddProgress(overflow); // Recursively add the overflow to the next level
             }
             else
             {

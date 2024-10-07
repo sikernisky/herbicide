@@ -39,7 +39,7 @@ public class Acorn : Projectile
     /// <summary>
     /// Starting damage of an Acorn.
     /// </summary>
-    public override int BASE_DAMAGE => 5; //default: 5
+    public override int BASE_DAMAGE => 4; //default: 4
 
     /// <summary>
     /// Maximum damage of an Acorn.

@@ -49,6 +49,15 @@ public class MainMenuController : MonoBehaviour
         CanvasController.UpdateCanvas(gameState);
     }
 
+    /// <summary>
+    /// Called when the application is quitting. Sets the player stats
+    /// back to the beginning.
+    /// </summary>
+    void OnApplicationQuit()
+    {
+        // temp
+        SaveLoadManager.WipeCurrentSave();
+    }
 
     /// <summary>
     /// Instantiates the necessary Singletons for the Main Menu.

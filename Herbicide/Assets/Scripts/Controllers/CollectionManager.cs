@@ -172,12 +172,9 @@ public class CollectionManager : MonoBehaviour
         instance.modelUpgradeSaveData = SaveLoadManager.LoadCollection(instance);
         instance.modelUpgradePointsTracker = new Dictionary<ModelType, int>();
 
-        if (instance.modelUpgradeSaveData == null) // new load
-        {
-            instance.modelUpgradeSaveData = new List<ModelUpgradeSaveData>();
-            UnlockModel(ModelType.SQUIRREL);
-        }
-
+        if (instance.modelUpgradeSaveData == null) instance.modelUpgradeSaveData = new List<ModelUpgradeSaveData>();
+        int level = SaveLoadManager.GetLoadedGameLevel();
+        if(level == 0) UnlockModel(ModelType.SQUIRREL);
         foreach (ModelUpgradeSaveData data in instance.modelUpgradeSaveData)
         {
             instance.modelUpgradePointsTracker[data.GetModelType()] = 0;

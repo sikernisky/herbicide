@@ -186,8 +186,6 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         throw new System.Exception("Something wrong happened.");
     }
 
-    
-
     #endregion
 
     #region State Logic
@@ -341,6 +339,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         if (GetState() != KudzuState.IDLE) return;
 
         GetKudzu().SetEntered();
+
         SetNextAnimation(GetKudzu().IDLE_ANIMATION_DURATION, EnemyFactory.GetIdleTrack(
             GetKudzu().TYPE,
             GetKudzu().GetDirection(), GetKudzu().GetHealthState()));

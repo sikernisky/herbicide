@@ -165,7 +165,7 @@ public class SaveLoadManager : MonoBehaviour
     /// 0-indexed, so the first level is level 0.
     /// </summary>
     /// <returns>the level the player is currently on.</returns>
-    public static int GetGameLevel() 
+    public static int GetLoadedGameLevel() 
     {
         Assert.IsNotNull(instance.currentLoad, "currentLoad is null.");
         return instance.currentLoad.furthestLevel; 
@@ -194,6 +194,38 @@ public class SaveLoadManager : MonoBehaviour
         Assert.IsNotNull(collectionManager, "collectionManager is null.");
 
         return instance.currentLoad.modelSaveData;
+    }
+
+    /// <summary>
+    /// Saves the value of the isRerollUnlocked field to the PlayerData.
+    /// </summary>
+    /// <param name="unlocked">true if unlocked; otherwise false.</param>
+    public static void SaveIsRerollUnlocked(bool unlocked)
+    {
+        Assert.IsNotNull(instance.currentLoad, "currentLoad is null.");
+
+        instance.currentLoad.isRerollUnlocked = unlocked;
+    }
+
+    /// <summary>
+    /// Returns true if the reroll feature is unlocked; otherwise false.
+    /// </summary>
+    /// <returns>true if the reroll feature is unlocked; otherwise false.</returns>
+    public static bool GetLoadedIsRerollUnlocked()
+    {
+        Assert.IsNotNull(instance.currentLoad, "currentLoad is null.");
+
+        return instance.currentLoad.isRerollUnlocked;
+    }
+
+    /// <summary>
+    /// Called when the application is quitting.
+    /// </summary>
+    public static void OnQuit()
+    {
+        SaveGameLevel(0);
+        Save();
+        WipeCurrentSave(); // temporary
     }
 
     #endregion

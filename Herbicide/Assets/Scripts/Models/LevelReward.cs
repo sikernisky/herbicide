@@ -59,6 +59,30 @@ public class LevelReward : Collectable
     [SerializeField]
     private Sprite porcupineRewardSpriteShadow;
 
+    /// <summary>
+    /// The Sprite that represents a Combination Badge reward.
+    /// </summary>
+    [SerializeField]
+    private Sprite combinationBadgeRewardSprite;
+
+    /// <summary>
+    /// The Sprite that represents a Combination Badge reward's shadow.
+    /// </summary>
+    [SerializeField]
+    private Sprite combinationBadgeRewardSpriteShadow;
+
+    /// <summary>
+    /// The Sprite that represents a Reroll Badge reward.
+    /// </summary>
+    [SerializeField]
+    private Sprite rerollBadgeRewardSprite;
+
+    /// <summary>
+    /// The Sprite that represents a Reroll Badge reward's shadow.
+    /// </summary>
+    [SerializeField]
+    private Sprite rerollBadgeRewardSpriteShadow;
+
     #endregion
 
     #region Stats
@@ -96,6 +120,14 @@ public class LevelReward : Collectable
             case ModelType.PORCUPINE:
                 SetSprite(porcupineRewardSprite);
                 SetShadowSprite(porcupineRewardSpriteShadow);
+                break;
+            case ModelType.COMBINATION_BADGE:
+                SetSprite(combinationBadgeRewardSprite);
+                SetShadowSprite(combinationBadgeRewardSpriteShadow);
+                break;
+            case ModelType.REROLL_BADGE:
+                SetSprite(rerollBadgeRewardSprite);
+                SetShadowSprite(rerollBadgeRewardSpriteShadow);
                 break;
             default:
                 break;

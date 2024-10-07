@@ -122,7 +122,7 @@ public class SceneController : MonoBehaviour
     public static void LoadNextLevelWithFadeDelay()
     {
         if (instance.loadingScene) return;
-        int currentLevel = SaveLoadManager.GetGameLevel();
+        int currentLevel = SaveLoadManager.GetLoadedGameLevel();
         int maxLevel = JSONController.GetMaxLevelIndex();
         if (currentLevel >= maxLevel) instance.LoadScene("MainMenu");
         else

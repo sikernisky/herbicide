@@ -79,6 +79,11 @@ public class ShopController : MonoBehaviour
     /// </summary>
     private bool shopActive;
 
+    /// <summary>
+    /// The number of cards purchased from the shop this level.
+    /// </summary>
+    private static int numCardsPurchased;
+
     #endregion
 
     #region Methods
@@ -107,14 +112,6 @@ public class ShopController : MonoBehaviour
         if (EconomyController.GetBalance(ModelType.DEW) < REROLL_COST) rerollButton.interactable = false;
         else rerollButton.interactable = true;
 
-        // Lighten / Darken shop cards depending on if player can afford
-        foreach (ShopSlot shopSlot in shopSlots)
-        {
-            if (shopSlot.Empty()) continue;
-            if (!shopSlot.CanBuy(EconomyController.GetBalance(ModelType.DEW))) shopSlot.DarkenSlot();
-            else shopSlot.LightenSlot();
-        }
-
         // Update reroll timer
         float timePercentage = timeSinceLastReroll / AUTOMATIC_REROLL_TIME;
         timerBarFill.transform.localScale = new Vector3(timePercentage, 1, 1);
@@ -126,17 +123,18 @@ public class ShopController : MonoBehaviour
     }
 
     /// <summary>
-    /// Loads the shop with the types of ShopCards it can sell.
+    /// Sets up the shop with the types of ShopCards it can sell.
     /// </summary>
     /// <param name="shopManager">the ShopManager singleton</param>
-    /// the Shop can sell. If null, the Shop can sell all types.</param>
-    public void LoadShop(ShopManager shopManager)
+    public void InitializeShop(ShopManager shopManager)
     {
         if (shopManager == null) return;
         if (shopActive) return;
-
         if (!shopLoaded)
         {
+            SetRerollButtonActive(false);
+            EconomyController.SubscribeToBalanceUpdatedDelegate(UpdateShopCardLighting);
+            numCardsPurchased = 0;
             PlacementController.SubscribeToFinishPlacingDelegate(OnFinishPlacing);
             cardPool = new Dictionary<ModelType, int>();
             int slotCounter = 0;
@@ -171,14 +169,21 @@ public class ShopController : MonoBehaviour
     }
 
     /// <summary>
+    /// Sets the Reroll button to be active or inactive.
+    /// </summary>
+    /// <param name="active">true if setting the button to be active;
+    /// otherwise false. </param>
+    public void SetRerollButtonActive(bool active) => rerollButton.gameObject.SetActive(active);
+
+    /// <summary>
     /// Rerolls the shop, replacing every ShopSlot with a new ShopCard
     /// from the ShopManager's card pool.
     /// </summary>
-    /// <param name="free">true if this reroll won't charge the player;
+    /// <param name="isFree">true if this reroll won't charge the player;
     /// false if it will. </param>
-    private void Reroll(bool free)
+    private void Reroll(bool isFree)
     {
-        if (!free)
+        if (!isFree)
         {
             bool canReroll = EconomyController.GetBalance(ModelType.DEW) >= REROLL_COST;
             if (!canReroll) return;
@@ -197,6 +202,8 @@ public class ShopController : MonoBehaviour
             Assert.IsNotNull(shopCardComp);
             cardSlot.Fill(shopCardComp);
         }
+
+        UpdateShopCardLighting();
 
         timeSinceLastReroll = AUTOMATIC_REROLL_TIME;
         shopActive = true;
@@ -230,13 +237,29 @@ public class ShopController : MonoBehaviour
 
         PlacementController.StartPlacingObject(slotModel);
         EconomyController.Withdraw(ModelType.DEW, clickedSlot.Buy(EconomyController.GetBalance(ModelType.DEW)));
+        UpdateShopCardLighting();
 
         // The ControllerController handles upgrading and combination logic
         OnBuyModel?.Invoke(slotModel);
+        numCardsPurchased++;
 
         bool allSlotsEmpty = true;
         foreach (ShopSlot shopSlot in shopSlots) { if (!shopSlot.Empty()) allSlotsEmpty = false; }
         if (allSlotsEmpty) Reroll(true);
+    }
+
+    /// <summary>
+    /// Iterates through the ShopSlots and darkens the ones the player
+    /// cannot afford. Lightens the ones they can.
+    /// </summary>
+    private void UpdateShopCardLighting()
+    {
+        foreach (ShopSlot shopSlot in shopSlots)
+        {
+            if (shopSlot.Empty()) continue;
+            if (!shopSlot.CanBuy(EconomyController.GetBalance(ModelType.DEW))) shopSlot.SetOccupantCardColor(new Color32(100, 100, 100, 255));
+            else shopSlot.SetOccupantCardColor(new Color32(255, 255, 255, 255));
+        }
     }
 
     /// <summary>
@@ -248,6 +271,12 @@ public class ShopController : MonoBehaviour
         Assert.IsNotNull(handler, "Handler is null.");
         OnBuyModel += handler;
     }
+
+    /// <summary>
+    /// Returns the number of cards purchased from the shop this level.
+    /// </summary>
+    /// <returns>the number of cards purchased from the shop this level.</returns>
+    public static int GetNumCardsPurchased() => numCardsPurchased;
 
     #endregion
 

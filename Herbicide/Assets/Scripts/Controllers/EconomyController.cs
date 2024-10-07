@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using TMPro;
 using System.Collections.Generic;
+using static ShopController;
 
 /// <summary>
 /// Controls player balance and currency related events.
@@ -39,6 +40,16 @@ public class EconomyController : MonoBehaviour
     private static EconomyController instance;
 
     /// <summary>
+    /// Defines a delegate for when the player's balance is updated.
+    /// </summary>
+    public delegate void BalanceUpdatedDelegate();
+
+    /// <summary>
+    /// Event triggered when the player's balance is updated.
+    /// </summary>
+    public event BalanceUpdatedDelegate OnBalanceUpdated;
+
+    /// <summary>
     /// How much Dew the player gets per tick.
     /// </summary>
     private static readonly int DEW_PASSIVE_INCOME = 25;
@@ -47,7 +58,7 @@ public class EconomyController : MonoBehaviour
     /// The number of seconds the player must wait until they
     /// recieve another Dew passive income tick.
     /// </summary>
-    private static readonly float DEW_PASSIVE_INCOME_FREQUENCY = 40f;
+    private static readonly float DEW_PASSIVE_INCOME_FREQUENCY = 30f;
 
     /// <summary>
     /// Number of seconds since the last passive income tick occured.
@@ -96,7 +107,7 @@ public class EconomyController : MonoBehaviour
     {
         instance.gameState = gameState;
         instance.UpdateCurrencyText();
-        if(instance.passiveIncomeEnabled) instance.PassiveIncome();
+        if(instance.passiveIncomeEnabled) instance.UpdatePassiveIncome();
     }
 
     /// <summary>
@@ -107,7 +118,7 @@ public class EconomyController : MonoBehaviour
     {
         currencies = new Dictionary<ModelType, int>
         {
-            { ModelType.DEW, 250 },
+            { ModelType.DEW, 50 },
             { ModelType.BASIC_TREE_SEED, 0 },
             { ModelType.SPEED_TREE_SEED, 0 }
         };
@@ -139,6 +150,7 @@ public class EconomyController : MonoBehaviour
         }
         int incremented = currencies[currencyType] + amountToDeposit;
         currencies[currencyType] = Mathf.Clamp(incremented, 0, int.MaxValue);
+        instance.OnBalanceUpdated?.Invoke();
     }
 
     /// <summary>
@@ -169,6 +181,7 @@ public class EconomyController : MonoBehaviour
         }
         int decremented = currencies[currencyType] - amountToWithdraw;
         currencies[currencyType] = Mathf.Clamp(decremented, 0, int.MaxValue);
+        instance.OnBalanceUpdated?.Invoke();
     }
 
     /// <summary>
@@ -186,7 +199,7 @@ public class EconomyController : MonoBehaviour
     /// Updates the passive income counter and awards the player currency
     /// if it is time.
     /// </summary>
-    private void PassiveIncome()
+    private void UpdatePassiveIncome()
     {
         if (gameState != GameState.ONGOING) return;
 
@@ -199,7 +212,15 @@ public class EconomyController : MonoBehaviour
         }
     }
 
-
+    /// <summary>
+    /// Subscribes a handler to the balance updated event.
+    /// </summary>
+    /// <param name="handler">The handler to subscribe.</param>
+    public static void SubscribeToBalanceUpdatedDelegate(BalanceUpdatedDelegate handler)
+    {
+        Assert.IsNotNull(handler, "Handler is null.");
+        instance.OnBalanceUpdated += handler;
+    }
 
     #endregion
 }

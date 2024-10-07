@@ -78,7 +78,10 @@ public class ShopManager : MonoBehaviour
     /// </summary>
     private void LoadShopData()
     {
-        int level = SaveLoadManager.GetGameLevel();
+        int level = SaveLoadManager.GetLoadedGameLevel();
+        bool rerollUnlocked = SaveLoadManager.GetLoadedIsRerollUnlocked();
+        Debug.Log(rerollUnlocked);
+
         switch (level)
         {
             case 0:
@@ -86,12 +89,12 @@ public class ShopManager : MonoBehaviour
                 activeShop = shopTwoSlots;
                 break;
             case 1:
-                shopThreeSlots.gameObject.SetActive(true);
-                activeShop = shopThreeSlots;
+                shopTwoSlots.gameObject.SetActive(true);
+                activeShop = shopTwoSlots;
                 break;
             case 2:
-                shopFourSlots.gameObject.SetActive(true);
-                activeShop = shopFourSlots;
+                shopThreeSlots.gameObject.SetActive(true);
+                activeShop = shopThreeSlots;
                 break;
             default:
                 shopFourSlots.gameObject.SetActive(true);
@@ -99,8 +102,9 @@ public class ShopManager : MonoBehaviour
                 break;
         }
 
-        activeShop.LoadShop(instance);
+        activeShop.InitializeShop(instance);
         activeShop.SubscribeToBuyDefenderDelegate(handlerToSubscribe);
+        if (rerollUnlocked) activeShop.SetRerollButtonActive(true);
     }
 
     /// <summary>

@@ -6,13 +6,13 @@
          "class":"TileLayer",
          "data":[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
             3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3,
-            3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3,
-            3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3,
             3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
             3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
          "height":11,
@@ -34,13 +34,13 @@
         {
          "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 86, 83, 91, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 86, 83, 83, 83, 94, 0, 96, 83, 83, 83, 91, 0, 0, 0,
-            0, 0, 0, 84, 0, 0, 0, 0, 0, 0, 0, 0, 0, 88, 0, 0, 0,
-            0, 0, 0, 90, 89, 89, 89, 95, 0, 93, 89, 89, 89, 85, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 90, 89, 85, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 27, 24, 56, 24, 32, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 25, 0, 52, 0, 29, 0, 0, 0, 0, 0, 0,
+            91, 88, 88, 88, 88, 88, 49, 46, 61, 46, 47, 88, 88, 88, 88, 88, 96,
+            89, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 93,
+            95, 94, 94, 94, 94, 94, 115, 110, 124, 110, 114, 94, 94, 94, 94, 94, 90,
+            0, 0, 0, 0, 0, 0, 89, 0, 116, 0, 93, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 95, 94, 123, 94, 90, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
          "height":11,
@@ -64,11 +64,11 @@
          "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 87, 0, 87, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 81, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 82, 81, 82, 81, 82, 81, 82, 81, 82, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 81, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 87, 86, 87, 86, 87, 86, 87, 86, 87, 86, 87, 86, 87, 86, 87, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 87, 0, 87, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -96,7 +96,7 @@
                 {
                  "gid":19,
                  "height":16,
-                 "id":808,
+                 "id":836,
                  "name":"",
                  "properties":[
                         {
@@ -108,13 +108,13 @@
                  "type":"Flooring",
                  "visible":true,
                  "width":16,
-                 "x":128,
-                 "y":80
+                 "x":112,
+                 "y":64
                 }, 
                 {
                  "gid":19,
                  "height":16,
-                 "id":809,
+                 "id":837,
                  "name":"",
                  "properties":[
                         {
@@ -126,8 +126,44 @@
                  "type":"Flooring",
                  "visible":true,
                  "width":16,
-                 "x":128,
-                 "y":112
+                 "x":144,
+                 "y":64
+                }, 
+                {
+                 "gid":19,
+                 "height":16,
+                 "id":838,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "rotation":0,
+                 "type":"Flooring",
+                 "visible":true,
+                 "width":16,
+                 "x":144,
+                 "y":128
+                }, 
+                {
+                 "gid":19,
+                 "height":16,
+                 "id":839,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"flooringName",
+                         "type":"string",
+                         "value":"soilFlooring"
+                        }],
+                 "rotation":0,
+                 "type":"Flooring",
+                 "visible":true,
+                 "width":16,
+                 "x":112,
+                 "y":128
                 }],
          "opacity":1,
          "properties":[
@@ -148,7 +184,7 @@
          "name":"Structures",
          "objects":[
                 {
-                 "gid":60,
+                 "gid":65,
                  "height":16,
                  "id":799,
                  "name":"",
@@ -162,11 +198,11 @@
                  "type":"Structure",
                  "visible":true,
                  "width":16,
-                 "x":64,
+                 "x":16,
                  "y":96
                 }, 
                 {
-                 "gid":59,
+                 "gid":64,
                  "height":16,
                  "id":800,
                  "name":"",
@@ -180,13 +216,13 @@
                  "type":"Structure",
                  "visible":true,
                  "width":16,
-                 "x":192,
+                 "x":240,
                  "y":96
                 }, 
                 {
-                 "gid":75,
+                 "gid":80,
                  "height":16,
-                 "id":812,
+                 "id":840,
                  "name":"",
                  "properties":[
                         {
@@ -198,13 +234,13 @@
                  "type":"Structure",
                  "visible":true,
                  "width":16,
-                 "x":128,
-                 "y":80
+                 "x":144,
+                 "y":64
                 }, 
                 {
-                 "gid":75,
+                 "gid":80,
                  "height":16,
-                 "id":813,
+                 "id":841,
                  "name":"",
                  "properties":[
                         {
@@ -216,8 +252,44 @@
                  "type":"Structure",
                  "visible":true,
                  "width":16,
-                 "x":128,
-                 "y":112
+                 "x":112,
+                 "y":64
+                }, 
+                {
+                 "gid":80,
+                 "height":16,
+                 "id":842,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"BasicTree"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":112,
+                 "y":128
+                }, 
+                {
+                 "gid":80,
+                 "height":16,
+                 "id":843,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"BasicTree"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":144,
+                 "y":128
                 }],
          "opacity":1,
          "properties":[
@@ -238,7 +310,7 @@
          "name":"Markers",
          "objects":[
                 {
-                 "gid":68,
+                 "gid":73,
                  "height":16,
                  "id":807,
                  "name":"",
@@ -257,7 +329,7 @@
                  "type":"Marker",
                  "visible":true,
                  "width":16,
-                 "x":64,
+                 "x":16,
                  "y":96
                 }],
          "opacity":1,
@@ -273,7 +345,7 @@
          "y":0
         }],
  "nextlayerid":17,
- "nextobjectid":814,
+ "nextobjectid":844,
  "orientation":"orthogonal",
  "properties":[
         {
@@ -518,12 +590,12 @@
          "columns":5,
          "firstgid":24,
          "image":"..\/..\/Tiled\/HerbicideArt\/TileSets\/tilesetShore.png",
-         "imageheight":112,
+         "imageheight":128,
          "imagewidth":80,
          "margin":0,
          "name":"Shore",
          "spacing":0,
-         "tilecount":35,
+         "tilecount":40,
          "tileheight":16,
          "tiles":[
                 {
@@ -540,7 +612,7 @@
         }, 
         {
          "columns":3,
-         "firstgid":59,
+         "firstgid":64,
          "image":"..\/..\/Tiled\/HerbicideArt\/TileSets\/tileSetPlaceables.png",
          "imageheight":48,
          "imagewidth":48,
@@ -594,7 +666,7 @@
         }, 
         {
          "columns":2,
-         "firstgid":68,
+         "firstgid":73,
          "image":"..\/..\/Tiled\/HerbicideArt\/TileSets\/markers.png",
          "imageheight":32,
          "imagewidth":32,
@@ -638,7 +710,7 @@
         }, 
         {
          "columns":3,
-         "firstgid":72,
+         "firstgid":77,
          "image":"..\/..\/Tiled\/HerbicideArt\/TileSets\/tileSetPlaceables.png",
          "imageheight":48,
          "imagewidth":48,
@@ -702,7 +774,7 @@
         }, 
         {
          "columns":2,
-         "firstgid":81,
+         "firstgid":86,
          "image":"..\/..\/Tiled\/HerbicideArt\/TileSets\/tileSetGrass.png",
          "imageheight":16,
          "imagewidth":32,
@@ -715,14 +787,14 @@
         }, 
         {
          "columns":5,
-         "firstgid":83,
+         "firstgid":88,
          "image":"..\/..\/Tiled\/HerbicideArt\/TileSets\/tilesetShore.png",
-         "imageheight":112,
+         "imageheight":128,
          "imagewidth":80,
          "margin":0,
          "name":"Shore",
          "spacing":0,
-         "tilecount":35,
+         "tilecount":40,
          "tileheight":16,
          "tiles":[
                 {

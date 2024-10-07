@@ -229,7 +229,7 @@
   </properties>
   <object id="807" type="Marker" gid="68" x="64" y="96" width="16" height="16">
    <properties>
-    <property name="enemySpawnData" value="kudzu1-3"/>
+    <property name="enemySpawnData" value="kudzu1-1"/>
     <property name="markerName" value="enemySpawn"/>
    </properties>
   </object>

@@ -160,21 +160,13 @@ public class ShopSlot : MonoBehaviour
     public bool Empty() => occupant == null;
 
     /// <summary>
-    /// Darkens the ShopCard in this slot.
+    /// Sets the color of the ShopCard occupant's background and title.
     /// </summary>
-    public void DarkenSlot()
+    /// <param name="color">The color to set the ShopCard to.</param>
+    public void SetOccupantCardColor(Color32 color)
     {
         Assert.IsFalse(Empty());
-        occupant.TurnDark();
-    }
-
-    /// <summary>
-    /// Turns the ShopCard in this slot to a normal color.
-    /// </summary>
-    public void LightenSlot()
-    {
-        Assert.IsFalse(Empty());
-        occupant.TurnLight();
+        occupant.SetCardColor(color);
     }
 
     /// <summary>

@@ -61,16 +61,6 @@ public class ShopCard : UIModel
     /// </summary>
     private bool clicked;
 
-    /// <summary>
-    /// Color of this ShopCard when darkened.
-    /// </summary>
-    private readonly Color32 darkenedColor = new Color32(100, 100, 100, 255);
-
-    /// <summary>
-    /// Color of this ShopCard normally.
-    /// </summary>
-    private readonly Color32 defaultColor = new Color32(255, 255, 255, 255);
-
     #endregion
 
     #region Methods
@@ -84,7 +74,7 @@ public class ShopCard : UIModel
     public override ModelType GetModelType()
     {
         if(model == null) return ModelType.SHOP_CARD_BLANK;
-        return ShopFactory.GetShopCardModelTypeFromModelType(model.TYPE);
+        return ModelTypeHelper.GetShopCardModelTypeFromModelType(model.TYPE);
     }
 
     /// <summary>
@@ -140,21 +130,14 @@ public class ShopCard : UIModel
     public void ResetClick() => clicked = false;
 
     /// <summary>
-    /// Turns the ShopCard's background a darker color.
+    /// Sets the color of the ShopCard's background and title.
     /// </summary>
-    public void TurnDark()
+    /// <param name="color">The color to set the ShopCard to.</param>
+    public void SetCardColor(Color32 color)
     {
-        cardBackgroundImage.color = darkenedColor;
-        cardTitle.color = darkenedColor;
-    }
-
-    /// <summary>
-    /// Turns the ShopCard's background to its normal color.
-    /// </summary>
-    public void TurnLight()
-    {
-        cardBackgroundImage.color = defaultColor;
-        cardTitle.color = defaultColor;
+        cardBackgroundImage.color = color;
+        cardTitle.color = color;
+        cardSplash.color = color;
     }
 
     #endregion

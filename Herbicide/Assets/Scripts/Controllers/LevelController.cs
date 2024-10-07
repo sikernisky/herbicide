@@ -25,9 +25,10 @@ public class LevelController : MonoBehaviour
     private bool debugOn;
 
     /// <summary>
-    /// true if the game is paused; otherwise, false.
+    /// The LevelBehaviourController for the tutorial.
     /// </summary>
-    private bool isPaused;
+    [SerializeField]
+    private GameObject tutorialController;
 
     #endregion
 
@@ -40,6 +41,7 @@ public class LevelController : MonoBehaviour
     /// (2) Loads SaveManager data. <br></br>
     /// (3) Parse all JSON data<br></br>
     /// (4) Spawns the TileGrid.<br></br>
+    /// (5) Enables the correct LevelBehaviourController.
     /// </summary>
     void Start()
     {
@@ -59,6 +61,9 @@ public class LevelController : MonoBehaviour
         TiledData tiledData = JSONController.GetTiledData();
         Vector2 cameraPos = TileGrid.SpawnGrid(instance, tiledData);
         CameraController.MoveCamera(cameraPos);
+        
+        //(5) Enable the correct LevelBehaviourController
+        SetLevelBehaviourControllerSingleton();
     }
 
     /// <summary>
@@ -74,17 +79,12 @@ public class LevelController : MonoBehaviour
     /// (8) Update Canvas.<br></br>
     /// (9) Update StageController. <br></br>
     /// (10) Update LevelCompletionController. <br></br>
+    /// (11) Update SettingsController. <br></br>
+    /// (12) Update the LevelBehaviourController. <br></br>
+    /// (13) Update the Time Scale.
     /// </summary>
     void Update()
     {
-        // Pause logic
-        if (SettingsController.SettingsMenuOpen()) isPaused = true;
-        else isPaused = false;
-
-        // Update Settings (immune to pausing)
-        SettingsController.UpdateSettingsMenu();
-        if (isPaused) return;
-
         //(1) Update and inform controllers of game state
         GameState gameState = DetermineGameState();
         if (gameState == GameState.INVALID) return;
@@ -117,6 +117,15 @@ public class LevelController : MonoBehaviour
 
         //(10) Update LevelCompletionController.   
         LevelCompletionController.UpdateLevelCompletionController(gameState);
+
+        //(11) Update SettingsController.
+        SettingsController.UpdateSettingsMenu();
+
+        //(12) Update the LevelBehaviourController.
+        LevelBehaviourController.UpdateLevelBehaviourController();
+
+        //(13) Update the Time Scale.
+        UpdateTimeScale();
     }
 
     /// <summary>
@@ -125,10 +134,8 @@ public class LevelController : MonoBehaviour
     /// </summary>
     void OnApplicationQuit()
     {
-        SaveLoadManager.SaveGameLevel(0);
-        SaveLoadManager.Save();
-        SaveLoadManager.WipeCurrentSave(); // temporary
-
+        SaveLoadManager.OnQuit();
+        LevelBehaviourController.OnQuit();
     }
 
     /// <summary>
@@ -179,6 +186,25 @@ public class LevelController : MonoBehaviour
     }
 
     /// <summary>
+    /// Enables the correct LevelBehaviourController based on the current level.
+    /// Then, sets the LevelBehaviourController singleton.
+    /// </summary>
+    private void SetLevelBehaviourControllerSingleton()
+    {
+        int level = SaveLoadManager.GetLoadedGameLevel();
+        switch(level)
+        {
+            case 0:
+                tutorialController.SetActive(true);
+                break;
+            default:
+                tutorialController.SetActive(false);
+                break;
+        }
+        LevelBehaviourController.SetSingleton(instance);
+    }
+
+    /// <summary>
     /// Subscribes controllers to Save and Load events.
     /// </summary>
     private void SubscribeControllersToSaveLoadEvents()
@@ -186,6 +212,16 @@ public class LevelController : MonoBehaviour
         CameraController.SubscribeToSaveLoadEvents(instance);
         CollectionManager.SubscribeToSaveLoadEvents(instance);
         ShopManager.SubscribeToSaveLoadEvents(instance);
+    }
+
+    /// <summary>
+    /// Updates the TimeScale based on the current state of the game.
+    /// </summary>
+    private void UpdateTimeScale()
+    {
+        bool paused = SettingsController.SettingsMenuOpen() || LevelBehaviourController.IsPaused();
+        if(paused) Time.timeScale = 0;
+        else Time.timeScale = 1;
     }
 
     /// <summary>

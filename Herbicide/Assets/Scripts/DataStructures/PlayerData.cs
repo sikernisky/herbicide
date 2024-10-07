@@ -20,5 +20,10 @@ public class PlayerData
     /// </summary>
     public List<ModelUpgradeSaveData> modelSaveData;
 
+    /// <summary>
+    /// true if the reroll feature is unlocked; otherwise false.
+    /// </summary>
+    public bool isRerollUnlocked;
+
     #endregion
 }

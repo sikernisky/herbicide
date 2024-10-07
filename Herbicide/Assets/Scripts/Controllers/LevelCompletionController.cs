@@ -149,6 +149,7 @@ public class LevelCompletionController : MonoBehaviour
 
         if (!dataLoaded) LoadUpgradeQueue();
         levelCompletionPanel.SetActive(true);
+        resultText.gameObject.SetActive(true);
         if (gameState == GameState.WIN) resultText.text = "You Win!";
         else if (gameState == GameState.LOSE) resultText.text = "You Lose!";
         else if (gameState == GameState.TIE) resultText.text = "You Tied!";
@@ -230,13 +231,13 @@ public class LevelCompletionController : MonoBehaviour
             CanvasGroup progressTrackGroup = progressTrack.GetComponent<CanvasGroup>();
             progressTrackGroup.alpha = 0f;
 
-            float POINT_INCREMENT_DELAY = 0.1f;
+            float UPGRADE_TIME = 1f;
             float MOVE_TIME = 1f;
             float FADE_TIME = 1f;
             ProgressTrack progressTrackComp = progressTrack.GetComponent<ProgressTrack>();
 
             yield return MoveToPositionAndFade(progressTrack.transform, currUpgradePosition.position, MOVE_TIME, progressTrackGroup, FADE_TIME, true);
-            yield return UpgradeProgressTrackOverTime(progressTrackComp, POINT_INCREMENT_DELAY);
+            yield return UpgradeProgressTrackOverTime(progressTrackComp, UPGRADE_TIME);
             yield return MoveToPositionAndFade(progressTrack.transform, postUpgradePosition.position, MOVE_TIME, progressTrackGroup, FADE_TIME, false);
         }
         upgrading = false;
@@ -286,16 +287,17 @@ public class LevelCompletionController : MonoBehaviour
     }
 
     /// <summary>
-    /// Upgrades an initialized progress track over time. This time
-    /// period is determined by the number of points required to upgrade.
+    /// Upgrades an initialized progress track over time.
     /// </summary>
     /// <param name="track">The progress track to upgrade.</param>
-    /// <param name="pointIncrementDelay">The seconds delay between each point increment.</param>
+    /// <param name="upgradeTime">The seconds it takes to fully upgrade.</param>
     /// <returns>a reference to the coroutine.</returns>
-    private IEnumerator UpgradeProgressTrackOverTime(ProgressTrack track, float pointIncrementDelay)
+    private IEnumerator UpgradeProgressTrackOverTime(ProgressTrack track, float upgradeTime)
     {
+        Assert.IsTrue(track.Initialized(), "ProgressTrack is not initialized.");
         ModelType typeUpgrading = track.GetModelTypeTrackIsUpgrading();
         int totalPointsToAdd = CollectionManager.GetModelUpgradePoints(typeUpgrading);
+        float pointIncrementDelay = upgradeTime / totalPointsToAdd; 
         while (totalPointsToAdd > 0)
         {
             int pointsToAdd = Mathf.Min(1, totalPointsToAdd);
@@ -351,6 +353,7 @@ public class LevelCompletionController : MonoBehaviour
                 {
                     completionState = CompletionState.PROGRESS_TRACKS_UPDATING;
                     progressTrackObjects.SetActive(true);
+                    // resultText.gameObject.SetActive(false);
                     StartCoroutine(PlayUpgradeAnimation());
                 }
                 else

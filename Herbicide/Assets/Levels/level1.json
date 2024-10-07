@@ -146,42 +146,6 @@
                  "width":16,
                  "x":96,
                  "y":96
-                }, 
-                {
-                 "gid":19,
-                 "height":16,
-                 "id":802,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"flooringName",
-                         "type":"string",
-                         "value":"soilFlooring"
-                        }],
-                 "rotation":0,
-                 "type":"Flooring",
-                 "visible":true,
-                 "width":16,
-                 "x":112,
-                 "y":96
-                }, 
-                {
-                 "gid":19,
-                 "height":16,
-                 "id":803,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"flooringName",
-                         "type":"string",
-                         "value":"soilFlooring"
-                        }],
-                 "rotation":0,
-                 "type":"Flooring",
-                 "visible":true,
-                 "width":16,
-                 "x":144,
-                 "y":96
                 }],
          "opacity":1,
          "properties":[
@@ -292,39 +256,39 @@
                  "y":96
                 }, 
                 {
-                 "gid":75,
+                 "gid":76,
                  "height":16,
-                 "id":804,
+                 "id":808,
                  "name":"",
                  "properties":[
                         {
                          "name":"structureName",
                          "type":"string",
-                         "value":"BasicTree"
-                        }],
-                 "rotation":0,
-                 "type":"Structure",
-                 "visible":true,
-                 "width":16,
-                 "x":144,
-                 "y":96
-                }, 
-                {
-                 "gid":75,
-                 "height":16,
-                 "id":805,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"structureName",
-                         "type":"string",
-                         "value":"BasicTree"
+                         "value":"StoneWall"
                         }],
                  "rotation":0,
                  "type":"Structure",
                  "visible":true,
                  "width":16,
                  "x":112,
+                 "y":96
+                }, 
+                {
+                 "gid":76,
+                 "height":16,
+                 "id":809,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"structureName",
+                         "type":"string",
+                         "value":"StoneWall"
+                        }],
+                 "rotation":0,
+                 "type":"Structure",
+                 "visible":true,
+                 "width":16,
+                 "x":144,
                  "y":96
                 }],
          "opacity":1,
@@ -354,7 +318,7 @@
                         {
                          "name":"enemySpawnData",
                          "type":"string",
-                         "value":"kudzu1-3"
+                         "value":"kudzu1-1"
                         }, 
                         {
                          "name":"markerName",
@@ -381,7 +345,7 @@
          "y":0
         }],
  "nextlayerid":17,
- "nextobjectid":808,
+ "nextobjectid":811,
  "orientation":"orthogonal",
  "properties":[
         {

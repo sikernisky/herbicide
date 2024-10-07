@@ -53,7 +53,7 @@ public class JSONController : MonoBehaviour
     /// </summary>
     public static void ParseTiledData()
     {
-        int levelToLoad = SaveLoadManager.GetGameLevel();
+        int levelToLoad = SaveLoadManager.GetLoadedGameLevel();
         levelToLoad = Mathf.Clamp(levelToLoad, 0, instance.tiledJSONLevels.Count - 1); // clamp the level to the number of levels we have.
         TextAsset jsonTextAsset = instance.tiledJSONLevels[levelToLoad];
         string json = jsonTextAsset.text;

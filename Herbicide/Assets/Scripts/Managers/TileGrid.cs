@@ -1091,7 +1091,10 @@ public class TileGrid : MonoBehaviour
         //Iterative A* Algorithm.
         while (openList.Count > 0)
         {
-            Tile current = openList.OrderBy(tile => fScore[tile]).First();
+            // Choose a random tile with the lowest fScore
+            float minFScore = openList.Min(tile => fScore[tile]);
+            List<Tile> minFScoreTiles = openList.Where(tile => fScore[tile] == minFScore).ToList();
+            Tile current = minFScoreTiles[UnityEngine.Random.Range(0, minFScoreTiles.Count)];
 
             if (current == goalTile)
             {

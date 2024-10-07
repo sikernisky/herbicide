@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: UpgradeRequirements
   m_EditorClassIdentifier: 
   modelUpgrades:
-  - modelType: 35
-    pointRequirementsByLevel: 3200000064000000f4010000
-  - modelType: 5
+  - modelType: SQUIRREL
+    pointRequirementsByLevel: 32000000f40100004c1d0000
+  - modelType: BUNNY
+    pointRequirementsByLevel: 1900000064000000ee020000
+  - modelType: RACCOON
     pointRequirementsByLevel: 1900000064000000ee020000

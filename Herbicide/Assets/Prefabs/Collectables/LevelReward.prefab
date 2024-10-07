@@ -268,3 +268,7 @@ MonoBehaviour:
   owlRewardSpriteShadow: {fileID: 21300000, guid: 549ed6ff43e6a3d478dd90de5ea13dd7, type: 3}
   porcupineRewardSprite: {fileID: 21300000, guid: afe7c032c21a91f4a9464d90670a2507, type: 3}
   porcupineRewardSpriteShadow: {fileID: 21300000, guid: 8d2690955f0c5bf41be8e78d0e37c150, type: 3}
+  combinationBadgeRewardSprite: {fileID: 21300000, guid: adaebf51aec00b8488794b4a20904b16, type: 3}
+  combinationBadgeRewardSpriteShadow: {fileID: 21300000, guid: 08557f3ad212c104894ba421dfaaf7ee, type: 3}
+  rerollBadgeRewardSprite: {fileID: 21300000, guid: adaebf51aec00b8488794b4a20904b16, type: 3}
+  rerollBadgeRewardSpriteShadow: {fileID: 21300000, guid: 08557f3ad212c104894ba421dfaaf7ee, type: 3}

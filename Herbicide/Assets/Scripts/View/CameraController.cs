@@ -142,7 +142,7 @@ public class CameraController : MonoBehaviour
     /// </summary>
     private void LoadCameraData()
     {
-        level = SaveLoadManager.GetGameLevel();
+        level = SaveLoadManager.GetLoadedGameLevel();
         SetCameraScaleBasedOnLevel();
     }
 

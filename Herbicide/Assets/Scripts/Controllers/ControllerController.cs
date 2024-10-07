@@ -316,6 +316,41 @@ public class ControllerController : MonoBehaviour
     }
 
     /// <summary>
+    /// Returns the number of placed Defenders.
+    /// </summary>
+    /// <returns>the number of placed Defenders.</returns>
+    public static int NumPlacedDefenders()
+    {
+        int counter = 0;
+        foreach (ModelController mc in instance.defenderControllers)
+        {
+            Defender defender = mc.GetModel() as Defender;
+            if (defender != null && defender.IsPlaced()) counter++;
+        }
+        return counter;
+    }
+
+    /// <summary>
+    /// Sets the color of all Trees in the scene. This method is
+    /// called by the TutorialLevelBehaviourController.
+    /// </summary>
+    /// <param name="tutorialLevelBehaviourController">the TutorialLevelBehaviourController singleton</param>
+    /// <param name="color">the color to set to</param>
+    public static void SetColorOfAllTrees(TutorialLevelBehaviourController tutorialLevelBehaviourController, Color32 color)
+    {
+        Assert.IsNotNull(tutorialLevelBehaviourController, "TutorialLevelBehaviourController is null.");
+
+        List<ModelController> treeControllers = instance.treeControllers;
+        List<ModelController> basicTreeControllers = treeControllers.Where(tc => tc.GetModel().TYPE == ModelType.BASIC_TREE).ToList();
+        foreach (ModelController tc in basicTreeControllers)
+        {
+            BasicTreeController btc = tc as BasicTreeController;
+            Assert.IsNotNull(btc, "BasicTreeController is null.");
+            btc.GetModel().SetColor(color);
+        }
+    }
+
+    /// <summary>
     /// Returns true if the LevelReward has been collected; otherwise, false.
     /// </summary>
     /// <returns>true if the LevelReward has been collected; otherwise, false.</returns>

@@ -44,7 +44,7 @@ public class Squirrel : Defender
     /// <summary>
     /// Number of attacks per second a Squirrel starts with.
     /// </summary>
-    public override float BASE_MAIN_ACTION_SPEED => .5f;
+    public override float BASE_MAIN_ACTION_SPEED => .4f;
 
     /// <summary>
     /// Most amount of attack cooldown this Squirrel can have.

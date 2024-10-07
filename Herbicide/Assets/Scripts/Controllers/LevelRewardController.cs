@@ -61,18 +61,18 @@ public class LevelRewardController : CollectableController<LevelRewardController
     /// based on the current level.</returns>
     private ModelType GetModelTypeRewardBasedOnLevel()
     {
-        switch (SaveLoadManager.GetGameLevel())
+        switch (SaveLoadManager.GetLoadedGameLevel())
         {
             case 0:
-                return ModelType.BUNNY;
+                return ModelType.COMBINATION_BADGE;
             case 1:
-                return ModelType.RACCOON;
-            case 2:
-                return ModelType.OWL;
-            case 3:
-                return ModelType.PORCUPINE;
-            default:
                 return ModelType.BUNNY;
+            case 2:
+                return ModelType.RACCOON;
+            case 3:
+                return ModelType.REROLL_BADGE;
+            default:
+                return ModelType.OWL;
         }
     }
 
@@ -133,7 +133,10 @@ public class LevelRewardController : CollectableController<LevelRewardController
         if (InCollectionRange())
         {
             GetLevelReward().OnCollect();
-            CollectionManager.UnlockModel(GetModelTypeRewardBasedOnLevel());
+            ModelType modelTypeReward = GetModelTypeRewardBasedOnLevel();
+            bool shouldUnlock = ModelTypeHelper.IsDefender(modelTypeReward);
+            if(shouldUnlock) CollectionManager.UnlockModel(GetModelTypeRewardBasedOnLevel());
+            if(modelTypeReward == ModelType.REROLL_BADGE) SaveLoadManager.SaveIsRerollUnlocked(true);
         }
         else MoveTowardsCursor();
     }

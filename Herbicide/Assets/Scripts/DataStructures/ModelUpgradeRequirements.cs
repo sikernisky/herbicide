@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -15,10 +16,11 @@ public class ModelUpgradeRequirements : ScriptableObject
     public struct ModelUpgradeRequirementsData
     {
         /// <summary>
-        /// The type of model this data is for.
+        /// The type of model this data is for. This is a string
+        /// to prevent shifting in the inspector when we add new models.
         /// </summary>
         [SerializeField]
-        private ModelType modelType;
+        private string modelType;
 
         /// <summary>
         /// The points required, at each level, to upgrade the model.
@@ -43,7 +45,7 @@ public class ModelUpgradeRequirements : ScriptableObject
         /// Returns the type of model this data is for.
         /// </summary>
         /// <returns>the type of model this data is for.</returns>
-        public ModelType GetModelType() => modelType;
+        public ModelType GetModelType() => ModelTypeHelper.ConvertStringToModelType(modelType);
 
         /// <summary>
         /// Returns true if the level is valid; false otherwise.
