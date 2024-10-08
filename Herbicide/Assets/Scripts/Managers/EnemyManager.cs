@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Linq;
 using UnityEngine.Assertions;
 using System.Text.RegularExpressions;
+using TimeOfDay = StageController.TimeOfDay;
 
 /// <summary>
 /// Manages what and how many Enemies spawn in a level.
@@ -51,6 +52,9 @@ public class EnemyManager : MonoBehaviour
 
         // Store a dictionary where the key is the stage and the value is the latest spawn time for that stage.
         Dictionary<int, float> latestStageTimes = new Dictionary<int, float>();
+
+        //TEST
+        Dictionary<TimeOfDay, float> latestStageTimesTest = new Dictionary<TimeOfDay, float>();
 
         // Parse the data.
         foreach (KeyValuePair<Vector2Int, string> marker in markers)

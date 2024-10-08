@@ -80,7 +80,6 @@ public class ShopManager : MonoBehaviour
     {
         int level = SaveLoadManager.GetLoadedGameLevel();
         bool rerollUnlocked = SaveLoadManager.GetLoadedIsRerollUnlocked();
-        Debug.Log(rerollUnlocked);
 
         switch (level)
         {

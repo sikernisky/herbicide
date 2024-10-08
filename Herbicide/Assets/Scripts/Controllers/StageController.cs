@@ -13,6 +13,18 @@ public class StageController : MonoBehaviour
     #region Fields
 
     /// <summary>
+    /// The four times of day in the game.
+    /// </summary>
+    public enum TimeOfDay
+    {
+        MORNING,
+        NOON,
+        EVENING,
+        NIGHT
+    }
+
+
+    /// <summary>
     /// Reference to the StageController singleton.
     /// </summary> 
     private static StageController instance;
@@ -69,6 +81,8 @@ public class StageController : MonoBehaviour
     /// </summary>
     [SerializeField]
     private Image intermissionTimerBarFill;
+
+
 
     #endregion
 

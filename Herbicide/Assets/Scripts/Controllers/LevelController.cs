@@ -164,6 +164,7 @@ public class LevelController : MonoBehaviour
         LevelCompletionController.SetSingleton(instance);
         StageController.SetSingleton(instance);
         ExplosionController.SetSingleton(instance);
+        LightManager.SetSingleton(instance);
     }
 
     /// <summary>

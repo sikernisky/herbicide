@@ -19,3 +19,7 @@ MonoBehaviour:
     pointRequirementsByLevel: 1900000064000000ee020000
   - modelType: RACCOON
     pointRequirementsByLevel: 1900000064000000ee020000
+  - modelType: PORCUPINE
+    pointRequirementsByLevel: 1900000064000000ee020000
+  - modelType: OWL
+    pointRequirementsByLevel: 1900000064000000ee020000

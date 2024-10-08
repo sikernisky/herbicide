@@ -70,6 +70,10 @@ public class LevelRewardController : CollectableController<LevelRewardController
             case 2:
                 return ModelType.RACCOON;
             case 3:
+                return ModelType.PORCUPINE;
+            case 4:
+                return ModelType.OWL;
+            case 5:
                 return ModelType.REROLL_BADGE;
             default:
                 return ModelType.OWL;
