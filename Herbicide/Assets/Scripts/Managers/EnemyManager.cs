@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Linq;
 using UnityEngine.Assertions;
 using System.Text.RegularExpressions;
-using TimeOfDay = StageController.TimeOfDay;
+using StageOfDay = StageController.StageOfDay;
 
 /// <summary>
 /// Manages what and how many Enemies spawn in a level.
@@ -38,10 +38,12 @@ public class EnemyManager : MonoBehaviour
     /// 
     /// In Tiled, an unparsed spawn data string looks like this:<br></br>
     ///  
-    /// kudzu1-0.5,knotwood1-1.5<br></br>
+    /// kudzu0-0.5, knotwood1-1.5<br></br>
     /// 
-    /// This means that a Kudzu will spawn at stage 1 at 0.5 seconds into that stage,
-    /// not the entire level.
+    /// This means that a Kudzu will spawn 0.5 seconds after the first stage starts,
+    /// and a Knotwood will spawn 1.5 seconds after the second stage starts.<br></br>
+    /// 
+    /// These values are clamped depending on how many stages are in the level.
     ///  </summary>
     /// <param name="markers">All Enemy spawn markers.</param>
     /// <param name="mapHeight">The height, in tiles, of the map. </param>
@@ -51,17 +53,14 @@ public class EnemyManager : MonoBehaviour
         Assert.IsFalse(Populated(), "Already populated.");
 
         // Store a dictionary where the key is the stage and the value is the latest spawn time for that stage.
-        Dictionary<int, float> latestStageTimes = new Dictionary<int, float>();
-
-        //TEST
-        Dictionary<TimeOfDay, float> latestStageTimesTest = new Dictionary<TimeOfDay, float>();
+        Dictionary<StageOfDay, float> latestStageTimes = new Dictionary<StageOfDay, float>();
 
         // Parse the data.
         foreach (KeyValuePair<Vector2Int, string> marker in markers)
         {
             Vector2Int spawnLocation = marker.Key;
             string unparsedData = marker.Value;
-            List<(string, int, float)> parsedData = instance.ParseMarkerData(unparsedData);
+            List<(string, StageOfDay, float)> parsedData = instance.ParseMarkerData(unparsedData);
             parsedData = parsedData.OrderBy(x => x.Item2).ThenBy(x => x.Item3).ToList();
 
             foreach (var enemyData in parsedData)
@@ -75,7 +74,7 @@ public class EnemyManager : MonoBehaviour
                 float spawnX = TileGrid.CoordinateToPosition(marker.Key.x);
                 float spawnY = TileGrid.CoordinateToPosition(marker.Key.y);
                 Vector3 spawnWorldPos = new Vector3(spawnX, spawnY, 1);
-                int spawnStage = enemyData.Item2;
+                StageOfDay spawnStage = enemyData.Item2;
                 float spawnTime = enemyData.Item3;
                 instance.spawnTimes.Add(spawnTime);
                 enemyComp.SetStage(spawnStage);
@@ -112,11 +111,11 @@ public class EnemyManager : MonoBehaviour
                     spurgeComp.AddMinion(spurgeMinionCompBehind);
 
                     // Make the controllers for the SpurgeMinions.
-                    ControllerController.MakeModelController(spurgeMinionCompInFront);
-                    ControllerController.MakeModelController(spurgeMinionCompBehind);
+                    ControllerManager.MakeModelController(spurgeMinionCompInFront);
+                    ControllerManager.MakeModelController(spurgeMinionCompBehind);
                 }
 
-                ControllerController.MakeModelController(enemyComp);
+                ControllerManager.MakeModelController(enemyComp);
 
                 // Store the latest spawn time for this stage.
                 if (latestStageTimes.ContainsKey(spawnStage))
@@ -141,12 +140,12 @@ public class EnemyManager : MonoBehaviour
     /// <param name="input">A string of comma separated names followed
     /// by their stage and spawn times. </param>
     /// <returns>a list of tuples of Enemy names, their stages, and spawn times.</returns>
-    private List<(string, int, float)> ParseMarkerData(string input)
+    private List<(string, StageOfDay, float)> ParseMarkerData(string input)
     {
         Assert.IsNotNull(input);
 
         string[] sliced = input.Split(',');
-        List<(string, int, float)> result = new List<(string, int, float)>();
+        List<(string, StageOfDay, float)> result = new List<(string, StageOfDay, float)>();
         string pattern = @"([a-zA-Z]+)(\d+)-(\d+(\.\d+)?)";
 
         foreach (string item in sliced)
@@ -154,9 +153,13 @@ public class EnemyManager : MonoBehaviour
             Match match = Regex.Match(item, pattern);
             if (!match.Success) continue;
             string enemyName = match.Groups[1].Value;
+
             int stage = int.Parse(match.Groups[2].Value);
+            stage = Mathf.Clamp(stage, 0, (int)StageController.GetFinalStage());
+            StageOfDay timeOfDay = (StageOfDay)stage;
+
             float spawnTime = float.Parse(match.Groups[3].Value);
-            result.Add((enemyName, stage, spawnTime));
+            result.Add((enemyName, timeOfDay, spawnTime));
         }
 
         return result;

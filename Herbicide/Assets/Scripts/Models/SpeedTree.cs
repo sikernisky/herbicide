@@ -127,7 +127,7 @@ public class SpeedTree : Tree
     {
         if(appliedSpeedTreeEffect != null)
         {
-            GetPlaceableObject().TryRemoveEffect(appliedSpeedTreeEffect);
+            GetOccupant().TryRemoveEffect(appliedSpeedTreeEffect);
             appliedSpeedTreeEffect = null;
         }
         base.Remove(neighbors);

@@ -43,6 +43,11 @@ public class ShopManager : MonoBehaviour
     /// </summary>
     private BuyModelDelegate handlerToSubscribe;
 
+    /// <summary>
+    /// true if the reroll feature is unlocked; false otherwise.
+    /// </summary>
+    private bool isRerollUnlocked;
+
     #endregion
 
     #region Methods
@@ -74,12 +79,24 @@ public class ShopManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Unlocks the reroll feature.
+    /// </summary>
+    public static void UnlockReroll()
+    {
+        instance.isRerollUnlocked = true;
+        instance.activeShop.SetRerollButtonActive(true);
+    }
+
+    /// <summary>
     /// Loads the shop data.
     /// </summary>
     private void LoadShopData()
     {
         int level = SaveLoadManager.GetLoadedGameLevel();
-        bool rerollUnlocked = SaveLoadManager.GetLoadedIsRerollUnlocked();
+
+        ShopSaveData shopSaveData = SaveLoadManager.LoadShop(instance);
+        if(shopSaveData == null) shopSaveData = new ShopSaveData();
+        isRerollUnlocked = shopSaveData.isRerollUnlocked;
 
         switch (level)
         {
@@ -103,13 +120,18 @@ public class ShopManager : MonoBehaviour
 
         activeShop.InitializeShop(instance);
         activeShop.SubscribeToBuyDefenderDelegate(handlerToSubscribe);
-        if (rerollUnlocked) activeShop.SetRerollButtonActive(true);
+        if (isRerollUnlocked) activeShop.SetRerollButtonActive(true);
     }
 
     /// <summary>
     /// Saves the shop data.
     /// </summary>
-    private void SaveShopData() { }
+    private void SaveShopData() 
+    {
+        ShopSaveData shopSaveData = new ShopSaveData();
+        shopSaveData.isRerollUnlocked = isRerollUnlocked;
+        SaveLoadManager.SaveShop(instance, shopSaveData);
+    }
     
     /// <summary>
     /// Updates the shop manager.

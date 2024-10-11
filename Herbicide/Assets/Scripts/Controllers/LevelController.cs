@@ -81,7 +81,9 @@ public class LevelController : MonoBehaviour
     /// (10) Update LevelCompletionController. <br></br>
     /// (11) Update SettingsController. <br></br>
     /// (12) Update the LevelBehaviourController. <br></br>
-    /// (13) Update the Time Scale.
+    /// (13) Update the Time Scale. <br></br>
+    /// (14) Update the LightManager. <br></br>
+    /// (15) Update the CollectionManager.
     /// </summary>
     void Update()
     {
@@ -98,7 +100,7 @@ public class LevelController : MonoBehaviour
         UpdateInputEvents();
 
         //(4) Update ModelControllers.
-        ControllerController.UpdateModelControllers(gameState);
+        ControllerManager.UpdateModelControllers(gameState);
 
         //(5) Update the Economy.
         EconomyController.UpdateEconomy(gameState);
@@ -126,6 +128,12 @@ public class LevelController : MonoBehaviour
 
         //(13) Update the Time Scale.
         UpdateTimeScale();
+
+        //(14) Update the LightManager.
+        LightManager.UpdateLightManager();
+
+        //(15) Update the CollectionManager.
+        CollectionManager.UpdateCollectionManager();
     }
 
     /// <summary>
@@ -155,16 +163,16 @@ public class LevelController : MonoBehaviour
         PlacementController.SetSingleton(instance);
         EnemyManager.SetSingleton(instance);
         ShopManager.SetSingleton(instance);
-        ControllerController.SetSingleton(instance);
+        ControllerManager.SetSingleton(instance);
         EconomyController.SetSingleton(instance);
         CanvasController.SetSingleton(instance);
         SettingsController.SetSingleton(instance);
         SoundController.SetSingleton(instance);
         CollectionManager.SetSingleton(instance); 
         LevelCompletionController.SetSingleton(instance);
+        LightManager.SetSingleton(instance);
         StageController.SetSingleton(instance);
         ExplosionController.SetSingleton(instance);
-        LightManager.SetSingleton(instance);
     }
 
     /// <summary>
@@ -248,10 +256,10 @@ public class LevelController : MonoBehaviour
     private GameState DetermineGameState()
     {
 
-        int activeEnemies = ControllerController.NumEnemiesRemainingInclusive();
+        int activeEnemies = ControllerManager.NumEnemiesRemainingInclusive();
         int enemiesRemaining = EnemyManager.NumEnemiesThatRemainToBeSpawned(SceneController.GetTimeElapsed());
         bool enemiesPresent = (enemiesRemaining > 0 || activeEnemies > 0);
-        bool nexusPresent = ControllerController.NumActiveNexii() > 0;
+        bool nexusPresent = ControllerManager.NumActiveNexii() > 0;
 
         // Win condition: All enemies dead, at least one nexus remaning. 
         if (!enemiesPresent && nexusPresent) currentGameState = GameState.WIN;

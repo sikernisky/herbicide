@@ -58,7 +58,7 @@ public class SalmonberryController : ProjectileController<SalmonberryController.
         EmanationController piercingSalmonberryEmanationController = new EmanationController(
             EmanationController.EmanationType.SALMONBERRY_EXPLOSION, 1,
             explosionPosition);
-        ControllerController.AddEmanationController(piercingSalmonberryEmanationController);
+        ControllerManager.AddEmanationController(piercingSalmonberryEmanationController);
         int explosionX = TileGrid.PositionToCoordinate(explosionPosition.x);
         int explosionY = TileGrid.PositionToCoordinate(explosionPosition.y);
         Vector2 tileExplosionPos = new Vector2(explosionX, explosionY);

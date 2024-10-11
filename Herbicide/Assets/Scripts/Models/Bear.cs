@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 /// <summary>
 /// Represents a Bear Defender.
@@ -12,7 +13,7 @@ public class Bear : Defender
     #region Stats
 
     /// <summary>
-    /// Bears are Maulers.
+    /// DefenderClass of a Bear.
     /// </summary>
     public override DefenderClass CLASS => DefenderClass.MAULER;
 

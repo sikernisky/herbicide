@@ -32,12 +32,6 @@ public class ShopController : MonoBehaviour
     private List<ShopSlot> shopSlots;
 
     /// <summary>
-    /// The types of ShopCards the Shop can display and
-    /// the number of that type remaining. 
-    /// </summary>
-    private Dictionary<ModelType, int> cardPool;
-
-    /// <summary>
     /// Reference to the Reroll button component.
     /// </summary>
     [SerializeField]
@@ -115,10 +109,7 @@ public class ShopController : MonoBehaviour
         // Update reroll timer
         float timePercentage = timeSinceLastReroll / AUTOMATIC_REROLL_TIME;
         timerBarFill.transform.localScale = new Vector3(timePercentage, 1, 1);
-        if (timeSinceLastReroll <= 0)
-        {
-            Reroll(true);
-        }
+        if (timeSinceLastReroll <= 0) Reroll(true);
         else timeSinceLastReroll -= Time.deltaTime;
     }
 
@@ -136,7 +127,6 @@ public class ShopController : MonoBehaviour
             EconomyController.SubscribeToBalanceUpdatedDelegate(UpdateShopCardLighting);
             numCardsPurchased = 0;
             PlacementController.SubscribeToFinishPlacingDelegate(OnFinishPlacing);
-            cardPool = new Dictionary<ModelType, int>();
             int slotCounter = 0;
             foreach (ShopSlot shopSlot in shopSlots)
             {
@@ -144,28 +134,33 @@ public class ShopController : MonoBehaviour
                 slotCounter++;
             }
 
-            HashSet<ModelType> shopCardsToLoad = new HashSet<ModelType>();
-            foreach(ModelType unlockedModelType in CollectionManager.GetAllUnlockedModelTypes())
-            {
-                shopCardsToLoad.Add(unlockedModelType);
-            }
-
-            Assert.IsNotNull(shopCardsToLoad);
-            Assert.IsTrue(shopCardsToLoad.Count > 0);
-
-
-            foreach (ModelType modelType in shopCardsToLoad)
-            {
-                cardPool.Add(modelType, 5); //5 is placeholder.
-            }
-
             Reroll(true);
             timeSinceLastReroll = AUTOMATIC_REROLL_TIME;
         }
         else shopSlots.ForEach(ss => ss.EnableSlot());
-
         shopLoaded = true;
         shopActive = true;
+    }
+
+    /// <summary>
+    /// Returns the set of ModelTypes that can be purchased from the shop.
+    /// </summary>
+    /// <returns>a set of ModelTypes that can be purchased from the shop.</returns>
+    private List<ModelType> GetUpdatedCardPool()
+    {
+        HashSet<ModelType> shopCardsToLoad = new HashSet<ModelType>();
+        List<ModelType> unlockedModelTypes = CollectionManager.GetAllUnlockedModelTypes();
+        unlockedModelTypes.ForEach(umt => shopCardsToLoad.Add(umt));
+
+        // Remove any ModelTypes that can't be purchased during the current stage
+        StageController.StageOfDay currentStage = StageController.GetCurrentStage();
+        unlockedModelTypes.RemoveAll(umt => !ModelTypeHelper.CanPurchaseDuringStage(umt, currentStage));
+
+        // Remove any duplicate ModelTypes
+        List<ModelType> uniqueModelTypes = new List<ModelType>();
+        unlockedModelTypes.ForEach(umt => { if (!uniqueModelTypes.Contains(umt)) uniqueModelTypes.Add(umt); });
+
+        return uniqueModelTypes;
     }
 
     /// <summary>
@@ -190,11 +185,12 @@ public class ShopController : MonoBehaviour
             EconomyController.Withdraw(ModelType.DEW, REROLL_COST);
         }
 
+        List<ModelType> pool = GetUpdatedCardPool();
         foreach (ShopSlot cardSlot in shopSlots)
         {
             Assert.IsNotNull(cardSlot);
-            int randomIndex = Random.Range(0, cardPool.Count);
-            var randomKey = cardPool.Keys.ElementAt(randomIndex);
+            int randomIndex = Random.Range(0, pool.Count);
+            var randomKey = pool[randomIndex];
             ModelType randomType = randomKey;
             GameObject shopCardPrefab = ShopFactory.GetShopCardPrefab(randomType);
             Assert.IsNotNull(shopCardPrefab);
@@ -228,6 +224,8 @@ public class ShopController : MonoBehaviour
         if (PlacementController.IsPlacing()) return;
         if(PlacementController.IsCombining()) return;
         if (!clickedSlot.CanBuy(EconomyController.GetBalance(ModelType.DEW))) return;
+        ModelType modelTypeInSlot = ModelTypeHelper.GetModelTypeFromShopCardModelType(clickedSlot.GetModelTypeOfCardInSlot());
+        if (!ControllerManager.IsSpaceForModelOnSomeTree(modelTypeInSlot)) return;
 
         // Get a fresh copy of the Model we bought
         GameObject slotPrefab = clickedSlot.GetCardPrefab();
@@ -239,7 +237,7 @@ public class ShopController : MonoBehaviour
         EconomyController.Withdraw(ModelType.DEW, clickedSlot.Buy(EconomyController.GetBalance(ModelType.DEW)));
         UpdateShopCardLighting();
 
-        // The ControllerController handles upgrading and combination logic
+        // The ControllerManager handles upgrading and combination logic
         OnBuyModel?.Invoke(slotModel);
         numCardsPurchased++;
 
@@ -263,7 +261,7 @@ public class ShopController : MonoBehaviour
     }
 
     /// <summary>
-    /// Subscribes a handler (the ControllerController) to the request upgrade event.
+    /// Subscribes a handler (the ControllerManager) to the request upgrade event.
     /// </summary>
     /// <param name="handler">The handler to subscribe.</param>
     public void SubscribeToBuyDefenderDelegate(BuyModelDelegate handler)

@@ -118,7 +118,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
             Vector3 targetPosition = GetTarget().GetAttackPosition();
             int numSplits = GetSquirrel().GetTier() - 1;
             AcornController acornController = new AcornController(acornComp, GetSquirrel().GetPosition(), targetPosition, numSplits);
-            ControllerController.AddModelController(acornController);
+            ControllerManager.AddModelController(acornController);
 
             CollectionManager.AddModelUpgradePoints(ModelType.SQUIRREL, 1);
 

@@ -175,7 +175,7 @@ public class LevelCompletionController : MonoBehaviour
         bool gameOver = gameState == GameState.LOSE ||
             gameState == GameState.WIN ||
             gameState == GameState.TIE;
-        bool rewardCollected = ControllerController.LevelRewardCollected();
+        bool rewardCollected = ControllerManager.LevelRewardCollected();
 
         if (gameState == GameState.WIN) return rewardCollected;
         else return gameOver;

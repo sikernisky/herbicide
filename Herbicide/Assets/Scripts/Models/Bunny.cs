@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -11,6 +12,21 @@ public class Bunny : Defender
     /// Bunnies do not draw a range indicator.
     /// </summary>
     public override bool DRAWS_RANGE_INDICATOR => false;
+
+    /// <summary>
+    /// How much a Dew produced by a Bunny is worth at tier 1.
+    /// </summary>
+    public int DEW_VALUE_TIER_ONE => 15;
+
+    /// <summary>
+    /// How much a Dew produced by a Bunny is worth at tier 2.
+    /// </summary>
+    public int DEW_VALUE_TIER_TWO => 30;
+
+    /// <summary>
+    /// How much a Dew produced by a Bunny is worth at tier 3.
+    /// </summary>
+    public int DEW_VALUE_TIER_THREE => 60;
 
     #endregion
 
@@ -40,7 +56,7 @@ public class Bunny : Defender
     /// <summary>
     /// Starting generation speed of a Bunny.
     /// </summary>
-    public override float BASE_MAIN_ACTION_SPEED => .05f;
+    public override float BASE_MAIN_ACTION_SPEED => .025f;
 
     /// <summary>
     /// Maximum generation speed of a Bunny.

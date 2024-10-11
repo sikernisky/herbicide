@@ -33,7 +33,7 @@ public class BasicTreeSeedController : CollectableController<BasicTreeSeedContro
     public BasicTreeSeedController(BasicTreeSeed basicTreeSeed, Vector3 dropPos) : base(basicTreeSeed, dropPos)
     {
         GetBasicTreeSeed().SetWorldPosition(dropPos);
-        GetBasicTreeSeed().AdjustValue(1);
+        GetBasicTreeSeed().SetValue(1);
     }
 
     /// <summary>

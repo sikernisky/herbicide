@@ -57,7 +57,7 @@ public class BlackberryController : ProjectileController<BlackberryController.Bl
         EmanationController piercingBlackberryEmanationController = new EmanationController(
             EmanationController.EmanationType.BLACKBERRY_EXPLOSION, 1,
             explosionPosition);
-        ControllerController.AddEmanationController(piercingBlackberryEmanationController);
+        ControllerManager.AddEmanationController(piercingBlackberryEmanationController);
         int explosionX = TileGrid.PositionToCoordinate(explosionPosition.x);
         int explosionY = TileGrid.PositionToCoordinate(explosionPosition.y);
         Vector2 tileExplosionPos = new Vector2(explosionX, explosionY);

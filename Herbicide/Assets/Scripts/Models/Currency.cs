@@ -50,7 +50,7 @@ public abstract class Currency : Collectable
     /// Adds some amount to this Currency's value.
     /// </summary>
     /// <param name="amount">The amount to add.</param>
-    public void AdjustValue(int amount) => value = Mathf.Clamp(value + amount, MIN_VALUE, MAX_VALUE);
+    public void SetValue(int amount) => value = Mathf.Clamp(amount, MIN_VALUE, MAX_VALUE);
 
     /// <summary>
     /// Resets this Currency's value to its starting amount.

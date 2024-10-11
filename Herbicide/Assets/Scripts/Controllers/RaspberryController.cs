@@ -57,7 +57,7 @@ public class RaspberryController : ProjectileController<RaspberryController.Rasp
         EmanationController piercingRaspberryEmanationController = new EmanationController(
             EmanationController.EmanationType.RASPBERRY_EXPLOSION, 1,
             explosionPosition);
-        ControllerController.AddEmanationController(piercingRaspberryEmanationController);
+        ControllerManager.AddEmanationController(piercingRaspberryEmanationController);
         int explosionX = TileGrid.PositionToCoordinate(explosionPosition.x);
         int explosionY = TileGrid.PositionToCoordinate(explosionPosition.y);
         Vector2 tileExplosionPos = new Vector2(explosionX, explosionY);

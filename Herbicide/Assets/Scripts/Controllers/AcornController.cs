@@ -74,7 +74,7 @@ public class AcornController : ProjectileController<AcornController.AcornState>
         int numSplits = GetAcorn().GetNumSplits() - 1;
         AcornController acornController = new AcornController(acornComp, impactPoint, targetPosition1, numSplits);
         acornController.AddColliderToIgnore(other);
-        ControllerController.AddModelController(acornController);
+        ControllerManager.AddModelController(acornController);
 
         acornPrefab = ProjectileFactory.GetProjectilePrefab(ModelType.ACORN);
         Assert.IsNotNull(acornPrefab);
@@ -83,7 +83,7 @@ public class AcornController : ProjectileController<AcornController.AcornState>
         Vector3 targetPosition2 = impactPoint + new Vector3(perpDirection2.x, perpDirection2.y, 1) * distanceMultiplier;
         acornController = new AcornController(acornComp, impactPoint, targetPosition2, numSplits);
         acornController.AddColliderToIgnore(other);
-        ControllerController.AddModelController(acornController);
+        ControllerManager.AddModelController(acornController);
     }
 
     #endregion

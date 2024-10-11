@@ -21,7 +21,7 @@ public class SaveLoadManager : MonoBehaviour
     /// <summary>
     /// The PlayerData object that we are currently using.
     /// </summary>
-    private PlayerData currentLoad;
+    private GameSaveData currentLoad;
 
     /// <summary>
     /// The path to the file where we save the player data.
@@ -95,17 +95,17 @@ public class SaveLoadManager : MonoBehaviour
             FileStream stream = new FileStream(instance.SAVE_PATH, FileMode.Open);
             try
             {
-                PlayerData data = formatter.Deserialize(stream) as PlayerData;
+                GameSaveData data = formatter.Deserialize(stream) as GameSaveData;
                 instance.currentLoad = data;
             }
             catch (Exception e)
             {
                 Debug.LogError($"Error loading data: {e.Message}");
-                instance.currentLoad = new PlayerData();
+                instance.currentLoad = new GameSaveData();
             }
             finally { stream.Close(); }
         }
-        else instance.currentLoad = new PlayerData();
+        else instance.currentLoad = new GameSaveData();
         instance.OnLoadRequested?.Invoke();
         instance.loaded = true;
     }
@@ -115,16 +115,9 @@ public class SaveLoadManager : MonoBehaviour
     /// </summary>
     public static void WipeCurrentSave()
     {
-        instance.currentLoad = new PlayerData(); // Clear in-memory data
-
-        if (File.Exists(instance.SAVE_PATH))
-        {
-            File.Delete(instance.SAVE_PATH);
-        }
-        else
-        {
-            Debug.Log("Save file not found to delete.");
-        }
+        instance.currentLoad = new GameSaveData(); // Clear in-memory data
+        if (File.Exists(instance.SAVE_PATH)) File.Delete(instance.SAVE_PATH);
+        else Debug.Log("Save file not found to delete.");
     }
 
     /// <summary>
@@ -172,50 +165,53 @@ public class SaveLoadManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Saves the list of ModelUpgradeSaveData to the PlayerData.
+    /// Saves the CollectionSaveData to the PlayerData.
     /// </summary>
-    /// <param name="modelSaveData">the saved model upgrade data.</param>
-    public static void SaveCollection(CollectionManager collectionManager, List<ModelUpgradeSaveData> modelSaveData)
+    /// <param name="collectionSaveData">the saved Collection data.</param>
+    public static void SaveCollection(CollectionManager collectionManager, CollectionSaveData collectionSaveData)
     {
         Assert.IsNotNull(instance.currentLoad, "currentLoad is null.");
         Assert.IsNotNull(collectionManager, "collectionManager is null.");
-        Assert.IsNotNull(modelSaveData, "modelSaveData is null.");
+        Assert.IsNotNull(collectionSaveData, "modelSaveData is null.");
 
-        instance.currentLoad.modelSaveData = modelSaveData;
+        instance.currentLoad.collectionSaveData = collectionSaveData;
     }
 
     /// <summary>
-    /// Returns the list of ModelUpgradeSaveData from the PlayerData.
+    /// Returns the CollectionSaveData from the PlayerData.
     /// </summary>
-    /// <returns>the list of ModelUpgradeSaveData from the PlayerData.</returns>
-    public static List<ModelUpgradeSaveData> LoadCollection(CollectionManager collectionManager)
+    /// <returns>the CollectionSaveData from the PlayerData.</returns>
+    public static CollectionSaveData LoadCollection(CollectionManager collectionManager)
     {
         Assert.IsNotNull(instance.currentLoad, "currentLoad is null.");
         Assert.IsNotNull(collectionManager, "collectionManager is null.");
 
-        return instance.currentLoad.modelSaveData;
+        return instance.currentLoad.collectionSaveData;
     }
 
     /// <summary>
-    /// Saves the value of the isRerollUnlocked field to the PlayerData.
+    /// Saves the list of ShopSaveData to the PlayerData.
     /// </summary>
-    /// <param name="unlocked">true if unlocked; otherwise false.</param>
-    public static void SaveIsRerollUnlocked(bool unlocked)
+    /// <param name="shopSaveData">the saved Shop data.</param>
+    public static void SaveShop(ShopManager shopManager, ShopSaveData shopSaveData)
     {
         Assert.IsNotNull(instance.currentLoad, "currentLoad is null.");
+        Assert.IsNotNull(shopManager, "shopManager is null.");
+        Assert.IsNotNull(shopSaveData, "modelSaveData is null.");
 
-        instance.currentLoad.isRerollUnlocked = unlocked;
+        instance.currentLoad.shopSaveData = shopSaveData;
     }
 
     /// <summary>
-    /// Returns true if the reroll feature is unlocked; otherwise false.
+    /// Returns the ShopSaveData from the PlayerData.
     /// </summary>
-    /// <returns>true if the reroll feature is unlocked; otherwise false.</returns>
-    public static bool GetLoadedIsRerollUnlocked()
+    /// <returns>the ShopSaveData from the PlayerData.</returns>
+    public static ShopSaveData LoadShop(ShopManager shopManager)
     {
         Assert.IsNotNull(instance.currentLoad, "currentLoad is null.");
+        Assert.IsNotNull(shopManager, "shopManager is null.");
 
-        return instance.currentLoad.isRerollUnlocked;
+        return instance.currentLoad.shopSaveData;
     }
 
     /// <summary>

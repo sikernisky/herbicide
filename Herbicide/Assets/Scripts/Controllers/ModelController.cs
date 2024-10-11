@@ -200,7 +200,7 @@ public abstract class ModelController
     }
 
     /// <summary>
-    /// Called when the ControllerController removes this ModelController from
+    /// Called when the ControllerManager removes this ModelController from
     /// the scene. Destroys this controller's Model.
     /// </summary>
     public void OnRemoveController() => DestroyAndRemoveModel();

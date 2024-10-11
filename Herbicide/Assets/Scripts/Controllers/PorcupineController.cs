@@ -103,7 +103,7 @@ public class PorcupineController : DefenderController<PorcupineController.Porcup
             bool doubleQuill = GetPorcupine().GetTier() > 2;
             Vector3 targetPosition = GetTarget().GetAttackPosition();
             QuillController quillController = new QuillController(quillComp, GetPorcupine().GetPosition(), targetPosition, doubleQuill);
-            ControllerController.AddModelController(quillController);
+            ControllerManager.AddModelController(quillController);
 
             if (i < numQuills - 1) // Wait for the delay between shots unless it's the last one
             {

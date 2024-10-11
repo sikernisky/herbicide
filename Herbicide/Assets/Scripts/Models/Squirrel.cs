@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -10,6 +11,11 @@ public class Squirrel : Defender
     #endregion
 
     #region Stats
+
+    /// <summary>
+    /// DefenderClass of a Squirrel.
+    /// </summary>
+    public override DefenderClass CLASS => DefenderClass.TREBUCHET;
 
     /// <summary>
     /// Starting health of a Squirrel
@@ -44,7 +50,7 @@ public class Squirrel : Defender
     /// <summary>
     /// Number of attacks per second a Squirrel starts with.
     /// </summary>
-    public override float BASE_MAIN_ACTION_SPEED => .4f;
+    public override float BASE_MAIN_ACTION_SPEED => .45f;
 
     /// <summary>
     /// Most amount of attack cooldown this Squirrel can have.
@@ -102,11 +108,6 @@ public class Squirrel : Defender
     /// Type of a Squirrel
     /// </summary>
     public override ModelType TYPE => ModelType.SQUIRREL;
-
-    /// <summary>
-    /// Class of a Squirrel
-    /// </summary>
-    public override DefenderClass CLASS => DefenderClass.TREBUCHET;
 
     #endregion
 
