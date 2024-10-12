@@ -173,10 +173,10 @@ public abstract class Projectile : Model
     public int GetDamage() => damage;
 
     /// <summary>
-    /// Adds to this Projectile's current damage.
+    /// Sets this Projectile's damage to a new value.
     /// </summary>
-    /// <param name="amount">the amount of damage to add.</param>
-    public void AdjustDamage(int amount) => damage += amount;
+    /// <param name="newDamage">the new damage value.</param>
+    public void SetDamage(int newDamage) => damage = Mathf.Clamp(newDamage, MIN_DAMAGE, MAX_DAMAGE);
 
     /// <summary>
     /// Resets the Projectile's damange to its starting value.

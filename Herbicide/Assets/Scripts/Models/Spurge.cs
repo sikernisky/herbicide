@@ -27,7 +27,7 @@ public class Spurge : Enemy
     /// <summary>
     /// Base health of a Spurge.
     /// </summary>
-    public override float BASE_HEALTH => 50;
+    public override float BASE_HEALTH => 35;
 
     /// <summary>
     /// Upper bound of a Spurge's health. 
@@ -100,7 +100,7 @@ public class Spurge : Enemy
     /// <summary>
     /// Starting movement speed of a Spurge.
     /// </summary>
-    public override float BASE_MOVEMENT_SPEED => 1f;
+    public override float BASE_MOVEMENT_SPEED => .75f;
 
     /// <summary>
     /// Maximum movement speed of a Spurge.

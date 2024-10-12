@@ -76,7 +76,7 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     protected override void SpawnMob()
     {
         if (!GetEnemy().ReadyToSpawn()) return;
-        GetMob().SetWorldPosition(NexusHoleSpawnPos(GetMob().GetSpawnPos()));
+        GetMob().SetWorldPosition(NexusHoleSpawnPos(GetMob().GetSpawnWorldPosition()));
         base.SpawnMob();
     }
 
@@ -188,7 +188,7 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
                     Quill quillComp = quillPrefab.GetComponent<Quill>();
                     Assert.IsNotNull(quillComp);
                     QuillController quillController = new QuillController(quillComp, enemyPosition, targetPosition, false);
-                    ControllerController.AddModelController(quillController);
+                    ControllerManager.AddModelController(quillController);
                     quillIndex++;
                 }
             }
@@ -230,21 +230,21 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
 
 /*        Dew dew = CollectableFactory.GetCollectablePrefab(ModelType.DEW).GetComponent<Dew>();
         DewController dewController = new DewController(dew, lootPos, value);
-        ControllerController.AddModelController(dewController);*/
+        ControllerManager.AddModelController(dewController);*/
 
 /*        BasicTreeSeed basicTreeSeed = CollectableFactory.GetCollectablePrefab(ModelType.BASIC_TREE_SEED).GetComponent<BasicTreeSeed>();
         BasicTreeSeedController basicTreeSeedController = new BasicTreeSeedController(basicTreeSeed, lootPos);
-        ControllerController.AddModelController(basicTreeSeedController);*/
+        ControllerManager.AddModelController(basicTreeSeedController);*/
 
 /*        SpeedTreeSeed speedTreeSeed = CollectableFactory.GetCollectablePrefab(ModelType.SPEED_TREE_SEED).GetComponent<SpeedTreeSeed>();
         SpeedTreeSeedController speedTreeSeedController = new SpeedTreeSeedController(speedTreeSeed, lootPos);
-        ControllerController.AddModelController(speedTreeSeedController);*/
+        ControllerManager.AddModelController(speedTreeSeedController);*/
 
-        if(ControllerController.NumEnemiesRemainingInclusive() == 0)
+        if(ControllerManager.NumEnemiesRemainingInclusive() == 0)
         {
             LevelReward levelReward = CollectableFactory.GetCollectablePrefab(ModelType.LEVEL_REWARD).GetComponent<LevelReward>();
             LevelRewardController levelRewardController = new LevelRewardController(levelReward, GetEnemy().GetPosition());
-            ControllerController.AddModelController(levelRewardController);
+            ControllerManager.AddModelController(levelRewardController);
         }
 
         base.DropDeathLoot();

@@ -80,7 +80,7 @@ public interface ISurface
     /// </summary>
     /// <returns> the PlaceableObject on this ISurface;
     /// null if it has none.</returns>
-    PlaceableObject GetPlaceableObject();
+    PlaceableObject GetOccupant();
 
     /// <summary>
     /// Returns the X-coordinate of this ISurface.

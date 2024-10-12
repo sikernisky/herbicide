@@ -476,22 +476,10 @@ public class TileGrid : MonoBehaviour
         if (neighbors == null) return false;
         Assert.IsNotNull(target as ISurface);
 
-
         // If we can't place on the Tile, return.
         int targetX = target.GetX();
         int targetY = target.GetY();
-        Vector2Int size = candidate.SIZE;
-        for (int x = targetX; x < size.x + targetX; x++)
-        {
-            for (int y = targetY; y < size.y + targetY; y++)
-            {
-                Tile tileAtExpansion = instance.tileMap[new Vector2Int(x, y)];
-                if (!tileAtExpansion.CanPlace(candidate, instance.GetNeighbors(tileAtExpansion)))
-                {
-                    return false;
-                }
-            }
-        }
+        if(!target.CanPlace(candidate, neighbors)) return false;
 
         // Place the candidate.
         target.Place(candidate, instance.GetNeighbors(target));
@@ -499,16 +487,8 @@ public class TileGrid : MonoBehaviour
         NexusHole nexusHoleCandidate = candidate as NexusHole;
         if (candidate as NexusHole != null) instance.nexusHoleHosts.Add(target, nexusHoleCandidate);
 
-        // If the candidate is bigger than 1x1, set its expanded tiles to Occupied.
         if (!candidate.OCCUPIER) return true;
-        for (int x = targetX; x < size.x + targetX; x++)
-        {
-            for (int y = targetY; y < size.y + targetY; y++)
-            {
-                Tile tileAtExpansion = instance.tileMap[new Vector2Int(x, y)];
-                tileAtExpansion.SetOccupant(candidate);
-            }
-        }
+        target.SetOccupant(candidate);
 
         return true;
     }
@@ -601,7 +581,7 @@ public class TileGrid : MonoBehaviour
             }
 
             // Give Flooring a controller
-            ControllerController.MakeModelController(candidate);
+            ControllerManager.MakeModelController(candidate);
             return true;
         }
         return false;
@@ -857,10 +837,10 @@ public class TileGrid : MonoBehaviour
                     Mob mob = spawnedStructure.GetComponent<Mob>();
                     if (mob as Nexus != null) instance.numNexii++;
                     Vector3 spawnPos = new Vector3(obToSpawn.GetSpawnCoordinates(mapHeight).x, obToSpawn.GetSpawnCoordinates(mapHeight).y, 1);
-                    mob.SetSpawnPos(spawnPos);
+                    mob.SetSpawnWorldPosition(spawnPos);
                     instance.objectPositions.Add(spawnPos);
                     Tile targetTile = instance.TileExistsAt(obToSpawn.GetSpawnCoordinates(mapHeight).x, obToSpawn.GetSpawnCoordinates(mapHeight).y);
-                    ControllerController.MakeModelController(mob);
+                    ControllerManager.MakeModelController(mob);
                     PlaceOnTile(targetTile, mob);
                 }
                 break;

@@ -33,7 +33,7 @@ public class SpeedTreeSeedController : CollectableController<SpeedTreeSeedContro
     public SpeedTreeSeedController(SpeedTreeSeed speedTreeSeed, Vector3 dropPos) : base(speedTreeSeed, dropPos)
     {
         GetSpeedTreeSeed().SetWorldPosition(dropPos);
-        GetSpeedTreeSeed().AdjustValue(1);
+        GetSpeedTreeSeed().SetValue(1);
     }
 
     /// <summary>

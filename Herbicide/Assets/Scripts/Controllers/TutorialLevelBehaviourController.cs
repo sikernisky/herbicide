@@ -114,11 +114,11 @@ public class TutorialLevelBehaviourController : LevelBehaviourController
     {
         if (pulseTimer < pulseTime / 2)
         {
-            ControllerController.SetColorOfAllTrees(this, Color.Lerp(pulseLightColor, pulseDarkColor, pulseTimer / (pulseTime / 2)));
+            ControllerManager.SetColorOfAllTrees(this, Color.Lerp(pulseLightColor, pulseDarkColor, pulseTimer / (pulseTime / 2)));
         }
         else
         {
-            ControllerController.SetColorOfAllTrees(this, Color.Lerp(pulseDarkColor, pulseLightColor, (pulseTimer - pulseTime / 2) / (pulseTime / 2)));
+            ControllerManager.SetColorOfAllTrees(this, Color.Lerp(pulseDarkColor, pulseLightColor, (pulseTimer - pulseTime / 2) / (pulseTime / 2)));
         }
 
         if (pulseTimer > pulseTime) pulseTimer = 0;
@@ -142,7 +142,7 @@ public class TutorialLevelBehaviourController : LevelBehaviourController
     /// </summary>
     /// <returns>true if the player has placed a Defender in the scene;
     /// otherwise, false.</returns>
-    private bool DidPlaceDefender() => ControllerController.NumPlacedDefenders() > 0;
+    private bool DidPlaceDefender() => ControllerManager.NumPlacedDefenders() > 0;
 
     #endregion
 
@@ -163,7 +163,7 @@ public class TutorialLevelBehaviourController : LevelBehaviourController
     private void OnPlaceDefender()
     {
         pulseTrees = false;
-        ControllerController.SetColorOfAllTrees(this, pulseLightColor);
+        ControllerManager.SetColorOfAllTrees(this, pulseLightColor);
     }
 
     #endregion  

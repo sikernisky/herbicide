@@ -27,11 +27,6 @@ public class NexusController : MobController<NexusController.NexusState>
     /// </summary>
     protected override int MAX_TARGETS => 0;
 
-    /// <summary>
-    /// The latest stage of the Game.
-    /// </summary>
-    private int lastStage;
-
     #endregion
 
     #region Methods
@@ -122,8 +117,6 @@ public class NexusController : MobController<NexusController.NexusState>
     protected virtual void ExecuteSpawnState()
     {
         if(GetState() != NexusState.SPAWN) return;
-
-        lastStage = StageController.GetCurrentStage();
     }
 
     /// <summary>
@@ -148,17 +141,6 @@ public class NexusController : MobController<NexusController.NexusState>
             if (!ReachedMovementTarget()) return;
             GetNexus().CashIn();
         }
-
-        int currentStage = StageController.GetCurrentStage();
-        if(currentStage != lastStage && GetNexus().GetPosition() != GetNexus().GetSpawnPos())
-        {
-            lastStage = currentStage;
-            Vector3 resetPos = GetNexus().GetSpawnPos();
-            int resetXCoord = TileGrid.PositionToCoordinate(resetPos.x);
-            int resetYCoord = TileGrid.PositionToCoordinate(resetPos.y);
-            TileGrid.PlaceOnTileUsingCoordinates(new Vector2Int(resetXCoord, resetYCoord), GetNexus());
-        }
-
     }
 
     /// <summary>

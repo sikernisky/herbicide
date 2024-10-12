@@ -285,7 +285,7 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
     {
         if (GetState() != SpurgeMinionState.INACTIVE) return;
 
-        SetNextMovePos(GetSpurgeMinion().GetSpawnPos());
+        SetNextMovePos(GetSpurgeMinion().GetSpawnWorldPosition());
     }
 
     /// <summary>
@@ -295,11 +295,11 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
     {
         if (GetState() != SpurgeMinionState.ENTERING) return;
 
-        GetSpurgeMinion().SetEntering(GetSpurgeMinion().GetSpawnPos());
+        GetSpurgeMinion().SetEntering(GetSpurgeMinion().GetSpawnWorldPosition());
         SetNextAnimation(GetSpurgeMinion().MOVE_ANIMATION_DURATION, EnemyFactory.GetSpawnTrack(
             GetSpurgeMinion().TYPE, GetSpurgeMinion().GetDirection(), GetSpurgeMinion().GetHealthState()));
 
-        PopOutOfMovePos(NexusHoleSpawnPos(GetSpurgeMinion().GetSpawnPos()));
+        PopOutOfMovePos(NexusHoleSpawnPos(GetSpurgeMinion().GetSpawnWorldPosition()));
         GetSpurgeMinion().FaceDirection(Direction.SOUTH);
 
         if (!ReachedMovementTarget()) return;

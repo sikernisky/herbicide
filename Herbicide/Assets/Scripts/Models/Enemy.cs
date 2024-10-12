@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using StageOfDay = StageController.StageOfDay;
 
 /// <summary>
 /// Represents a Model who works to make the player lose the game.
@@ -39,7 +40,7 @@ public abstract class Enemy : Mob
     /// <summary>
     /// The stage during which this Enemy spawns.
     /// </summary>
-    private int stage;
+    private StageOfDay stage;
 
     /// <summary>
     /// Current health state of this Enemy.
@@ -126,9 +127,9 @@ public abstract class Enemy : Mob
     /// otherwise, returns false. /// </returns>
     public bool ReadyToSpawn()
     {
-        int currStage = StageController.GetCurrentStage();
+        StageOfDay currStage = StageController.GetCurrentStage();
         float timeSinceLastStage = StageController.GetTimeSinceLastStageBegan();
-        bool timeToSpawn = GetStage() <= currStage && timeSinceLastStage >= GetSpawnTime();
+        bool timeToSpawn = GetStage() == currStage && timeSinceLastStage >= GetSpawnTime();
         return !Spawned() && timeToSpawn;
     }
 
@@ -165,13 +166,13 @@ public abstract class Enemy : Mob
     /// Sets the stage during which this Enemy spawns.
     /// </summary>
     /// <param name="stage">The stage during which this Enemy spawns.</param>
-    public void SetStage(int stage) => this.stage = stage;
+    public void SetStage(StageOfDay stage) => this.stage = stage;
 
     /// <summary>
     /// Returns the stage during which this Enemy spawns.
     /// </summary>
     /// <returns>the stage during which this Enemy spawns.</returns>
-    public int GetStage() => stage;
+    public StageOfDay GetStage() => stage;
 
     /// <summary>
     /// Sets the Enemy as entering.

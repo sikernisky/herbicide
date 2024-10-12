@@ -43,6 +43,11 @@ public class ShopManager : MonoBehaviour
     /// </summary>
     private BuyModelDelegate handlerToSubscribe;
 
+    /// <summary>
+    /// true if the reroll feature is unlocked; false otherwise.
+    /// </summary>
+    private bool isRerollUnlocked;
+
     #endregion
 
     #region Methods
@@ -70,7 +75,16 @@ public class ShopManager : MonoBehaviour
         Assert.IsNotNull(levelController, "LevelController is null.");
 
         SaveLoadManager.SubscribeToToLoadEvent(instance.LoadShopData);
-        SaveLoadManager.SubscribeToToLoadEvent(instance.SaveShopData);
+        SaveLoadManager.SubscribeToToSaveEvent(instance.SaveShopData);
+    }
+
+    /// <summary>
+    /// Unlocks the reroll feature.
+    /// </summary>
+    public static void UnlockReroll()
+    {
+        instance.isRerollUnlocked = true;
+        instance.activeShop.SetRerollButtonActive(true);
     }
 
     /// <summary>
@@ -79,9 +93,12 @@ public class ShopManager : MonoBehaviour
     private void LoadShopData()
     {
         int level = SaveLoadManager.GetLoadedGameLevel();
-        bool rerollUnlocked = SaveLoadManager.GetLoadedIsRerollUnlocked();
-        Debug.Log(rerollUnlocked);
 
+        ShopSaveData shopSaveData = SaveLoadManager.LoadShop(instance);
+        if(shopSaveData == null) shopSaveData = new ShopSaveData();
+        isRerollUnlocked = shopSaveData.isRerollUnlocked;
+
+        List<ModelType> starterModels = new List<ModelType>();
         switch (level)
         {
             case 0:
@@ -95,6 +112,8 @@ public class ShopManager : MonoBehaviour
             case 2:
                 shopThreeSlots.gameObject.SetActive(true);
                 activeShop = shopThreeSlots;
+                starterModels.Add(ModelType.BUNNY);
+                starterModels.Add(ModelType.SQUIRREL);
                 break;
             default:
                 shopFourSlots.gameObject.SetActive(true);
@@ -102,15 +121,20 @@ public class ShopManager : MonoBehaviour
                 break;
         }
 
-        activeShop.InitializeShop(instance);
+        activeShop.InitializeShop(instance, starterModels);
         activeShop.SubscribeToBuyDefenderDelegate(handlerToSubscribe);
-        if (rerollUnlocked) activeShop.SetRerollButtonActive(true);
+        if (isRerollUnlocked) activeShop.SetRerollButtonActive(true);
     }
 
     /// <summary>
     /// Saves the shop data.
     /// </summary>
-    private void SaveShopData() { }
+    private void SaveShopData() 
+    {
+        ShopSaveData shopSaveData = new ShopSaveData();
+        shopSaveData.isRerollUnlocked = isRerollUnlocked;
+        SaveLoadManager.SaveShop(instance, shopSaveData);
+    }
     
     /// <summary>
     /// Updates the shop manager.

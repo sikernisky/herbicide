@@ -101,7 +101,7 @@ public abstract class Flooring : Model, ISurface
         for (int i = 0; i < neighbors.Length; i++)
         {
             ISurface neighbor = neighbors[i];
-            if (neighbor != null) placeableNeighbors[i] = neighbor.GetPlaceableObject();
+            if (neighbor != null) placeableNeighbors[i] = neighbor.GetOccupant();
         }
 
         return placeableNeighbors;
@@ -244,12 +244,6 @@ public abstract class Flooring : Model, ISurface
     }
 
     /// <summary>
-    /// Returns this Flooring's occupant.
-    /// </summary>
-    /// <returns>this Flooring's occupant; null if there is none. </returns>
-    private PlaceableObject GetOccupant() => occupant;
-
-    /// <summary>
     /// Returns the index representing the correct Sprite in this 
     /// Flooring's tile set. The correct sprite is determined by whether its
     /// neighbors are null or valid. <br></br>
@@ -269,7 +263,7 @@ public abstract class Flooring : Model, ISurface
     /// </summary>
     /// <returns>the PlaceableObject on this Flooring; null if there
     /// is none</returns>
-    public PlaceableObject GetPlaceableObject() => occupant;
+    public PlaceableObject GetOccupant() => occupant;
 
     /// <summary>
     /// Determines whether a PlaceableObject object can be potentially placed
@@ -297,7 +291,7 @@ public abstract class Flooring : Model, ISurface
         //Occupied by a Tree? Pass the ghost place.
         if (Occupied())
         {
-            Tree treeOcc = GetPlaceableObject() as Tree;
+            Tree treeOcc = occupant as Tree;
             if (treeOcc != null) return treeOcc.GhostPlace(ghost);
         }
 
@@ -325,7 +319,7 @@ public abstract class Flooring : Model, ISurface
     /// </summary>
     public void GhostRemove()
     {
-        Tree treeOcc = GetPlaceableObject() as Tree;
+        Tree treeOcc = occupant as Tree;
         if (treeOcc != null) treeOcc.GhostRemove();
 
         if (ghostOccupant == null) return;

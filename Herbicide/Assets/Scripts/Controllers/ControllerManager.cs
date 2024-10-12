@@ -6,16 +6,16 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 /// <summary>
-/// Controls and updates sub-controller classes.
+/// Manages ModelControllers and updates sub-controller classes.
 /// </summary>
-public class ControllerController : MonoBehaviour
+public class ControllerManager : MonoBehaviour
 {
     #region Fields
 
     /// <summary>
-    /// Reference to the ControllerController singleton.
+    /// Reference to the ControllerManager singleton.
     /// </summary>
-    private static ControllerController instance;
+    private static ControllerManager instance;
 
     /// <summary>
     /// Number of active Models of each ModelType.
@@ -81,7 +81,7 @@ public class ControllerController : MonoBehaviour
     #region Methods
 
     /// <summary>
-    /// Finds and sets the ControllerController singleton. Also initializes the
+    /// Finds and sets the ControllerManager singleton. Also initializes the
     /// controller lists.
     /// </summary>
     /// <param name="levelController">The LevelController singleton.</param>
@@ -90,10 +90,10 @@ public class ControllerController : MonoBehaviour
         if (levelController == null) return;
         if (instance != null) return;
 
-        ControllerController[] controllerQueues = FindObjectsOfType<ControllerController>();
-        Assert.IsNotNull(controllerQueues, "Array of ControllerQueues is null.");
-        Assert.AreEqual(1, controllerQueues.Length);
-        instance = controllerQueues[0];
+        ControllerManager[] controllerManagers = FindObjectsOfType<ControllerManager>();
+        Assert.IsNotNull(controllerManagers, "Array of ControllerManagers is null.");
+        Assert.AreEqual(1, controllerManagers.Length);
+        instance = controllerManagers[0];
 
         instance.defenderControllers = new List<ModelController>();
         instance.enemyControllers = new List<ModelController>();
@@ -226,7 +226,7 @@ public class ControllerController : MonoBehaviour
                 instance.structureControllers.Add(swc);
                 break;
             default:
-                throw new Exception("ModelType " + model.TYPE + " has no implementation in ControllerController."); 
+                throw new Exception("ModelType " + model.TYPE + " has no implementation in ControllerManager."); 
         }
 
         instance.counts.SetCount(instance, model.TYPE, instance.counts.GetCount(model.TYPE) + 1);
@@ -331,6 +331,70 @@ public class ControllerController : MonoBehaviour
     }
 
     /// <summary>
+    /// Returns true if there is space for a Model of the given type  and tier
+    /// on some Tree. Assumes a tier of 1. 
+    /// </summary>
+    /// <param name="modelType">the type of model to check. </param>
+    /// <returns>true if there is space for a Model of the given type  and tier
+    /// on some Tree; otherwise, false.</returns>
+    public static bool IsSpaceForModelOnSomeTree(ModelType modelType)
+    {
+        // We only need to check for space if the combination is not unlocked
+        if (!CollectionManager.IsCombinationUnlocked())
+        {
+            foreach (ModelController treeController in instance.treeControllers)
+            {
+                if (!treeController.ValidModel()) continue;
+                Tree tree = treeController.GetModel() as Tree;
+                if (tree == null) continue;
+                if (!tree.Occupied()) return true;
+            }
+            return false;
+        }
+
+        int defendersOfSameTypeAndTier = 0;
+        foreach (ModelController treeController in instance.treeControllers)
+        {
+            if (!treeController.ValidModel()) continue;
+            Tree tree = treeController.GetModel() as Tree;
+            if (tree == null) continue;
+            
+            // There is an empty tree, and we can place the defender on it
+            if(!tree.Occupied()) return true;
+
+            // Check if the defender on the tower is of the same class and tier
+            Defender defender = tree.GetOccupant() as Defender;
+            if(defender == null) continue;
+
+            if (defender.TYPE == modelType && defender.GetTier() == 1)
+            {
+                defendersOfSameTypeAndTier++;
+                // There are already two defenders of the same type and tier, so combining opens up a Tree
+                if (defendersOfSameTypeAndTier == 2) return true;
+            }
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Resets all Nexii to their spawn positions.
+    /// </summary>
+    /// <param name="stageController">The StageController singleton.</param>
+    public static void ResetNexiiToSpawnPositions(StageController stageController)
+    {
+        Assert.IsNotNull(stageController, "StageController is null.");
+        foreach(ModelController nexusController in instance.structureControllers)
+        {
+            if (!nexusController.ValidModel()) continue;
+            Nexus nexusModel = nexusController.GetModel() as Nexus;
+            if (nexusModel == null) continue;
+            int xSpawn = TileGrid.PositionToCoordinate(nexusModel.GetSpawnWorldPosition().x);
+            int ySpawn = TileGrid.PositionToCoordinate(nexusModel.GetSpawnWorldPosition().y);
+            TileGrid.PlaceOnTileUsingCoordinates(new Vector2Int(xSpawn, ySpawn), nexusModel);
+        }
+    }
+
+    /// <summary>
     /// Sets the color of all Trees in the scene. This method is
     /// called by the TutorialLevelBehaviourController.
     /// </summary>
@@ -425,7 +489,7 @@ public class ControllerController : MonoBehaviour
     }
 
     /// <summary>
-    /// Updates the Model Controllers managed by the ControllerController.
+    /// Updates the Model Controllers managed by the ControllerManager.
     /// </summary>
     /// <param name="gameState">Current game state</param>
     public static void UpdateModelControllers(GameState gameState)
@@ -505,12 +569,16 @@ public class ControllerController : MonoBehaviour
     /// <param name="purchasedModel">the Model that was just purchased.</param>
     private void OnPurchaseModelFromShop(Model purchasedModel)
     {
+        Assert.IsTrue(IsSpaceForModelOnSomeTree(purchasedModel.TYPE), "You need to ensure there is space to place" +
+            "this Model");
+
         // Create the model controller for the newly purchased model
         MakeModelController(purchasedModel);
 
         Defender purchasedDefender = purchasedModel as Defender;
         if(purchasedDefender == null) return;
 
+        if(!CollectionManager.IsCombinationUnlocked()) return;
         StartCoroutine(CheckAndCombineDefenders(purchasedDefender));
     }
     

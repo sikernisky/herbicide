@@ -14,8 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelUpgrades:
   - modelType: SQUIRREL
-    pointRequirementsByLevel: 32000000f40100004c1d0000
+    pointRequirementsByLevel: c8000000e803000088130000
   - modelType: BUNNY
     pointRequirementsByLevel: 1900000064000000ee020000
   - modelType: RACCOON
+    pointRequirementsByLevel: 1900000064000000ee020000
+  - modelType: PORCUPINE
+    pointRequirementsByLevel: 1900000064000000ee020000
+  - modelType: OWL
     pointRequirementsByLevel: 1900000064000000ee020000

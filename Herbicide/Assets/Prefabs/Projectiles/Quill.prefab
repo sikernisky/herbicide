@@ -252,7 +252,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 5cf7af3484b94e8409e0714946d2976a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -347,5 +347,3 @@ MonoBehaviour:
   modelCollider: {fileID: 2222121041725726139}
   projectileBody: {fileID: 8933929584816650215}
   shadow: {fileID: 2702060016471813828}
-  singleQuillSprite: {fileID: 21300000, guid: 23b83c1a95cab8247b7046c5e8eda59b, type: 3}
-  doubleQuillSprite: {fileID: 21300000, guid: d487843248dda0c418908bc71a5971e5, type: 3}

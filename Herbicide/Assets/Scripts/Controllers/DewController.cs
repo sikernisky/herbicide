@@ -34,7 +34,7 @@ public class DewController : CollectableController<DewController.DewState>
     public DewController(Dew dew, Vector3 dropPos, int value) : base(dew, dropPos)
     {
         GetDew().SetWorldPosition(dropPos);
-        GetDew().AdjustValue(value);
+        GetDew().SetValue(value);
     }
 
     /// <summary>

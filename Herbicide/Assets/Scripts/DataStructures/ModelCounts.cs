@@ -30,7 +30,7 @@ public class ModelCounts
     /// <param name="controller">ControllerController reference.</param>
     /// <param name="type">The type to set.</param>
     /// <param name="count">The amount of the ModelType active.</param>
-    public void SetCount(ControllerController controller, ModelType type, int count)
+    public void SetCount(ControllerManager controller, ModelType type, int count)
     {
         Assert.IsNotNull(controller);
         data[type] = count;

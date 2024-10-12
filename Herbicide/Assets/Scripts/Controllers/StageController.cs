@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using TMPro;
-using System.Linq;
 using UnityEngine.UI;
+using UnityEngine.SocialPlatforms;
 
 /// <summary>
 /// Controls the flow and display of stages throughout the game.
@@ -11,6 +11,18 @@ using UnityEngine.UI;
 public class StageController : MonoBehaviour
 {
     #region Fields
+
+    /// <summary>
+    /// The different stages of the day.
+    /// </summary>
+    public enum StageOfDay
+    {
+        MORNING = 0,
+        NOON = 1,
+        EVENING = 2,
+        NIGHT = 3
+    }
+
 
     /// <summary>
     /// Reference to the StageController singleton.
@@ -23,15 +35,10 @@ public class StageController : MonoBehaviour
     private GameState gameState;
 
     /// <summary>
-    /// The number of stages in this level.
-    /// </summary>
-    private int numStages;
-
-    /// <summary>
-    /// The stage data: the stage number and the latest enemy that
+    /// The stage data: the stage and the latest enemy that
     /// spawns at that stage.
     /// <summary> 
-    private Dictionary<int, float> stageData;
+    private Dictionary<StageOfDay, float> stageData;
 
     /// <summary>
     /// The number of seconds between stages.
@@ -56,7 +63,7 @@ public class StageController : MonoBehaviour
     /// <summary>
     /// The current stage the player is on. Starts at 1.
     /// </summary>
-    private int currentStage = 1;
+    private StageOfDay currentStage;
 
     /// <summary>
     /// The text component that displays the current stage.
@@ -86,6 +93,8 @@ public class StageController : MonoBehaviour
         Assert.IsNotNull(stageControllers, "Array of StageControllers is null.");
         Assert.AreEqual(1, stageControllers.Length);
         instance = stageControllers[0];
+        instance.stageText.text = "Stage " + instance.currentStage;
+        LightManager.AdjustLightingForStageOfDay(instance.currentStage, 0.0f);
     }
 
     /// <summary>
@@ -97,11 +106,13 @@ public class StageController : MonoBehaviour
         if (instance == null) return;
         instance.gameState = gameState;
         if (gameState != GameState.ONGOING) return;
-        if (instance.currentStage > instance.numStages) return;
+        if(instance.stageData == null) return;
 
+        Assert.IsTrue(instance.stageData.ContainsKey(StageOfDay.MORNING), "You need to spawn an enemy " +
+            "during the MORNING STAGE in Tiled.");
 
         float latestSpawnThisStage = instance.stageData[instance.currentStage];
-        int numActiveEnemies = ControllerController.NumActiveEnemies();
+        int numActiveEnemies = ControllerManager.NumActiveEnemies();
 
         if (instance.timeSinceLastStage > latestSpawnThisStage && numActiveEnemies <= 0)
         {
@@ -120,13 +131,15 @@ public class StageController : MonoBehaviour
             {
                 instance.isActiveIntermission = false;
                 instance.currentStage++;
-                instance.stageText.text = "Stage " +
-                    Mathf.Min(instance.currentStage, instance.numStages);
+                instance.stageText.text = "Stage " + instance.currentStage;
                 instance.intermissionTimer = 0;
                 instance.timeSinceLastStage = 0f;
+                LightManager.AdjustLightingForStageOfDay(instance.currentStage);
+                ControllerManager.ResetNexiiToSpawnPositions(instance);
             }
         }
         else instance.timeSinceLastStage += Time.deltaTime;
+
     }
 
     /// <summary>
@@ -136,19 +149,23 @@ public class StageController : MonoBehaviour
     /// 
     /// Key: the stage number. <br></br>
     /// Value: the latest enemy that spawns at that stage. <br></br> 
-    /// 
     /// </param>
-    public static void SetStageData(Dictionary<int, float> stageData)
+    public static void SetStageData(Dictionary<StageOfDay, float> stageData)
     {
-        instance.numStages = stageData.Keys.Max();
-        instance.stageData = new Dictionary<int, float>(stageData);
+        instance.stageData = new Dictionary<StageOfDay, float>(stageData);
     }
 
     /// <summary>
     /// Returns the current stage the player is on.
     /// </summary>
     /// <returns>the current stage. </returns>
-    public static int GetCurrentStage() => instance.currentStage;
+    public static StageOfDay GetCurrentStage() => instance.currentStage;
+
+    /// <summary>
+    /// Returns the final stage of the level.
+    /// </summary>
+    /// <returns>the final stage of the level</returns>
+    public static StageOfDay GetFinalStage() => StageOfDay.NIGHT;
 
     /// <summary>
     /// Returns the number of seconds that have elapsed
@@ -157,6 +174,8 @@ public class StageController : MonoBehaviour
     /// <returns>the number of seconds that have elapsed since the
     /// last stage began. </returns> 
     public static float GetTimeSinceLastStageBegan() => instance.timeSinceLastStage;
+
+
 
     #endregion
 }

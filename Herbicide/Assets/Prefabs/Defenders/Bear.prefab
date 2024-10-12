@@ -101,7 +101,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelRenderer: {fileID: -5268927572331247278}
   modelCollider: {fileID: 2417010323027028757}
-  lineRenderer: {fileID: 0}
 --- !u!61 &2417010323027028757
 BoxCollider2D:
   m_ObjectHideFlags: 0

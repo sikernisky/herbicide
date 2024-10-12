@@ -167,27 +167,22 @@ public class BunnyController : DefenderController<BunnyController.BunnyState>
         Dew dewComp = dewPrefab.GetComponent<Dew>();
         Assert.IsNotNull(dewComp, "Dew component is null.");
 
-        float spawnRadius = GetBunny().GetMainActionRange();  // Get the spawn radius from the bunny's main action range
-
-        // Generate a random angle between 0 and 360 degrees
+        float spawnRadius = GetBunny().GetMainActionRange(); 
         float angle = Random.Range(0, 2 * Mathf.PI);
-
-        // Generate a random radius multiplier between 0 and 1 to allow spawning anywhere within the circle
         float randomRadius = Random.Range(0f, 1f) * spawnRadius;
-
-        // Calculate the x and y coordinates based on the angle and randomized radius
         Vector2 randomPositionWithinCircle = new Vector2(
             Mathf.Cos(angle) * randomRadius,
             Mathf.Sin(angle) * randomRadius
         );
 
-        // Ensure the Z-coordinate is handled, if necessary
+        int dewValue;
+        if(GetBunny().GetTier() == 1) dewValue = GetBunny().DEW_VALUE_TIER_ONE;
+        else if(GetBunny().GetTier() == 2) dewValue = GetBunny().DEW_VALUE_TIER_TWO;
+        else dewValue = GetBunny().DEW_VALUE_TIER_THREE;
+
         Vector3 spawnPosition = GetBunny().GetTreePosition() + new Vector3(randomPositionWithinCircle.x, randomPositionWithinCircle.y, 0);
-
-        DewController dewController = new DewController(dewComp, spawnPosition, dewComp.GetValue());
-        ControllerController.AddModelController(dewController);
-
-
+        DewController dewController = new DewController(dewComp, spawnPosition, dewValue);
+        ControllerManager.AddModelController(dewController);
 
         SetNextAnimation(GetBunny().GENERATION_ANIMATION_DURATION,
             DefenderFactory.GetIdleTrack(

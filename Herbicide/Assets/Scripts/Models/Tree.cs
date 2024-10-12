@@ -186,7 +186,7 @@ public abstract class Tree : Mob, ISurface
     /// </summary>
     /// <returns>The PlaceableObject on this Tree, or null if there
     /// is no PlaceableObject on this Tree. </returns>
-    public PlaceableObject GetPlaceableObject() => defender;
+    public PlaceableObject GetOccupant() => defender;
 
     /// <summary>
     /// Provides a visual simulation of placing a Defender on

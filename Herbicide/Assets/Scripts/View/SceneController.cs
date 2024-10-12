@@ -35,6 +35,7 @@ public class SceneController : MonoBehaviour
     public static void UpdateScene()
     {
         timeElapsed += Time.deltaTime;
+
         if (InputController.DidKeycodeDown(KeyCode.N)) LoadNextLevelWithFadeDelay();
     }
 
@@ -141,6 +142,15 @@ public class SceneController : MonoBehaviour
     {
         if (instance.loadingScene) return;
         instance.StartCoroutine(instance.LoadSceneAfterFadeOut(sceneName));
+    }
+
+    /// <summary>
+    /// Reloads the current scene with a fade delay. If already loading, does nothing.
+    /// </summary>
+    public static void LoadCurrentSceneWithFadeDelay()
+    {
+        if (instance.loadingScene) return;
+        instance.StartCoroutine(instance.ReloadSceneAfterFadeOut());
     }
 
     /// <summary>

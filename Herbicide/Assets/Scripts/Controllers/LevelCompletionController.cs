@@ -175,7 +175,7 @@ public class LevelCompletionController : MonoBehaviour
         bool gameOver = gameState == GameState.LOSE ||
             gameState == GameState.WIN ||
             gameState == GameState.TIE;
-        bool rewardCollected = ControllerController.LevelRewardCollected();
+        bool rewardCollected = ControllerManager.LevelRewardCollected();
 
         if (gameState == GameState.WIN) return rewardCollected;
         else return gameOver;
@@ -349,13 +349,14 @@ public class LevelCompletionController : MonoBehaviour
         {
             case CompletionState.INITIAL_RESULT:
 
-                if(gameState == GameState.WIN)
+                if (gameState == GameState.WIN)
                 {
                     completionState = CompletionState.PROGRESS_TRACKS_UPDATING;
                     progressTrackObjects.SetActive(true);
                     // resultText.gameObject.SetActive(false);
                     StartCoroutine(PlayUpgradeAnimation());
                 }
+                else if (gameState == GameState.LOSE) SceneController.LoadCurrentSceneWithFadeDelay();
                 else
                 {
                     CloseLevelCompletionPanel();

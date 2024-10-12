@@ -101,6 +101,16 @@ public class ShopSlot : MonoBehaviour
     }
 
     /// <summary>
+    /// Returns the ModelType of the ShopCard in this ShopSlot.
+    /// </summary>
+    /// <returns>the ModelType of the ShopCard in this ShopSlot.</returns>
+    public ModelType GetModelTypeOfCardInSlot()
+    {
+        Assert.IsTrue(IsSetup(), "Not setup.");
+        return occupant.GetModelType();
+    }
+
+    /// <summary>
     /// Returns true if the player meets all conditions to buy the ShopCard that
     /// fills this ShopSlot.
     /// </summary>

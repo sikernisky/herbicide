@@ -107,7 +107,7 @@ public abstract class Tile : Model, ISurface
     /// </summary>
     public void UpdateTile()
     {
-        Nexus nexusOccupant = GetOccupant() as Nexus;
+        Nexus nexusOccupant = occupant as Nexus;
         if (nexusOccupant != null)
         {
             ISurface[] neigbors = GetSurfaceNeighbors();
@@ -131,7 +131,7 @@ public abstract class Tile : Model, ISurface
     {
         AssertDefined();
         if (Floored()) return GetFlooring().Occupied();
-        return GetOccupant() != null;
+        return occupant != null;
     }
 
     /// <summary>
@@ -344,12 +344,6 @@ public abstract class Tile : Model, ISurface
     }
 
     /// <summary>
-    /// Returns this Tile's occupant.
-    /// </summary>
-    /// <returns>this Tile's occupant; null if there is none. </returns>
-    private PlaceableObject GetOccupant() => occupant;
-
-    /// <summary>
     /// Updates this Tile's array of neighbors. If it has a Flooring component,
     /// updates the neighbors of that component too. 
     /// </summary>
@@ -370,7 +364,6 @@ public abstract class Tile : Model, ISurface
         if (Floored()) flooring.UpdateSurfaceNeighbors(GetFlooringNeighbors());
         else
         {
-            PlaceableObject occupant = GetOccupant();
             if (occupant != null) occupant.UpdateNeighbors(GetPlaceableObjectNeighbors());
         }
     }
@@ -398,7 +391,7 @@ public abstract class Tile : Model, ISurface
         for (int i = 0; i < neighbors.Length; i++)
         {
             ISurface neighbor = neighbors[i];
-            if (neighbor != null) placeableNeighbors[i] = neighbor.GetPlaceableObject();
+            if (neighbor != null) placeableNeighbors[i] = neighbor.GetOccupant();
         }
 
         return placeableNeighbors;
@@ -409,10 +402,10 @@ public abstract class Tile : Model, ISurface
     /// </summary>
     /// <returns>the PlaceableObject on this Tile; null if
     /// it is unoccupied.</returns>
-    public PlaceableObject GetPlaceableObject()
+    public PlaceableObject GetOccupant()
     {
-        if (GetOccupant() != null) return GetOccupant();
-        if (Floored() && GetFlooring().Occupied()) return GetFlooring().GetPlaceableObject();
+        if (occupant != null) return occupant;
+        if (Floored() && GetFlooring().Occupied()) return GetFlooring().GetOccupant();
         return null;
     }
 
@@ -588,8 +581,8 @@ public abstract class Tile : Model, ISurface
         if (defender == null) return;
         if(!defender.DRAWS_RANGE_INDICATOR) return;
 
-        int ar = Mathf.FloorToInt(defender.BASE_MAIN_ACTION_RANGE);
-        if (ar == float.MaxValue || ar <= 0) return;
+        float ar = defender.BASE_MAIN_ACTION_RANGE;
+        Assert.IsTrue(ar >= 0, "Range must be greater than or equal to 0.");
 
         lineRenderer.positionCount = RANGE_INDICATOR_SEGMENTS + 1;
 

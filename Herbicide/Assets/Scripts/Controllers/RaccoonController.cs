@@ -110,7 +110,7 @@ public class RaccoonController : DefenderController<RaccoonController.RaccoonSta
                 Assert.IsNotNull(blackberryComp, "Blackberry component is missing.");
 
                 BlackberryController blackberryController = new BlackberryController(blackberryComp, raccoonPosition, targetPosition);
-                ControllerController.AddModelController(blackberryController);
+                ControllerManager.AddModelController(blackberryController);
             }
             else if (raccoonTier == 2)
             {
@@ -123,7 +123,7 @@ public class RaccoonController : DefenderController<RaccoonController.RaccoonSta
                     Assert.IsNotNull(raspberryComp, "Raspberry component is missing.");
 
                     RaspberryController raspberryController = new RaspberryController(raspberryComp, raccoonPosition, targetPosition);
-                    ControllerController.AddModelController(raspberryController);
+                    ControllerManager.AddModelController(raspberryController);
                 }
                 else
                 {
@@ -134,7 +134,7 @@ public class RaccoonController : DefenderController<RaccoonController.RaccoonSta
                     Assert.IsNotNull(blackberryComp, "Blackberry component is missing.");
 
                     BlackberryController blackberryController = new BlackberryController(blackberryComp, raccoonPosition, targetPosition);
-                    ControllerController.AddModelController(blackberryController);
+                    ControllerManager.AddModelController(blackberryController);
                 }
             }
             else if (raccoonTier == 3)
@@ -149,7 +149,7 @@ public class RaccoonController : DefenderController<RaccoonController.RaccoonSta
                     Assert.IsNotNull(blackberryComp, "Blackberry component is missing.");
 
                     BlackberryController blackberryController = new BlackberryController(blackberryComp, raccoonPosition, targetPosition);
-                    ControllerController.AddModelController(blackberryController);
+                    ControllerManager.AddModelController(blackberryController);
                 }
                 else if (chance < 0.70f)
                 {
@@ -160,7 +160,7 @@ public class RaccoonController : DefenderController<RaccoonController.RaccoonSta
                     Assert.IsNotNull(raspberryComp, "Raspberry component is missing.");
 
                     RaspberryController raspberryController = new RaspberryController(raspberryComp, raccoonPosition, targetPosition);
-                    ControllerController.AddModelController(raspberryController);
+                    ControllerManager.AddModelController(raspberryController);
                 }
                 else
                 {
@@ -171,7 +171,7 @@ public class RaccoonController : DefenderController<RaccoonController.RaccoonSta
                     Assert.IsNotNull(salmonberryComp, "Salmonberry component is missing.");
 
                     SalmonberryController salmonberryController = new SalmonberryController(salmonberryComp, raccoonPosition, targetPosition);
-                    ControllerController.AddModelController(salmonberryController);
+                    ControllerManager.AddModelController(salmonberryController);
                 }
             }
 

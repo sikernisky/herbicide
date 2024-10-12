@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -115,11 +114,18 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
             Assert.IsNotNull(acornPrefab);
             Acorn acornComp = acornPrefab.GetComponent<Acorn>();
             Assert.IsNotNull(acornComp);
+
+            int acornDamage;
+            if (GetSquirrel().GetTier() == 1) acornDamage = GetSquirrel().ACORN_DAMAGE_TIER_ONE;
+            else if (GetSquirrel().GetTier() == 2) acornDamage = GetSquirrel().ACORN_DAMAGE_TIER_TWO;
+            else acornDamage = GetSquirrel().ACORN_DAMAGE_TIER_THREE;
+
             Vector3 targetPosition = GetTarget().GetAttackPosition();
             int numSplits = GetSquirrel().GetTier() - 1;
             AcornController acornController = new AcornController(acornComp, GetSquirrel().GetPosition(), targetPosition, numSplits);
-            ControllerController.AddModelController(acornController);
+            acornComp.SetDamage(acornDamage);
 
+            ControllerManager.AddModelController(acornController);
             CollectionManager.AddModelUpgradePoints(ModelType.SQUIRREL, 1);
 
             if (i < numAcorns - 1) // Wait for the delay between shots unless it's the last one
@@ -230,7 +236,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         int tier = GetSquirrel().GetTier();
         int numAcornsToFire = 1;
         if (tier == 2) numAcornsToFire = 2;
-        else if (tier >= 3) numAcornsToFire = 5;
+        else if (tier >= 3) numAcornsToFire = 4;
         GetSquirrel().StartCoroutine(FireAcorns(numAcornsToFire));
 
         // Reset attack animation.

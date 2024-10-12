@@ -280,7 +280,7 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
     {
         if (GetState() != KnotwoodState.INACTIVE) return;
 
-        SetNextMovePos(GetKnotwood().GetSpawnPos());
+        SetNextMovePos(GetKnotwood().GetSpawnWorldPosition());
     }
 
     /// <summary>
@@ -290,12 +290,12 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
     {
         if (GetState() != KnotwoodState.ENTERING) return;
 
-        GetKnotwood().SetEntering(GetKnotwood().GetSpawnPos());
+        GetKnotwood().SetEntering(GetKnotwood().GetSpawnWorldPosition());
         SetNextAnimation(GetKnotwood().MOVE_ANIMATION_DURATION, EnemyFactory.GetSpawnTrack(
             GetKnotwood().TYPE,
                                   GetKnotwood().GetDirection(), GetKnotwood().GetHealthState()));
 
-        PopOutOfMovePos(NexusHoleSpawnPos(GetKnotwood().GetSpawnPos()));
+        PopOutOfMovePos(NexusHoleSpawnPos(GetKnotwood().GetSpawnWorldPosition()));
         GetKnotwood().FaceDirection(Direction.SOUTH);
 
         if (!ReachedMovementTarget()) return;

@@ -70,6 +70,10 @@ public class LevelRewardController : CollectableController<LevelRewardController
             case 2:
                 return ModelType.RACCOON;
             case 3:
+                return ModelType.PORCUPINE;
+            case 4:
+                return ModelType.OWL;
+            case 5:
                 return ModelType.REROLL_BADGE;
             default:
                 return ModelType.OWL;
@@ -133,12 +137,21 @@ public class LevelRewardController : CollectableController<LevelRewardController
         if (InCollectionRange())
         {
             GetLevelReward().OnCollect();
-            ModelType modelTypeReward = GetModelTypeRewardBasedOnLevel();
-            bool shouldUnlock = ModelTypeHelper.IsDefender(modelTypeReward);
-            if(shouldUnlock) CollectionManager.UnlockModel(GetModelTypeRewardBasedOnLevel());
-            if(modelTypeReward == ModelType.REROLL_BADGE) SaveLoadManager.SaveIsRerollUnlocked(true);
+            UnlockRewardBasedOnLevel();
         }
         else MoveTowardsCursor();
+    }
+
+    /// <summary>
+    /// Unlocks the reward based on the current level.
+    /// </summary>
+    private void UnlockRewardBasedOnLevel()
+    {
+        ModelType modelTypeReward = GetModelTypeRewardBasedOnLevel();
+        bool rewardIsUnlockableInCollection = ModelTypeHelper.IsDefender(modelTypeReward);
+        if (rewardIsUnlockableInCollection) CollectionManager.UnlockModel(modelTypeReward);
+        if (modelTypeReward == ModelType.COMBINATION_BADGE) CollectionManager.UnlockCombinations();
+        if (modelTypeReward == ModelType.REROLL_BADGE) ShopManager.UnlockReroll();
     }
 
     #endregion
