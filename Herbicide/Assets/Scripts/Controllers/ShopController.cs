@@ -117,9 +117,12 @@ public class ShopController : MonoBehaviour
     /// Sets up the shop with the types of ShopCards it can sell.
     /// </summary>
     /// <param name="shopManager">the ShopManager singleton</param>
-    public void InitializeShop(ShopManager shopManager)
+    /// <param name="startingModels">the starting models for the shop</param>
+    public void InitializeShop(ShopManager shopManager, List<ModelType> startingModels)
     {
-        if (shopManager == null) return;
+        Assert.IsNotNull(shopManager, "ShopManager is null.");
+        Assert.IsNotNull(startingModels, "Starting models list is null.");
+
         if (shopActive) return;
         if (!shopLoaded)
         {
@@ -134,7 +137,7 @@ public class ShopController : MonoBehaviour
                 slotCounter++;
             }
 
-            Reroll(true);
+            Reroll(true, startingModels);
             timeSinceLastReroll = AUTOMATIC_REROLL_TIME;
         }
         else shopSlots.ForEach(ss => ss.EnableSlot());
@@ -206,45 +209,40 @@ public class ShopController : MonoBehaviour
     }
 
     /// <summary>
+    /// Rerolls the shop, replacing every ShopSlot with a new ShopCard
+    /// from the ShopManager's card pool.
+    /// </summary>
+    /// <param name="isFree">true if this reroll won't charge the player;
+    /// false if it will. </param>
+    /// <param name="guaranteedRolls">A list of ModelTypes that will be
+    /// included in the reroll. </param>
+    private void Reroll(bool isFree, List<ModelType> guaranteedRolls)
+    {
+        if (!isFree)
+        {
+            bool canReroll = EconomyController.GetBalance(ModelType.DEW) >= REROLL_COST;
+            if (!canReroll) return;
+        }
+        Assert.IsNotNull(guaranteedRolls);
+        Reroll(isFree);
+
+        for(int i = 0; i < shopSlots.Count; i++)
+        {
+            if(i >= guaranteedRolls.Count) break;
+            shopSlots[i].FillWithBlank();
+            ModelType modelType = guaranteedRolls[i];
+            GameObject shopCardPrefab = ShopFactory.GetShopCardPrefab(modelType);
+            Assert.IsNotNull(shopCardPrefab);
+            ShopCard shopCardComp = shopCardPrefab.GetComponent<ShopCard>();
+            Assert.IsNotNull(shopCardComp);
+            shopSlots[i].Fill(shopCardComp);
+        }
+    }
+
+    /// <summary>
     /// Called when the player finishes placing a Model.
     /// </summary>
     private void OnFinishPlacing(Model m) => Assert.IsNotNull(m, "Placed model is null.");
-
-    /// <summary>
-    /// #BUTTON EVENT#
-    /// 
-    /// Called when a ShopSlot button is clicked. Starts placing
-    /// from the clicked slot if possible. /// </summary>
-    /// <param name="slotIndex">The Slot that was clicked.</param>
-    public void ClickShopSlotButton(int slotIndex)
-    {
-        Assert.IsTrue(slotIndex >= 0 && slotIndex < shopSlots.Count);
-        ShopSlot clickedSlot = shopSlots.First(ss => ss.GetSlotIndex() == slotIndex);
-        if (clickedSlot.Empty()) return;
-        if (PlacementController.IsPlacing()) return;
-        if(PlacementController.IsCombining()) return;
-        if (!clickedSlot.CanBuy(EconomyController.GetBalance(ModelType.DEW))) return;
-        ModelType modelTypeInSlot = ModelTypeHelper.GetModelTypeFromShopCardModelType(clickedSlot.GetModelTypeOfCardInSlot());
-        if (!ControllerManager.IsSpaceForModelOnSomeTree(modelTypeInSlot)) return;
-
-        // Get a fresh copy of the Model we bought
-        GameObject slotPrefab = clickedSlot.GetCardPrefab();
-        Assert.IsNotNull(slotPrefab);
-        Model slotModel = slotPrefab.GetComponent<Model>();
-        Assert.IsNotNull(slotModel);
-
-        PlacementController.StartPlacingObject(slotModel);
-        EconomyController.Withdraw(ModelType.DEW, clickedSlot.Buy(EconomyController.GetBalance(ModelType.DEW)));
-        UpdateShopCardLighting();
-
-        // The ControllerManager handles upgrading and combination logic
-        OnBuyModel?.Invoke(slotModel);
-        numCardsPurchased++;
-
-        bool allSlotsEmpty = true;
-        foreach (ShopSlot shopSlot in shopSlots) { if (!shopSlot.Empty()) allSlotsEmpty = false; }
-        if (allSlotsEmpty) Reroll(true);
-    }
 
     /// <summary>
     /// Iterates through the ShopSlots and darkens the ones the player
@@ -322,6 +320,42 @@ public class ShopController : MonoBehaviour
         Model speedTreeModel = speedTreePrefab.GetComponent<Model>();
         Assert.IsNotNull(speedTreeModel, "SpeedTree model is null.");
         PlacementController.StartPlacingObject(speedTreeModel);
+    }
+
+    /// <summary>
+    /// #BUTTON EVENT#
+    /// 
+    /// Called when a ShopSlot button is clicked. Starts placing
+    /// from the clicked slot if possible. /// </summary>
+    /// <param name="slotIndex">The Slot that was clicked.</param>
+    public void ClickShopSlotButton(int slotIndex)
+    {
+        Assert.IsTrue(slotIndex >= 0 && slotIndex < shopSlots.Count);
+        ShopSlot clickedSlot = shopSlots.First(ss => ss.GetSlotIndex() == slotIndex);
+        if (clickedSlot.Empty()) return;
+        if (PlacementController.IsPlacing()) return;
+        if (PlacementController.IsCombining()) return;
+        if (!clickedSlot.CanBuy(EconomyController.GetBalance(ModelType.DEW))) return;
+        ModelType modelTypeInSlot = ModelTypeHelper.GetModelTypeFromShopCardModelType(clickedSlot.GetModelTypeOfCardInSlot());
+        if (!ControllerManager.IsSpaceForModelOnSomeTree(modelTypeInSlot)) return;
+
+        // Get a fresh copy of the Model we bought
+        GameObject slotPrefab = clickedSlot.GetCardPrefab();
+        Assert.IsNotNull(slotPrefab);
+        Model slotModel = slotPrefab.GetComponent<Model>();
+        Assert.IsNotNull(slotModel);
+
+        PlacementController.StartPlacingObject(slotModel);
+        EconomyController.Withdraw(ModelType.DEW, clickedSlot.Buy(EconomyController.GetBalance(ModelType.DEW)));
+        UpdateShopCardLighting();
+
+        // The ControllerManager handles upgrading and combination logic
+        OnBuyModel?.Invoke(slotModel);
+        numCardsPurchased++;
+
+        bool allSlotsEmpty = true;
+        foreach (ShopSlot shopSlot in shopSlots) { if (!shopSlot.Empty()) allSlotsEmpty = false; }
+        if (allSlotsEmpty) Reroll(true);
     }
 
     #endregion

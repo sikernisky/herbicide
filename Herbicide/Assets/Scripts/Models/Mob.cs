@@ -129,16 +129,16 @@ public abstract class Mob : PlaceableObject
     public virtual void OnSpawn() => spawned = true;
 
     /// <summary>
-    /// Returns this Mob's spawn position.
+    /// Returns this Mob's spawn position in world space.
     /// </summary>
     /// <returns>the position where this Mob spawned.</returns>
-    public Vector3 GetSpawnPos() => spawnPos;
+    public Vector3 GetSpawnWorldPosition() => spawnPos;
 
     /// <summary>
-    /// Sets where this Mob spawns.
+    /// Sets where this Mob spawns in the scene, in world space.
     /// </summary>
     /// <param name="spawnPos">Where the mob spawns. </param>
-    public void SetSpawnPos(Vector3 spawnPos) => this.spawnPos = spawnPos;
+    public void SetSpawnWorldPosition(Vector3 spawnPos) => this.spawnPos = spawnPos;
 
     /// <summary>
     /// Returns true if this Mob is dead. This is when the Mob

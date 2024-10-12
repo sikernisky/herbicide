@@ -76,7 +76,7 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     protected override void SpawnMob()
     {
         if (!GetEnemy().ReadyToSpawn()) return;
-        GetMob().SetWorldPosition(NexusHoleSpawnPos(GetMob().GetSpawnPos()));
+        GetMob().SetWorldPosition(NexusHoleSpawnPos(GetMob().GetSpawnWorldPosition()));
         base.SpawnMob();
     }
 

@@ -377,6 +377,24 @@ public class ControllerManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Resets all Nexii to their spawn positions.
+    /// </summary>
+    /// <param name="stageController">The StageController singleton.</param>
+    public static void ResetNexiiToSpawnPositions(StageController stageController)
+    {
+        Assert.IsNotNull(stageController, "StageController is null.");
+        foreach(ModelController nexusController in instance.structureControllers)
+        {
+            if (!nexusController.ValidModel()) continue;
+            Nexus nexusModel = nexusController.GetModel() as Nexus;
+            if (nexusModel == null) continue;
+            int xSpawn = TileGrid.PositionToCoordinate(nexusModel.GetSpawnWorldPosition().x);
+            int ySpawn = TileGrid.PositionToCoordinate(nexusModel.GetSpawnWorldPosition().y);
+            TileGrid.PlaceOnTileUsingCoordinates(new Vector2Int(xSpawn, ySpawn), nexusModel);
+        }
+    }
+
+    /// <summary>
     /// Sets the color of all Trees in the scene. This method is
     /// called by the TutorialLevelBehaviourController.
     /// </summary>

@@ -37,7 +37,7 @@ public class Blackberry : Projectile
     /// <summary>
     /// Starting damage of an Blackberry.
     /// </summary>
-    public override int BASE_DAMAGE => 3; //default: 3
+    public override int BASE_DAMAGE => 2; 
 
     /// <summary>
     /// Maximum damage of an Blackberry.

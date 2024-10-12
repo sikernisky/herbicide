@@ -75,7 +75,7 @@ public class ShopManager : MonoBehaviour
         Assert.IsNotNull(levelController, "LevelController is null.");
 
         SaveLoadManager.SubscribeToToLoadEvent(instance.LoadShopData);
-        SaveLoadManager.SubscribeToToLoadEvent(instance.SaveShopData);
+        SaveLoadManager.SubscribeToToSaveEvent(instance.SaveShopData);
     }
 
     /// <summary>
@@ -98,6 +98,7 @@ public class ShopManager : MonoBehaviour
         if(shopSaveData == null) shopSaveData = new ShopSaveData();
         isRerollUnlocked = shopSaveData.isRerollUnlocked;
 
+        List<ModelType> starterModels = new List<ModelType>();
         switch (level)
         {
             case 0:
@@ -111,6 +112,8 @@ public class ShopManager : MonoBehaviour
             case 2:
                 shopThreeSlots.gameObject.SetActive(true);
                 activeShop = shopThreeSlots;
+                starterModels.Add(ModelType.BUNNY);
+                starterModels.Add(ModelType.SQUIRREL);
                 break;
             default:
                 shopFourSlots.gameObject.SetActive(true);
@@ -118,7 +121,7 @@ public class ShopManager : MonoBehaviour
                 break;
         }
 
-        activeShop.InitializeShop(instance);
+        activeShop.InitializeShop(instance, starterModels);
         activeShop.SubscribeToBuyDefenderDelegate(handlerToSubscribe);
         if (isRerollUnlocked) activeShop.SetRerollButtonActive(true);
     }

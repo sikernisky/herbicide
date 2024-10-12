@@ -20,7 +20,7 @@ public class Raccoon : Defender
     /// <summary>
     /// Starting attack range of a Raccoon.
     /// </summary>
-    public override float BASE_MAIN_ACTION_RANGE => 7f;
+    public override float BASE_MAIN_ACTION_RANGE => 3.5f;
 
     /// <summary>
     /// Maximum attack range of a Raccoon.
@@ -35,7 +35,7 @@ public class Raccoon : Defender
     /// <summary>
     /// Starting attack speed of a Raccoon.
     /// </summary>
-    public override float BASE_MAIN_ACTION_SPEED => .3f;
+    public override float BASE_MAIN_ACTION_SPEED => .15f;
 
     /// <summary>
     /// Maximum attack speed of a Raccoon.
@@ -98,6 +98,11 @@ public class Raccoon : Defender
     /// from start to finish. 
     /// </summary>
     public float IDLE_ANIMATION_DURATION => Mathf.Clamp(GetMainActionCooldown(), 0.0001f, float.MaxValue);
+
+    /// <summary>
+    /// How much currency it takes to place a Raccoon
+    /// </summary>
+    public override int COST => 75;
 
     /// <summary>
     /// Type of a Raccoon.

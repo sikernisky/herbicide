@@ -61,8 +61,18 @@ public class CollectionManager : MonoBehaviour
     /// </summary>
     public static void UpdateCollectionManager()
     {
+        if (InputController.DidKeycodeDown(KeyCode.U))
+        {
+            UnlockModel(ModelType.BUNNY);
+            UnlockModel(ModelType.RACCOON);
+            UnlockCombinations();
+            ShopManager.UnlockReroll();
+        }
         if (InputController.DidKeycodeDown(KeyCode.B)) UnlockModel(ModelType.BUNNY);
+        if (InputController.DidKeycodeDown(KeyCode.A)) UnlockModel(ModelType.RACCOON);
         if (InputController.DidKeycodeDown(KeyCode.C)) UnlockCombinations();
+        if (InputController.DidKeycodeDown(KeyCode.R)) ShopManager.UnlockReroll();
+        
     }
 
     /// <summary>

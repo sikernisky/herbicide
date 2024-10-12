@@ -79,7 +79,7 @@ public class EnemyManager : MonoBehaviour
                 instance.spawnTimes.Add(spawnTime);
                 enemyComp.SetStage(spawnStage);
                 enemyComp.SetSpawnTime(spawnTime);
-                enemyComp.SetSpawnPos(spawnWorldPos);
+                enemyComp.SetSpawnWorldPosition(spawnWorldPos);
 
                 Spurge spurgeComp = enemyComp as Spurge;
                 if(spurgeComp != null)
@@ -91,7 +91,7 @@ public class EnemyManager : MonoBehaviour
                     Assert.IsNotNull(spurgeMinionCompInFront);
                     spurgeMinionCompInFront.gameObject.SetActive(false);
                     spurgeMinionCompInFront.GetCollider().enabled = false;
-                    spurgeMinionCompInFront.SetSpawnPos(spawnWorldPos);
+                    spurgeMinionCompInFront.SetSpawnWorldPosition(spawnWorldPos);
                     spurgeMinionCompInFront.SetStage(spawnStage);
                     spurgeMinionCompInFront.SetSpawnTime(spawnTime - 1.0f);
 
@@ -102,7 +102,7 @@ public class EnemyManager : MonoBehaviour
                     Assert.IsNotNull(spurgeMinionCompBehind);
                     spurgeMinionCompBehind.gameObject.SetActive(false);
                     spurgeMinionCompBehind.GetCollider().enabled = false;
-                    spurgeMinionCompBehind.SetSpawnPos(spawnWorldPos);
+                    spurgeMinionCompBehind.SetSpawnWorldPosition(spawnWorldPos);
                     spurgeMinionCompBehind.SetStage(spawnStage);
                     spurgeMinionCompBehind.SetSpawnTime(spawnTime + 1.0f);
 

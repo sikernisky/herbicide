@@ -99,7 +99,7 @@ public class SpurgeMinion : Enemy
     /// <summary>
     /// Starting movement speed of a SpurgeMinion.
     /// </summary>
-    public override float BASE_MOVEMENT_SPEED => 1f;
+    public override float BASE_MOVEMENT_SPEED => .75f;
 
     /// <summary>
     /// Maximum movement speed of a SpurgeMinion.

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="39" height="39" tilewidth="16" tileheight="16" infinite="0" nextlayerid="17" nextobjectid="827">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="39" height="39" tilewidth="16" tileheight="16" infinite="0" nextlayerid="17" nextobjectid="831">
  <editorsettings>
   <export target="../../Assets/Levels/level2.json" format="json"/>
  </editorsettings>
@@ -300,18 +300,20 @@
   <object id="815" gid="19" x="256" y="272" width="16" height="16"/>
   <object id="816" gid="19" x="352" y="336" width="16" height="16"/>
   <object id="823" gid="19" x="224" y="352" width="16" height="16"/>
+  <object id="827" gid="19" x="384" y="256" width="16" height="16"/>
  </objectgroup>
  <objectgroup id="13" name="Structures" class="StructureLayer">
   <properties>
    <property name="layerClass" value="StructureLayer"/>
   </properties>
   <object id="799" gid="65" x="224" y="304" width="16" height="16"/>
-  <object id="800" gid="64" x="384" y="336" width="16" height="16"/>
+  <object id="800" gid="64" x="384" y="352" width="16" height="16"/>
   <object id="812" gid="80" x="304" y="288" width="16" height="16"/>
   <object id="813" gid="80" x="304" y="320" width="16" height="16"/>
   <object id="817" gid="80" x="352" y="336" width="16" height="16"/>
   <object id="819" gid="80" x="256" y="272" width="16" height="16"/>
   <object id="825" gid="67" x="224" y="352" width="16" height="16"/>
+  <object id="830" gid="80" x="384" y="256" width="16" height="16"/>
  </objectgroup>
  <objectgroup id="16" name="Markers" class="MarkerLayer">
   <properties>
@@ -320,9 +322,9 @@
   <object id="807" type="Marker" gid="73" x="224" y="304" width="16" height="16">
    <properties>
     <property name="enemySpawnData">kudzu0-5, kudzu0-15,
-kudzu1-5, kudzu1-15,kudzu1-20, kudzu1-25,
-kudzu2-5, kudzu2-7, kudzu2-10,kudzu2-13, kudzu2-16, kudzu2-18,
-kudzu3-5, kudzu3-7, kudzu3-9,kudzu3-11, kudzu3-13, kudzu3-15,kudzu3-17, kudzu3-18, kudzu3-19</property>
+kudzu1-5, kudzu1-15,	kudzu1-30,kudzu1-40,
+kudzu2-5, kudzu2-15, kudzu2-25,	kudzu2-40, kudzu2-50, kudzu2-58, kudzu2-64
+kudzu3-5, kudzu3-15, kudzu3-20, kudzu3-25	kudzu3-35, kudzu3-44, kudzu3-50,kudzu3-55,	kudzu3-65, kudzu3-70, kudzu3-75, kudzu3-80</property>
     <property name="markerName" value="enemySpawn"/>
    </properties>
   </object>

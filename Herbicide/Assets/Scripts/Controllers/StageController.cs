@@ -132,9 +132,10 @@ public class StageController : MonoBehaviour
                 instance.isActiveIntermission = false;
                 instance.currentStage++;
                 instance.stageText.text = "Stage " + instance.currentStage;
-                LightManager.AdjustLightingForStageOfDay(instance.currentStage);
                 instance.intermissionTimer = 0;
                 instance.timeSinceLastStage = 0f;
+                LightManager.AdjustLightingForStageOfDay(instance.currentStage);
+                ControllerManager.ResetNexiiToSpawnPositions(instance);
             }
         }
         else instance.timeSinceLastStage += Time.deltaTime;

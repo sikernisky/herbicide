@@ -220,6 +220,7 @@ public class LevelController : MonoBehaviour
     {
         CameraController.SubscribeToSaveLoadEvents(instance);
         CollectionManager.SubscribeToSaveLoadEvents(instance);
+        EconomyController.SubscribeToSaveLoadEvents(instance);
         ShopManager.SubscribeToSaveLoadEvents(instance);
     }
 

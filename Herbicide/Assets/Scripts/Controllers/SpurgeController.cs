@@ -292,7 +292,7 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
     {
         if (GetState() != SpurgeState.INACTIVE) return;
 
-        SetNextMovePos(GetSpurge().GetSpawnPos());
+        SetNextMovePos(GetSpurge().GetSpawnWorldPosition());
     }
 
     /// <summary>
@@ -302,11 +302,11 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
     {
         if (GetState() != SpurgeState.ENTERING) return;
 
-        GetSpurge().SetEntering(GetSpurge().GetSpawnPos());
+        GetSpurge().SetEntering(GetSpurge().GetSpawnWorldPosition());
         SetNextAnimation(GetSpurge().MOVE_ANIMATION_DURATION, EnemyFactory.GetSpawnTrack(
             GetSpurge().TYPE, GetSpurge().GetDirection(), GetSpurge().GetHealthState()));
 
-        PopOutOfMovePos(NexusHoleSpawnPos(GetSpurge().GetSpawnPos()));
+        PopOutOfMovePos(NexusHoleSpawnPos(GetSpurge().GetSpawnWorldPosition()));
         GetSpurge().FaceDirection(Direction.SOUTH);
 
         if (!ReachedMovementTarget()) return;

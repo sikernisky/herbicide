@@ -92,8 +92,19 @@ public class EconomyController : MonoBehaviour
         Assert.IsNotNull(economyControllers, "Array of EconomyControllers is null.");
         Assert.AreEqual(1, economyControllers.Length);
         instance = economyControllers[0];
-        instance.InitializeCurrencies();
         instance.passiveIncomeEnabled = true;
+    }
+
+    /// <summary>
+    /// Subscribes to the SaveLoadManager's OnLoadRequested and OnSaveRequested events.
+    /// </summary>
+    /// <param name="levelController">The LevelController singleton.</param>
+    public static void SubscribeToSaveLoadEvents(LevelController levelController)
+    {
+        Assert.IsNotNull(levelController, "LevelController is null.");
+
+        SaveLoadManager.SubscribeToToLoadEvent(instance.LoadEconomyData);
+        SaveLoadManager.SubscribeToToSaveEvent(instance.SaveEconomyData);
     }
 
     /// <summary>
@@ -108,20 +119,6 @@ public class EconomyController : MonoBehaviour
         instance.gameState = gameState;
         instance.UpdateCurrencyText();
         if(instance.passiveIncomeEnabled) instance.UpdatePassiveIncome();
-    }
-
-    /// <summary>
-    /// Initializes the currency dictionary and adds the keys
-    /// that correspond to the currencies in the game.
-    /// </summary>
-    private void InitializeCurrencies()
-    {
-        currencies = new Dictionary<ModelType, int>
-        {
-            { ModelType.DEW, 50 },
-            { ModelType.BASIC_TREE_SEED, 0 },
-            { ModelType.SPEED_TREE_SEED, 0 }
-        };
     }
 
     /// <summary>
@@ -221,6 +218,28 @@ public class EconomyController : MonoBehaviour
         Assert.IsNotNull(handler, "Handler is null.");
         instance.OnBalanceUpdated += handler;
     }
+
+    /// <summary>
+    /// Loads the Economy data from the SaveLoadManager.
+    /// </summary>
+    private void LoadEconomyData()
+    {
+        int level = SaveLoadManager.GetLoadedGameLevel();
+        currencies = new Dictionary<ModelType, int>();
+        switch (level)
+        {
+            default:
+                currencies.Add(ModelType.DEW, 75);
+                currencies.Add(ModelType.BASIC_TREE_SEED, 0);
+                currencies.Add(ModelType.SPEED_TREE_SEED, 0);
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Saves the Economy data to the SaveLoadManager.
+    /// </summary>
+    private void SaveEconomyData() { }
 
     #endregion
 }

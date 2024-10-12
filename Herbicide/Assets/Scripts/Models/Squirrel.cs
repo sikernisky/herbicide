@@ -8,6 +8,21 @@ public class Squirrel : Defender
 {
     #region Fields
 
+    /// <summary>
+    /// The amount of damage a Squirrel's acorn does in tier one.
+    /// </summary>
+    public int ACORN_DAMAGE_TIER_ONE = 8;
+
+    /// <summary>
+    /// The amount of damage a Squirrel's acorn does in tier two.
+    /// </summary>
+    public int ACORN_DAMAGE_TIER_TWO = 6;
+
+    /// <summary>
+    /// The amount of damage a Squirrel's acorn does in tier three.
+    /// </summary>
+    public int ACORN_DAMAGE_TIER_THREE = 3;
+
     #endregion
 
     #region Stats

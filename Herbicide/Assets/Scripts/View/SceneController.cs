@@ -145,6 +145,15 @@ public class SceneController : MonoBehaviour
     }
 
     /// <summary>
+    /// Reloads the current scene with a fade delay. If already loading, does nothing.
+    /// </summary>
+    public static void LoadCurrentSceneWithFadeDelay()
+    {
+        if (instance.loadingScene) return;
+        instance.StartCoroutine(instance.ReloadSceneAfterFadeOut());
+    }
+
+    /// <summary>
     /// Reloads the current scene.
     /// </summary>
     private void ReloadScene() => LoadScene(SceneManager.GetActiveScene().name);

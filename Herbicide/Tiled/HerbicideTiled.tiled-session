@@ -3,11 +3,11 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "Tilemaps/level1.tmx",
+    "activeFile": "Tilemaps/level3.tmx",
     "expandedProjectPaths": [
-        ".",
+        "Tilemaps",
         "Tilesets",
-        "Tilemaps"
+        "."
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -143,8 +143,8 @@
             "scale": 2,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 223.25,
-                "y": 282.5
+                "x": 311.75,
+                "y": 312
             }
         },
         "Tilemaps/level0.tmx#Enemies": {
@@ -192,8 +192,8 @@
             "scale": 3,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 289.16666666666663,
-                "y": 339.3333333333333
+                "x": 288.5,
+                "y": 339
             }
         },
         "Tilemaps/level1.tmx#Enemies": {
@@ -227,15 +227,15 @@
         },
         "Tilemaps/level2.tmx": {
             "expandedObjectLayers": [
+                15,
                 16,
-                13,
-                15
+                13
             ],
-            "scale": 3,
-            "selectedLayer": 0,
+            "scale": 4,
+            "selectedLayer": 5,
             "viewCenter": {
-                "x": 273.5,
-                "y": 294.3333333333333
+                "x": 319.125,
+                "y": 288.5
             }
         },
         "Tilemaps/level2.tmx#Enemies": {
@@ -261,15 +261,15 @@
         },
         "Tilemaps/level3.tmx": {
             "expandedObjectLayers": [
+                15,
                 16,
-                13,
-                15
+                13
             ],
-            "scale": 2,
+            "scale": 4,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 250.25,
-                "y": 214.5
+                "x": 257.375,
+                "y": 324.5
             }
         },
         "Tilemaps/level3.tmx#Enemies": {
@@ -295,15 +295,15 @@
         },
         "Tilemaps/level4.tmx": {
             "expandedObjectLayers": [
+                15,
                 16,
-                13,
-                15
+                13
             ],
-            "scale": 2,
-            "selectedLayer": 0,
+            "scale": 3,
+            "selectedLayer": 5,
             "viewCenter": {
-                "x": 333.75,
-                "y": 240.5
+                "x": 285.8333333333333,
+                "y": 333.3333333333333
             }
         },
         "Tilemaps/level4.tmx#Enemies": {
@@ -334,8 +334,8 @@
             "scale": 2,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 337.75,
-                "y": 291
+                "x": 311.75,
+                "y": 312
             }
         },
         "Tilemaps/level5.tmx#Enemies": {
@@ -366,8 +366,8 @@
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 340.33333333333337,
-                "y": 370.66666666666663
+                "x": 311.66666666666663,
+                "y": 311.99999999999994
             }
         },
         "Tilemaps/level6.tmx#Enemies": {
@@ -404,7 +404,7 @@
             "scaleInDock": 5.5
         },
         "Tilesets/Shore.tsx": {
-            "scaleInDock": 1,
+            "scaleInDock": 3,
             "scaleInEditor": 1
         },
         "Tilesets/Soil.tsx": {
@@ -422,17 +422,25 @@
     "map.width": 10,
     "openFiles": [
         "Tilemaps/level1.tmx",
-        "Tilemaps/btd.tmx"
+        "Tilemaps/btd.tmx",
+        "Tilemaps/level0.tmx",
+        "Tilemaps/level4.tmx",
+        "Tilemaps/level5.tmx",
+        "Tilemaps/level6.tmx",
+        "Tilemaps/level2.tmx",
+        "Tilemaps/level3.tmx"
     ],
     "project": "HerbicideTiled.tiled-project",
     "recentFiles": [
-        "Tilemaps/btd.tmx",
         "Tilemaps/level1.tmx",
-        "C:/Users/teddy/OneDrive/Documents/GitHub/herbicide/Herbicide/Assets/Levels/level1.json",
-        "Tilemaps/level5.tmx",
+        "Tilemaps/btd.tmx",
+        "Tilemaps/level0.tmx",
         "Tilemaps/level4.tmx",
-        "Tilemaps/level3.tmx",
+        "Tilemaps/level5.tmx",
+        "Tilemaps/level6.tmx",
         "Tilemaps/level2.tmx",
+        "Tilemaps/level3.tmx",
+        "C:/Users/teddy/OneDrive/Documents/GitHub/herbicide/Herbicide/Assets/Levels/level1.json",
         "Tilemaps/level1.tmj",
         "Tilemaps/level1.json",
         "Tilesets/Shore.tsx"

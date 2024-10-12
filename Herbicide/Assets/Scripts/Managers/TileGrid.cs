@@ -506,8 +506,6 @@ public class TileGrid : MonoBehaviour
         //Safety checks
         Tile target = instance.TileExistsAt(targetCoords.x, targetCoords.y);
 
-        Debug.Log("coords: " + targetCoords.x + " " + targetCoords.y + " " + target + " " + candidate);
-
         return PlaceOnTile(target, candidate);
     }
 
@@ -839,7 +837,7 @@ public class TileGrid : MonoBehaviour
                     Mob mob = spawnedStructure.GetComponent<Mob>();
                     if (mob as Nexus != null) instance.numNexii++;
                     Vector3 spawnPos = new Vector3(obToSpawn.GetSpawnCoordinates(mapHeight).x, obToSpawn.GetSpawnCoordinates(mapHeight).y, 1);
-                    mob.SetSpawnPos(spawnPos);
+                    mob.SetSpawnWorldPosition(spawnPos);
                     instance.objectPositions.Add(spawnPos);
                     Tile targetTile = instance.TileExistsAt(obToSpawn.GetSpawnCoordinates(mapHeight).x, obToSpawn.GetSpawnCoordinates(mapHeight).y);
                     ControllerManager.MakeModelController(mob);
