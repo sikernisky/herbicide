@@ -315,6 +315,7 @@ public class LevelCompletionController : MonoBehaviour
         if(completionState != CompletionState.INITIAL_RESULT) return;
 
         if(!LevelCompletePanelOpen()) OpenLevelCompletePanel();
+        if (PlacementController.IsPlacing()) PlacementController.StopPlacingObject();
     }
 
     /// <summary>

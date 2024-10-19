@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="39" height="39" tilewidth="16" tileheight="16" infinite="0" nextlayerid="17" nextobjectid="849">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="39" height="39" tilewidth="16" tileheight="16" infinite="0" nextlayerid="17" nextobjectid="851">
  <editorsettings>
   <export target="../../Assets/Levels/level6.json" format="json"/>
  </editorsettings>
@@ -104,15 +104,15 @@
    </properties>
   </tile>
  </tileset>
- <tileset firstgid="24" name="Shore" tilewidth="16" tileheight="16" tilecount="40" columns="5">
-  <image source="../HerbicideArt/TileSets/tilesetShore.png" width="80" height="128"/>
+ <tileset firstgid="24" name="Shore" tilewidth="16" tileheight="16" tilecount="45" columns="5">
+  <image source="../HerbicideArt/TileSets/tilesetShore.png" width="80" height="144"/>
   <tile id="0" type="EdgeLayer">
    <properties>
     <property name="testtesttest" value="hello"/>
    </properties>
   </tile>
  </tileset>
- <tileset firstgid="64" name="Placeables" tilewidth="16" tileheight="16" tilecount="9" columns="3">
+ <tileset firstgid="69" name="Placeables" tilewidth="16" tileheight="16" tilecount="9" columns="3">
   <image source="../HerbicideArt/TileSets/tileSetPlaceables.png" width="48" height="48"/>
   <tile id="0" type="Structure">
    <properties>
@@ -135,7 +135,7 @@
    </properties>
   </tile>
  </tileset>
- <tileset firstgid="73" name="markers" tilewidth="16" tileheight="16" tilecount="4" columns="2">
+ <tileset firstgid="78" name="markers" tilewidth="16" tileheight="16" tilecount="4" columns="2">
   <image source="../HerbicideArt/TileSets/markers.png" width="32" height="32"/>
   <tile id="0" type="Marker">
    <properties>
@@ -150,9 +150,9 @@
    </properties>
   </tile>
  </tileset>
- <tileset firstgid="77" source="../Tilesets/Placeables.tsx"/>
- <tileset firstgid="86" source="../Tilesets/Grass.tsx"/>
- <tileset firstgid="88" source="../Tilesets/Shore.tsx"/>
+ <tileset firstgid="82" source="../Tilesets/Placeables.tsx"/>
+ <tileset firstgid="91" source="../Tilesets/Grass.tsx"/>
+ <tileset firstgid="93" source="../Tilesets/Shore.tsx"/>
  <layer id="3" name="Water" class="TileLayer" width="39" height="39">
   <properties>
    <property name="layerClass" value="TileLayer"/>
@@ -179,8 +179,8 @@
 3,3,3,3,3,3,3,3,3,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,3,3,3,3,3,3,3,3,3,
 3,3,3,3,3,3,3,3,3,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,3,3,3,3,3,3,3,3,3,
 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,3,3,3,3,3,3,3,3,3,
-3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
-3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
+3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0,0,0,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
+3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0,0,0,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
@@ -199,7 +199,7 @@
 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3
 </data>
  </layer>
- <layer id="10" name="Shore" width="39" height="39">
+ <layer id="10" name="Shore" width="39" height="39" visible="0">
   <properties>
    <property name="layerClass" value="EdgeLayer"/>
   </properties>
@@ -220,13 +220,13 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,91,88,88,88,120,88,88,88,120,88,88,88,96,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,91,88,88,88,99,0,0,0,106,0,0,0,106,0,0,0,93,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,89,0,0,0,0,0,0,0,0,0,0,0,0,0,103,110,126,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,95,94,94,94,100,0,0,0,108,0,0,0,108,0,0,0,93,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,95,94,94,94,123,94,94,94,123,94,94,94,90,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,96,93,93,93,125,93,93,93,125,93,93,93,101,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,96,93,93,93,104,0,0,0,111,0,0,0,111,0,0,0,98,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,94,0,0,0,0,0,0,0,0,0,0,0,0,0,108,115,131,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,100,99,99,99,105,0,0,0,113,0,0,0,113,0,0,0,98,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,100,105,0,103,128,99,99,99,128,99,99,99,95,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,94,0,98,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,100,99,95,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -267,11 +267,11 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,86,87,86,0,86,87,86,0,86,87,86,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,87,86,87,86,87,86,87,86,87,86,87,86,87,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,86,87,86,0,86,87,86,0,86,87,86,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,91,92,91,0,91,92,91,0,91,92,91,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,92,91,92,91,92,91,92,91,92,91,92,91,92,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,91,92,91,0,91,92,91,0,91,92,91,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,91,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,92,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -302,19 +302,33 @@
   <properties>
    <property name="layerClass" value="StructureLayer"/>
   </properties>
-  <object id="799" gid="65" x="192" y="304" width="16" height="16"/>
-  <object id="800" gid="64" x="416" y="288" width="16" height="16"/>
-  <object id="846" gid="67" x="336" y="304" width="16" height="16"/>
-  <object id="847" gid="67" x="272" y="304" width="16" height="16"/>
-  <object id="848" gid="64" x="416" y="320" width="16" height="16"/>
+  <object id="799" gid="70" x="272" y="352" width="16" height="16"/>
+  <object id="800" gid="69" x="416" y="288" width="16" height="16"/>
+  <object id="846" gid="72" x="336" y="304" width="16" height="16"/>
+  <object id="847" gid="72" x="272" y="304" width="16" height="16"/>
+  <object id="848" gid="69" x="416" y="320" width="16" height="16"/>
+  <object id="850" gid="70" x="192" y="304" width="16" height="16"/>
  </objectgroup>
  <objectgroup id="16" name="Markers" class="MarkerLayer">
   <properties>
    <property name="layerClass" value="MarkerLayer"/>
   </properties>
-  <object id="807" type="Marker" gid="73" x="192" y="304" width="16" height="16">
+  <object id="807" type="Marker" gid="78" x="272" y="352" width="16" height="16">
    <properties>
-    <property name="enemySpawnData" value="kudzu0-1"/>
+    <property name="enemySpawnData" value="knotwood3-5, knotwood3-15, knotwood3-30, knotwood3-45, knotwood3-50"/>
+    <property name="markerName" value="enemySpawn"/>
+   </properties>
+  </object>
+  <object id="849" type="Marker" gid="78" x="192" y="304" width="16" height="16">
+   <properties>
+    <property name="enemySpawnData">kudzu0-5, kudzu0-7, kudzu0-10
+
+kudzu1-5, spurge1-10, kudzu1-13, spurge1-15	kudzu1-30, knotwood1-33, kudzu1-38, knotwood1-40	spurge1-55, knotwood1-60, knotwood1-62, kudzu1-64
+
+kudzu2-5, spurge2-8, spurge2-14, spurge2-20	knotwood2-25, knotwood2-30, spurge2-34, kudzu2-36	spurge2-40, kudzu2-44, kudzu2-48, kudzu2-52
+
+knotwood3-5, knotwood3-10, knotwood3-15	knotwood3-25, knotwood3-29, knotwood3-33, knotwood3-37	knotwood3-45, knotwood3-47, knotwood3-49, knotwood3-51
+</property>
     <property name="markerName" value="enemySpawn"/>
    </properties>
   </object>

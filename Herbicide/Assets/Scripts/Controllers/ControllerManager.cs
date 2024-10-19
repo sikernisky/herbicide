@@ -112,11 +112,12 @@ public class ControllerManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Makes a Controller of the given ModelType and adds it to the list
+    /// Returns a Controller of the given ModelType and adds it to the list
     /// of active controllers that are updated and tracked. 
     /// </summary>
     /// <param name="model">The Model that needs a ModelController.</param>
-    public static void MakeModelController(Model model)
+    /// <returns>A new ModelController reference of the given type of Model.</returns>
+    public static ModelController MakeModelController(Model model)
     {
         bool needsParameters = false;
         if (model as Projectile != null) needsParameters = true;
@@ -127,6 +128,7 @@ public class ControllerManager : MonoBehaviour
         if (model as Tile != null) hasNoController = true;
         if (hasNoController) throw new Exception("The model with type " + model.TYPE + " has no controller.");
 
+        instance.counts.SetCount(instance, model.TYPE, instance.counts.GetCount(model.TYPE) + 1);
         switch (model.TYPE)
         {
             case ModelType.BASIC_TREE:
@@ -134,102 +136,100 @@ public class ControllerManager : MonoBehaviour
                 Assert.IsNotNull(basicTree, "BasicTree is null");
                 BasicTreeController btc = new BasicTreeController(basicTree);
                 instance.treeControllers.Add(btc);
-                break;
+                return btc;
             case ModelType.BEAR:
                 Bear bear = model as Bear;
                 Assert.IsNotNull(bear);
                 BearController bc = new BearController(bear);
                 instance.defenderControllers.Add(bc);
-                break;
+                return bc;
             case ModelType.BUNNY:
                 Bunny bunny = model as Bunny;
                 Assert.IsNotNull(bunny);
                 BunnyController bnc = new BunnyController(bunny);
                 instance.defenderControllers.Add(bnc);
-                break;
+                return bnc;
             case ModelType.KNOTWOOD:
                 Knotwood knotwood = model as Knotwood;
                 Assert.IsNotNull(knotwood, "Knotwood is null.");
                 KnotwoodController kwc = new KnotwoodController(knotwood);
                 instance.enemyControllers.Add(kwc);
-                break;
+                return kwc;
             case ModelType.KUDZU:
                 Kudzu kudzu = model as Kudzu;
                 Assert.IsNotNull(kudzu, "Kudzu is null.");
                 KudzuController kzc = new KudzuController(kudzu);
                 instance.enemyControllers.Add(kzc);
-                break;
+                return kzc;
             case ModelType.NEXUS:
                 Nexus nexus = model as Nexus;
                 Assert.IsNotNull(nexus, "Nexus is null.");
                 NexusController nxc = new NexusController(nexus);
                 instance.structureControllers.Add(nxc);
-                break;
+                return nxc;
             case ModelType.NEXUS_HOLE:
                 NexusHole nexusHole = model as NexusHole;
                 Assert.IsNotNull(nexusHole, "NexusHole is null.");
                 NexusHoleController nhc = new NexusHoleController(nexusHole);
                 instance.structureControllers.Add(nhc);
-                break;
+                return nhc;
             case ModelType.OWL:
                 Owl owl = model as Owl;
                 Assert.IsNotNull(owl, "Owl is null.");
                 OwlController oc = new OwlController(owl);
                 instance.defenderControllers.Add(oc);
-                break;
+                return oc;
             case ModelType.PORCUPINE:
                 Porcupine porcupine = model as Porcupine;
                 Assert.IsNotNull(porcupine, "Porcupine is null.");
                 PorcupineController pc = new PorcupineController(porcupine);
                 instance.defenderControllers.Add(pc);
-                break;
+                return pc;
             case ModelType.RACCOON:
                 Raccoon raccoon = model as Raccoon;
                 Assert.IsNotNull(raccoon, "Raccoon is null.");
                 RaccoonController rc = new RaccoonController(raccoon);
                 instance.defenderControllers.Add(rc);
-                break;
+                return rc;
             case ModelType.SOIL_FLOORING:
                 SoilFlooring soilFlooring = model as SoilFlooring;
                 Assert.IsNotNull(soilFlooring);
                 FlooringController sfc = new FlooringController(soilFlooring);
                 instance.structureControllers.Add(sfc);
-                break;
+                return sfc;
             case ModelType.SPEED_TREE:
                 SpeedTree speedTree = model as SpeedTree;
                 Assert.IsNotNull(speedTree, "SpeedTree is null.");
                 SpeedTreeController stc = new SpeedTreeController(speedTree);
                 instance.treeControllers.Add(stc);
-                break;
+                return stc;
             case ModelType.SPURGE:
                 Spurge spurge = model as Spurge;
                 Assert.IsNotNull(spurge, "Spurge is null.");
                 SpurgeController spc = new SpurgeController(spurge);
                 instance.enemyControllers.Add(spc);
-                break;
+                return spc;
             case ModelType.SPURGE_MINION:
                 SpurgeMinion spurgeMinion = model as SpurgeMinion;
                 Assert.IsNotNull(spurgeMinion, "SpurgeMinion is null.");
                 SpurgeMinionController smc = new SpurgeMinionController(spurgeMinion);
                 instance.enemyControllers.Add(smc);
-                break;
+                return smc;
             case ModelType.SQUIRREL:
                 Squirrel squirrel = model as Squirrel;
                 Assert.IsNotNull(squirrel);
                 SquirrelController sc = new SquirrelController(squirrel);
                 instance.defenderControllers.Add(sc);
-                break;
+                return sc;
             case ModelType.STONE_WALL:
                 StoneWall stonewall = model as StoneWall;
                 Assert.IsNotNull(stonewall);
                 WallController swc = new WallController(stonewall);
                 instance.structureControllers.Add(swc);
-                break;
+                return swc;
             default:
-                throw new Exception("ModelType " + model.TYPE + " has no implementation in ControllerManager."); 
+                throw new Exception("ModelType " + model.TYPE + " has no implementation in ControllerManager.");
         }
-
-        instance.counts.SetCount(instance, model.TYPE, instance.counts.GetCount(model.TYPE) + 1);
     }
 
     /// <summary>
@@ -252,6 +252,8 @@ public class ControllerManager : MonoBehaviour
         else if (model as Collectable != null) instance.collectableControllers.Add(modelController);
         else if (model as Tile != null) return;
         else throw new Exception("ModelController has no list to add to.");
+
+        instance.counts.SetCount(instance, model.TYPE, instance.counts.GetCount(model.TYPE) + 1);
     }
 
     /// <summary>
@@ -638,7 +640,9 @@ public class ControllerManager : MonoBehaviour
         Defender newDefenderComp = newDefenderOb.GetComponent<Defender>();
         Assert.IsNotNull(newDefenderComp);
         while(newDefenderComp.GetTier() < newTier) newDefenderComp.Upgrade();
-        MakeModelController(newDefenderComp);
+        ModelController modelController = MakeModelController(newDefenderComp);
+        List<Model> combinedDefenderModels = combinedDefenders.Cast<Model>().ToList(); 
+        modelController.AquireStatsOfCombiningModels(combinedDefenderModels);
 
         return newDefenderComp;
     }

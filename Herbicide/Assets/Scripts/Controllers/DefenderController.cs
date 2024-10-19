@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Collections;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
-using System.Linq;
 
 /// <summary>
 /// Controls a Defender. <br></br>
@@ -183,6 +182,28 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     {
         GetDefender().ResetTier();
         DefenderFactory.ReturnDefenderPrefab(GetDefender().gameObject);
+    }
+
+    /// <summary>
+    /// Takes the stats of a Defender that is being combined into this Defender
+    /// and applies them to this Defender.
+    /// </summary>
+    /// <param name="combiningDefender">a Defender of the same type as this DefenderController's
+    /// Defender being combined with other Defenders into the Defender controlled by this DefenderController.</param>
+    public override void AquireStatsOfCombiningModels(List<Model> combiningDefenders)
+    {
+        base.AquireStatsOfCombiningModels(combiningDefenders);
+
+        // Apply the highest cooldown progress to the Defender.
+        float maxCooldownProgress = 0;
+        foreach(Model m in combiningDefenders)
+        {
+            Defender combiningDefender = m as Defender;
+            Assert.IsNotNull(combiningDefender, "Model is not a Defender.");
+            float cooldownProgress = combiningDefender.GetResetValueOfMainActionCooldown() - combiningDefender.GetMainActionCooldownRemaining();
+            if (cooldownProgress > maxCooldownProgress) maxCooldownProgress = cooldownProgress;
+        }
+        GetDefender().SetMainActionCooldownRemaining(GetDefender().GetMainActionCooldownRemaining() - maxCooldownProgress);
     }
 
     #endregion

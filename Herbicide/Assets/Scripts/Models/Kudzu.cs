@@ -23,15 +23,6 @@ public class Kudzu : Enemy
     public override ModelType TYPE => ModelType.KUDZU;
 
     /// <summary>
-    /// The cooldown between each hop. <br></br>
-    /// 
-    /// This is different from movement speed. Movement speed is how fast
-    /// the Kudzu travels while hopping. This cooldown is how long the Kudzu
-    /// must wait before hopping again.
-    /// </summary>
-    public float HOP_COOLDOWN => 4.0f;
-
-    /// <summary>
     /// Base health of a Kudzu.
     /// </summary>
     public override float BASE_HEALTH => 40;
@@ -157,6 +148,20 @@ public class Kudzu : Enemy
     {
         float adjustedY = transform.position.y + .25f;
         return new Vector3(transform.position.x, adjustedY, transform.position.z);
+    }
+
+    /// <summary>
+    /// Returns the Kudzu's hop cooldown. This is equal to the movement speed 
+    /// times a constant value.
+    /// </summary>
+    /// <returns>the Kudzu's hop cooldown.</returns>
+    public float GetHopCooldown()
+    {
+        float baseMovementSpeed = BASE_MOVEMENT_SPEED; 
+        float currentMovementSpeed = GetMovementSpeed();
+        float hopCooldownMultiplier = baseMovementSpeed / currentMovementSpeed;
+
+        return baseMovementSpeed * hopCooldownMultiplier;
     }
 
     #endregion

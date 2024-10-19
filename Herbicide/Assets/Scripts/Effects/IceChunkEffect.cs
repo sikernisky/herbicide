@@ -9,18 +9,18 @@ public class IceChunkEffect : TimedEffect, IMovementSpeedEffect
     /// <summary>
     /// How long this effect lasts.
     /// </summary>
-    private const float ICE_CHUNK_DURATION = 3.0f;
+    private const float ICE_CHUNK_DURATION = 5.0f;
 
     /// <summary>
     /// The magnitude of the effect.
     /// </summary>
-    private const float ICE_CHUNK_MAGNITUDE = -0.2f;
+    private const float ICE_CHUNK_MAGNITUDE = -0.3f;
 
     /// <summary>
     /// The maximum number of stacks this effect can have.
     /// Can have infinite stacks.
     /// </summary>
-    public override int MaxStacks => int.MaxValue;
+    public override int MaxStacks => 1;
 
     /// <summary>
     /// The magnitude of the movement speed effect.

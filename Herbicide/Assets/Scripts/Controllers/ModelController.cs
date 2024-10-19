@@ -267,6 +267,19 @@ public abstract class ModelController
     /// </summary>
     protected virtual void OnDestroyModel() { }
 
+    /// <summary>
+    /// Takes the stats of a Model that is being combined into this Model
+    /// and applies them to this Model.
+    /// </summary>
+    /// <param name="combiningModel">a Model of the same type as this ModelController's
+    /// Model being combined with other Models into the Model controlled by this ModelController.</param>
+    public virtual void AquireStatsOfCombiningModels(List<Model> combiningModels)
+    {
+        Assert.IsNotNull(combiningModels, "Combining Models is null.");
+        combiningModels.ForEach(m => Assert.IsNotNull(m, "Combining Model is null."));
+        combiningModels.ForEach(m => Assert.IsTrue(GetModel().TYPE == m.TYPE, "Model types do not match."));
+    }
+
     #endregion
 
     #region Animation Logic

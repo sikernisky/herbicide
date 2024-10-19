@@ -20,7 +20,7 @@ public class IceChunk : Projectile
     /// <summary>
     /// Starting speed of an IceChunk.
     /// </summary>
-    public override float BASE_SPEED => 16f;
+    public override float BASE_SPEED => 14f;
 
     /// <summary>
     /// Maximum speed of an IceChunk.
@@ -35,7 +35,7 @@ public class IceChunk : Projectile
     /// <summary>
     /// Starting damage of an IceChunk.
     /// </summary>
-    public override int BASE_DAMAGE => 1; //default: 3
+    public override int BASE_DAMAGE => 3;
 
     /// <summary>
     /// Maximum damage of an IceChunk.

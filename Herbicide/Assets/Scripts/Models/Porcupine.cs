@@ -97,7 +97,7 @@ public class Porcupine : Defender
     /// How many seconds a Porcupine's idle animation lasts,
     /// from start to finish. 
     /// </summary>
-    public float IDLE_ANIMATION_DURATION => Mathf.Clamp(GetMainActionCooldown(), 0.0001f, float.MaxValue);
+    public float IDLE_ANIMATION_DURATION => Mathf.Clamp(GetMainActionCooldownRemaining(), 0.0001f, float.MaxValue);
 
     /// <summary>
     /// Type of a Porcupine.

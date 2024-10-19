@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -11,17 +10,17 @@ public class Squirrel : Defender
     /// <summary>
     /// The amount of damage a Squirrel's acorn does in tier one.
     /// </summary>
-    public int ACORN_DAMAGE_TIER_ONE = 8;
+    public int ACORN_DAMAGE_TIER_ONE => 4;
 
     /// <summary>
     /// The amount of damage a Squirrel's acorn does in tier two.
     /// </summary>
-    public int ACORN_DAMAGE_TIER_TWO = 6;
+    public int ACORN_DAMAGE_TIER_TWO => 3;
 
     /// <summary>
     /// The amount of damage a Squirrel's acorn does in tier three.
     /// </summary>
-    public int ACORN_DAMAGE_TIER_THREE = 3;
+    public int ACORN_DAMAGE_TIER_THREE => 3;
 
     #endregion
 
@@ -112,7 +111,7 @@ public class Squirrel : Defender
     /// How many seconds a Squirrel's idle animation lasts,
     /// from start to finish. 
     /// </summary>
-    public float IDLE_ANIMATION_DURATION => Mathf.Clamp(GetMainActionCooldown(), 0.0001f, float.MaxValue);
+    public float IDLE_ANIMATION_DURATION => Mathf.Clamp(GetMainActionCooldownRemaining(), 0.0001f, float.MaxValue);
 
     /// <summary>
     /// How much currency it takes to place a Squirrel

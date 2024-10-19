@@ -65,11 +65,13 @@ public class CollectionManager : MonoBehaviour
         {
             UnlockModel(ModelType.BUNNY);
             UnlockModel(ModelType.RACCOON);
+            UnlockModel(ModelType.OWL);
             UnlockCombinations();
             ShopManager.UnlockReroll();
         }
         if (InputController.DidKeycodeDown(KeyCode.B)) UnlockModel(ModelType.BUNNY);
         if (InputController.DidKeycodeDown(KeyCode.A)) UnlockModel(ModelType.RACCOON);
+        if (InputController.DidKeycodeDown(KeyCode.O)) UnlockModel(ModelType.OWL);
         if (InputController.DidKeycodeDown(KeyCode.C)) UnlockCombinations();
         if (InputController.DidKeycodeDown(KeyCode.R)) ShopManager.UnlockReroll();
         

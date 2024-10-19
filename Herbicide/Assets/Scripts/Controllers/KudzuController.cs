@@ -377,7 +377,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
 
         Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetKudzu().GetPosition(), GetTarget().GetPosition());
         SetNextMovePos(nextMove);
-        hopCooldownCounter = GetKudzu().HOP_COOLDOWN;
+        hopCooldownCounter = GetKudzu().GetHopCooldown();
     }
 
     /// <summary>
@@ -404,7 +404,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
 
         Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetKudzu().GetPosition(), GetNearestCarrier().GetPosition());
         SetNextMovePos(nextMove);
-        hopCooldownCounter = GetKudzu().HOP_COOLDOWN;
+        hopCooldownCounter = GetKudzu().GetHopCooldown();
     }
 
     /// <summary>
@@ -455,7 +455,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         // We reached our move target, so we need a new one.
         if (!ReachedMovementTarget()) return;
         SetNextMovePos(TileGrid.NextTilePosTowardsGoal(GetKudzu().GetPosition(), GetTarget().GetPosition()));
-        hopCooldownCounter = GetKudzu().HOP_COOLDOWN;
+        hopCooldownCounter = GetKudzu().GetHopCooldown();
     }
 
     /// <summary>

@@ -115,6 +115,19 @@ public class ShopManager : MonoBehaviour
                 starterModels.Add(ModelType.BUNNY);
                 starterModels.Add(ModelType.SQUIRREL);
                 break;
+            case 3:
+                shopThreeSlots.gameObject.SetActive(true);
+                activeShop = shopThreeSlots;
+                starterModels.Add(ModelType.BUNNY);
+                starterModels.Add(ModelType.SQUIRREL);
+                break;
+            case 4:
+                shopFourSlots.gameObject.SetActive(true);
+                activeShop = shopFourSlots;
+                starterModels.Add(ModelType.BUNNY);
+                starterModels.Add(ModelType.SQUIRREL);
+                starterModels.Add(ModelType.OWL);
+                break;
             default:
                 shopFourSlots.gameObject.SetActive(true);
                 activeShop = shopFourSlots;

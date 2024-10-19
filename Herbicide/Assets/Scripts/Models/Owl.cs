@@ -20,7 +20,7 @@ public class Owl : Defender
     /// <summary>
     /// Starting attack range of a Owl.
     /// </summary>
-    public override float BASE_MAIN_ACTION_RANGE => 5f;
+    public override float BASE_MAIN_ACTION_RANGE => 4f;
 
     /// <summary>
     /// Maximum attack range of a Owl.
@@ -35,7 +35,7 @@ public class Owl : Defender
     /// <summary>
     /// Starting attack speed of a Owl.
     /// </summary>
-    public override float BASE_MAIN_ACTION_SPEED => 0.5f;
+    public override float BASE_MAIN_ACTION_SPEED => 0.4f;
 
     /// <summary>
     /// Maximum attack speed of a Owl.
@@ -97,12 +97,17 @@ public class Owl : Defender
     /// How many seconds a Owl's idle animation lasts,
     /// from start to finish. 
     /// </summary>
-    public float IDLE_ANIMATION_DURATION => Mathf.Clamp(GetMainActionCooldown(), 0.0001f, float.MaxValue);
+    public float IDLE_ANIMATION_DURATION => Mathf.Clamp(GetMainActionCooldownRemaining(), 0.0001f, float.MaxValue);
 
     /// <summary>
     /// Type of a Owl.
     /// </summary>
     public override ModelType TYPE => ModelType.OWL;
+
+    /// <summary>
+    /// Cost of a Owl.
+    /// </summary>
+    public override int COST => 75;
 
     #endregion
 
