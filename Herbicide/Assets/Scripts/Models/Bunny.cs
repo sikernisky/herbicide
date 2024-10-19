@@ -56,7 +56,7 @@ public class Bunny : Defender
     /// <summary>
     /// Starting generation speed of a Bunny.
     /// </summary>
-    public override float BASE_MAIN_ACTION_SPEED => .025f;
+    public override float BASE_MAIN_ACTION_SPEED => .045f;
 
     /// <summary>
     /// Maximum generation speed of a Bunny.
@@ -118,7 +118,7 @@ public class Bunny : Defender
     /// How many seconds a Bunny's idle animation lasts,
     /// from start to finish. 
     /// </summary>
-    public float IDLE_ANIMATION_DURATION => Mathf.Clamp(GetMainActionCooldown(), 0.0001f, float.MaxValue);
+    public float IDLE_ANIMATION_DURATION => Mathf.Clamp(GetMainActionCooldownRemaining(), 0.0001f, float.MaxValue);
 
     /// <summary>
     /// Type of a Bunny.

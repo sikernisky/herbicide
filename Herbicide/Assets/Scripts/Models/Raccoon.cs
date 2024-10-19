@@ -97,7 +97,7 @@ public class Raccoon : Defender
     /// How many seconds a Raccoon's idle animation lasts,
     /// from start to finish. 
     /// </summary>
-    public float IDLE_ANIMATION_DURATION => Mathf.Clamp(GetMainActionCooldown(), 0.0001f, float.MaxValue);
+    public float IDLE_ANIMATION_DURATION => Mathf.Clamp(GetMainActionCooldownRemaining(), 0.0001f, float.MaxValue);
 
     /// <summary>
     /// How much currency it takes to place a Raccoon

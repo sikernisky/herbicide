@@ -98,7 +98,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     {
         if (!ValidModel()) return;
         if (FINDS_TARGETS) UpdateTargets(GetAllModels(), TileGrid.GetAllTiles());
-        GetMob().StepMainActionCooldown();
+        GetMob().StepMainActionCooldownByDeltaTime();
     }
 
     /// <summary>
@@ -180,7 +180,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// </summary>
     /// <returns>true if the Mob can perform its main action this frame; 
     /// otherwise, false. </returns>
-    public virtual bool CanPerformMainAction() { return GetMob().GetMainActionCooldown() <= 0; }
+    public virtual bool CanPerformMainAction() { return GetMob().GetMainActionCooldownRemaining() <= 0; }
 
     #endregion
 

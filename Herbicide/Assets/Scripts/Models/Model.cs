@@ -540,7 +540,16 @@ public abstract class Model : MonoBehaviour
     {
         Assert.IsNotNull(effect, "Cannot add a null effect.");
         if(!effect.CanAfflict(this)) return;
-        if(HasMaximumStacksOfEffect(effect)) return;
+        if (HasMaximumStacksOfEffect(effect))
+        {
+            if(effect.MaxStacks == 1)
+            {
+                IEffect existingEffect = GetEffects().Find(e=>e.GetType() == effect.GetType());
+                TimedEffect timedEffect = existingEffect as TimedEffect;
+                if(timedEffect != null) timedEffect.RefreshEffect();
+            }
+            return;
+        }
 
         effectsToAddSafely.Add(effect);
     }

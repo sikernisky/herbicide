@@ -124,12 +124,12 @@ public class BearController : DefenderController<BearController.BearState>
                 if (GetTarget() == null || !target.Targetable()) break;
                 if (DistanceToTargetFromTree()
                     <= GetBear().GetMainActionRange() &&
-                    GetBear().GetMainActionCooldown() <= 0) SetState(BearState.ATTACK);
+                    GetBear().GetMainActionCooldownRemaining() <= 0) SetState(BearState.ATTACK);
                 break;
             case BearState.ATTACK:
                 if (GetTarget() == null || !target.Targetable()) SetState(BearState.IDLE);
                 if (GetAnimationCounter() > 0) break;
-                if (GetBear().GetMainActionCooldown() > 0) SetState(BearState.IDLE);
+                if (GetBear().GetMainActionCooldownRemaining() > 0) SetState(BearState.IDLE);
                 else if (DistanceToTargetFromTree()
                     > GetBear().GetMainActionRange()) SetState(BearState.IDLE);
                 break;

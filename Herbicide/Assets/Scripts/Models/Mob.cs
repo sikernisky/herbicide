@@ -171,13 +171,25 @@ public abstract class Mob : PlaceableObject
     /// </summary>
     /// <returns>the number of seconds this Mob has to wait before
     /// performing its main action again.</returns>
-    public float GetMainActionCooldown() => mainActionCooldownTimer;
+    public float GetMainActionCooldownRemaining() => mainActionCooldownTimer;
 
     /// <summary>
     /// Reduces this Mob's main action cooldown by Time.deltaTime.
     /// </summary>
-    public void StepMainActionCooldown() => mainActionCooldownTimer = Mathf.Clamp(GetMainActionCooldown() - Time.deltaTime,
-            MIN_MAIN_ACTION_SPEED, 1f / mainActionSpeed);
+    public void StepMainActionCooldownByDeltaTime() => mainActionCooldownTimer = Mathf.Clamp(GetMainActionCooldownRemaining()
+        - Time.deltaTime, MIN_MAIN_ACTION_SPEED, GetResetValueOfMainActionCooldown());
+
+    /// <summary>
+    /// Sets this Mob's main action cooldown to a new value. Clamped
+    /// between the minimum main action speed and the reset value
+    /// of the current main action speed.
+    /// </summary>
+    /// <param name="timeRemaining"></param>
+    public void SetMainActionCooldownRemaining(float timeRemaining)
+    {
+        float maxCooldown = GetResetValueOfMainActionCooldown();
+        mainActionCooldownTimer = Mathf.Clamp(timeRemaining, MIN_MAIN_ACTION_SPEED, maxCooldown);
+    }
 
     /// <summary>
     /// Sets the number of times this Mob can perform its main action per second.
@@ -193,7 +205,13 @@ public abstract class Mob : PlaceableObject
     /// <summary>
     /// Resets this Mob's main action cooldown to its currently capped value.
     /// </summary>
-    public void RestartMainActionCooldown() => mainActionCooldownTimer = 1f / mainActionSpeed;
+    public void RestartMainActionCooldown() => mainActionCooldownTimer = GetResetValueOfMainActionCooldown();
+
+    /// <summary>
+    /// Returns the reset value of this Mob's main action cooldown.
+    /// </summary>
+    /// <returns>the reset value of this Mob's main action cooldown.</returns>
+    public float GetResetValueOfMainActionCooldown() => 1f / mainActionSpeed;
 
     /// <summary>
     /// Resets this Mob's main action speed to its starting value.
@@ -221,6 +239,12 @@ public abstract class Mob : PlaceableObject
     /// Resets this Mob's movement speed to its starting value.
     /// </summary>
     public void ResetMovementSpeed() => movementSpeed = BASE_MOVEMENT_SPEED;
+
+    /// <summary>
+    /// Sets this Mob's movement speed to a new value.
+    /// </summary>
+    /// <param name="movementSpeed">the new movement speed value.</param>
+    public virtual void SetMovementSpeed(float movementSpeed) => this.movementSpeed = Mathf.Clamp(movementSpeed, MIN_MOVEMENT_SPEED, MAX_MOVEMENT_SPEED);
 
     /// <summary>
     /// Resets this Mob's stats to their default values.
@@ -270,7 +294,7 @@ public abstract class Mob : PlaceableObject
         }
         if (chilled) SetBaseColor(new Color32(100, 100, 255, 255));
         else SetBaseColor(BASE_COLOR);
-        movementSpeed = Mathf.Clamp(BASE_MOVEMENT_SPEED * (1 + totalSpeedModifier), MIN_MOVEMENT_SPEED, MAX_MOVEMENT_SPEED);
+        SetMovementSpeed(Mathf.Clamp(BASE_MOVEMENT_SPEED * (1 + totalSpeedModifier), MIN_MOVEMENT_SPEED, MAX_MOVEMENT_SPEED));
     }
 
     /// <summary>

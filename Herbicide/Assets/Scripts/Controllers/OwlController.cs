@@ -161,12 +161,12 @@ public class OwlController : DefenderController<OwlController.OwlState>
             case OwlState.IDLE:
                 if (target == null || !target.Targetable()) break;
                 if (DistanceToTargetFromTree() <= GetOwl().GetMainActionRange() &&
-                    GetOwl().GetMainActionCooldown() <= 0) SetState(OwlState.ATTACK);
+                    GetOwl().GetMainActionCooldownRemaining() <= 0) SetState(OwlState.ATTACK);
                 break;
             case OwlState.ATTACK:
                 if (target == null || !target.Targetable()) SetState(OwlState.IDLE);
                 if (GetAnimationCounter() > 0) break;
-                if (GetOwl().GetMainActionCooldown() > 0) SetState(OwlState.IDLE);
+                if (GetOwl().GetMainActionCooldownRemaining() > 0) SetState(OwlState.IDLE);
                 else if (DistanceToTarget() > GetOwl().GetMainActionRange()) SetState(OwlState.IDLE);
                 break;
             case OwlState.INVALID:

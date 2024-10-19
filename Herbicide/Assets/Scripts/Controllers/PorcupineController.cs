@@ -162,12 +162,12 @@ public class PorcupineController : DefenderController<PorcupineController.Porcup
             case PorcupineState.IDLE:
                 if (target == null || !target.Targetable()) break;
                 if (DistanceToTargetFromTree() <= GetPorcupine().GetMainActionRange() &&
-                    GetPorcupine().GetMainActionCooldown() <= 0) SetState(PorcupineState.ATTACK);
+                    GetPorcupine().GetMainActionCooldownRemaining() <= 0) SetState(PorcupineState.ATTACK);
                 break;
             case PorcupineState.ATTACK:
                 if (target == null || !target.Targetable()) SetState(PorcupineState.IDLE);
                 if (GetAnimationCounter() > 0) break;
-                if (GetPorcupine().GetMainActionCooldown() > 0) SetState(PorcupineState.IDLE);
+                if (GetPorcupine().GetMainActionCooldownRemaining() > 0) SetState(PorcupineState.IDLE);
                 else if (DistanceToTarget() > GetPorcupine().GetMainActionRange()) SetState(PorcupineState.IDLE);
                 break;
             case PorcupineState.INVALID:

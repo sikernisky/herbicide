@@ -176,12 +176,12 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
 /*                Debug.Log("distance to target: " + DistanceToTargetFromTree());
                 Debug.Log("main action range: " + GetSquirrel().GetMainActionRange());*/
                 if (DistanceToTargetFromTree() <= GetSquirrel().GetMainActionRange() &&
-                    GetSquirrel().GetMainActionCooldown() <= 0) SetState(SquirrelState.ATTACK);
+                    GetSquirrel().GetMainActionCooldownRemaining() <= 0) SetState(SquirrelState.ATTACK);
                 break;
             case SquirrelState.ATTACK:
                 if (target == null || !target.Targetable()) SetState(SquirrelState.IDLE);
                 if (GetAnimationCounter() > 0) break;
-                if (GetSquirrel().GetMainActionCooldown() > 0) SetState(SquirrelState.IDLE);
+                if (GetSquirrel().GetMainActionCooldownRemaining() > 0) SetState(SquirrelState.IDLE);
                 else if (DistanceToTarget() > GetSquirrel().GetMainActionRange()) SetState(SquirrelState.IDLE);
                 break;
             case SquirrelState.INVALID:

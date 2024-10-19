@@ -42,11 +42,6 @@ public class BunnyController : DefenderController<BunnyController.BunnyState>
     /// </summary>
     protected override int MAX_TARGETS => 1;
 
-    /// <summary>
-    /// How many seconds to wait between firing ice chunks.
-    /// </summary>
-    private const float delayBetweenIceChunks = 0.15f;
-
     #endregion
 
     #region Methods
@@ -111,11 +106,11 @@ public class BunnyController : DefenderController<BunnyController.BunnyState>
                 if (SpawnStateDone()) SetState(BunnyState.IDLE);
                 break;
             case BunnyState.IDLE:
-                if (GetBunny().GetMainActionCooldown() <= 0) SetState(BunnyState.GENERATE);
+                if (GetBunny().GetMainActionCooldownRemaining() <= 0) SetState(BunnyState.GENERATE);
                 break;
             case BunnyState.GENERATE:
                 if (GetAnimationCounter() > 0) break;
-                if (GetBunny().GetMainActionCooldown() > 0) SetState(BunnyState.IDLE);
+                if (GetBunny().GetMainActionCooldownRemaining() > 0) SetState(BunnyState.IDLE);
                 break;
             case BunnyState.INVALID:
                 throw new System.Exception("Invalid State.");

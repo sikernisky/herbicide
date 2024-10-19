@@ -65,5 +65,10 @@ public abstract class TimedEffect : Effect
         if (timer > 0) timer -= Time.deltaTime;
     }
 
+    /// <summary>
+    /// Refreshes the effect's duration.
+    /// </summary>
+    public void RefreshEffect() => timer = duration;
+
     #endregion
 }

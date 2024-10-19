@@ -232,12 +232,12 @@ public class RaccoonController : DefenderController<RaccoonController.RaccoonSta
             case RaccoonState.IDLE:
                 if (target == null || !target.Targetable()) break;
                 if (DistanceToTargetFromTree() <= GetRaccoon().GetMainActionRange() &&
-                    GetRaccoon().GetMainActionCooldown() <= 0) SetState(RaccoonState.ATTACK);
+                    GetRaccoon().GetMainActionCooldownRemaining() <= 0) SetState(RaccoonState.ATTACK);
                 break;
             case RaccoonState.ATTACK:
                 if (target == null || !target.Targetable()) SetState(RaccoonState.IDLE);
                 if (GetAnimationCounter() > 0) break;
-                if (GetRaccoon().GetMainActionCooldown() > 0) SetState(RaccoonState.IDLE);
+                if (GetRaccoon().GetMainActionCooldownRemaining() > 0) SetState(RaccoonState.IDLE);
                 else if (DistanceToTarget() > GetRaccoon().GetMainActionRange()) SetState(RaccoonState.IDLE);
                 break;
             case RaccoonState.INVALID:
