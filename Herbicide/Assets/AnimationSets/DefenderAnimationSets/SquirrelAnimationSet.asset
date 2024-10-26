@@ -13,56 +13,56 @@ MonoBehaviour:
   m_Name: SquirrelAnimationSet
   m_EditorClassIdentifier: 
   placementTrackTier1:
-  - {fileID: 21300000, guid: 38d12ef5d626e4b918d858f04a2d5db4, type: 3}
+  - {fileID: 21300000, guid: f63d62af67d3b184c8e684ffa2f4b2e5, type: 3}
   placementTrackTier2:
-  - {fileID: 2061260637, guid: 01970f2e7961561489d6127e7712fbb2, type: 3}
+  - {fileID: 21300000, guid: f63d62af67d3b184c8e684ffa2f4b2e5, type: 3}
   placementTrackTier3:
-  - {fileID: -2076439399, guid: 7cec5e00f0faf4d42a75fbde06f5d094, type: 3}
+  - {fileID: 21300000, guid: f63d62af67d3b184c8e684ffa2f4b2e5, type: 3}
   mainActionAnimationNorthTier1:
-  - {fileID: 241803896, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  - {fileID: 1243425058, guid: 977fcad7f1fb3904084edd83abd4f7ca, type: 3}
   mainActionAnimationEastTier1:
-  - {fileID: 1842010287, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  - {fileID: 630015522, guid: 977fcad7f1fb3904084edd83abd4f7ca, type: 3}
   mainActionAnimationSouthTier1:
-  - {fileID: -1116763224, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  - {fileID: -662385762, guid: 977fcad7f1fb3904084edd83abd4f7ca, type: 3}
   mainActionAnimationWestTier1:
-  - {fileID: 362384017, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  - {fileID: -1655375287, guid: 977fcad7f1fb3904084edd83abd4f7ca, type: 3}
   mainActionAnimationNorthTier2:
-  - {fileID: 241803896, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  - {fileID: 1243425058, guid: 977fcad7f1fb3904084edd83abd4f7ca, type: 3}
   mainActionAnimationEastTier2:
-  - {fileID: 1842010287, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  - {fileID: 630015522, guid: 977fcad7f1fb3904084edd83abd4f7ca, type: 3}
   mainActionAnimationSouthTier2:
-  - {fileID: -1116763224, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  - {fileID: -662385762, guid: 977fcad7f1fb3904084edd83abd4f7ca, type: 3}
   mainActionAnimationWestTier2:
-  - {fileID: 362384017, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  - {fileID: -1655375287, guid: 977fcad7f1fb3904084edd83abd4f7ca, type: 3}
   mainActionAnimationNorthTier3:
-  - {fileID: 241803896, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  - {fileID: 1243425058, guid: 977fcad7f1fb3904084edd83abd4f7ca, type: 3}
   mainActionAnimationEastTier3:
-  - {fileID: 1842010287, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  - {fileID: 630015522, guid: 977fcad7f1fb3904084edd83abd4f7ca, type: 3}
   mainActionAnimationSouthTier3:
-  - {fileID: -1116763224, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  - {fileID: -662385762, guid: 977fcad7f1fb3904084edd83abd4f7ca, type: 3}
   mainActionAnimationWestTier3:
-  - {fileID: 362384017, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  - {fileID: -1655375287, guid: 977fcad7f1fb3904084edd83abd4f7ca, type: 3}
   idleAnimationNorthTier1:
-  - {fileID: -1129439068, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  - {fileID: 1243425058, guid: 977fcad7f1fb3904084edd83abd4f7ca, type: 3}
   idleAnimationEastTier1:
-  - {fileID: -1741764920, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  - {fileID: 630015522, guid: 977fcad7f1fb3904084edd83abd4f7ca, type: 3}
   idleAnimationSouthTier1:
-  - {fileID: -1985209435, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  - {fileID: -662385762, guid: 977fcad7f1fb3904084edd83abd4f7ca, type: 3}
   idleAnimationWestTier1:
-  - {fileID: 629033695, guid: 962a3b045532a46d49d71ef38cffd8ba, type: 3}
+  - {fileID: -1655375287, guid: 977fcad7f1fb3904084edd83abd4f7ca, type: 3}
   idleAnimationNorthTier2:
-  - {fileID: -805717049, guid: 01970f2e7961561489d6127e7712fbb2, type: 3}
+  - {fileID: 1243425058, guid: 977fcad7f1fb3904084edd83abd4f7ca, type: 3}
   idleAnimationEastTier2:
-  - {fileID: -878656122, guid: 01970f2e7961561489d6127e7712fbb2, type: 3}
+  - {fileID: 630015522, guid: 977fcad7f1fb3904084edd83abd4f7ca, type: 3}
   idleAnimationSouthTier2:
-  - {fileID: 2061260637, guid: 01970f2e7961561489d6127e7712fbb2, type: 3}
+  - {fileID: -662385762, guid: 977fcad7f1fb3904084edd83abd4f7ca, type: 3}
   idleAnimationWestTier2:
-  - {fileID: -1995303922, guid: 01970f2e7961561489d6127e7712fbb2, type: 3}
+  - {fileID: -1655375287, guid: 977fcad7f1fb3904084edd83abd4f7ca, type: 3}
   idleAnimationNorthTier3:
-  - {fileID: 544880635, guid: 7cec5e00f0faf4d42a75fbde06f5d094, type: 3}
+  - {fileID: 1243425058, guid: 977fcad7f1fb3904084edd83abd4f7ca, type: 3}
   idleAnimationEastTier3:
-  - {fileID: -259049284, guid: 7cec5e00f0faf4d42a75fbde06f5d094, type: 3}
+  - {fileID: 630015522, guid: 977fcad7f1fb3904084edd83abd4f7ca, type: 3}
   idleAnimationSouthTier3:
-  - {fileID: -2076439399, guid: 7cec5e00f0faf4d42a75fbde06f5d094, type: 3}
+  - {fileID: -662385762, guid: 977fcad7f1fb3904084edd83abd4f7ca, type: 3}
   idleAnimationWestTier3:
-  - {fileID: 1272331073, guid: 7cec5e00f0faf4d42a75fbde06f5d094, type: 3}
+  - {fileID: -1655375287, guid: 977fcad7f1fb3904084edd83abd4f7ca, type: 3}

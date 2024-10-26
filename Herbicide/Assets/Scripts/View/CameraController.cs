@@ -115,7 +115,7 @@ public class CameraController : MonoBehaviour
     {
         var camera = GetCamera();
         if(camera == null) return;
-        switch (level)
+/*        switch (level)
         {
             case 0:
                 camera.orthographicSize = 8.5f;
@@ -129,7 +129,7 @@ public class CameraController : MonoBehaviour
             default:
                 camera.orthographicSize = 8.5f;
                 break;
-        }
+        }*/
     }
 
     /// <summary>

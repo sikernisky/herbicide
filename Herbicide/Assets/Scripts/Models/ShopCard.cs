@@ -18,24 +18,15 @@ public class ShopCard : UIModel
     private Image cardBackgroundImage;
 
     /// <summary>
-    /// Image that represents the ShopCard's art.
-    /// </summary>
-    [SerializeField]
-    private Image cardSplash;
-
-    /// <summary>
     /// Text to represent the ShopCard's title.
     /// </summary>
     [SerializeField]
     private TMP_Text cardTitle;
 
     /// <summary>
-    /// Text components to represent the ShopCard model's traits.<br></br>
-    /// 
-    /// This is disabled if the ShopCard is an upgrade card.
+    /// Text to represent the ShopCard's cost.
     /// </summary>
-    [SerializeField]
-    private List<TMP_Text> traitNames;
+    private TMP_Text cardCost;
 
     /// <summary>
     /// The ShopCard's RectTransform component.
@@ -137,7 +128,6 @@ public class ShopCard : UIModel
     {
         cardBackgroundImage.color = color;
         cardTitle.color = color;
-        cardSplash.color = color;
     }
 
     #endregion

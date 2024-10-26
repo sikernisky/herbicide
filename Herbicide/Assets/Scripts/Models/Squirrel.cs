@@ -138,7 +138,7 @@ public class Squirrel : Defender
     /// Returns the (X, Y) dimensions of the Bear's placement track.
     /// </summary>
     /// <returns>the (X, Y) dimensions of the Bear's placement track.</returns>
-    public override Vector2Int GetPlacementTrackDimensions() => new Vector2Int(16, 20);
+    public override Vector2Int GetPlacementTrackDimensions() => new Vector2Int(32, 32);
 
     #endregion
 }
