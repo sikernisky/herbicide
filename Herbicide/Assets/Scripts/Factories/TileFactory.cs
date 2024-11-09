@@ -54,7 +54,6 @@ public class TileFactory : MonoBehaviour
     public static bool ValidTileIndex(string type, int index)
     {
         if (index < 0) return false;
-        Debug.Log("index: " + index);
         if (type.ToLower() == "grass") return index <= MAX_GRASS_INDEX;
         throw new System.Exception("Invalid type " + type + ".");
     }

@@ -229,7 +229,7 @@ public class EconomyController : MonoBehaviour
         switch (level)
         {
             default:
-                currencies.Add(ModelType.DEW, 75);
+                currencies.Add(ModelType.DEW, 175);
                 currencies.Add(ModelType.BASIC_TREE_SEED, 0);
                 currencies.Add(ModelType.SPEED_TREE_SEED, 0);
                 break;

@@ -22,18 +22,6 @@ public class ShopManager : MonoBehaviour
     private ShopController shopTwoSlots;
 
     /// <summary>
-    /// Prefab of the shop when it has three slots.
-    /// </summary>
-    [SerializeField]
-    private ShopController shopThreeSlots;
-
-    /// <summary>
-    /// Prefab of the shop when it has four slots.
-    /// </summary>
-    [SerializeField]
-    private ShopController shopFourSlots;
-
-    /// <summary>
     /// The currently active shop.
     /// </summary>
     private ShopController activeShop;
@@ -84,7 +72,7 @@ public class ShopManager : MonoBehaviour
     public static void UnlockReroll()
     {
         instance.isRerollUnlocked = true;
-        instance.activeShop.SetRerollButtonActive(true);
+        instance.activeShop.SetRerollEnabled(true);
     }
 
     /// <summary>
@@ -99,44 +87,43 @@ public class ShopManager : MonoBehaviour
         isRerollUnlocked = shopSaveData.isRerollUnlocked;
 
         List<ModelType> starterModels = new List<ModelType>();
+        shopTwoSlots.gameObject.SetActive(true);
+        activeShop = shopTwoSlots;
+        int slotsToInitialize;
         switch (level)
         {
             case 0:
-                shopTwoSlots.gameObject.SetActive(true);
-                activeShop = shopTwoSlots;
+                slotsToInitialize = 2;
                 break;
             case 1:
-                shopTwoSlots.gameObject.SetActive(true);
-                activeShop = shopTwoSlots;
+                slotsToInitialize = 3;
                 break;
-            case 2:
-                shopThreeSlots.gameObject.SetActive(true);
-                activeShop = shopThreeSlots;
+            case 2: 
+                slotsToInitialize = 4;
                 starterModels.Add(ModelType.BUNNY);
                 starterModels.Add(ModelType.SQUIRREL);
                 break;
             case 3:
-                shopThreeSlots.gameObject.SetActive(true);
-                activeShop = shopThreeSlots;
+                slotsToInitialize = 5;
+                shopTwoSlots.gameObject.SetActive(true);
+                activeShop = shopTwoSlots;
                 starterModels.Add(ModelType.BUNNY);
                 starterModels.Add(ModelType.SQUIRREL);
                 break;
             case 4:
-                shopFourSlots.gameObject.SetActive(true);
-                activeShop = shopFourSlots;
+                slotsToInitialize = 5;
                 starterModels.Add(ModelType.BUNNY);
                 starterModels.Add(ModelType.SQUIRREL);
                 starterModels.Add(ModelType.OWL);
                 break;
             default:
-                shopFourSlots.gameObject.SetActive(true);
-                activeShop = shopFourSlots;
+                slotsToInitialize = 5;
                 break;
         }
 
-        activeShop.InitializeShop(instance, starterModels);
+        activeShop.InitializeShop(instance, starterModels, slotsToInitialize);
         activeShop.SubscribeToBuyDefenderDelegate(handlerToSubscribe);
-        if (isRerollUnlocked) activeShop.SetRerollButtonActive(true);
+        if (isRerollUnlocked) activeShop.SetRerollEnabled(true);
     }
 
     /// <summary>

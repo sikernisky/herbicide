@@ -47,8 +47,8 @@
         },
         "Tilemaps/btd.tmx": {
             "expandedObjectLayers": [
-                16,
-                13
+                13,
+                16
             ],
             "scale": 4,
             "selectedLayer": 5,
@@ -186,14 +186,14 @@
         },
         "Tilemaps/level1.tmx": {
             "expandedObjectLayers": [
-                16,
-                13
+                13,
+                16
             ],
             "scale": 3,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 287.16666666666663,
-                "y": 337.66666666666663
+                "x": 286.5,
+                "y": 337
             }
         },
         "Tilemaps/level1.tmx#Enemies": {
@@ -227,9 +227,9 @@
         },
         "Tilemaps/level2.tmx": {
             "expandedObjectLayers": [
-                15,
+                13,
                 16,
-                13
+                15
             ],
             "scale": 4,
             "selectedLayer": 5,
@@ -261,15 +261,15 @@
         },
         "Tilemaps/level3.tmx": {
             "expandedObjectLayers": [
-                15,
+                13,
                 16,
-                13
+                15
             ],
             "scale": 4,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 247.625,
-                "y": 305.5
+                "x": 247.375,
+                "y": 305.25
             }
         },
         "Tilemaps/level3.tmx#Enemies": {
@@ -295,9 +295,9 @@
         },
         "Tilemaps/level4.tmx": {
             "expandedObjectLayers": [
-                15,
+                13,
                 16,
-                13
+                15
             ],
             "scale": 1.5,
             "selectedLayer": 5,
@@ -334,8 +334,8 @@
             "scale": 2,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 312.25,
-                "y": 332.5
+                "x": 311.75,
+                "y": 312
             }
         },
         "Tilemaps/level5.tmx#Enemies": {
@@ -366,8 +366,8 @@
             "scale": 4,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 400.125,
-                "y": 314
+                "x": 311.875,
+                "y": 312
             }
         },
         "Tilemaps/level6.tmx#Enemies": {
