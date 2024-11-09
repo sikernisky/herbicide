@@ -38,6 +38,11 @@ public class ShopController : MonoBehaviour
     private Button rerollButton;
 
     /// <summary>
+    /// true if the reroll feature is enabled; false otherwise.
+    /// </summary>
+    private bool rerollEnabled;
+
+    /// <summary>
     /// How much currency it costs to reroll the shop.
     /// </summary>
     private static readonly int REROLL_COST = 25;
@@ -45,7 +50,7 @@ public class ShopController : MonoBehaviour
     /// <summary>
     /// How long the shop will wait before automatically rerolling.
     /// </summary>
-    private static readonly float AUTOMATIC_REROLL_TIME = 15f;
+    private static readonly float AUTOMATIC_REROLL_TIME = 25f;
 
     /// <summary>
     /// How long it has been since the last reroll.
@@ -95,16 +100,16 @@ public class ShopController : MonoBehaviour
         // Check & Handle ShopCard click
         foreach (ShopSlot shopSlot in shopSlots)
         {
-            if (shopSlot.SlotClicked())
-            {
-                ClickShopSlotButton(shopSlot.GetSlotIndex());
-                shopSlot.ResetSlotClickStatus();
-            }
+            if(!shopSlot.IsEnabled()) continue;
+            if (shopSlot.SlotClicked()) ClickShopSlotButton(shopSlot.GetSlotIndex());
         }
 
         // Enable / Disable reroll button depending on balance
-        if (EconomyController.GetBalance(ModelType.DEW) < REROLL_COST) rerollButton.interactable = false;
-        else rerollButton.interactable = true;
+        if (rerollEnabled)
+        {
+            if (EconomyController.GetBalance(ModelType.DEW) < REROLL_COST) rerollButton.interactable = false;
+            else rerollButton.interactable = true;
+        }
 
         // Update reroll timer
         float timePercentage = timeSinceLastReroll / AUTOMATIC_REROLL_TIME;
@@ -118,23 +123,30 @@ public class ShopController : MonoBehaviour
     /// </summary>
     /// <param name="shopManager">the ShopManager singleton</param>
     /// <param name="startingModels">the starting models for the shop</param>
-    public void InitializeShop(ShopManager shopManager, List<ModelType> startingModels)
+    /// <param name="numSlotsToSetActive">the number of slots to set as active / in use this level</param>
+    public void InitializeShop(ShopManager shopManager, List<ModelType> startingModels, int numSlotsToSetActive)
     {
         Assert.IsNotNull(shopManager, "ShopManager is null.");
         Assert.IsNotNull(startingModels, "Starting models list is null.");
+        Assert.IsTrue(numSlotsToSetActive > 0 && numSlotsToSetActive <= shopSlots.Count, "Invalid number of slots.");
 
         if (shopActive) return;
         if (!shopLoaded)
         {
-            SetRerollButtonActive(false);
+            SetRerollEnabled(false);
             EconomyController.SubscribeToBalanceUpdatedDelegate(UpdateShopCardLighting);
             numCardsPurchased = 0;
             PlacementController.SubscribeToFinishPlacingDelegate(OnFinishPlacing);
-            int slotCounter = 0;
-            foreach (ShopSlot shopSlot in shopSlots)
+
+            for(int i = 0; i < shopSlots.Count; i++)
             {
-                shopSlot.SetupSlot(slotCounter);
-                slotCounter++;
+                ShopSlot slotToActivate = shopSlots[i];
+                slotToActivate.SetupSlot(i);
+            }
+
+            for (int i = numSlotsToSetActive; i < shopSlots.Count; i++)
+            {
+                shopSlots[i].DisableSlot();
             }
 
             Reroll(true, startingModels);
@@ -171,7 +183,11 @@ public class ShopController : MonoBehaviour
     /// </summary>
     /// <param name="active">true if setting the button to be active;
     /// otherwise false. </param>
-    public void SetRerollButtonActive(bool active) => rerollButton.gameObject.SetActive(active);
+    public void SetRerollEnabled(bool active)
+    {
+        rerollEnabled = active;
+        rerollButton.interactable = active;
+    }
 
     /// <summary>
     /// Rerolls the shop, replacing every ShopSlot with a new ShopCard
@@ -191,6 +207,7 @@ public class ShopController : MonoBehaviour
         List<ModelType> pool = GetUpdatedCardPool();
         foreach (ShopSlot cardSlot in shopSlots)
         {
+            if (!cardSlot.IsEnabled()) continue;
             Assert.IsNotNull(cardSlot);
             int randomIndex = Random.Range(0, pool.Count);
             var randomKey = pool[randomIndex];
@@ -229,7 +246,7 @@ public class ShopController : MonoBehaviour
         for(int i = 0; i < shopSlots.Count; i++)
         {
             if(i >= guaranteedRolls.Count) break;
-            shopSlots[i].FillWithBlank();
+            if (!shopSlots[i].IsEnabled()) continue;
             ModelType modelType = guaranteedRolls[i];
             GameObject shopCardPrefab = ShopFactory.GetShopCardPrefab(modelType);
             Assert.IsNotNull(shopCardPrefab);
@@ -284,7 +301,12 @@ public class ShopController : MonoBehaviour
     /// Called when the player clicks the Reroll button. Refreshes
     /// the shop if they have enough money.
     /// </summary>
-    public void ClickRerollButton() => Reroll(false);
+    public void ClickRerollButton()
+    {
+        Assert.IsTrue(rerollEnabled, "Reroll button should not be interactable because reroll enabled" +
+            " is false.");
+        Reroll(false);
+    }
 
     /// <summary>
     /// # BUTTON EVENT #

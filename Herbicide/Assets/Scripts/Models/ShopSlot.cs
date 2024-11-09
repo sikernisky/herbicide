@@ -10,12 +10,6 @@ public class ShopSlot : MonoBehaviour
     #region Fields
 
     /// <summary>
-    /// This ShopSlot's background component.
-    /// </summary>
-    [SerializeField]
-    private Image slotBackground;
-
-    /// <summary>
     /// The index of this ShopSlot -- each slot has its
     /// own index.
     /// </summary>
@@ -30,6 +24,12 @@ public class ShopSlot : MonoBehaviour
     /// true if the ShopManager has initialized this ShopSlot; otherwise, false.
     /// </summary>
     private bool setupByManager;
+
+    /// <summary>
+    /// true if this ShopSlot is active in the Shop; otherwise, false if it is
+    /// disabled.
+    /// </summary>
+    private bool activeInShop;
 
     #endregion
 
@@ -54,7 +54,6 @@ public class ShopSlot : MonoBehaviour
         cardTransform.localPosition = Vector3.zero;
 
         occupant = shopCard;
-
     }
 
     /// <summary>
@@ -84,6 +83,7 @@ public class ShopSlot : MonoBehaviour
     {
         Assert.IsFalse(IsSetup());
 
+        EnableSlot();
         this.slotIndex = slotIndex;
         setupByManager = true;
     }
@@ -130,7 +130,6 @@ public class ShopSlot : MonoBehaviour
 
         int price = occupant.GetPrice();
         Destroy(occupant.gameObject);
-        FillWithBlank();
 
         return price;
     }
@@ -150,15 +149,6 @@ public class ShopSlot : MonoBehaviour
     {
         if (Empty()) return false;
         return occupant.ClickedOn();
-    }
-
-    /// <summary>
-    /// Resets the ShopCard's click status.
-    /// </summary>
-    public void ResetSlotClickStatus()
-    {
-        if (Empty()) return;
-        occupant.ResetClick();
     }
 
     /// <summary>
@@ -182,12 +172,26 @@ public class ShopSlot : MonoBehaviour
     /// <summary>
     /// Disables this ShopSlot.
     /// </summary>
-    public void DisableSlot() => gameObject.SetActive(false);
+    public void DisableSlot()
+    {
+        activeInShop = false;
+        gameObject.SetActive(false);
+    }
 
     /// <summary>
     /// Enables this ShopSlot.
     /// </summary>
-    public void EnableSlot() => gameObject.SetActive(true);
+    public void EnableSlot()
+    {
+        activeInShop = true;
+        gameObject.SetActive(true);
+    }
+
+    /// <summary>
+    /// Returns true if this ShopSlot is enabled in the Shop.
+    /// </summary>
+    /// <returns>true if this ShopSlot is enabled; otherwise, false. </returns>
+    public bool IsEnabled() => activeInShop;
 
     #endregion
 }

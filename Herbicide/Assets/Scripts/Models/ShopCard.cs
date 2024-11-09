@@ -26,6 +26,7 @@ public class ShopCard : UIModel
     /// <summary>
     /// Text to represent the ShopCard's cost.
     /// </summary>
+    [SerializeField]
     private TMP_Text cardCost;
 
     /// <summary>
@@ -116,11 +117,6 @@ public class ShopCard : UIModel
     public bool ClickedOn() => clicked;
 
     /// <summary>
-    /// Resets the ShopCard's click status.
-    /// </summary>
-    public void ResetClick() => clicked = false;
-
-    /// <summary>
     /// Sets the color of the ShopCard's background and title.
     /// </summary>
     /// <param name="color">The color to set the ShopCard to.</param>
@@ -128,6 +124,7 @@ public class ShopCard : UIModel
     {
         cardBackgroundImage.color = color;
         cardTitle.color = color;
+        cardCost.color = color;
     }
 
     #endregion

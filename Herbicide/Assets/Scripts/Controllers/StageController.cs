@@ -125,7 +125,7 @@ public class StageController : MonoBehaviour
             instance.intermissionTimer += Time.deltaTime;
 
             float timePercentage = instance.intermissionTimer / instance.TIME_BETWEEN_STAGES;
-            instance.intermissionTimerBarFill.transform.localScale = new Vector3(1 - timePercentage, 2, 1);
+            instance.intermissionTimerBarFill.transform.localScale = new Vector3(1 - timePercentage, 1, 1);
 
             if (instance.intermissionTimer >= instance.TIME_BETWEEN_STAGES)
             {
@@ -138,7 +138,11 @@ public class StageController : MonoBehaviour
                 ControllerManager.ResetNexiiToSpawnPositions(instance);
             }
         }
-        else instance.timeSinceLastStage += Time.deltaTime;
+        else
+        {
+            instance.timeSinceLastStage += Time.deltaTime;
+            instance.intermissionTimerBarFill.transform.localScale = new Vector3(0, 1, 1);
+        }
 
     }
 
