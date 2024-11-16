@@ -64,6 +64,11 @@ public class Bunny : Defender
     public override float MAX_MAIN_ACTION_SPEED => float.MaxValue;
 
     /// <summary>
+    /// Starting main action animation duration of a Bunny.
+    /// </summary>
+    public override float BASE_MAIN_ACTION_ANIMATION_DURATION => .2f;
+
+    /// <summary>
     /// Starting chase range of a Bunny.
     /// </summary>
     public override float BASE_CHASE_RANGE => BASE_MAIN_ACTION_RANGE;
@@ -107,12 +112,6 @@ public class Bunny : Defender
     /// Smallest health value a Bunny can have.
     /// </summary>
     public override float MIN_HEALTH => 0f;
-
-    /// <summary>
-    /// How many seconds a Bunny's generation animation lasts,
-    /// from start to finish. 
-    /// </summary>
-    public float GENERATION_ANIMATION_DURATION => .2f;
 
     /// <summary>
     /// How many seconds a Bunny's idle animation lasts,

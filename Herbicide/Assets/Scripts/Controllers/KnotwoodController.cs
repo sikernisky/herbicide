@@ -291,7 +291,7 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
         if (GetState() != KnotwoodState.ENTERING) return;
 
         GetKnotwood().SetEntering(GetKnotwood().GetSpawnWorldPosition());
-        SetNextAnimation(GetKnotwood().MOVE_ANIMATION_DURATION, EnemyFactory.GetSpawnTrack(
+        SetNextAnimation(GetKnotwood().GetMovementAnimationDuration(), EnemyFactory.GetSpawnTrack(
             GetKnotwood().TYPE,
                                   GetKnotwood().GetDirection(), GetKnotwood().GetHealthState()));
 
@@ -329,7 +329,7 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
     {
         if (GetState() != KnotwoodState.CHASE) return;
 
-        SetNextAnimation(GetKnotwood().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
+        SetNextAnimation(GetKnotwood().GetMovementAnimationDuration(), EnemyFactory.GetMovementTrack(
             GetKnotwood().TYPE,
             GetKnotwood().GetDirection(), GetKnotwood().GetHealthState()));
 
@@ -354,7 +354,7 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
     {
         if (GetState() != KnotwoodState.PROTECT) return;
 
-        SetNextAnimation(GetKnotwood().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
+        SetNextAnimation(GetKnotwood().GetMovementAnimationDuration(), EnemyFactory.GetMovementTrack(
             GetKnotwood().TYPE,
                        GetKnotwood().GetDirection(), GetKnotwood().GetHealthState()));
 
@@ -376,7 +376,7 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
     {
         if (GetState() != KnotwoodState.ATTACK) return;
 
-        SetNextAnimation(GetKnotwood().ATTACK_ANIMATION_DURATION, EnemyFactory.GetAttackTrack(
+        SetNextAnimation(GetKnotwood().GetMainActionAnimationDuration(), EnemyFactory.GetAttackTrack(
                 GetKnotwood().TYPE,
                        GetKnotwood().GetDirection(), GetKnotwood().GetHealthState()));
 
@@ -402,7 +402,7 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
         if (!ValidModel()) return;
         if (GetTarget() == null) return;
 
-        SetNextAnimation(GetKnotwood().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
+        SetNextAnimation(GetKnotwood().GetMovementAnimationDuration(), EnemyFactory.GetMovementTrack(
             GetKnotwood().TYPE,
                                   GetKnotwood().GetDirection(), GetKnotwood().GetHealthState()));
 

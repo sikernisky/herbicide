@@ -48,6 +48,11 @@ public class Kudzu : Enemy
     public override float MAX_MAIN_ACTION_SPEED => float.MaxValue;
 
     /// <summary>
+    /// Starting main action animation duration of a Kudzu.
+    /// </summary>
+    public override float BASE_MAIN_ACTION_ANIMATION_DURATION => .25f;
+
+    /// <summary>
     /// Damage a Kudzu does each attack.
     /// </summary>
     public int BONK_DAMAGE => 50;
@@ -83,17 +88,10 @@ public class Kudzu : Enemy
     public override float MIN_CHASE_RANGE => float.MinValue;
 
     /// <summary>
-    /// How many seconds a Kudzu's move animation lasts,
-    /// from start to finish. 
+    /// Starting movement animation duration of a Kudzu.
     /// </summary>
-    public float MOVE_ANIMATION_DURATION => .4f;
-
-    /// <summary>
-    /// How many seconds a Kudzu's attack animation lasts,
-    /// from start to finish. 
-    /// </summary>
-    public float ATTACK_ANIMATION_DURATION => .25f;
-
+    public override float BASE_MOVEMENT_ANIMATION_DURATION => 0.4f;
+ 
     /// <summary>
     /// How many seconds a Kudzu's idle animation lasts,
     /// from start to finish. 

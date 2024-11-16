@@ -105,7 +105,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
             Enemy target = GetTarget() as Enemy;
             if (target == null || !target.Targetable()) yield break; // Invalid target.
 
-            SetNextAnimation(GetSquirrel().ATTACK_ANIMATION_DURATION / numAcorns,
+            SetNextAnimation(GetSquirrel().GetMainActionAnimationDuration() / numAcorns,
                 DefenderFactory.GetMainActionTrack(
                     ModelType.SQUIRREL,
                     GetSquirrel().GetDirection(), GetSquirrel().GetTier()));

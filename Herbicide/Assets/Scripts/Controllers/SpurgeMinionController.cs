@@ -296,7 +296,7 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
         if (GetState() != SpurgeMinionState.ENTERING) return;
 
         GetSpurgeMinion().SetEntering(GetSpurgeMinion().GetSpawnWorldPosition());
-        SetNextAnimation(GetSpurgeMinion().MOVE_ANIMATION_DURATION, EnemyFactory.GetSpawnTrack(
+        SetNextAnimation(GetSpurgeMinion().GetMovementAnimationDuration(), EnemyFactory.GetSpawnTrack(
             GetSpurgeMinion().TYPE, GetSpurgeMinion().GetDirection(), GetSpurgeMinion().GetHealthState()));
 
         PopOutOfMovePos(NexusHoleSpawnPos(GetSpurgeMinion().GetSpawnWorldPosition()));
@@ -333,7 +333,7 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
     {
         if (GetState() != SpurgeMinionState.CHASE) return;
 
-        SetNextAnimation(GetSpurgeMinion().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
+        SetNextAnimation(GetSpurgeMinion().GetMovementAnimationDuration(), EnemyFactory.GetMovementTrack(
             GetSpurgeMinion().TYPE,
             GetSpurgeMinion().GetDirection(), GetSpurgeMinion().GetHealthState()));
 
@@ -358,7 +358,7 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
     {
         if (GetState() != SpurgeMinionState.PROTECT) return;
 
-        SetNextAnimation(GetSpurgeMinion().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
+        SetNextAnimation(GetSpurgeMinion().GetMovementAnimationDuration(), EnemyFactory.GetMovementTrack(
             GetSpurgeMinion().TYPE,
                        GetSpurgeMinion().GetDirection(), GetSpurgeMinion().GetHealthState()));
 
@@ -380,7 +380,7 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
     {
         if (GetState() != SpurgeMinionState.ATTACK) return;
 
-        SetNextAnimation(GetSpurgeMinion().ATTACK_ANIMATION_DURATION, EnemyFactory.GetAttackTrack(
+        SetNextAnimation(GetSpurgeMinion().GetMainActionAnimationDuration(), EnemyFactory.GetAttackTrack(
                 GetSpurgeMinion().TYPE,
                        GetSpurgeMinion().GetDirection(), GetSpurgeMinion().GetHealthState()));
 
@@ -405,7 +405,7 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
         if (!ValidModel()) return;
         if (GetTarget() == null) return;
 
-        SetNextAnimation(GetSpurgeMinion().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
+        SetNextAnimation(GetSpurgeMinion().GetMovementAnimationDuration(), EnemyFactory.GetMovementTrack(
             GetSpurgeMinion().TYPE,
                                   GetSpurgeMinion().GetDirection(), GetSpurgeMinion().GetHealthState()));
 

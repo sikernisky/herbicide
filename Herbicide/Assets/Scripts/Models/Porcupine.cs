@@ -43,6 +43,11 @@ public class Porcupine : Defender
     public override float MAX_MAIN_ACTION_SPEED => float.MaxValue;
 
     /// <summary>
+    /// Starting main action animation duration of a Porcupine.
+    /// </summary>
+    public override float BASE_MAIN_ACTION_ANIMATION_DURATION => .2f;
+
+    /// <summary>
     /// Starting chase range of a Porcupine.
     /// </summary>
     public override float BASE_CHASE_RANGE => BASE_MAIN_ACTION_RANGE;
@@ -86,12 +91,6 @@ public class Porcupine : Defender
     /// Smallest health value a Porcupine can have.
     /// </summary>
     public override float MIN_HEALTH => 0f;
-
-    /// <summary>
-    /// How many seconds a Porcupine's attack animation lasts,
-    /// from start to finish. 
-    /// </summary>
-    public float ATTACK_ANIMATION_DURATION => .2f;
 
     /// <summary>
     /// How many seconds a Porcupine's idle animation lasts,

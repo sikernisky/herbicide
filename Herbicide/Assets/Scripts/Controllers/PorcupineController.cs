@@ -91,7 +91,7 @@ public class PorcupineController : DefenderController<PorcupineController.Porcup
             Enemy target = GetTarget() as Enemy;
             if (target == null || !target.Targetable()) yield break; // Invalid target.
 
-            SetNextAnimation(GetPorcupine().ATTACK_ANIMATION_DURATION / numQuills,
+            SetNextAnimation(GetPorcupine().GetMainActionAnimationDuration() / numQuills,
                 DefenderFactory.GetMainActionTrack(
                     ModelType.PORCUPINE,
                     GetPorcupine().GetDirection(), GetPorcupine().GetTier()));

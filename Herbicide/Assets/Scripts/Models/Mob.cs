@@ -20,6 +20,11 @@ public abstract class Mob : PlaceableObject
     private float mainActionSpeed;
 
     /// <summary>
+    /// Current duration of this Mob's main action animation.
+    /// </summary>
+    private float mainActionAnimationDuration;
+
+    /// <summary>
     /// How many seconds this Mob has to wait before performing its main action again.
     /// </summary>
     private float mainActionCooldownTimer;
@@ -33,6 +38,11 @@ public abstract class Mob : PlaceableObject
     /// This Mob's current movement speed.
     /// </summary>
     private float movementSpeed;
+
+    /// <summary>
+    /// Current duration of this Mob's movement animation.
+    /// </summary>
+    private float movementAnimationDuration;    
 
     /// <summary>
     /// true if this Mob is spawned in the scene.
@@ -79,6 +89,21 @@ public abstract class Mob : PlaceableObject
     public float MIN_MAIN_ACTION_SPEED => 0f;
 
     /// <summary>
+    /// Starting duration of this Mob's main action animation.
+    /// </summary>
+    public abstract float BASE_MAIN_ACTION_ANIMATION_DURATION { get; }
+
+    /// <summary>
+    /// Maximum duration of this Mob's main action animation.
+    /// </summary>
+    public virtual float MAX_MAIN_ACTION_ANIMATION_DURATION => float.MaxValue;
+
+    /// <summary>
+    /// Minimum duration of this Mob's main action animation.
+    /// </summary>
+    public virtual float MIN_MAIN_ACTION_ANIMATION_DURATION => 0f;
+
+    /// <summary>
     /// Amount of chase range this Mob starts with.
     /// </summary>
     public abstract float BASE_CHASE_RANGE { get; }
@@ -107,6 +132,21 @@ public abstract class Mob : PlaceableObject
     /// Min amount of movement speed this Mob starts with.
     /// </summary>
     public abstract float MIN_MOVEMENT_SPEED { get; }
+
+    /// <summary>
+    /// Starting duration of this Mob's movement animation.
+    /// </summary>
+    public abstract float BASE_MOVEMENT_ANIMATION_DURATION { get; }
+
+    /// <summary>
+    /// Maximum duration of this Mob's movement animation.
+    /// </summary>
+    public virtual float MAX_MOVEMENT_ANIMATION_DURATION => float.MaxValue;
+
+    /// <summary>
+    /// Minimum duration of this Mob's movement animation.
+    /// </summary>
+    public virtual float MIN_MOVEMENT_ANIMATION_DURATION => 0f;
 
     /// <summary>
     /// How much faster this Mob moves when entering the scene.
@@ -203,6 +243,19 @@ public abstract class Mob : PlaceableObject
     public float GetMainActionSpeed() => mainActionSpeed;
 
     /// <summary>
+    /// Sets this Mob's main action animation duration to a new value.
+    /// </summary>
+    /// <param name="mainActionAnimationDuration">the new main action animation duration.</param>
+    public void SetMainActionAnimationDuration(float mainActionAnimationDuration) => this.mainActionAnimationDuration =
+        Mathf.Clamp(mainActionAnimationDuration, MIN_MAIN_ACTION_ANIMATION_DURATION, MAX_MAIN_ACTION_ANIMATION_DURATION);
+
+    /// <summary>
+    /// Returns this Mob's main action animation duration.
+    /// </summary>
+    /// <returns>this Mob's main action animation duration.</returns>
+    public float GetMainActionAnimationDuration() => mainActionAnimationDuration;
+
+    /// <summary>
     /// Resets this Mob's main action cooldown to its currently capped value.
     /// </summary>
     public void RestartMainActionCooldown() => mainActionCooldownTimer = GetResetValueOfMainActionCooldown();
@@ -217,6 +270,11 @@ public abstract class Mob : PlaceableObject
     /// Resets this Mob's main action speed to its starting value.
     /// </summary>
     public void ResetMainActionSpeed() => mainActionSpeed = BASE_MAIN_ACTION_SPEED;
+
+    /// <summary>
+    /// Resets this Mob's main action animation duration to its starting value.
+    /// </summary>
+    public void ResetMainActionAnimationDuration() => mainActionAnimationDuration = BASE_MAIN_ACTION_ANIMATION_DURATION;
 
     /// <summary>
     /// Returns this Mob's current chase range.
@@ -244,7 +302,26 @@ public abstract class Mob : PlaceableObject
     /// Sets this Mob's movement speed to a new value.
     /// </summary>
     /// <param name="movementSpeed">the new movement speed value.</param>
-    public virtual void SetMovementSpeed(float movementSpeed) => this.movementSpeed = Mathf.Clamp(movementSpeed, MIN_MOVEMENT_SPEED, MAX_MOVEMENT_SPEED);
+    public virtual void SetMovementSpeed(float movementSpeed) => this.movementSpeed = 
+        Mathf.Clamp(movementSpeed, MIN_MOVEMENT_SPEED, MAX_MOVEMENT_SPEED);
+
+    /// <summary>
+    /// Returns this Mob's current movement animation duration.
+    /// </summary>
+    /// <returns>this Mob's current movement animation duration.</returns>
+    public float GetMovementAnimationDuration() => movementAnimationDuration;
+
+    /// <summary>
+    /// Sets this Mob's movement animation duration to a new value.
+    /// </summary>
+    /// <param name="movementAnimationDuration">the new movement animation duration.</param>
+    public void SetMovementAnimationDuration(float movementAnimationDuration) => this.movementAnimationDuration = 
+        Mathf.Clamp(movementAnimationDuration, MIN_MOVEMENT_ANIMATION_DURATION, MAX_MOVEMENT_ANIMATION_DURATION);
+
+    /// <summary>
+    /// Resets this Mob's movement animation duration to its starting value.
+    /// </summary>
+    public void ResetMovementAnimationDuration() => movementAnimationDuration = BASE_MOVEMENT_ANIMATION_DURATION;
 
     /// <summary>
     /// Resets this Mob's stats to their default values.
@@ -256,6 +333,8 @@ public abstract class Mob : PlaceableObject
         ResetChaseRange();
         ResetMovementSpeed();
         ResetMainActionSpeed();
+        ResetMainActionAnimationDuration();
+        ResetMovementAnimationDuration();
         SetLocalScale(TileGrid.TILE_SIZE, TileGrid.TILE_SIZE);
     }
 
@@ -295,6 +374,7 @@ public abstract class Mob : PlaceableObject
         if (chilled) SetBaseColor(new Color32(100, 100, 255, 255));
         else SetBaseColor(BASE_COLOR);
         SetMovementSpeed(Mathf.Clamp(BASE_MOVEMENT_SPEED * (1 + totalSpeedModifier), MIN_MOVEMENT_SPEED, MAX_MOVEMENT_SPEED));
+        SetMovementAnimationDuration(Mathf.Clamp(BASE_MOVEMENT_ANIMATION_DURATION / (1 + totalSpeedModifier), MIN_MOVEMENT_ANIMATION_DURATION, MAX_MOVEMENT_ANIMATION_DURATION));
     }
 
     /// <summary>

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -42,6 +41,16 @@ public abstract class Tree : Mob, ISurface
     /// Minimum number of Collectable Prefabs this Tree can drop each second.
     /// </summary>
     public virtual float MAX_RESOURCE_DROP_RATE => float.MaxValue;
+
+    /// <summary>
+    /// Starting main action animation duration of a Tree.
+    /// </summary>
+    public override float BASE_MAIN_ACTION_ANIMATION_DURATION => 0f;
+
+    /// <summary>
+    /// Starting movement animation duration of a Tree.
+    /// </summary>
+    public override float BASE_MOVEMENT_ANIMATION_DURATION => 0;
 
     /// <summary>
     /// Trees occupy Tiles & Flooring.

@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using TMPro;
 using System.Collections.Generic;
-using static ShopController;
 
 /// <summary>
 /// Controls player balance and currency related events.
@@ -228,8 +227,13 @@ public class EconomyController : MonoBehaviour
         currencies = new Dictionary<ModelType, int>();
         switch (level)
         {
+            case 0:
+                currencies.Add(ModelType.DEW, 50);
+                currencies.Add(ModelType.BASIC_TREE_SEED, 0);
+                currencies.Add(ModelType.SPEED_TREE_SEED, 0);
+                break;
             default:
-                currencies.Add(ModelType.DEW, 175);
+                currencies.Add(ModelType.DEW, 100);
                 currencies.Add(ModelType.BASIC_TREE_SEED, 0);
                 currencies.Add(ModelType.SPEED_TREE_SEED, 0);
                 break;

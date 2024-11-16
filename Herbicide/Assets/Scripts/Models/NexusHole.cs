@@ -48,6 +48,11 @@ public class NexusHole : Mob
     public override float MAX_MAIN_ACTION_SPEED => float.MaxValue;
 
     /// <summary>
+    /// Starting main action animation duration of a NexusHole.
+    /// </summary>
+    public override float BASE_MAIN_ACTION_ANIMATION_DURATION => 0f;
+
+    /// <summary>
     /// Starting chase range of a NexusHole.
     /// </summary>
     public override float BASE_CHASE_RANGE => 0f;
@@ -76,6 +81,11 @@ public class NexusHole : Mob
     /// Minimum movement speed of a NexusHole.
     /// </summary>
     public override float MIN_MOVEMENT_SPEED => 0f;
+
+    /// <summary>
+    /// Starting movement animation duration of a NexusHole.
+    /// </summary>
+    public override float BASE_MOVEMENT_ANIMATION_DURATION => 0;
 
     /// <summary>
     /// Cost to place a NexusHole.

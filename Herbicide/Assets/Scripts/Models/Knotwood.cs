@@ -38,6 +38,11 @@ public class Knotwood : Enemy
     public override float MAX_MAIN_ACTION_SPEED => float.MaxValue;
 
     /// <summary>
+    /// Starting main action animation duration of a Knotwood.
+    /// </summary>
+    public override float BASE_MAIN_ACTION_ANIMATION_DURATION => .25f;
+
+    /// <summary>
     /// Starting chase range of a Knotwood.
     /// </summary>
     public override float BASE_CHASE_RANGE => float.MaxValue;
@@ -88,22 +93,15 @@ public class Knotwood : Enemy
     public override ModelType TYPE => ModelType.KNOTWOOD;
 
     /// <summary>
-    /// How many seconds a Knotwood's move animation lasts,
-    /// from start to finish. 
+    /// Starting movement animation duration of a Knotwood.
     /// </summary>
-    public float MOVE_ANIMATION_DURATION => .3f;
+    public override float BASE_MOVEMENT_ANIMATION_DURATION => 0.3f;
 
     /// <summary>
     /// How many seconds a Knotwood's idle animation lasts,
     /// from start to finish. 
     /// </summary>
     public float IDLE_ANIMATION_DURATION => .3f;
-
-    /// <summary>
-    /// How many seconds a Knotwood's idle animation lasts,
-    /// from start to finish. 
-    /// </summary>
-    public float ATTACK_ANIMATION_DURATION => .25f;
 
     /// <summary>
     /// Attack damage of a Knotwood

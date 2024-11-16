@@ -127,5 +127,10 @@ public class ShopCard : UIModel
         cardCost.color = color;
     }
 
+    /// <summary>
+    /// Sets the cost text of this ShopCard to its Model's cost.
+    /// </summary>
+    public void RefreshCostText() => cardCost.text = model.COST.ToString();
+
     #endregion
 }

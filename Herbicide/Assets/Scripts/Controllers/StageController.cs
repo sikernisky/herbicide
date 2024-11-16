@@ -143,7 +143,6 @@ public class StageController : MonoBehaviour
             instance.timeSinceLastStage += Time.deltaTime;
             instance.intermissionTimerBarFill.transform.localScale = new Vector3(0, 1, 1);
         }
-
     }
 
     /// <summary>
@@ -179,7 +178,11 @@ public class StageController : MonoBehaviour
     /// last stage began. </returns> 
     public static float GetTimeSinceLastStageBegan() => instance.timeSinceLastStage;
 
-
+    /// <summary>
+    /// Returns true if an intermission is currently active; otherwise, false.
+    /// </summary>
+    /// <returns>true if an intermission is currently active; otherwise, false. </returns>
+    public static bool IsIntermissionActive() => instance.isActiveIntermission;
 
     #endregion
 }

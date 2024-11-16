@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -38,6 +39,18 @@ public class TutorialLevelBehaviourController : LevelBehaviourController
     private List<ShopSlot> shopSlots;
 
     /// <summary>
+    /// The text component that displays the tutorial text.
+    /// </summary>
+    [SerializeField]
+    private TMP_Text tutorialText;
+
+    /// <summary>
+    /// The background image for the tutorial text.
+    /// </summary>
+    [SerializeField]
+    private Image tutorialTextBackground;
+
+    /// <summary>
     /// The dark color to pulse the shop cards to.
     /// </summary>
     private Color32 pulseDarkColor => new Color32(100, 100, 100, 255);
@@ -56,15 +69,25 @@ public class TutorialLevelBehaviourController : LevelBehaviourController
     /// </summary>
     protected override void InitializeLevelBehaviorEvents()
     {
-        AddSequentialEvent(new LevelBehaviourEvent(
+        AddDynamicEvent(new LevelBehaviourEvent(
             () => DidPurchaseShopCard(),
             () => OnPurchaseShopCard(),
             false));
 
-        AddSequentialEvent(new LevelBehaviourEvent(
+        AddDynamicEvent(new LevelBehaviourEvent(
             () => DidPlaceDefender(),
             () => OnPlaceDefender(),
             false));
+
+        AddSequentialEvent(new LevelBehaviourEvent(
+            () => IsInFirstIntermission(),
+            () => OnFirstIntermission(),
+            true));
+
+        AddSequentialEvent(new LevelBehaviourEvent(
+            () => DidCompleteFirstIntermission(),
+            () => OnCompleteFirstIntermission(),
+            true));
 
         pulseShop = true;
     }
@@ -144,6 +167,21 @@ public class TutorialLevelBehaviourController : LevelBehaviourController
     /// otherwise, false.</returns>
     private bool DidPlaceDefender() => ControllerManager.NumPlacedDefenders() > 0;
 
+    /// <summary>
+    /// Returns true if the player is entering the first intermission,
+    /// which happens after the morning stage.
+    /// </summary>
+    /// <returns>true if the player is entering the first intermission;
+    /// otherwise, false.</returns>
+    private bool IsInFirstIntermission() => StageController.IsIntermissionActive();
+
+    /// <summary>
+    /// Returns true if the player has completed the first intermission.
+    /// </summary>
+    /// <returns>true if the player has completed the first intermission;
+    /// otherwise, false.</returns>
+    private bool DidCompleteFirstIntermission() => !StageController.IsIntermissionActive();
+
     #endregion
 
     #region Event Consequences
@@ -155,6 +193,9 @@ public class TutorialLevelBehaviourController : LevelBehaviourController
     {
         pulseShop = false;
         pulseTrees = true;
+        tutorialTextBackground.enabled = true;
+        tutorialText.enabled = true;
+        tutorialText.text = "Place the Defender on a Tree to protect the eggplant!";
     }
 
     /// <summary>
@@ -164,6 +205,29 @@ public class TutorialLevelBehaviourController : LevelBehaviourController
     {
         pulseTrees = false;
         ControllerManager.SetColorOfAllTrees(this, pulseLightColor);
+        tutorialText.text = "";
+        tutorialText.enabled = false;
+        tutorialTextBackground.enabled = false;
+    }
+
+    /// <summary>
+    /// Called when the player enters the first intermission.
+    /// </summary>
+    private void OnFirstIntermission()
+    {
+        tutorialText.enabled = true;
+        tutorialTextBackground.enabled = true;
+        tutorialText.text = "You've made it to the first intermission!";
+    }
+
+    /// <summary>
+    /// Called when the player completes the first intermission.
+    /// </summary>
+    private void OnCompleteFirstIntermission()
+    {
+        tutorialText.text = "";
+        tutorialText.enabled = false;
+        tutorialTextBackground.enabled = false;
     }
 
     #endregion  

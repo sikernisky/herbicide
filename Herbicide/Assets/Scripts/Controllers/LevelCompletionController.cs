@@ -241,10 +241,10 @@ public class LevelCompletionController : MonoBehaviour
             yield return MoveToPositionAndFade(progressTrack.transform, postUpgradePosition.position, MOVE_TIME, progressTrackGroup, FADE_TIME, false);
         }
         upgrading = false;
-        yield return new WaitForSeconds(0.5f);
+        //yield return new WaitForSeconds(0.5f);
         completionState = CompletionState.PROGRESS_TRACKS_UPDATED;
-        CloseLevelCompletionPanel();
-        SceneController.LoadNextLevelWithFadeDelay();
+        //CloseLevelCompletionPanel();
+        //SceneController.LoadNextLevelWithFadeDelay();
         yield return null;
     }
 
@@ -345,7 +345,7 @@ public class LevelCompletionController : MonoBehaviour
     public void ClickLevelCompleteNextButton()
     {
         if (!LevelCompletePanelOpen()) OpenLevelCompletePanel();
-
+        Debug.Log(completionState);
         switch (completionState)
         {
             case CompletionState.INITIAL_RESULT:
@@ -365,11 +365,12 @@ public class LevelCompletionController : MonoBehaviour
                 }
                 break;
             case CompletionState.PROGRESS_TRACKS_UPDATING:
-                completionState = CompletionState.PROGRESS_TRACKS_UPDATED;
                 CloseLevelCompletionPanel();
                 SceneController.LoadNextLevelWithFadeDelay();
                 break;
             case CompletionState.PROGRESS_TRACKS_UPDATED:
+                CloseLevelCompletionPanel();
+                SceneController.LoadNextLevelWithFadeDelay();
                 break;
         }
     }

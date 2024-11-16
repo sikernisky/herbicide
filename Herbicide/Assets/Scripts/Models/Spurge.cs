@@ -50,6 +50,11 @@ public class Spurge : Enemy
     public override float MAX_MAIN_ACTION_SPEED => float.MaxValue;
 
     /// <summary>
+    /// Starting main action animation duration of a Spurge.
+    /// </summary>
+    public override float BASE_MAIN_ACTION_ANIMATION_DURATION => .25f;
+
+    /// <summary>
     /// Starting attack range of a Spurge.
     /// </summary>
     public override float BASE_MAIN_ACTION_RANGE => 1f;
@@ -80,16 +85,9 @@ public class Spurge : Enemy
     public override float MIN_CHASE_RANGE => float.MinValue;
 
     /// <summary>
-    /// How many seconds a Spurge's move animation lasts,
-    /// from start to finish. 
+    /// Starting movement animation duration of a Spurge.
     /// </summary>
-    public float MOVE_ANIMATION_DURATION => .4f;
-
-    /// <summary>
-    /// How many seconds a Spurge's attack animation lasts,
-    /// from start to finish. 
-    /// </summary>
-    public float ATTACK_ANIMATION_DURATION => .25f;
+    public override float BASE_MOVEMENT_ANIMATION_DURATION => 0.4f;
 
     /// <summary>
     /// How many seconds a Spurge's idle animation lasts,

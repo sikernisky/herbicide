@@ -18,7 +18,7 @@ public static class ModelTypeHelper {
         { ModelType.BEAR, new List<StageOfDay> { StageOfDay.MORNING, StageOfDay.NOON, StageOfDay.EVENING, StageOfDay.NIGHT } },
         { ModelType.BUNNY, new List<StageOfDay> { StageOfDay.MORNING, StageOfDay.NOON, StageOfDay.EVENING, StageOfDay.NIGHT } },
         { ModelType.PORCUPINE, new List<StageOfDay> { StageOfDay.MORNING, StageOfDay.NOON, StageOfDay.EVENING, StageOfDay.NIGHT } },
-        { ModelType.RACCOON, new List<StageOfDay> { StageOfDay.EVENING, StageOfDay.NIGHT } },
+        { ModelType.RACCOON, new List<StageOfDay> { StageOfDay.MORNING, StageOfDay.NOON, StageOfDay.EVENING, StageOfDay.NIGHT } },
         { ModelType.OWL, new List<StageOfDay> { StageOfDay.MORNING, StageOfDay.EVENING, StageOfDay.NIGHT } }
     };
 

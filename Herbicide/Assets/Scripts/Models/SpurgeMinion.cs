@@ -49,6 +49,11 @@ public class SpurgeMinion : Enemy
     public override float MAX_MAIN_ACTION_SPEED => float.MaxValue;
 
     /// <summary>
+    /// Starting main action animation duration of a SpurgeMinion.
+    /// </summary>
+    public override float BASE_MAIN_ACTION_ANIMATION_DURATION => .25f;
+
+    /// <summary>
     /// Starting attack range of a SpurgeMinion.
     /// </summary>
     public override float BASE_MAIN_ACTION_RANGE => 1f;
@@ -79,16 +84,9 @@ public class SpurgeMinion : Enemy
     public override float MIN_CHASE_RANGE => float.MinValue;
 
     /// <summary>
-    /// How many seconds a SpurgeMinion's move animation lasts,
-    /// from start to finish. 
+    /// Starting movement animation duration of a SpurgeMinion.
     /// </summary>
-    public float MOVE_ANIMATION_DURATION => .4f;
-
-    /// <summary>
-    /// How many seconds a SpurgeMinion's attack animation lasts,
-    /// from start to finish. 
-    /// </summary>
-    public float ATTACK_ANIMATION_DURATION => .25f;
+    public override float BASE_MOVEMENT_ANIMATION_DURATION => 0.4f;
 
     /// <summary>
     /// How many seconds a SpurgeMinion's idle animation lasts,

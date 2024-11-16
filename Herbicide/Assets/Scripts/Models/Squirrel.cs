@@ -105,7 +105,7 @@ public class Squirrel : Defender
     /// How many seconds a Squirrel's attack animation lasts,
     /// from start to finish. 
     /// </summary>
-    public float ATTACK_ANIMATION_DURATION => .25f;
+    public override float BASE_MAIN_ACTION_ANIMATION_DURATION => .25f;
 
     /// <summary>
     /// How many seconds a Squirrel's idle animation lasts,

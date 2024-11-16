@@ -66,6 +66,7 @@ public class CollectionManager : MonoBehaviour
             UnlockModel(ModelType.BUNNY);
             UnlockModel(ModelType.RACCOON);
             UnlockModel(ModelType.OWL);
+            UnlockModel(ModelType.PORCUPINE);
             UnlockCombinations();
             ShopManager.UnlockReroll();
         }

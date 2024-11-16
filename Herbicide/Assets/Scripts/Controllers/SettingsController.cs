@@ -108,7 +108,7 @@ public class SettingsController : MonoBehaviour
     /// <summary>
     /// Closes the settings menu.
     /// </summary>
-    private void CloseSettingsMenu() => settingsMenu.SetActiveRecursively(false);
+    public void CloseSettingsMenu() => settingsMenu.SetActiveRecursively(false);
 
     /// <summary>
     /// Returns true if the settings menu is open; false otherwise.

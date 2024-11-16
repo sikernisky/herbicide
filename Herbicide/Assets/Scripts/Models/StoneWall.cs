@@ -42,6 +42,11 @@ public class StoneWall : Wall
     public override float MAX_MAIN_ACTION_SPEED => float.MaxValue;
 
     /// <summary>
+    /// Starting main action animation duration of a StoneWall.
+    /// </summary>
+    public override float BASE_MAIN_ACTION_ANIMATION_DURATION => 0f;
+
+    /// <summary>
     /// Starting chase range of a StoneWall.
     /// </summary>
     public override float BASE_CHASE_RANGE => float.MaxValue;
@@ -70,6 +75,11 @@ public class StoneWall : Wall
     /// Minimum movement speed of a StoneWall.
     /// </summary>
     public override float MIN_MOVEMENT_SPEED => 0f;
+
+    /// <summary>
+    /// Starting movement animation duration of a StoneWall.
+    /// </summary>
+    public override float BASE_MOVEMENT_ANIMATION_DURATION => 0;
 
     #endregion
 

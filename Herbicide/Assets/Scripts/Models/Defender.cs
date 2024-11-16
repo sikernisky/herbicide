@@ -56,6 +56,11 @@ public abstract class Defender : Mob
     /// </summary>
     public static readonly int MIN_TIER = 1;
 
+    /// <summary>
+    /// Starting movement animation duration of a Defender.
+    /// </summary>
+    public override float BASE_MOVEMENT_ANIMATION_DURATION => 0;
+
     #endregion
 
     #region Methods

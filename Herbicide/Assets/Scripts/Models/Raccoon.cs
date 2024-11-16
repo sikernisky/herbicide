@@ -48,6 +48,11 @@ public class Raccoon : Defender
     public override float BASE_CHASE_RANGE => BASE_MAIN_ACTION_RANGE;
 
     /// <summary>
+    /// Starting main action animation duration of a Raccoon.
+    /// </summary>
+    public override float BASE_MAIN_ACTION_ANIMATION_DURATION => .2f;
+
+    /// <summary>
     /// Maximum chase range of a Raccoon.
     /// </summary>
     public override float MAX_CHASE_RANGE => MAX_MAIN_ACTION_RANGE;
@@ -86,12 +91,6 @@ public class Raccoon : Defender
     /// Smallest health value a Raccoon can have.
     /// </summary>
     public override float MIN_HEALTH => 0f;
-
-    /// <summary>
-    /// How many seconds a Raccoon's attack animation lasts,
-    /// from start to finish. 
-    /// </summary>
-    public float ATTACK_ANIMATION_DURATION => .2f;
 
     /// <summary>
     /// How many seconds a Raccoon's idle animation lasts,

@@ -47,13 +47,13 @@ public class ShopSlot : MonoBehaviour
         if (occupant != null) Destroy(occupant.gameObject);
         occupant = null;
 
-        // TODO: put logic for positioning the card.
         RectTransform cardTransform = shopCard.GetCardTransform();
         cardTransform.SetParent(transform);
         cardTransform.localScale = Vector3.one;
         cardTransform.localPosition = Vector3.zero;
 
         occupant = shopCard;
+        occupant.RefreshCostText();
     }
 
     /// <summary>

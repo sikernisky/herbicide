@@ -83,7 +83,7 @@ public abstract class LevelBehaviourController : MonoBehaviour
     /// Runs through each dynamic LevelBehaviourEvent and checks
     /// whether the event's condition has been met. If the condition
     /// has been met, the event's action is executed and the event
-    /// is possibly removed from the list of dynamic events.
+    /// is removed from the list of dynamic events.
     /// </summary>
     private void ProcessDynamicEvents()
     {

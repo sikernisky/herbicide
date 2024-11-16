@@ -303,7 +303,7 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
         if (GetState() != SpurgeState.ENTERING) return;
 
         GetSpurge().SetEntering(GetSpurge().GetSpawnWorldPosition());
-        SetNextAnimation(GetSpurge().MOVE_ANIMATION_DURATION, EnemyFactory.GetSpawnTrack(
+        SetNextAnimation(GetSpurge().GetMovementAnimationDuration(), EnemyFactory.GetSpawnTrack(
             GetSpurge().TYPE, GetSpurge().GetDirection(), GetSpurge().GetHealthState()));
 
         PopOutOfMovePos(NexusHoleSpawnPos(GetSpurge().GetSpawnWorldPosition()));
@@ -340,7 +340,7 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
     {
         if (GetState() != SpurgeState.CHASE) return;
 
-        SetNextAnimation(GetSpurge().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
+        SetNextAnimation(GetSpurge().GetMovementAnimationDuration(), EnemyFactory.GetMovementTrack(
             GetSpurge().TYPE,
             GetSpurge().GetDirection(), GetSpurge().GetHealthState()));
 
@@ -365,7 +365,7 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
     {
         if (GetState() != SpurgeState.PROTECT) return;
 
-        SetNextAnimation(GetSpurge().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
+        SetNextAnimation(GetSpurge().GetMovementAnimationDuration(), EnemyFactory.GetMovementTrack(
             GetSpurge().TYPE,
                        GetSpurge().GetDirection(), GetSpurge().GetHealthState()));
 
@@ -387,7 +387,7 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
     {
         if (GetState() != SpurgeState.ATTACK) return;
 
-        SetNextAnimation(GetSpurge().ATTACK_ANIMATION_DURATION, EnemyFactory.GetAttackTrack(
+        SetNextAnimation(GetSpurge().GetMainActionAnimationDuration(), EnemyFactory.GetAttackTrack(
                 GetSpurge().TYPE,
                        GetSpurge().GetDirection(), GetSpurge().GetHealthState()));
 
@@ -412,7 +412,7 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
         if (!ValidModel()) return;
         if (GetTarget() == null) return;
 
-        SetNextAnimation(GetSpurge().MOVE_ANIMATION_DURATION, EnemyFactory.GetMovementTrack(
+        SetNextAnimation(GetSpurge().GetMovementAnimationDuration(), EnemyFactory.GetMovementTrack(
             GetSpurge().TYPE,
                                   GetSpurge().GetDirection(), GetSpurge().GetHealthState()));
 

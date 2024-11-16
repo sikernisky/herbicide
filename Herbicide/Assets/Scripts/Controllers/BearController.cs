@@ -181,7 +181,7 @@ public class BearController : DefenderController<BearController.BearState>
 
         FaceTarget();
 
-        SetNextAnimation(GetBear().ATTACK_ANIMATION_DURATION,
+        SetNextAnimation(GetBear().GetMainActionAnimationDuration(),
         DefenderFactory.GetMainActionTrack(ModelType.BEAR, GetBear().GetDirection(), GetBear().GetTier()));
 
         if (!CanPerformMainAction()) return;

@@ -63,6 +63,11 @@ public class Bear : Defender
     public override float MAX_MAIN_ACTION_SPEED => float.MaxValue;
 
     /// <summary>
+    /// Starting main action animation duration of a Bear.
+    /// </summary>
+    public override float BASE_MAIN_ACTION_ANIMATION_DURATION => .25f;
+
+    /// <summary>
     /// Starting chase range of a Bear.
     /// </summary>
     public override float BASE_CHASE_RANGE => BASE_MAIN_ACTION_RANGE;
@@ -111,12 +116,6 @@ public class Bear : Defender
     /// ModelType of a Bear.
     /// </summary>
     public override ModelType TYPE => ModelType.BEAR;
-
-    /// <summary>
-    /// How many seconds a Bear's attack animation lasts,
-    /// from start to finish. 
-    /// </summary>
-    public float ATTACK_ANIMATION_DURATION => .25f;
 
     /// <summary>
     /// How many seconds a Bear's idle animation lasts,

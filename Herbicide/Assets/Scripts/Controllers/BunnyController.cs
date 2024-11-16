@@ -179,7 +179,7 @@ public class BunnyController : DefenderController<BunnyController.BunnyState>
         DewController dewController = new DewController(dewComp, spawnPosition, dewValue);
         ControllerManager.AddModelController(dewController);
 
-        SetNextAnimation(GetBunny().GENERATION_ANIMATION_DURATION,
+        SetNextAnimation(GetBunny().GetMainActionAnimationDuration(),
             DefenderFactory.GetIdleTrack(
             ModelType.BUNNY, GetBunny().GetDirection(), GetBunny().GetTier()));
 

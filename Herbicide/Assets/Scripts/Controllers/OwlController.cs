@@ -91,7 +91,7 @@ public class OwlController : DefenderController<OwlController.OwlState>
             Enemy target = GetTarget() as Enemy;
             if (target == null || !target.Targetable()) yield break; // Invalid target.
 
-            SetNextAnimation(GetOwl().ATTACK_ANIMATION_DURATION / numIceChunks,
+            SetNextAnimation(GetOwl().GetMainActionAnimationDuration() / numIceChunks,
                 DefenderFactory.GetIdleTrack(
                     ModelType.OWL,
                     GetOwl().GetDirection(), GetOwl().GetTier()));

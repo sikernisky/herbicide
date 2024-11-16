@@ -19,12 +19,7 @@ public class ShopManager : MonoBehaviour
     /// Prefab of the shop when it has two slots.
     /// </summary>
     [SerializeField]
-    private ShopController shopTwoSlots;
-
-    /// <summary>
-    /// The currently active shop.
-    /// </summary>
-    private ShopController activeShop;
+    private ShopController shop;
 
     /// <summary>
     /// The delegate to subscribe to the BuyModelDelegate.
@@ -72,7 +67,7 @@ public class ShopManager : MonoBehaviour
     public static void UnlockReroll()
     {
         instance.isRerollUnlocked = true;
-        instance.activeShop.SetRerollEnabled(true);
+        instance.shop.SetRerollEnabled(true);
     }
 
     /// <summary>
@@ -87,31 +82,23 @@ public class ShopManager : MonoBehaviour
         isRerollUnlocked = shopSaveData.isRerollUnlocked;
 
         List<ModelType> starterModels = new List<ModelType>();
-        shopTwoSlots.gameObject.SetActive(true);
-        activeShop = shopTwoSlots;
-        int slotsToInitialize;
+        shop.gameObject.SetActive(true);
+        int slotsToInitialize = 5;
         switch (level)
         {
             case 0:
-                slotsToInitialize = 2;
                 break;
             case 1:
-                slotsToInitialize = 3;
                 break;
             case 2: 
-                slotsToInitialize = 4;
                 starterModels.Add(ModelType.BUNNY);
                 starterModels.Add(ModelType.SQUIRREL);
                 break;
             case 3:
-                slotsToInitialize = 5;
-                shopTwoSlots.gameObject.SetActive(true);
-                activeShop = shopTwoSlots;
                 starterModels.Add(ModelType.BUNNY);
                 starterModels.Add(ModelType.SQUIRREL);
                 break;
             case 4:
-                slotsToInitialize = 5;
                 starterModels.Add(ModelType.BUNNY);
                 starterModels.Add(ModelType.SQUIRREL);
                 starterModels.Add(ModelType.OWL);
@@ -121,9 +108,9 @@ public class ShopManager : MonoBehaviour
                 break;
         }
 
-        activeShop.InitializeShop(instance, starterModels, slotsToInitialize);
-        activeShop.SubscribeToBuyDefenderDelegate(handlerToSubscribe);
-        if (isRerollUnlocked) activeShop.SetRerollEnabled(true);
+        shop.InitializeShop(instance, starterModels, slotsToInitialize);
+        shop.SubscribeToBuyDefenderDelegate(handlerToSubscribe);
+        if (isRerollUnlocked) shop.SetRerollEnabled(true);
     }
 
     /// <summary>
@@ -142,7 +129,7 @@ public class ShopManager : MonoBehaviour
     /// <param name="gameState">The most recent game state. </param>
     public static void UpdateShopManager(GameState gameState)
     {
-        instance.activeShop.UpdateShop(gameState);
+        instance.shop.UpdateShop(gameState);
     }
 
     /// <summary>
