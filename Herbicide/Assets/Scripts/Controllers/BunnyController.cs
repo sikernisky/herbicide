@@ -178,6 +178,7 @@ public class BunnyController : DefenderController<BunnyController.BunnyState>
         Vector3 spawnPosition = GetBunny().GetTreePosition() + new Vector3(randomPositionWithinCircle.x, randomPositionWithinCircle.y, 0);
         DewController dewController = new DewController(dewComp, spawnPosition, dewValue);
         ControllerManager.AddModelController(dewController);
+        CollectionManager.AddModelUpgradePoints(ModelType.BUNNY, 1);
 
         SetNextAnimation(GetBunny().GetMainActionAnimationDuration(),
             DefenderFactory.GetIdleTrack(

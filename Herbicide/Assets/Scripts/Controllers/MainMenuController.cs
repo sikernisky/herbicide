@@ -27,6 +27,9 @@ public class MainMenuController : MonoBehaviour
         //(1) Instantiate all factories and singletons
         SetSingleton();
         MakeSingletons();
+
+        // temp
+        SaveLoadManager.WipeCurrentSave();
     }
 
     /// <summary>
@@ -67,6 +70,7 @@ public class MainMenuController : MonoBehaviour
         Assert.IsNotNull(instance, "MainMenuController singleton not set: call " +
             " SetSingleton()");
 
+        SaveLoadManager.SetSingleton(instance);
         SceneController.SetSingleton(instance);
         CameraController.SetSingleton(instance);
         CanvasController.SetSingleton(instance);

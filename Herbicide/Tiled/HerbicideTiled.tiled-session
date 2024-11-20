@@ -47,8 +47,8 @@
         },
         "Tilemaps/btd.tmx": {
             "expandedObjectLayers": [
-                13,
-                16
+                16,
+                13
             ],
             "scale": 4,
             "selectedLayer": 5,
@@ -143,8 +143,8 @@
             "scale": 0.75,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 213.99999999999994,
-                "y": 542.6666666666667
+                "x": 344.66666666666663,
+                "y": 311.99999999999994
             }
         },
         "Tilemaps/level0.tmx#Enemies": {
@@ -186,14 +186,14 @@
         },
         "Tilemaps/level1.tmx": {
             "expandedObjectLayers": [
-                13,
-                16
+                16,
+                13
             ],
             "scale": 1,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 322.5,
-                "y": 367
+                "x": 321.5,
+                "y": 366
             }
         },
         "Tilemaps/level1.tmx#Enemies": {
@@ -227,15 +227,15 @@
         },
         "Tilemaps/level2.tmx": {
             "expandedObjectLayers": [
-                15,
+                16,
                 13,
-                16
+                15
             ],
             "scale": 0.75,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 305.99999999999994,
-                "y": 481.33333333333326
+                "x": 344.66666666666663,
+                "y": 311.99999999999994
             }
         },
         "Tilemaps/level2.tmx#Enemies": {
@@ -261,15 +261,15 @@
         },
         "Tilemaps/level3.tmx": {
             "expandedObjectLayers": [
-                15,
+                16,
                 13,
-                16
+                15
             ],
             "scale": 0.75,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 100.66666666666663,
-                "y": 447.99999999999994
+                "x": 99.33333333333326,
+                "y": 445.33333333333326
             }
         },
         "Tilemaps/level3.tmx#Enemies": {
@@ -295,15 +295,15 @@
         },
         "Tilemaps/level4.tmx": {
             "expandedObjectLayers": [
-                15,
+                16,
                 13,
-                16
+                15
             ],
-            "scale": 2,
+            "scale": 1,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 93.25,
-                "y": 119
+                "x": 202.5,
+                "y": 251
             }
         },
         "Tilemaps/level4.tmx#Enemies": {
@@ -331,11 +331,11 @@
             "expandedObjectLayers": [
                 16
             ],
-            "scale": 1,
-            "selectedLayer": 0,
+            "scale": 3,
+            "selectedLayer": 5,
             "viewCenter": {
-                "x": 476.5,
-                "y": 332
+                "x": 356.16666666666663,
+                "y": 292
             }
         },
         "Tilemaps/level5.tmx#Enemies": {
@@ -363,11 +363,11 @@
             "expandedObjectLayers": [
                 13
             ],
-            "scale": 1.5,
+            "scale": 3,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 643,
-                "y": 439.33333333333337
+                "x": 336.8333333333333,
+                "y": 340.3333333333333
             }
         },
         "Tilemaps/level6.tmx#Enemies": {

@@ -103,6 +103,7 @@ public class OwlController : DefenderController<OwlController.OwlState>
             Vector3 targetPosition = GetTarget().GetAttackPosition();
             IceChunkController iceChunkController = new IceChunkController(iceChunkComp, GetOwl().GetPosition(), targetPosition);
             ControllerManager.AddModelController(iceChunkController);
+            CollectionManager.AddModelUpgradePoints(ModelType.OWL, 1);
 
             if (i < numIceChunks - 1) // Wait for the delay between shots unless it's the last one
             {

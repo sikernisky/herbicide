@@ -187,7 +187,7 @@ public class LevelCompletionController : MonoBehaviour
     private void LoadUpgradeQueue()
     {
         orderedUpgradeSaveData = new List<ModelUpgradeSaveData>();
-        List<ModelType> unlockedModels = CollectionManager.GetAllUnlockedModelTypes(); 
+        HashSet<ModelType> unlockedModels = CollectionManager.GetAllUnlockedModelTypes(); 
         foreach(ModelType unlockedModel in unlockedModels)
         {
             orderedUpgradeSaveData.Add(CollectionManager.GetUnlockedModelUpgradeSaveData(unlockedModel));

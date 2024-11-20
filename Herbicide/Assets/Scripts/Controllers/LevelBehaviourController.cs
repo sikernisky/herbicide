@@ -87,11 +87,13 @@ public abstract class LevelBehaviourController : MonoBehaviour
     /// </summary>
     private void ProcessDynamicEvents()
     {
-        foreach(LevelBehaviourEvent levelBehaviourEvent in dynamicEvents)
+        for (int i = dynamicEvents.Count - 1; i >= 0; i--)
         {
-            if(levelBehaviourEvent.Condition())
+            LevelBehaviourEvent levelBehaviourEvent = dynamicEvents[i];
+            if (levelBehaviourEvent.Condition())
             {
                 levelBehaviourEvent.Action();
+                dynamicEvents.RemoveAt(i);
             }
         }
     }

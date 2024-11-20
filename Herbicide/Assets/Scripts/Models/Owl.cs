@@ -106,7 +106,7 @@ public class Owl : Defender
     /// <summary>
     /// Cost of a Owl.
     /// </summary>
-    public override int COST => 75;
+    public override int COST => 100;
 
     #endregion
 

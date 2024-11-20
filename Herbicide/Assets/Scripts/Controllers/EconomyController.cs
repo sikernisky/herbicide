@@ -233,7 +233,7 @@ public class EconomyController : MonoBehaviour
                 currencies.Add(ModelType.SPEED_TREE_SEED, 0);
                 break;
             default:
-                currencies.Add(ModelType.DEW, 100);
+                currencies.Add(ModelType.DEW, 75);
                 currencies.Add(ModelType.BASIC_TREE_SEED, 0);
                 currencies.Add(ModelType.SPEED_TREE_SEED, 0);
                 break;
