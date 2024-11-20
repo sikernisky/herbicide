@@ -324,7 +324,8 @@
     <property name="enemySpawnData">kudzu0-5, kudzu0-15,
 kudzu1-5, kudzu1-15,	kudzu1-30,kudzu1-40,
 kudzu2-5, kudzu2-15, kudzu2-25,	kudzu2-40, kudzu2-50, kudzu2-58, kudzu2-64
-kudzu3-5, kudzu3-15, kudzu3-20, kudzu3-25	kudzu3-35, kudzu3-44, kudzu3-50,kudzu3-55,	kudzu3-65, kudzu3-70, kudzu3-75, kudzu3-80</property>
+kudzu3-5, kudzu3-15, kudzu3-20, kudzu3-25	kudzu3-35, kudzu3-44, kudzu3-50,kudzu3-55
+</property>
     <property name="markerName" value="enemySpawn"/>
    </properties>
   </object>

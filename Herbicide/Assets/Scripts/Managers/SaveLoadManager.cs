@@ -64,6 +64,21 @@ public class SaveLoadManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Finds and sets the MainMenuController singleton for a level. Loads
+    /// the PlayerData from the computer.
+    /// </summary>
+    /// <param name="mainMenuController">The MainMenuController singleton.</param>
+    public static void SetSingleton(MainMenuController mainMenuController)
+    {
+        if (mainMenuController == null) return;
+
+        SaveLoadManager[] saveLoadManagers = FindObjectsOfType<SaveLoadManager>();
+        Assert.IsNotNull(saveLoadManagers, "Array of SettingsControllers is null.");
+        Assert.AreEqual(1, saveLoadManagers.Length);
+        instance = saveLoadManagers[0];
+    }
+
+    /// <summary>
     /// Invokes other classes' save methods so that they save to the
     /// current PlayerData. Then, saves the current PlayerData to the save path.
     /// </summary>

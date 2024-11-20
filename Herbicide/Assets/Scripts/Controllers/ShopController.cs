@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
@@ -36,6 +37,12 @@ public class ShopController : MonoBehaviour
     /// </summary>
     [SerializeField]
     private Button rerollButton;
+
+    /// <summary>
+    /// Reference to the Reroll button's TextMeshPro component.
+    /// </summary>
+    [SerializeField]
+    private TMP_Text rerollText;
 
     /// <summary>
     /// true if the reroll feature is enabled; false otherwise.
@@ -107,8 +114,16 @@ public class ShopController : MonoBehaviour
         // Enable / Disable reroll button depending on balance
         if (rerollEnabled)
         {
-            if (EconomyController.GetBalance(ModelType.DEW) < REROLL_COST) rerollButton.interactable = false;
-            else rerollButton.interactable = true;
+            if (EconomyController.GetBalance(ModelType.DEW) < REROLL_COST)
+            {
+                rerollButton.interactable = false;
+                rerollText.color = new Color32(100, 100, 100, 255);
+            }
+            else
+            {
+                rerollButton.interactable = true;
+                rerollText.color = new Color32(255, 255, 255, 255);
+            }
         }
 
         // Update reroll timer
@@ -164,7 +179,7 @@ public class ShopController : MonoBehaviour
     private List<ModelType> GetUpdatedCardPool()
     {
         HashSet<ModelType> shopCardsToLoad = new HashSet<ModelType>();
-        List<ModelType> unlockedModelTypes = CollectionManager.GetAllUnlockedModelTypes();
+        List<ModelType> unlockedModelTypes = new List<ModelType>(CollectionManager.GetAllUnlockedModelTypes());
         unlockedModelTypes.ForEach(umt => shopCardsToLoad.Add(umt));
 
         // Remove any ModelTypes that can't be purchased during the current stage
@@ -187,6 +202,8 @@ public class ShopController : MonoBehaviour
     {
         rerollEnabled = active;
         rerollButton.interactable = active;
+        if(active) rerollText.color = new Color32(255, 255, 255, 255);
+        else rerollText.color = new Color32(100, 100, 100, 255);
     }
 
     /// <summary>

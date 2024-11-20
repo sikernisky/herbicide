@@ -175,6 +175,8 @@ public class RaccoonController : DefenderController<RaccoonController.RaccoonSta
                 }
             }
 
+            CollectionManager.AddModelUpgradePoints(ModelType.RACCOON, 1);
+
             if (i < numBerries - 1) // Wait for the delay between shots unless it's the last one
             {
                 yield return new WaitForSeconds(delayBetweenBlackberries);

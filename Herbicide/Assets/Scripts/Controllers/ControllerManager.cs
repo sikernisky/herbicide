@@ -417,6 +417,25 @@ public class ControllerManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Sets the color of all Nexii in the scene. This method is
+    /// called by the TutorialLevelBehaviourController.
+    /// </summary>
+    /// <param name="tutorialLevelBehaviourController">the TutorialLevelBehaviourController singleton</param>
+    /// <param name="color">the color to set to</param>
+    public static void SetColorOfAllNexii(TutorialLevelBehaviourController tutorialLevelBehaviourController, Color32 color)
+    {
+        Assert.IsNotNull(tutorialLevelBehaviourController, "TutorialLevelBehaviourController is null.");
+
+        List<ModelController> nexusControllers = instance.structureControllers.Where(sc => sc.GetModel().TYPE == ModelType.NEXUS).ToList();
+        foreach (ModelController sc in nexusControllers)
+        {
+            NexusController nc = sc as NexusController;
+            Assert.IsNotNull(nc, "BasicTreeController is null.");
+            nc.GetModel().SetColor(color);
+        }
+    }
+
+    /// <summary>
     /// Returns true if the LevelReward has been collected; otherwise, false.
     /// </summary>
     /// <returns>true if the LevelReward has been collected; otherwise, false.</returns>

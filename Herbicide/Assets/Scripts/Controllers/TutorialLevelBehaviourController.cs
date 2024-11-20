@@ -22,6 +22,11 @@ public class TutorialLevelBehaviourController : LevelBehaviourController
     private bool pulseTrees;
 
     /// <summary>
+    /// true if the nexii should pulse; otherwise, false.
+    /// </summary>
+    private bool pulseNexii;
+
+    /// <summary>
     /// The amount of time it takes for the shop to pulse from
     /// light to dark and back again.
     /// </summary>
@@ -31,6 +36,22 @@ public class TutorialLevelBehaviourController : LevelBehaviourController
     /// Keeps track of the time between pulses.
     /// </summary>
     private float pulseTimer;
+
+    /// <summary>
+    /// The amount of time that has elapsed since the evening text
+    /// displayed.
+    /// </summary>
+    private float eveningTextTimeElapsed;
+
+    /// <summary>
+    /// true if the evening text timer should be updated; otherwise, false.
+    /// </summary>
+    private bool updateEveningTextTimer;
+
+    /// <summary>
+    /// The number of seconds the evening text should display for.
+    /// </summary>
+    private float eveningTextDisplayTime => 10.0f;
 
     /// <summary>
     /// The ShopSlots to manipulate in the scene.
@@ -79,6 +100,11 @@ public class TutorialLevelBehaviourController : LevelBehaviourController
             () => OnPlaceDefender(),
             false));
 
+        AddDynamicEvent(new LevelBehaviourEvent(
+            () => IsInEveningStage(),
+            () => OnEnterEveningStage(),
+            false));
+
         AddSequentialEvent(new LevelBehaviourEvent(
             () => IsInFirstIntermission(),
             () => OnFirstIntermission(),
@@ -90,6 +116,7 @@ public class TutorialLevelBehaviourController : LevelBehaviourController
             true));
 
         pulseShop = true;
+        tutorialTextBackground.gameObject.SetActive(true);
     }
 
     /// <summary>
@@ -99,6 +126,8 @@ public class TutorialLevelBehaviourController : LevelBehaviourController
     {
         if(pulseShop) PulseShop();
         if(pulseTrees) PulseTrees();
+        if(pulseNexii) PulseNexii();
+        if(updateEveningTextTimer) UpdateEveningTextTimer();
     }
 
     /// <summary>
@@ -129,9 +158,7 @@ public class TutorialLevelBehaviourController : LevelBehaviourController
 
     /// <summary>
     /// Darkens all Trees over a set interval,
-    /// then lightens them back up. Repeats this process
-    /// as long as the player has purchased but not placed
-    /// their first Defender.
+    /// then lightens them back up.
     /// </summary>
     private void PulseTrees()
     {
@@ -147,7 +174,42 @@ public class TutorialLevelBehaviourController : LevelBehaviourController
         if (pulseTimer > pulseTime) pulseTimer = 0;
         else pulseTimer += Time.deltaTime;
     }
-    
+
+    /// <summary>
+    /// Darkens all Nexii over a set interval,
+    /// then lightens them back up.
+    private void PulseNexii()
+    {
+        if (pulseTimer < pulseTime / 2)
+        {
+            ControllerManager.SetColorOfAllNexii(this, Color.Lerp(pulseLightColor, pulseDarkColor, pulseTimer / (pulseTime / 2)));
+        }
+        else
+        {
+            ControllerManager.SetColorOfAllNexii(this, Color.Lerp(pulseDarkColor, pulseLightColor, (pulseTimer - pulseTime / 2) / (pulseTime / 2)));
+        }
+
+        if (pulseTimer > pulseTime) pulseTimer = 0;
+        else pulseTimer += Time.deltaTime;
+    }
+
+    /// <summary>
+    /// Updates the evening text timer.
+    /// </summary>
+    private void UpdateEveningTextTimer()
+    {
+        if (updateEveningTextTimer)
+        {
+            eveningTextTimeElapsed += Time.deltaTime;
+            if (eveningTextTimeElapsed > eveningTextDisplayTime)
+            {
+                tutorialText.text = "";
+                tutorialText.enabled = false;
+                tutorialTextBackground.enabled = false;
+                updateEveningTextTimer = false;
+            }
+        }
+    }
 
     #endregion
 
@@ -182,6 +244,13 @@ public class TutorialLevelBehaviourController : LevelBehaviourController
     /// otherwise, false.</returns>
     private bool DidCompleteFirstIntermission() => !StageController.IsIntermissionActive();
 
+    /// <summary>
+    /// Returns true if the current stage is the evening stage.
+    /// </summary>
+    /// <returns>true if the current stage is the evening stage;
+    /// otherwise, false.</returns>
+    private bool IsInEveningStage() => StageController.GetCurrentStage() == StageController.StageOfDay.EVENING;
+
     #endregion
 
     #region Event Consequences
@@ -195,7 +264,7 @@ public class TutorialLevelBehaviourController : LevelBehaviourController
         pulseTrees = true;
         tutorialTextBackground.enabled = true;
         tutorialText.enabled = true;
-        tutorialText.text = "Place the Defender on a Tree to protect the eggplant!";
+        tutorialText.text = "Place the Defender on a Tree to protect your eggplant!";
     }
 
     /// <summary>
@@ -215,9 +284,10 @@ public class TutorialLevelBehaviourController : LevelBehaviourController
     /// </summary>
     private void OnFirstIntermission()
     {
+        pulseNexii = true;
         tutorialText.enabled = true;
         tutorialTextBackground.enabled = true;
-        tutorialText.text = "You've made it to the first intermission!";
+        tutorialText.text = "Keep your eggplant safe through the night to win !";
     }
 
     /// <summary>
@@ -225,9 +295,22 @@ public class TutorialLevelBehaviourController : LevelBehaviourController
     /// </summary>
     private void OnCompleteFirstIntermission()
     {
+        pulseNexii = false;
         tutorialText.text = "";
         tutorialText.enabled = false;
         tutorialTextBackground.enabled = false;
+        ControllerManager.SetColorOfAllNexii(this, pulseLightColor);
+    }
+
+    /// <summary>
+    /// Called when the player enters the evening stage.
+    /// </summary>
+    private void OnEnterEveningStage()
+    {
+        updateEveningTextTimer = true;
+        tutorialText.enabled = true;
+        tutorialTextBackground.enabled = true;
+        tutorialText.text = "Your talent pool shows new Defenders if you wait long enough!";
     }
 
     #endregion  

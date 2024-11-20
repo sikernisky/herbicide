@@ -474,7 +474,7 @@
                         {
                          "name":"enemySpawnData",
                          "type":"string",
-                         "value":"kudzu0-5, kudzu0-15,\nkudzu1-5, kudzu1-15,\tkudzu1-30,kudzu1-40,\nkudzu2-5, kudzu2-15, kudzu2-25,\tkudzu2-40, kudzu2-50, kudzu2-58, kudzu2-64\nkudzu3-5, kudzu3-15, kudzu3-20, kudzu3-25\tkudzu3-35, kudzu3-44, kudzu3-50,kudzu3-55,\tkudzu3-65, kudzu3-70, kudzu3-75, kudzu3-80"
+                         "value":"kudzu0-5, kudzu0-15,\nkudzu1-5, kudzu1-15,\tkudzu1-30,kudzu1-40,\nkudzu2-5, kudzu2-15, kudzu2-25,\tkudzu2-40, kudzu2-50, kudzu2-58, kudzu2-64\nkudzu3-5, kudzu3-15, kudzu3-20, kudzu3-25\tkudzu3-35, kudzu3-44, kudzu3-50,kudzu3-55\n"
                         }, 
                         {
                          "name":"markerName",

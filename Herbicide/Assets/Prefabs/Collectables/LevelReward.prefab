@@ -262,12 +262,12 @@ MonoBehaviour:
   shadowRenderer: {fileID: 8508223146317799375}
   bunnyRewardSprite: {fileID: 21300000, guid: 698d01965cfd29544bb56ceeaa89683e, type: 3}
   bunnyRewardSpriteShadow: {fileID: 21300000, guid: c03702ff9c8779d478d38e120e6b5064, type: 3}
-  raccoonRewardSprite: {fileID: 21300000, guid: 8e42119209fceba47a36e27e432d7614, type: 3}
-  raccoonRewardSpriteShadow: {fileID: 21300000, guid: d932bc73f70b20441ace4eaff5367847, type: 3}
-  owlRewardSprite: {fileID: 21300000, guid: 5eaac2e10a10e13468df6bf23797775a, type: 3}
-  owlRewardSpriteShadow: {fileID: 21300000, guid: 549ed6ff43e6a3d478dd90de5ea13dd7, type: 3}
-  porcupineRewardSprite: {fileID: 21300000, guid: afe7c032c21a91f4a9464d90670a2507, type: 3}
-  porcupineRewardSpriteShadow: {fileID: 21300000, guid: 8d2690955f0c5bf41be8e78d0e37c150, type: 3}
+  raccoonRewardSprite: {fileID: 21300000, guid: e8b974c92a4e2f440b6441b32873a588, type: 3}
+  raccoonRewardSpriteShadow: {fileID: 21300000, guid: 88da4650fa2a19147941bab7301a1bea, type: 3}
+  owlRewardSprite: {fileID: 21300000, guid: c3928153e6f01f94fad4f39fa60ddc10, type: 3}
+  owlRewardSpriteShadow: {fileID: 21300000, guid: bcbf4b6de8809624b849dfeae1f610c9, type: 3}
+  porcupineRewardSprite: {fileID: 21300000, guid: 170997aeff3c05241964fb26782ba11b, type: 3}
+  porcupineRewardSpriteShadow: {fileID: 21300000, guid: 0b3a6485fc9bb4f48adc4493befb16a9, type: 3}
   combinationBadgeRewardSprite: {fileID: 21300000, guid: adaebf51aec00b8488794b4a20904b16, type: 3}
   combinationBadgeRewardSpriteShadow: {fileID: 21300000, guid: 08557f3ad212c104894ba421dfaaf7ee, type: 3}
   rerollBadgeRewardSprite: {fileID: 21300000, guid: adaebf51aec00b8488794b4a20904b16, type: 3}

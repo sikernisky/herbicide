@@ -61,21 +61,22 @@ public class CollectionManager : MonoBehaviour
     /// </summary>
     public static void UpdateCollectionManager()
     {
-        if (InputController.DidKeycodeDown(KeyCode.U))
-        {
-            UnlockModel(ModelType.BUNNY);
-            UnlockModel(ModelType.RACCOON);
-            UnlockModel(ModelType.OWL);
-            UnlockModel(ModelType.PORCUPINE);
-            UnlockCombinations();
-            ShopManager.UnlockReroll();
-        }
-        if (InputController.DidKeycodeDown(KeyCode.B)) UnlockModel(ModelType.BUNNY);
-        if (InputController.DidKeycodeDown(KeyCode.A)) UnlockModel(ModelType.RACCOON);
-        if (InputController.DidKeycodeDown(KeyCode.O)) UnlockModel(ModelType.OWL);
-        if (InputController.DidKeycodeDown(KeyCode.C)) UnlockCombinations();
-        if (InputController.DidKeycodeDown(KeyCode.R)) ShopManager.UnlockReroll();
-        
+        #if UNITY_EDITOR
+            if (InputController.DidKeycodeDown(KeyCode.U))
+            {
+                UnlockModel(ModelType.BUNNY);
+                UnlockModel(ModelType.RACCOON);
+                UnlockModel(ModelType.OWL);
+                UnlockModel(ModelType.PORCUPINE);
+                UnlockCombinations();
+                ShopManager.UnlockReroll();
+            }
+            if (InputController.DidKeycodeDown(KeyCode.B)) UnlockModel(ModelType.BUNNY);
+            if (InputController.DidKeycodeDown(KeyCode.A)) UnlockModel(ModelType.RACCOON);
+            if (InputController.DidKeycodeDown(KeyCode.O)) UnlockModel(ModelType.OWL);
+            if (InputController.DidKeycodeDown(KeyCode.C)) UnlockCombinations();
+            if (InputController.DidKeycodeDown(KeyCode.R)) ShopManager.UnlockReroll();  
+        #endif
     }
 
     /// <summary>
@@ -170,10 +171,14 @@ public class CollectionManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns a list of all unlocked ModelTypes.
+    /// Returns a set of all unlocked ModelTypes.
     /// </summary>
-    /// <returns>a list of all unlocked ModelTypes.</returns>
-    public static List<ModelType> GetAllUnlockedModelTypes() => instance.modelUpgradeSaveData.ConvertAll(data => data.GetModelType());
+    /// <returns>a set of all unlocked ModelTypes.</returns>
+    public static HashSet<ModelType> GetAllUnlockedModelTypes()
+    {
+        List<ModelType> modelTypes = instance.modelUpgradeSaveData.ConvertAll(data => data.GetModelType());
+        return new HashSet<ModelType>(modelTypes);
+    }
 
     /// <summary>
     /// Returns the upgrade data for the given unlocked ModelType.
