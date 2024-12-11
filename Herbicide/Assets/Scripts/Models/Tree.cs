@@ -307,5 +307,43 @@ public abstract class Tree : Mob, ISurface
         }
     }
 
+    /// <summary>
+    /// Displays this Tree's occupant's information using the
+    /// insight manager. Does nothing if this Tree is not occupied.
+    /// If the occupant is an ISurface, passes the event to that ISurface.
+    /// </summary>
+    public void ShowMobOccupantAbility()
+    {
+        if (Occupied())
+        {
+            ISurface occupantSurf = GetOccupant() as ISurface;
+            Mob mobOccupant = GetOccupant() as Mob;
+            if(occupantSurf != null) occupantSurf.ShowMobOccupantAbility();
+            else if (mobOccupant != null) InsightManager.DisplayAbilityOfMob(mobOccupant);
+        }
+    }
+
+    /// <summary>
+    /// Sets the tint of this Tile and all its occupants.
+    /// </summary>
+    /// <param name="tintColor">The tint color to set.</param>
+    public void SetTintOfSurfaceAndAllOccupants(Color32 tintColor)
+    {
+        SetTint(tintColor);
+        if(Occupied()) GetOccupant().SetTint(tintColor);
+    }
+
+    /// <summary>
+    /// Removes the tint of this Tile and all its occupants.
+    /// </summary>
+    public void RemoveTintOfSurfaceAndAllOccupants()
+    {
+        RemoveNonBaseTint();
+        if (Occupied())
+        {
+            GetOccupant().RemoveNonBaseTint();
+        }
+    }
+
     #endregion
 }

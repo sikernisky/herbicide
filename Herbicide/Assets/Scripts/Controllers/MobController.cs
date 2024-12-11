@@ -251,8 +251,6 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     private void AddTarget(Model targetable)
     {
         Assert.IsNotNull(targetable, "Target cannot be null.");
-        Assert.IsTrue(CanTargetOtherModel(targetable), "Not a valid target.");
-
         targets.Add(targetable);
     }
 

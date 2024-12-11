@@ -380,5 +380,53 @@ public abstract class Flooring : Model, ISurface
     /// being placed.</returns>
     public override Sprite[] GetPlacementTrack() => throw new System.NotSupportedException();
 
+    /// <summary>
+    /// Displays this Flooring's occupant's information using the
+    /// insight manager. Does nothing if this Flooring is not occupied.
+    /// If the occupant is an ISurface, passes the event to that ISurface.
+    /// </summary>
+    public void ShowMobOccupantAbility() 
+    {
+        if (Occupied())
+        {
+            ISurface occupantSurf = GetOccupant() as ISurface;
+            if (occupantSurf != null) occupantSurf.ShowMobOccupantAbility();
+        }
+        else
+        {
+            Mob occupantAsMob = GetOccupant() as Mob;
+            if (occupantAsMob != null) InsightManager.DisplayAbilityOfMob(occupantAsMob);
+        }
+    }
+
+    /// <summary>
+    /// Sets the tint of this Tile and all its occupants.
+    /// </summary>
+    /// <param name="tintColor">The tint color to set.</param>
+    public void SetTintOfSurfaceAndAllOccupants(Color32 tintColor)
+    {
+        SetTint(tintColor);
+        if(Occupied())
+        {
+            ISurface occupantSurf = GetOccupant() as ISurface;
+            if (occupantSurf != null) occupantSurf.SetTintOfSurfaceAndAllOccupants(tintColor);
+            else GetOccupant().SetTint(tintColor);
+        }
+    }
+
+    /// <summary>
+    /// Removes the tint of this Tile and all its occupants.
+    /// </summary>
+    public void RemoveTintOfSurfaceAndAllOccupants()
+    {
+        RemoveNonBaseTint();
+        if (Occupied())
+        {
+            ISurface occupantSurf = GetOccupant() as ISurface;
+            if (occupantSurf != null) occupantSurf.RemoveTintOfSurfaceAndAllOccupants();
+            else GetOccupant().RemoveNonBaseTint();
+        }
+    }
+
     #endregion
 }

@@ -42,7 +42,6 @@ public class AcornController : ProjectileController<AcornController.AcornState>
         base(acorn, start, destination) 
     {
         GetAcorn().SetNumSplits(numSplits);
-        GetAcorn().SetNumSplits(0); // temporary for testing
     }
 
     /// <summary>

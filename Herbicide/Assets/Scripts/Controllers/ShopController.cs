@@ -102,14 +102,9 @@ public class ShopController : MonoBehaviour
     {
         if (gameState != GameState.ONGOING) return;
 
-        if (InputController.DidKeycodeDown(KeyCode.S)) { Reroll(false); } // TEMP
-
-        // Check & Handle ShopCard click
-        foreach (ShopSlot shopSlot in shopSlots)
-        {
-            if(!shopSlot.IsEnabled()) continue;
-            if (shopSlot.SlotClicked()) ClickShopSlotButton(shopSlot.GetSlotIndex());
-        }
+        #if UNITY_EDITOR
+        if (InputController.DidKeycodeDown(KeyCode.S)) { Reroll(false); }
+        #endif
 
         // Enable / Disable reroll button depending on balance
         if (rerollEnabled)
@@ -149,14 +144,16 @@ public class ShopController : MonoBehaviour
         if (!shopLoaded)
         {
             SetRerollEnabled(false);
-            EconomyController.SubscribeToBalanceUpdatedDelegate(UpdateShopCardLighting);
+            EconomyController.SubscribeToBalanceUpdatedDelegate(UpdateShopCards);
             numCardsPurchased = 0;
             PlacementController.SubscribeToFinishPlacingDelegate(OnFinishPlacing);
 
             for(int i = 0; i < shopSlots.Count; i++)
             {
                 ShopSlot slotToActivate = shopSlots[i];
-                slotToActivate.SetupSlot(i);
+                Button button = slotToActivate.gameObject.AddComponent<Button>();
+                button.onClick.AddListener(() => ClickShopSlotButton(slotToActivate.GetSlotIndex()));
+                slotToActivate.SetupSlot(i, button);
             }
 
             for (int i = numSlotsToSetActive; i < shopSlots.Count; i++)
@@ -236,7 +233,7 @@ public class ShopController : MonoBehaviour
             cardSlot.Fill(shopCardComp);
         }
 
-        UpdateShopCardLighting();
+        UpdateShopCards();
 
         timeSinceLastReroll = AUTOMATIC_REROLL_TIME;
         shopActive = true;
@@ -276,19 +273,34 @@ public class ShopController : MonoBehaviour
     /// <summary>
     /// Called when the player finishes placing a Model.
     /// </summary>
-    private void OnFinishPlacing(Model m) => Assert.IsNotNull(m, "Placed model is null.");
+    private void OnFinishPlacing(Model m)
+    {
+        Assert.IsNotNull(m, "Placed model is null.");
+        UpdateShopCards();
+    }
 
     /// <summary>
     /// Iterates through the ShopSlots and darkens the ones the player
     /// cannot afford. Lightens the ones they can.
     /// </summary>
-    private void UpdateShopCardLighting()
+    private void UpdateShopCards()
     {
+        // Update the color of the ShopSlots based on the player's balance
         foreach (ShopSlot shopSlot in shopSlots)
         {
             if (shopSlot.Empty()) continue;
             if (!shopSlot.CanBuy(EconomyController.GetBalance(ModelType.DEW))) shopSlot.SetOccupantCardColor(new Color32(100, 100, 100, 255));
             else shopSlot.SetOccupantCardColor(new Color32(255, 255, 255, 255));
+        }
+
+        // Update the combo available text of the ShopSlots based on the current board
+        foreach (ShopSlot shopSlot in shopSlots)
+        {
+            if (shopSlot.Empty()) continue;
+            ModelType modelTypeInSlot = ModelTypeHelper.GetModelTypeFromShopCardModelType(shopSlot.GetModelTypeOfCardInSlot());
+            bool willTriggerCombo = ControllerManager.WillTriggerCombination(modelTypeInSlot); 
+            if(ControllerManager.WillTriggerCombination(modelTypeInSlot)) shopSlot.SetOccupantComboAvailableTextActive(true);
+            else shopSlot.SetOccupantComboAvailableTextActive(false);
         }
     }
 
@@ -370,6 +382,7 @@ public class ShopController : MonoBehaviour
     public void ClickShopSlotButton(int slotIndex)
     {
         Assert.IsTrue(slotIndex >= 0 && slotIndex < shopSlots.Count);
+        InsightManager.StopDisplayingAbility();
         ShopSlot clickedSlot = shopSlots.First(ss => ss.GetSlotIndex() == slotIndex);
         if (clickedSlot.Empty()) return;
         if (PlacementController.IsPlacing()) return;
@@ -386,7 +399,7 @@ public class ShopController : MonoBehaviour
 
         PlacementController.StartPlacingObject(slotModel);
         EconomyController.Withdraw(ModelType.DEW, clickedSlot.Buy(EconomyController.GetBalance(ModelType.DEW)));
-        UpdateShopCardLighting();
+        UpdateShopCards();
 
         // The ControllerManager handles upgrading and combination logic
         OnBuyModel?.Invoke(slotModel);

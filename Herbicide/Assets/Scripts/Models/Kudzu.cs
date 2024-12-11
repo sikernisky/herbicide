@@ -18,6 +18,12 @@ public class Kudzu : Enemy
     public override int COST => 0;
 
     /// <summary>
+    /// The base hop cooldown of a Kudzu. This scales
+    /// proportionally to the Kudzu's modified movement speed.
+    /// </summary>
+    private float BASE_HOP_COOLDOWN => 0.5f;
+
+    /// <summary>
     /// Type of a Kudzu.
     /// </summary>
     public override ModelType TYPE => ModelType.KUDZU;
@@ -25,7 +31,7 @@ public class Kudzu : Enemy
     /// <summary>
     /// Base health of a Kudzu.
     /// </summary>
-    public override float BASE_HEALTH => 40;
+    public override float BASE_HEALTH => 20;
 
     /// <summary>
     /// Upper bound of a Kudzu's health. 
@@ -90,7 +96,7 @@ public class Kudzu : Enemy
     /// <summary>
     /// Starting movement animation duration of a Kudzu.
     /// </summary>
-    public override float BASE_MOVEMENT_ANIMATION_DURATION => 0.4f;
+    public override float BASE_MOVEMENT_ANIMATION_DURATION => 0.2f;
  
     /// <summary>
     /// How many seconds a Kudzu's idle animation lasts,
@@ -101,7 +107,7 @@ public class Kudzu : Enemy
     /// <summary>
     /// Starting movement speed of a Kudzu.
     /// </summary>
-    public override float BASE_MOVEMENT_SPEED => 4f;
+    public override float BASE_MOVEMENT_SPEED => 5f;
 
     /// <summary>
     /// Maximum movement speed of a Kudzu.
@@ -155,11 +161,11 @@ public class Kudzu : Enemy
     /// <returns>the Kudzu's hop cooldown.</returns>
     public float GetHopCooldown()
     {
-        float baseMovementSpeed = BASE_MOVEMENT_SPEED; 
+        float baseMovementSpeed = BASE_MOVEMENT_SPEED;
         float currentMovementSpeed = GetMovementSpeed();
-        float hopCooldownMultiplier = baseMovementSpeed / currentMovementSpeed;
 
-        return baseMovementSpeed * hopCooldownMultiplier;
+        // Scale the cooldown inversely based on speed ratio
+        return BASE_HOP_COOLDOWN * (baseMovementSpeed / currentMovementSpeed);
     }
 
     #endregion

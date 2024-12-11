@@ -100,9 +100,9 @@ public class TileGrid : MonoBehaviour
     private bool debugOn;
 
     /// <summary>
-    /// Tiles that host NexusHoles.
+    /// Tiles and all PlaceableObjects on them.
     /// </summary>
-    private Dictionary<Tile, NexusHole> nexusHoleHosts;
+    private Dictionary<Tile, HashSet<PlaceableObject>> tileObjectMap;
 
     /// <summary>
     /// Total number of enemy spawn markers.
@@ -115,9 +115,9 @@ public class TileGrid : MonoBehaviour
     private int numNexii;
 
     /// <summary>
-    /// All positions of objects in the TileGrid.
+    /// All positions of shore tiles in the TileGrid.
     /// </summary>
-    private List<Vector3> objectPositions;
+    private List<Vector3> shorePositions;
 
     #endregion
 
@@ -147,8 +147,8 @@ public class TileGrid : MonoBehaviour
         instance.tiles = new List<Tile>();
         instance.grassTiles = new HashSet<Tile>();
         instance.edgeTiles = new HashSet<Tile>();
-        instance.nexusHoleHosts = new Dictionary<Tile, NexusHole>();
-        instance.objectPositions = new List<Vector3>();
+        instance.tileObjectMap = new Dictionary<Tile, HashSet<PlaceableObject>>();
+        instance.shorePositions = new List<Vector3>();
     }
 
     /// <summary>
@@ -176,17 +176,19 @@ public class TileGrid : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns the Camera's position at the center of all objects in the TileGrid.
+    /// Returns the Camera's position at the center of the grid. This is calculated by taking
+    /// the top leftmost shore and the bottom rightmost shore and averaging their positions.
     /// </summary>
-    /// <returns>the position for the Camera, that if set to, represents the center</returns>
-    private Vector2 GetCameraPositionAtCenterOfObjects()
+    /// <returns>the position for the Camera, that if set to, represents the center
+    /// of the grid.</returns>
+    private Vector2 GetCameraPositionAtCenterOfGrid()
     {
         float minX = float.MaxValue;
         float maxX = float.MinValue;
         float minY = float.MaxValue;
         float maxY = float.MinValue;
 
-        foreach (Vector2 pos in objectPositions)
+        foreach (Vector2 pos in shorePositions)
         {
             minX = Mathf.Min(minX, pos.x * TILE_SIZE);
             maxX = Mathf.Max(maxX, pos.x * TILE_SIZE);
@@ -197,7 +199,7 @@ public class TileGrid : MonoBehaviour
         float centerXPos = (minX + maxX) / 2f;
         float centerYPos = (minY + maxY) / 2f;
 
-        return new Vector2(centerXPos + TILE_SIZE/2f, centerYPos + TILE_SIZE/2f);
+        return new Vector2(centerXPos + TILE_SIZE/2f, centerYPos - TILE_SIZE/2f);
     }
 
     /// <summary>
@@ -265,6 +267,7 @@ public class TileGrid : MonoBehaviour
         Assert.IsNull(TileExistsAt(t.GetX(), t.GetY()));
         Vector2Int key = new Vector2Int(t.GetX(), t.GetY());
         tileMap.Add(key, t);
+        tileObjectMap.Add(t, new HashSet<PlaceableObject>());
         tiles.Add(t);
         if (t.GetTileType() == Tile.TileType.GRASS) grassTiles.Add(t);
     }
@@ -301,11 +304,11 @@ public class TileGrid : MonoBehaviour
     /// </summary>
     private void CheckTileMouseDown()
     {
-        Tile tile = InputController.TileClickedDown();
+        if (!InputController.DidPrimaryDown()) return;
+        Tile tile = InputController.ModelClickedDown() as Tile;
         if (tile == null) return;
 
         //Tile was clicked down. Put click logic here.
-
     }
 
     /// <summary>
@@ -314,27 +317,35 @@ public class TileGrid : MonoBehaviour
     /// in order:<br><br>
     /// 
     /// (1) Is the player trying to place something on this Tile?
-    /// (2) Is the player trying to use something on this Tile?
+    /// (2) Is the player trying to see information about this Tile's occupant?
     /// </summary>
     private void CheckTileMouseUp()
     {
-        Tile tile = InputController.TileClickedUp();
-        if (tile == null) return;
+        if (!InputController.DidPrimaryUp()) return;
+        Tile tile = InputController.ModelClickedUp() as Tile;
 
-        //(1) and (2): Placing and Using
         if (PlacementController.IsPlacing() && !PlacementController.IsCombining())
         {
             Model placingItem = PlacementController.GetObjectPlacing();
             PlaceableObject itemPlaceable = placingItem as PlaceableObject;
             if (PlaceOnTile(tile, itemPlaceable))
             {
-                //Stop the placement event.
                 PlacementController.StopGhostPlacing();
                 PlacementController.StopPlacingObject();
-                //ShopManager.SetUpgradeMode(false);
             }
-            //TODO: implement (2) in a future sprint.
         }
+        else
+        {
+            Model model = InputController.ModelClickedUp();
+            if (tile != null && tile.Occupied()) tile.ShowMobOccupantAbility();
+            else if(model != null && model as Tile == null)
+            {
+                Tile hostTile = tileObjectMap.FirstOrDefault(x => x.Value != null && x.Value.Contains(model)).Key;
+                if (hostTile != null && hostTile.Occupied()) hostTile.ShowMobOccupantAbility();
+            }
+            else InsightManager.StopDisplayingAbility();
+        }
+
     }
 
     /// <summary>
@@ -343,21 +354,17 @@ public class TileGrid : MonoBehaviour
     /// </summary>
     private void CheckTileMouseEnter()
     {
-        Tile tile = InputController.TileHovered();
-        if (tile == null) return;
-
-        // Tile was hovered over. Put hover logic here.
-        if (PlacementController.IsPlacing())
+        Model model = InputController.ModelHovered();
+        Tile tile = model as Tile;
+        if (tile == null)
         {
-            // Ghost place
-            Model placingSlottable = PlacementController.GetObjectPlacing();
-            PlaceableObject placingPlaceable = placingSlottable as PlaceableObject;
-            if (tile.GhostPlace(placingPlaceable))
+            if (model != null)
             {
-                PlacementController.StartGhostPlacing(tile);
+                Tile hostTile = tileObjectMap.FirstOrDefault(x => x.Value != null && x.Value.Contains(model)).Key;
+                if (hostTile != null) OnMouseEnterTile(hostTile);
             }
         }
-
+        else OnMouseEnterTile(tile);
     }
 
     /// <summary>
@@ -366,11 +373,54 @@ public class TileGrid : MonoBehaviour
     /// </summary>
     private void CheckTileMouseExit()
     {
-        Tile tile = InputController.TileDehovered();
-        if (tile == null) return;
+        Model model = InputController.ModelDehovered();
+        Tile tile = model as Tile;
+        if(tile != null)
+        {
+            bool hoveringAnyPlacedObjectsOnDehoveredTile = false;
+            HashSet<PlaceableObject> placedObjectsOnDehoveredTile = tileObjectMap[tile];
+            foreach (PlaceableObject placedObject in placedObjectsOnDehoveredTile)
+            {
+                if (InputController.IsHoveringModel(placedObject)) hoveringAnyPlacedObjectsOnDehoveredTile = true;
+            }
+            if(hoveringAnyPlacedObjectsOnDehoveredTile) return;
+            OnMouseExitTile(tile);
+        }
+        else if(model != null && model as Tile == null)
+        {
+            Tile hostTile = tileObjectMap.FirstOrDefault(x => x.Value != null && x.Value.Contains(model)).Key;
+            if (hostTile != null && !InputController.IsHoveringModel(hostTile)) OnMouseExitTile(hostTile);
+        }
+    }
 
+    /// <summary>
+    /// Called when the player's mouse exits a Tile. Triggers the Tile's
+    /// dehover event.
+    /// </summary>
+    /// <param name="tile">The Tile that was dehovered.</param>
+    private void OnMouseExitTile(Tile tile)
+    {
         //Tile was dehovered, put logic below
         PlacementController.StopGhostPlacing();
+        tile.RemoveTintOfSurfaceAndAllOccupants();
+    }
+
+    /// <summary>
+    /// Called when the player's mouse enters a Tile. Triggers the Tile's
+    /// hover event.
+    /// </summary>
+    /// <param name="tile">The Tile that was hovered over.</param>
+    private void OnMouseEnterTile(Tile tile)
+    {
+        // Tile was hovered over. Put hover logic here.
+        if (PlacementController.IsPlacing())
+        {
+            // Ghost place
+            Model placingSlottable = PlacementController.GetObjectPlacing();
+            PlaceableObject placingPlaceable = placingSlottable as PlaceableObject;
+            if (tile.GhostPlace(placingPlaceable)) PlacementController.StartGhostPlacing(tile);
+        }
+        else if (tile.IsDefenderOnTile()) tile.SetTintOfSurfaceAndAllOccupants(Color.yellow);
     }
 
     /// <summary>
@@ -378,6 +428,7 @@ public class TileGrid : MonoBehaviour
     /// </summary>
     /// <returns>a read-only list of all Tiles in the TileGrid.</returns>
     public static IReadOnlyList<Tile> GetAllTiles() => instance.tiles.AsReadOnly();
+
     /// <summary>
     /// Returns the GameObject prefab representing a Tile type.
     /// </summary>
@@ -477,15 +528,12 @@ public class TileGrid : MonoBehaviour
         Assert.IsNotNull(target as ISurface);
 
         // If we can't place on the Tile, return.
-        int targetX = target.GetX();
-        int targetY = target.GetY();
         if(!target.CanPlace(candidate, neighbors)) return false;
 
         // Place the candidate.
         target.Place(candidate, instance.GetNeighbors(target));
-
-        NexusHole nexusHoleCandidate = candidate as NexusHole;
-        if (candidate as NexusHole != null) instance.nexusHoleHosts.Add(target, nexusHoleCandidate);
+        if (!instance.tileObjectMap.ContainsKey(target)) instance.tileObjectMap[target] = new HashSet<PlaceableObject>();
+        instance.tileObjectMap[target].Add(candidate);
 
         if (!candidate.OCCUPIER) return true;
         target.SetOccupant(candidate);
@@ -641,7 +689,9 @@ public class TileGrid : MonoBehaviour
         Tile t = instance.TileExistsAt(coordX, coordY);
         Assert.IsNotNull(t);
 
-        return instance.nexusHoleHosts.ContainsKey(t);
+        if (!instance.tileObjectMap.ContainsKey(t)) return false;
+        HashSet<PlaceableObject> placeables = instance.tileObjectMap[t];
+        return placeables.Any(placeable => placeable is NexusHole);
     }
 
     /// <summary>
@@ -758,7 +808,12 @@ public class TileGrid : MonoBehaviour
         data.GetObjectLayers().ForEach(l => SpawnObjectLayer(l, data.GetMapHeight()));
 
         // Assert we have everything we need
-        Assert.IsTrue(instance.nexusHoleHosts.Count > 0, "No NexusHoles found in TileGrid.");
+        int numNexusHoles = 0;
+        foreach (var pair in instance.tileObjectMap)
+        {
+            numNexusHoles += pair.Value.Count(obj => obj is NexusHole);
+        }
+        Assert.IsTrue(numNexusHoles > 0, "No NexusHoles found in TileGrid.");
         Assert.IsTrue(instance.numEnemySpawnMarkers > 0, "No enemy spawn markers found in TileGrid.");
         Assert.IsTrue(instance.numNexii > 0, "No Nexii found in TileGrid.");
 
@@ -767,7 +822,7 @@ public class TileGrid : MonoBehaviour
 
         //Finishing touches
         instance.SetGenerated();
-        return instance.GetCameraPositionAtCenterOfObjects();
+        return instance.GetCameraPositionAtCenterOfGrid();
     }
 
     /// <summary>
@@ -838,7 +893,6 @@ public class TileGrid : MonoBehaviour
                     if (mob as Nexus != null) instance.numNexii++;
                     Vector3 spawnPos = new Vector3(obToSpawn.GetSpawnCoordinates(mapHeight).x, obToSpawn.GetSpawnCoordinates(mapHeight).y, 1);
                     mob.SetSpawnWorldPosition(spawnPos);
-                    instance.objectPositions.Add(spawnPos);
                     Tile targetTile = instance.TileExistsAt(obToSpawn.GetSpawnCoordinates(mapHeight).x, obToSpawn.GetSpawnCoordinates(mapHeight).y);
                     ControllerManager.MakeModelController(mob);
                     PlaceOnTile(targetTile, mob);
@@ -856,7 +910,6 @@ public class TileGrid : MonoBehaviour
                         int y = markToSpawn.GetSpawnCoordinates(mapHeight).y;
                         string unparsedData = markToSpawn.GetEnemySpawnData();
                         enemySpawnMarkers.Add(new Vector2Int(x, y), unparsedData);
-                        instance.objectPositions.Add(new Vector3(x, y, 1));
                         instance.numEnemySpawnMarkers++;
                     }
                 }
@@ -873,7 +926,6 @@ public class TileGrid : MonoBehaviour
                     Assert.IsNotNull(flooring);
                     int flooringX = obToSpawn.GetSpawnCoordinates(mapHeight).x;
                     int flooringY = obToSpawn.GetSpawnCoordinates(mapHeight).y;
-                    instance.objectPositions.Add(new Vector3(flooringX, flooringY, 1));
                     Tile tileOn = instance.TileExistsAt(flooringX, flooringY);
                     Assert.IsNotNull(tileOn);
                     FloorTile(tileOn, flooring);
@@ -1016,6 +1068,7 @@ public class TileGrid : MonoBehaviour
                 Assert.IsNotNull(shore);
                 shore.Define(coords.x, coords.y, tiledId);
                 AddTile(shore);
+                shorePositions.Add(new Vector3(xWorldPos, yWorldPos, 1));
                 break;
             default:
                 throw new System.Exception("Reached default case in MakeEdge().");
@@ -1140,6 +1193,90 @@ public class TileGrid : MonoBehaviour
         // No path found
         PathfindingCache.CacheReachability(xStartCoord, yStartCoord, xGoalCoord, yGoalCoord, false);
         return new Vector3(int.MinValue, int.MinValue, int.MinValue);
+    }
+
+    /// <summary>
+    /// Returns the tile distance between two positions using the pathfinding
+    /// algorithm. This takes into account the actual path cost, which can vary
+    /// based on obstacles and path winding.
+    /// </summary>
+    /// <param name="startPos">The starting position.</param>
+    /// <param name="goalPos">The goal position.</param>
+    /// <returns>
+    /// The tile distance between the two positions, or -1 if no path exists.
+    /// </returns>
+    public static int GetPathfindingTileDistance(Vector3 startPos, Vector3 goalPos)
+    {
+        // Convert positions to coordinates
+        int xStartCoord = PositionToCoordinate(startPos.x);
+        int yStartCoord = PositionToCoordinate(startPos.y);
+        int xGoalCoord = PositionToCoordinate(goalPos.x);
+        int yGoalCoord = PositionToCoordinate(goalPos.y);
+
+        if (PathfindingCache.HasCachedDistance(xStartCoord, yStartCoord, xGoalCoord, yGoalCoord))
+        {
+            return PathfindingCache.GetCachedDistance(xStartCoord, yStartCoord, xGoalCoord, yGoalCoord);
+        }
+
+        // Find the corresponding tiles
+        Tile startTile = instance.TileExistsAt(xStartCoord, yStartCoord);
+        Tile goalTile = instance.TileExistsAt(xGoalCoord, yGoalCoord);
+
+        if (startTile == null || goalTile == null) return -1; // No valid path
+        if (startTile == goalTile) return 0; // Same tile
+
+        // Initialize data structures
+        List<Tile> openList = new List<Tile> { startTile };
+        HashSet<Tile> closedList = new HashSet<Tile>();
+        Dictionary<Tile, Tile> cameFrom = new Dictionary<Tile, Tile>();
+        Dictionary<Tile, int> gScore = new Dictionary<Tile, int> { { startTile, 0 } };
+
+        while (openList.Count > 0)
+        {
+            // Find the tile in the open list with the lowest gScore
+            Tile current = openList.OrderBy(tile => gScore[tile]).First();
+
+            if (current == goalTile)
+            {
+                // Path found, return the cost
+                int distance = gScore[goalTile];
+                PathfindingCache.CacheDistance(xStartCoord, yStartCoord, xGoalCoord, yGoalCoord, distance);
+                return gScore[goalTile];
+            }
+
+            openList.Remove(current);
+            closedList.Add(current);
+
+            foreach (Tile neighbor in instance.GetNeighbors(current))
+            {
+                if (neighbor == null || closedList.Contains(neighbor)) continue;
+
+                // Skip non-walkable tiles unless it's the goal
+                if (neighbor != goalTile && !neighbor.IsWalkable())
+                {
+                    closedList.Add(neighbor);
+                    continue;
+                }
+
+                int tentativeGScore = gScore[current] + 1; // Distance to the neighbor is always 1 tile
+
+                if (!openList.Contains(neighbor))
+                {
+                    openList.Add(neighbor);
+                }
+                else if (tentativeGScore >= gScore[neighbor])
+                {
+                    continue;
+                }
+
+                // Update path information
+                cameFrom[neighbor] = current;
+                gScore[neighbor] = tentativeGScore;
+            }
+        }
+
+        PathfindingCache.CacheDistance(xStartCoord, yStartCoord, xGoalCoord, yGoalCoord, -1);
+        return -1;
     }
 
     /// <summary>

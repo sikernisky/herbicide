@@ -23,6 +23,11 @@ public class CameraController : MonoBehaviour
     /// </summary>
     private int level;
 
+    /// <summary>
+    /// The number of pixels per unit in the game.
+    /// </summary>
+    public static int PIXELS_PER_UNIT => 16;
+
     #endregion
 
     #region Methods
@@ -118,12 +123,6 @@ public class CameraController : MonoBehaviour
 /*        switch (level)
         {
             case 0:
-                camera.orthographicSize = 8.5f;
-                break;
-            case 1:
-                camera.orthographicSize = 8.5f;
-                break;
-            case 2:
                 camera.orthographicSize = 8.5f;
                 break;
             default:

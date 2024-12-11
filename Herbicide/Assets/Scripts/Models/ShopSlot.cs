@@ -21,6 +21,11 @@ public class ShopSlot : MonoBehaviour
     private ShopCard occupant;
 
     /// <summary>
+    /// The button on this ShopSlot.
+    /// </summary>
+    private Button button;
+
+    /// <summary>
     /// true if the ShopManager has initialized this ShopSlot; otherwise, false.
     /// </summary>
     private bool setupByManager;
@@ -46,14 +51,18 @@ public class ShopSlot : MonoBehaviour
 
         if (occupant != null) Destroy(occupant.gameObject);
         occupant = null;
-
-        RectTransform cardTransform = shopCard.GetCardTransform();
+        occupant = shopCard;
+        RectTransform cardTransform = occupant.GetCardTransform();
         cardTransform.SetParent(transform);
         cardTransform.localScale = Vector3.one;
         cardTransform.localPosition = Vector3.zero;
-
-        occupant = shopCard;
         occupant.RefreshCostText();
+
+        ColorBlock buttonColors = button.colors;
+        buttonColors.normalColor = new Color32(255, 255, 255, 255);
+        buttonColors.highlightedColor = new Color32(200, 200, 200, 255);
+        button.colors = buttonColors;
+        button.targetGraphic = occupant.GetCardBackgroundImage();
     }
 
     /// <summary>
@@ -79,12 +88,14 @@ public class ShopSlot : MonoBehaviour
     /// can function in the scene.
     /// </summary>
     /// <param name="slotIndex">The unique index of this ShopSlot.</param>
-    public void SetupSlot(int slotIndex)
+    /// <param name="button">The button on this ShopSlot.</param>
+    public void SetupSlot(int slotIndex, Button button)
     {
         Assert.IsFalse(IsSetup());
 
         EnableSlot();
         this.slotIndex = slotIndex;
+        this.button = button;
         setupByManager = true;
     }
 
@@ -141,17 +152,6 @@ public class ShopSlot : MonoBehaviour
     public int GetSlotIndex() => slotIndex;
 
     /// <summary>
-    /// Returns true if the player clicked on this ShopSlot.
-    /// </summary>
-    /// <returns>true if the player clicked on this ShopSlot;
-    /// otherwise, false. /// </returns>
-    public bool SlotClicked()
-    {
-        if (Empty()) return false;
-        return occupant.ClickedOn();
-    }
-
-    /// <summary>
     /// Returns true if this ShopSlot has been purchased and hosts
     /// no ShopCard.
     /// </summary>
@@ -167,6 +167,18 @@ public class ShopSlot : MonoBehaviour
     {
         Assert.IsFalse(Empty());
         occupant.SetCardColor(color);
+    }
+
+    /// <summary>
+    /// Sets the active status of the ShopCard occupant's combo
+    /// available text.
+    /// </summary>
+    /// <param name="active">true if the combo available text should be active;
+    /// otherwise, false.</param>
+    public void SetOccupantComboAvailableTextActive(bool active)
+    {
+        Assert.IsFalse(Empty());
+        occupant.SetComboAvailableTextActive(active);
     }
 
     /// <summary>

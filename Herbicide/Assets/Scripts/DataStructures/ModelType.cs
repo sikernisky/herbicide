@@ -9,7 +9,6 @@ public enum ModelType
     BEAR,
     BLACKBERRY,
     BUNNY,
-    COMBINATION_BADGE,
     DEW,
     EMANATION,
     GRASS_TILE,

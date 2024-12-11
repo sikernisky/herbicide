@@ -341,19 +341,6 @@ public class ControllerManager : MonoBehaviour
     /// on some Tree; otherwise, false.</returns>
     public static bool IsSpaceForModelOnSomeTree(ModelType modelType)
     {
-        // We only need to check for space if the combination is not unlocked
-        if (!CollectionManager.IsCombinationUnlocked())
-        {
-            foreach (ModelController treeController in instance.treeControllers)
-            {
-                if (!treeController.ValidModel()) continue;
-                Tree tree = treeController.GetModel() as Tree;
-                if (tree == null) continue;
-                if (!tree.Occupied()) return true;
-            }
-            return false;
-        }
-
         int defendersOfSameTypeAndTier = 0;
         foreach (ModelController treeController in instance.treeControllers)
         {
@@ -375,6 +362,34 @@ public class ControllerManager : MonoBehaviour
                 if (defendersOfSameTypeAndTier == 2) return true;
             }
         }
+        return false;
+    }
+
+    /// <summary>
+    /// Returns true if purchasing a defender of the given type will trigger a combination.
+    /// Assumes the defender has a tier of 1.
+    /// </summary>
+    /// <param name="modelType">The type of defender to check.</param>
+    /// <returns>true if purchasing this defender triggers a combination; otherwise, false.</returns>
+    public static bool WillTriggerCombination(ModelType modelType)
+    {
+        int defendersOfSameTypeAndTier = 0;
+        foreach (ModelController treeController in instance.treeControllers)
+        {
+            if (!treeController.ValidModel()) continue;
+            Tree tree = treeController.GetModel() as Tree;
+            if (tree == null) continue;
+            if (!tree.Occupied()) continue;
+            Defender defender = tree.GetOccupant() as Defender;
+            if (defender == null) continue;
+
+            if (defender.TYPE == modelType && defender.GetTier() == 1)
+            {
+                defendersOfSameTypeAndTier++;
+                if (defendersOfSameTypeAndTier == 2) return true;
+            }
+        }
+
         return false;
     }
 
@@ -595,11 +610,8 @@ public class ControllerManager : MonoBehaviour
 
         // Create the model controller for the newly purchased model
         MakeModelController(purchasedModel);
-
         Defender purchasedDefender = purchasedModel as Defender;
         if(purchasedDefender == null) return;
-
-        if(!CollectionManager.IsCombinationUnlocked()) return;
         StartCoroutine(CheckAndCombineDefenders(purchasedDefender));
     }
     
@@ -658,8 +670,8 @@ public class ControllerManager : MonoBehaviour
         Assert.IsNotNull(newDefenderOb);
         Defender newDefenderComp = newDefenderOb.GetComponent<Defender>();
         Assert.IsNotNull(newDefenderComp);
-        while(newDefenderComp.GetTier() < newTier) newDefenderComp.Upgrade();
         ModelController modelController = MakeModelController(newDefenderComp);
+        while (newDefenderComp.GetTier() < newTier) newDefenderComp.Upgrade();
         List<Model> combinedDefenderModels = combinedDefenders.Cast<Model>().ToList(); 
         modelController.AquireStatsOfCombiningModels(combinedDefenderModels);
 

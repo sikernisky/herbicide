@@ -18,7 +18,7 @@ public class PlacementController : MonoBehaviour
     /// <summary>
     /// Color an Image turns when placing.
     /// </summary>
-    private static readonly Color32 PLACE_COLOR = new Color32(255, 255, 255, 200);
+    private static readonly Color32 DEFAULT_PLACE_COLOR = new Color32(255, 255, 255, 200);
 
     /// <summary>
     /// Dummy GameObject for placement events
@@ -178,8 +178,8 @@ public class PlacementController : MonoBehaviour
         Vector3 placementDimensionsConv = new Vector3(placementDimensions.x, placementDimensions.y, 1);
 
         instance.dummy.SetActive(true);
+        instance.dummyImage.color = DEFAULT_PLACE_COLOR;
         instance.dummyImage.sprite = m.GetPlacementTrack()[0]; // TODO: Animation
-        instance.dummyImage.color = PLACE_COLOR;
         instance.dummyImage.rectTransform.sizeDelta = placementDimensionsConv;
         instance.placing = true;
         instance.subject = m;
@@ -257,7 +257,7 @@ public class PlacementController : MonoBehaviour
         Assert.IsNotNull(instance.ghostSubject);
         Assert.IsNotNull(instance.dummyImage);
 
-        instance.dummyImage.color = PLACE_COLOR;
+        instance.dummyImage.color = DEFAULT_PLACE_COLOR;
         instance.ghostSubject.GhostRemove();
         instance.ghostSubject = null;
     }
@@ -292,7 +292,7 @@ public class PlacementController : MonoBehaviour
             instance.combinationDummies[i].transform.position = initialPositions[i];
             instance.combinationDummyImages[i].rectTransform.sizeDelta = dummySizes[i];
             instance.combinationDummyImages[i].sprite = combinationSprites[i];
-            instance.combinationDummyImages[i].color = PLACE_COLOR;
+            instance.combinationDummyImages[i].color = DEFAULT_PLACE_COLOR;
             instance.combinationStartTimes[i] = Time.time;
         }
 

@@ -84,6 +84,11 @@ public abstract class Model : MonoBehaviour
     /// </summary>
     private Color32 baseColor;
 
+    /// <summary>
+    /// The current base tint of this Model.
+    /// </summary>
+    private Color32 baseTint;
+
     #endregion
 
     #region Stats
@@ -177,13 +182,7 @@ public abstract class Model : MonoBehaviour
     /// Sets this Model's SpriteRenderer's color.
     /// </summary>
     /// <param name="color">the color to set to.</param>
-    public virtual void SetColor(Color32 newColor) => modelRenderer.color = modelRenderer != null ? newColor : modelRenderer.color;
-
-    /// <summary>
-    /// Returns this Model's base color.
-    /// </summary>
-    /// <returns>this Model's SpriteRenderer's color. </returns>
-    public Color GetColor() => modelRenderer.color;
+    public virtual void SetColor(Color32 newColor) => modelRenderer.color = newColor;
 
     /// <summary>
     /// Sets this Model's base color.
@@ -196,6 +195,43 @@ public abstract class Model : MonoBehaviour
     /// </summary>
     /// <returns>this model's base color. </returns>
     public Color GetBaseColor() => baseColor;
+
+    /// <summary>
+    /// Sets the tint of the Model's SpriteRenderer component over its
+    /// current tint. 
+    /// </summary>
+    /// <param name="tintColor">the color of the tint to apply.</param>
+    public void SetTint(Color32 tintColor)
+    {
+        MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
+        modelRenderer.GetPropertyBlock(propertyBlock);
+        Color32 combinedTint = new Color32(
+            (byte)(tintColor.r * baseTint.r / 255),
+            (byte)(tintColor.g * baseTint.g / 255),
+            (byte)(tintColor.b * baseTint.b / 255),
+            (byte)(tintColor.a * baseTint.a / 255));
+        propertyBlock.SetColor("_Color", combinedTint);
+        modelRenderer.SetPropertyBlock(propertyBlock);
+    }
+
+    /// <summary>
+    /// Sets the tint of the Model's SpriteRenderer component to its base
+    /// tint.
+    /// </summary>
+    public void RemoveNonBaseTint()
+    {
+        MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
+        modelRenderer.GetPropertyBlock(propertyBlock);
+        propertyBlock.SetColor("_Color", baseTint);
+        modelRenderer.SetPropertyBlock(propertyBlock);
+    }
+
+    /// <summary>
+    /// Sets the tint of the Model's SpriteRenderer component to its
+    /// base tint. Defines the base tint of the Model.
+    /// </summary>
+    /// <param name="tintColor">the color of the tint to apply.</param>
+    public void SetBaseTint(Color32 tintColor) => baseTint = tintColor;
 
     /// <summary>
     /// Sets this Model's SpriteRenderer component's sorting
@@ -372,6 +408,8 @@ public abstract class Model : MonoBehaviour
         OnCollision = null;
         OnProjectileImpact = null;
         SetColor(BASE_COLOR);
+        SetBaseTint(new Color32(255, 255, 255, 255));
+        RemoveNonBaseTint();
     }
 
     /// <summary>

@@ -33,11 +33,6 @@ public class CollectionManager : MonoBehaviour
     /// </summary>
     private Dictionary<ModelType, int> modelUpgradePointsTracker;
 
-    /// <summary>
-    /// true if the combination of Defenders is unlocked; otherwise, false.
-    /// </summary>
-    private bool isCombinationUnlocked;
-
     #endregion
 
     #region Methods
@@ -68,13 +63,11 @@ public class CollectionManager : MonoBehaviour
                 UnlockModel(ModelType.RACCOON);
                 UnlockModel(ModelType.OWL);
                 UnlockModel(ModelType.PORCUPINE);
-                UnlockCombinations();
                 ShopManager.UnlockReroll();
             }
             if (InputController.DidKeycodeDown(KeyCode.B)) UnlockModel(ModelType.BUNNY);
             if (InputController.DidKeycodeDown(KeyCode.A)) UnlockModel(ModelType.RACCOON);
             if (InputController.DidKeycodeDown(KeyCode.O)) UnlockModel(ModelType.OWL);
-            if (InputController.DidKeycodeDown(KeyCode.C)) UnlockCombinations();
             if (InputController.DidKeycodeDown(KeyCode.R)) ShopManager.UnlockReroll();  
         #endif
     }
@@ -192,17 +185,6 @@ public class CollectionManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Unlocks the ability to combine Defenders.
-    /// </summary>
-    public static void UnlockCombinations() => instance.isCombinationUnlocked = true;
-
-    /// <summary>
-    /// Returns true if the ability to combine Defenders is unlocked.
-    /// </summary>
-    /// <returns>true if the ability to combine Defenders is unlocked; otherwise, false.</returns>
-    public static bool IsCombinationUnlocked() => instance.isCombinationUnlocked;
-
-    /// <summary>
     /// Saves the player's collection of Models and their upgrade data.
     /// </summary>
     private void SaveCollectionData()
@@ -210,7 +192,6 @@ public class CollectionManager : MonoBehaviour
         // Pack
         CollectionSaveData collectionSaveData = new CollectionSaveData();
         collectionSaveData.modelSaveData = modelUpgradeSaveData;
-        collectionSaveData.isCombinationUnlocked = isCombinationUnlocked;
 
         // Save
         SaveLoadManager.SaveCollection(instance, collectionSaveData);
@@ -229,7 +210,6 @@ public class CollectionManager : MonoBehaviour
         List<ModelUpgradeSaveData> modelUpgradeSaveData = saveData.modelSaveData;
         if (modelUpgradeSaveData == null) instance.modelUpgradeSaveData = new List<ModelUpgradeSaveData>();
         else instance.modelUpgradeSaveData = saveData.modelSaveData;
-        instance.isCombinationUnlocked = saveData.isCombinationUnlocked;
 
         instance.modelUpgradePointsTracker = new Dictionary<ModelType, int>();
         if (instance.modelUpgradeSaveData == null) instance.modelUpgradeSaveData = new List<ModelUpgradeSaveData>();

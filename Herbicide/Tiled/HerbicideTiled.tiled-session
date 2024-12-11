@@ -3,14 +3,16 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "Tilemaps/level3.tmx",
+    "activeFile": "Tilemaps/level0.tmx",
     "expandedProjectPaths": [
         "Tilemaps",
-        "Tilesets",
         "."
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
+        "": {
+            "scaleInEditor": 8
+        },
         "C:/Users/teddy/OneDrive/Documents/GitHub/herbicide/Herbicide/Assets/Levels/level1.json": {
             "expandedObjectLayers": [
                 15,
@@ -136,15 +138,46 @@
         "Tilemaps/labryinth.tmx#markers": {
             "scaleInDock": 1
         },
-        "Tilemaps/level0.tmx": {
-            "expandedObjectLayers": [
-                16
-            ],
-            "scale": 0.75,
+        "Tilemaps/level0 - Copy.tmx": {
+            "scale": 1.2717296511627907,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 344.66666666666663,
-                "y": 311.99999999999994
+                "x": 343.2333276187211,
+                "y": 311.3869363963655
+            }
+        },
+        "Tilemaps/level0 - Copy.tmx#Enemies": {
+            "scaleInDock": 1
+        },
+        "Tilemaps/level0 - Copy.tmx#Grass": {
+            "scaleInDock": 1
+        },
+        "Tilemaps/level0 - Copy.tmx#Placeables": {
+            "scaleInDock": 1
+        },
+        "Tilemaps/level0 - Copy.tmx#Shore": {
+            "scaleInDock": 1
+        },
+        "Tilemaps/level0 - Copy.tmx#Soil": {
+            "scaleInDock": 1
+        },
+        "Tilemaps/level0 - Copy.tmx#Water": {
+            "scaleInDock": 1
+        },
+        "Tilemaps/level0 - Copy.tmx#markers": {
+            "scaleInDock": 1
+        },
+        "Tilemaps/level0.tmx": {
+            "expandedObjectLayers": [
+                16,
+                15,
+                13
+            ],
+            "scale": 2,
+            "selectedLayer": 5,
+            "viewCenter": {
+                "x": 370.25,
+                "y": 306
             }
         },
         "Tilemaps/level0.tmx#Enemies": {
@@ -187,13 +220,14 @@
         "Tilemaps/level1.tmx": {
             "expandedObjectLayers": [
                 16,
+                15,
                 13
             ],
             "scale": 1,
-            "selectedLayer": 0,
+            "selectedLayer": 4,
             "viewCenter": {
-                "x": 321.5,
-                "y": 366
+                "x": 344.5,
+                "y": 312
             }
         },
         "Tilemaps/level1.tmx#Enemies": {
@@ -227,15 +261,15 @@
         },
         "Tilemaps/level2.tmx": {
             "expandedObjectLayers": [
-                16,
                 13,
+                16,
                 15
             ],
-            "scale": 0.75,
+            "scale": 1,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 344.66666666666663,
-                "y": 311.99999999999994
+                "x": 391.5,
+                "y": 404
             }
         },
         "Tilemaps/level2.tmx#Enemies": {
@@ -262,14 +296,14 @@
         "Tilemaps/level3.tmx": {
             "expandedObjectLayers": [
                 16,
-                13,
-                15
+                15,
+                13
             ],
             "scale": 0.75,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 99.33333333333326,
-                "y": 445.33333333333326
+                "x": 344.66666666666663,
+                "y": 311.99999999999994
             }
         },
         "Tilemaps/level3.tmx#Enemies": {
@@ -296,14 +330,14 @@
         "Tilemaps/level4.tmx": {
             "expandedObjectLayers": [
                 16,
-                13,
-                15
+                15,
+                13
             ],
             "scale": 1,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 202.5,
-                "y": 251
+                "x": 344.5,
+                "y": 312
             }
         },
         "Tilemaps/level4.tmx#Enemies": {
@@ -334,8 +368,8 @@
             "scale": 3,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 356.16666666666663,
-                "y": 292
+                "x": 343.8333333333333,
+                "y": 312
             }
         },
         "Tilemaps/level5.tmx#Enemies": {
@@ -366,8 +400,8 @@
             "scale": 3,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 336.8333333333333,
-                "y": 340.3333333333333
+                "x": 343.8333333333333,
+                "y": 312
             }
         },
         "Tilemaps/level6.tmx#Enemies": {
@@ -418,32 +452,26 @@
     "last.imagePath": "C:/Users/teddy/OneDrive/Desktop/Art/Herbicide Art/TileSets",
     "map.height": 15,
     "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
-    "map.lastUsedFormat": "json",
+    "map.lastUsedFormat": "tmx",
     "map.width": 10,
     "openFiles": [
-        "Tilemaps/level1.tmx",
-        "Tilemaps/btd.tmx",
         "Tilemaps/level0.tmx",
-        "Tilemaps/level4.tmx",
-        "Tilemaps/level5.tmx",
-        "Tilemaps/level6.tmx",
-        "Tilemaps/level2.tmx",
-        "Tilemaps/level3.tmx"
+        "Tilemaps/level1.tmx"
     ],
     "project": "HerbicideTiled.tiled-project",
     "recentFiles": [
         "Tilemaps/level1.tmx",
-        "Tilemaps/btd.tmx",
         "Tilemaps/level0.tmx",
-        "Tilemaps/level4.tmx",
-        "Tilemaps/level5.tmx",
-        "Tilemaps/level6.tmx",
-        "Tilemaps/level2.tmx",
+        "Tilemaps/level0 - Copy.tmx",
         "Tilemaps/level3.tmx",
+        "Tilemaps/level2.tmx",
+        "Tilemaps/level6.tmx",
+        "Tilemaps/level5.tmx",
+        "Tilemaps/level4.tmx",
+        "Tilemaps/btd.tmx",
         "C:/Users/teddy/OneDrive/Documents/GitHub/herbicide/Herbicide/Assets/Levels/level1.json",
         "Tilemaps/level1.tmj",
-        "Tilemaps/level1.json",
-        "Tilesets/Shore.tsx"
+        "Tilemaps/level1.json"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

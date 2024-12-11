@@ -1,3 +1,4 @@
+using UnityEngine;
 /// <summary>
 /// Contract for a model that can host a PlaceableObject. In other
 /// words, a PlaceableObject can be placed on an ISurface.
@@ -109,7 +110,6 @@ public interface ISurface
     /// false. </returns> 
     bool GhostPlace(PlaceableObject ghost);
 
-
     /// <summary>
     /// Determines whether an PlaceableObject object can be potentially placed
     /// on the given ISurface. This method is invoked alongside GhostPlace()
@@ -142,4 +142,21 @@ public interface ISurface
     /// <returns>true if a pathfinder can walk across this ISurface;
     /// otherwise, false. </returns>
     bool IsWalkable();
+
+    /// <summary>
+    /// Displays information about the occupant of this ISurface using
+    /// the InsightManager singleton.
+    /// </summary>
+    void ShowMobOccupantAbility();
+
+    /// <summary>
+    /// Sets the tint of the surface and all occupants on it.
+    /// </summary>
+    /// <param name="tintColor">The color to set the tint to.</param>
+    void SetTintOfSurfaceAndAllOccupants(Color32 tintColor);
+
+    /// <summary>
+    /// Removes the tint of the surface and all occupants on it.
+    /// </summary>
+    void RemoveTintOfSurfaceAndAllOccupants();
 }

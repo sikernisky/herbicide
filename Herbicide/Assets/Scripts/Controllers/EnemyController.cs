@@ -306,66 +306,49 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     }
 
     /// <summary>
-    /// Returns true if a given Nexus is the closest Nexus to the
-    /// Enemy that it can target.
+    /// Returns true if a given Nexus is the closest Nexus of its type to 
+    /// the Nexus controlled by this NexusController.
     /// </summary>
-    /// <param name="nexus">The Nexus to check.</param>
-    /// <returns>true if a given Nexus is the closest Nexus to the
-    /// Enemy that it can target; otherwise, false. </returns>
-    protected bool IsClosestDroppedNexus(Nexus nexus)
+    /// <param name="nexusTarget">The Nexus to check.</param>
+    /// <returns>true if a given Nexus is the closest Nexus of its type to 
+    /// the Nexus controlled by this NexusController; otherwise, false. </returns>
+    protected bool IsClosestTargetableNexusAlongPath(Nexus nexusTarget)
     {
-        Assert.IsNotNull(nexus);
-        if (nexus.CashedIn() || nexus.PickedUp()) return false; 
+        Assert.IsNotNull(nexusTarget);
 
         Nexus closestNexus = null;
-        double minDistance = double.MaxValue;
+        float minDistance = float.MaxValue;
 
-        foreach (Model model in GetAllModels())
+        foreach (Model otherModel in GetAllModels())
         {
-            Nexus nexusObject = model as Nexus;
-            if (nexusObject != null && !nexusObject.CashedIn() && !nexusObject.PickedUp())
+            Nexus otherNexus = otherModel as Nexus;
+            if (otherNexus == null) continue;
+            if (otherNexus == GetModel()) continue;
+            if (!IsValidNexusTarget(otherNexus)) continue;
+
+            float distance = TileGrid.GetPathfindingTileDistance(GetModel().GetPosition(), otherNexus.GetPosition());
+            if (distance < minDistance)
             {
-                double distance = nexusObject.GetDistanceTo(GetEnemy());
-                if (distance < minDistance)
-                {
-                    minDistance = distance;
-                    closestNexus = nexusObject;
-                }
+                minDistance = distance;
+                closestNexus = otherNexus;
             }
         }
-
-        return closestNexus == nexus;
+        return closestNexus == nexusTarget;
     }
 
     /// <summary>
-    /// Returns true if a given NexusHole is the closest NexusHole to the
-    /// Enemy that it can target.
+    /// Returns true if the Enemy controlled by this EnemyController can target
+    /// a given Nexus.
     /// </summary>
-    /// <param name="nexusHole">The NexusHole to check.</param>
-    /// <returns>true if a given NexusHole is the closest NexusHole to the
-    /// Enemy that it can target; otherwise, false. </returns>
-    protected bool IsClosestNexusHole(NexusHole nexusHole)
+    /// <param name="nexusTarget">The Nexus to check.</param>
+    /// <returns>true if the Enemy controlled by this EnemyController can target
+    /// the given Nexus; otherwise, false.</returns>
+    protected bool IsValidNexusTarget(Nexus nexusTarget)
     {
-        Assert.IsNotNull(nexusHole);
-
-        NexusHole closestHole = null;
-        double minDistance = double.MaxValue;
-
-        foreach (Model model in GetAllModels())
-        {
-            NexusHole nexusHoleObject = model as NexusHole;
-            if (nexusHoleObject != null)
-            {
-                double distance = nexusHoleObject.GetDistanceTo(GetEnemy());
-                if (distance < minDistance)
-                {
-                    minDistance = distance;
-                    closestHole = nexusHoleObject;
-                }
-            }
-        }
-
-        return closestHole == nexusHole;
+        return nexusTarget != null
+            && nexusTarget.Targetable()
+            && !nexusTarget.PickedUp()
+            && !nexusTarget.CashedIn();
     }
 
     /// <summary>

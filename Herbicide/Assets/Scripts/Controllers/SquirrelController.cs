@@ -121,7 +121,9 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
             else acornDamage = GetSquirrel().ACORN_DAMAGE_TIER_THREE;
 
             Vector3 targetPosition = GetTarget().GetAttackPosition();
-            int numSplits = GetSquirrel().GetTier() - 1;
+            int numSplits = 0;
+            if (GetSquirrel().GetTier() == 2) numSplits = 1;
+            else if(GetSquirrel().GetTier() == 3) numSplits = int.MaxValue;
             AcornController acornController = new AcornController(acornComp, GetSquirrel().GetPosition(), targetPosition, numSplits);
             acornComp.SetDamage(acornDamage);
 
@@ -173,8 +175,6 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
                 break;
             case SquirrelState.IDLE:
                 if (target == null || !target.Targetable()) break;
-/*                Debug.Log("distance to target: " + DistanceToTargetFromTree());
-                Debug.Log("main action range: " + GetSquirrel().GetMainActionRange());*/
                 if (DistanceToTargetFromTree() <= GetSquirrel().GetMainActionRange() &&
                     GetSquirrel().GetMainActionCooldownRemaining() <= 0) SetState(SquirrelState.ATTACK);
                 break;
@@ -232,11 +232,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         FaceTarget();
         if (!CanPerformMainAction()) return;
 
-        // Calculate the number of acorns to fire based on the Squirrel's tier.
-        int tier = GetSquirrel().GetTier();
         int numAcornsToFire = 1;
-        if (tier == 2) numAcornsToFire = 2;
-        else if (tier >= 3) numAcornsToFire = 4;
         GetSquirrel().StartCoroutine(FireAcorns(numAcornsToFire));
 
         // Reset attack animation.

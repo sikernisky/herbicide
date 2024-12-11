@@ -54,6 +54,12 @@ public abstract class Mob : PlaceableObject
     /// </summary>
     private Vector3 spawnPos;
 
+    /// <summary>
+    /// The default ability this Mob uses.
+    /// </summary>
+    [SerializeField]
+    private Ability defaultAbility;
+
     #endregion
 
     #region Stats
@@ -157,7 +163,6 @@ public abstract class Mob : PlaceableObject
     /// By default, Mobs do not occupy Tiles.
     /// </summary>
     public override bool OCCUPIER => false;
-
 
     #endregion
 
@@ -322,6 +327,12 @@ public abstract class Mob : PlaceableObject
     /// Resets this Mob's movement animation duration to its starting value.
     /// </summary>
     public void ResetMovementAnimationDuration() => movementAnimationDuration = BASE_MOVEMENT_ANIMATION_DURATION;
+
+    /// <summary>
+    /// Returns this Mob's current ability.
+    /// </summary>
+    /// <returns>this Mob's current ability.</returns>
+    public virtual Ability GetAbility() => defaultAbility;
 
     /// <summary>
     /// Resets this Mob's stats to their default values.

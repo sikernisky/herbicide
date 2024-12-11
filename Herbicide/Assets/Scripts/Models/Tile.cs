@@ -21,7 +21,7 @@ public abstract class Tile : Model, ISurface
     }
 
     /// <summary>
-    /// Reference to the LineRenderer for this Tile.
+    /// Reference to the LineRenderer for thihis Tile.
     /// </summary>
     [SerializeField]
     private LineRenderer lineRenderer;
@@ -98,6 +98,7 @@ public abstract class Tile : Model, ISurface
 
         SetTileCoordinates(x, y);
         SetupRangeIndicator();
+        SetBaseTint(Color.white);
         name = type.ToString() + " (" + x + ", " + y + ")";
         defined = true;
     }
@@ -600,6 +601,56 @@ public abstract class Tile : Model, ISurface
     /// Erases the range indicator.
     /// </summary>
     private void EraseRangeIndicator() => lineRenderer.positionCount = 0;
+
+    /// <summary>
+    /// Displays this Tile's occupant's information using the
+    /// insight manager. Does nothing if this Tile is not occupied.
+    /// If the occupant is an ISurface, passes the event to that ISurface.
+    /// </summary>
+    public void ShowMobOccupantAbility()
+    {
+        if(Floored()) GetFlooring().ShowMobOccupantAbility();
+        else
+        {
+            Mob occupantAsMob = GetOccupant() as Mob;
+            if (occupantAsMob != null) InsightManager.DisplayAbilityOfMob(occupantAsMob);
+        }
+    }
+
+    /// <summary>
+    /// Sets the tint of this Tile and all its occupants.
+    /// </summary>
+    /// <param name="tintColor">The tint color to set.</param>
+    public void SetTintOfSurfaceAndAllOccupants(Color32 tintColor)
+    {
+        SetTint(tintColor);
+        if(Occupied()) GetOccupant().SetTint(tintColor);
+        if (Floored()) GetFlooring().SetTintOfSurfaceAndAllOccupants(tintColor);
+    }
+
+    /// <summary>
+    /// Removes the tint of this Tile and all its occupants.
+    /// </summary>
+    public void RemoveTintOfSurfaceAndAllOccupants()
+    {
+        RemoveNonBaseTint();
+        if(Floored()) GetFlooring().RemoveTintOfSurfaceAndAllOccupants();
+        if(Occupied()) GetOccupant().RemoveNonBaseTint();
+    }
+
+    /// <summary>
+    /// Returns true if a Defender is on this Tile or on the Surface on this Tile.
+    /// </summary>
+    /// <returns>true if a Defender is on this Tile or on the Surface on this Tile;
+    /// otherwise, false.</returns>
+    public bool IsDefenderOnTile()
+    {
+        if (GetOccupant() as Defender != null) return true;
+        ISurface surface = GetOccupant() as ISurface;
+        if(surface != null && surface.GetOccupant() as Defender != null) return true;
+
+        return false;
+    }
 
     #endregion
 }

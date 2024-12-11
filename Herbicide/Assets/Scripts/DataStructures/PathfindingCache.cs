@@ -16,6 +16,12 @@ public static class PathfindingCache
     private static Dictionary<(int, int, int, int), bool> reachabilityCache = new Dictionary<(int, int, int, int), bool>();
 
     /// <summary>
+    /// Cache for the distance of a pathfinding call.
+    /// </summary>
+    private static Dictionary<(int, int, int, int), int> distanceCache = new Dictionary<(int, int, int, int), int>();
+
+
+    /// <summary>
     /// Caches the next position of a pathfinding call.
     /// </summary>
     /// <param name="goalX">The x-coordinate of the goal.</param>
@@ -95,5 +101,44 @@ public static class PathfindingCache
     public static bool GetCachedReachability(int startX, int startY, int goalX, int goalY)
     {
         return reachabilityCache[(startX, startY, goalX, goalY)];
+    }
+
+    /// <summary>
+    /// Caches the distance of a pathfinding call.
+    /// </summary>
+    /// <param name="startX">The x-coordinate of the start.</param>
+    /// <param name="startY">The y-coordinate of the start.</param>
+    /// <param name="goalX">The x-coordinate of the goal.</param>
+    /// <param name="goalY">The y-coordinate of the goal.</param>
+    /// <param name="distance">The tile distance of the pathfinding call.</param>
+    public static void CacheDistance(int startX, int startY, int goalX, int goalY, int distance)
+    {
+        distanceCache[(startX, startY, goalX, goalY)] = distance;
+    }
+
+    /// <summary>
+    /// Returns true if the distance of a pathfinding call is cached.
+    /// </summary>
+    /// <param name="startX">The x-coordinate of the start.</param>
+    /// <param name="startY">The y-coordinate of the start.</param>
+    /// <param name="goalX">The x-coordinate of the goal.</param>
+    /// <param name="goalY">The y-coordinate of the goal.</param>
+    /// <returns>true if the distance of a pathfinding call is cached; otherwise, false.</returns>
+    public static bool HasCachedDistance(int startX, int startY, int goalX, int goalY)
+    {
+        return distanceCache.ContainsKey((startX, startY, goalX, goalY));
+    }
+
+    /// <summary>
+    /// Returns the cached distance of a pathfinding call.
+    /// </summary>
+    /// <param name="startX">The x-coordinate of the start.</param>
+    /// <param name="startY">The y-coordinate of the start.</param>
+    /// <param name="goalX">The x-coordinate of the goal.</param>
+    /// <param name="goalY">The y-coordinate of the goal.</param>
+    /// <returns>The cached distance of a pathfinding call.</returns>
+    public static int GetCachedDistance(int startX, int startY, int goalX, int goalY)
+    {
+        return distanceCache[(startX, startY, goalX, goalY)];
     }
 }

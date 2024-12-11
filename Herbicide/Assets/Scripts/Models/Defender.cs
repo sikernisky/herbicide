@@ -92,7 +92,12 @@ public abstract class Defender : Mob
         Assert.IsFalse(tier == MAX_TIER, "Cannot upgrade a Defender that is already at max tier.");
         Assert.IsTrue(tier >= MIN_TIER, "Cannot upgrade a Defender that is at a tier less than 1.");
 
-        if (tier < MAX_TIER) tier++;
+        if (tier < MAX_TIER)
+        {
+            tier++;
+            if(tier == 2) SetBaseTint(Color.cyan);
+            else if(tier == 3) SetBaseTint(Color.magenta);
+        }
         RestartMainActionCooldown();
     }
 

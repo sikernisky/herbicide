@@ -153,7 +153,7 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
             if (nexusHoleTarget == null) return false;
             if (!nexusHoleTarget.Targetable()) return false;
             if (!GetSpurgeMinion().IsExiting() && !TileGrid.CanReach(GetSpurgeMinion().GetPosition(), nexusHoleTarget.GetPosition())) return false;
-            if (!IsClosestNexusHole(nexusHoleTarget)) return false;
+            if (!IsClosestTargetableModelAlongPath(nexusHoleTarget)) return false;
 
             return true;
         }
@@ -165,6 +165,7 @@ public class SpurgeMinionController : EnemyController<SpurgeMinionController.Spu
             if (!nexusTarget.Targetable()) return false;
             if (nexusTarget.PickedUp()) return false;
             if (nexusTarget.CashedIn()) return false;
+            if (!IsClosestTargetableNexusAlongPath(nexusTarget)) return false;
             if (!TileGrid.CanReach(GetSpurgeMinion().GetPosition(), nexusTarget.GetPosition())) return false;
 
             return true;
