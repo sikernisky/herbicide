@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "Tilemaps/level0.tmx",
+    "activeFile": "Tilemaps/level2.tmx",
     "expandedProjectPaths": [
         "Tilemaps",
         "."
@@ -170,14 +170,14 @@
         "Tilemaps/level0.tmx": {
             "expandedObjectLayers": [
                 16,
-                15,
-                13
+                13,
+                15
             ],
             "scale": 2,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 370.25,
-                "y": 306
+                "x": 365,
+                "y": 368.5
             }
         },
         "Tilemaps/level0.tmx#Enemies": {
@@ -220,13 +220,13 @@
         "Tilemaps/level1.tmx": {
             "expandedObjectLayers": [
                 16,
-                15,
-                13
+                13,
+                15
             ],
             "scale": 1,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 344.5,
+                "x": 344,
                 "y": 312
             }
         },
@@ -262,14 +262,14 @@
         "Tilemaps/level2.tmx": {
             "expandedObjectLayers": [
                 13,
-                16,
-                15
+                15,
+                16
             ],
-            "scale": 1,
-            "selectedLayer": 0,
+            "scale": 2,
+            "selectedLayer": 4,
             "viewCenter": {
-                "x": 391.5,
-                "y": 404
+                "x": 320,
+                "y": 341
             }
         },
         "Tilemaps/level2.tmx#Enemies": {
@@ -282,7 +282,7 @@
             "scaleInDock": 1
         },
         "Tilemaps/level2.tmx#Shore": {
-            "scaleInDock": 1
+            "scaleInDock": 3
         },
         "Tilemaps/level2.tmx#Soil": {
             "scaleInDock": 3
@@ -456,15 +456,16 @@
     "map.width": 10,
     "openFiles": [
         "Tilemaps/level0.tmx",
-        "Tilemaps/level1.tmx"
+        "Tilemaps/level1.tmx",
+        "Tilemaps/level2.tmx"
     ],
     "project": "HerbicideTiled.tiled-project",
     "recentFiles": [
-        "Tilemaps/level1.tmx",
         "Tilemaps/level0.tmx",
+        "Tilemaps/level1.tmx",
+        "Tilemaps/level2.tmx",
         "Tilemaps/level0 - Copy.tmx",
         "Tilemaps/level3.tmx",
-        "Tilemaps/level2.tmx",
         "Tilemaps/level6.tmx",
         "Tilemaps/level5.tmx",
         "Tilemaps/level4.tmx",

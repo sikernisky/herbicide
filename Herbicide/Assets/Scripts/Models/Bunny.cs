@@ -54,11 +54,6 @@ public class Bunny : Defender
     public override float MIN_MAIN_ACTION_RANGE => 0f;
 
     /// <summary>
-    /// Starting generation speed of a Bunny.
-    /// </summary>
-    public override float BASE_MAIN_ACTION_SPEED => .045f;
-
-    /// <summary>
     /// Maximum generation speed of a Bunny.
     /// </summary>
     public override float MAX_MAIN_ACTION_SPEED => float.MaxValue;
@@ -140,12 +135,32 @@ public class Bunny : Defender
     public override Vector2Int GetPlacementTrackDimensions() => new Vector2Int(25, 32);
 
     /// <summary>
-    /// Called when this Bunny activates in the scene.
+    /// Called when this Bunny activates in the scene. Overriden because we
+    /// need to wait for the first generation by restarting the main action cooldown.
     /// </summary>
     public override void OnSpawn()
     {
         base.OnSpawn();
-        RestartMainActionCooldown(); // Need to wait for the first generation.
+        RestartMainActionCooldown();
+    }
+
+    /// <summary>
+    /// Returns the Bunny's base main action speed. Depends on the Bunny's tier.
+    /// </summary>
+    /// <returns>the Bunny's base main action speed.</returns>
+    protected override float CalculateBaseMainActionSpeed()
+    {
+        switch (GetTier())
+        {
+            case 1:
+                return 0.50f;
+            case 2:
+                return 0.60f;
+            case 3:
+                return 0.80f;
+            default:
+                return 0.50f;
+        }
     }
 
     #endregion

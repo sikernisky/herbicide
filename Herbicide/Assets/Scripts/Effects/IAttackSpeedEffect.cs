@@ -4,7 +4,8 @@
 public interface IAttackSpeedEffect : IEffect
 {
     /// <summary>
-    /// Amount of attack speed this effect modifies.
+    /// Amount of attack speed this effect modifies. A modifier
+    /// of 1.0f means an increase of 100%.
     /// </summary>
     float AttackSpeedMagnitude { get; set; }    
 }

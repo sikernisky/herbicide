@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
-using static UnityEngine.GraphicsBuffer;
 
 /// <summary>
 /// Controls a Mob. The T generic Enum represents the Mob's State. 
@@ -61,6 +60,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// that will never use them: StoneWall, for example.
     /// </summary>
     protected virtual bool FINDS_TARGETS => false;
+
 
     #endregion
 
@@ -240,7 +240,8 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     protected virtual Model GetTarget() => targets.Count == 0 ? null : targets[0];
 
     /// <summary>
-    /// Clears the Mob's list of targets.
+    /// Clears the Mob's list of targets after assigning them to a list of
+    /// targets that existed in the previous frame.
     /// </summary>
     private void ClearTargets() => targets.Clear();
 
@@ -280,6 +281,27 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     }
 
     /// <summary>
+    /// Returns true if the distance between the Mob and a target position is less
+    /// than or equal to the Mob's current main action range.
+    /// </summary>
+    /// <param name="targetPosition">The position of the target.</param>
+    /// <returns>true if in range; otherwise, false.</returns>
+    protected virtual bool IsMobInRangeOfPosition(Vector2 targetPosition)
+    {
+        return Vector2.Distance(GetMob().GetPosition(), targetPosition) <= GetMob().GetMainActionRange();
+    }
+
+    /// <summary>
+    /// Returns true if the Model is within the leniency range of the Mob.
+    /// </summary>
+    /// <param name="targetPosition">The position of the target.</param>
+    /// <returns>true if within leniency range; otherwise, false.</returns>
+    protected virtual bool IsMobInLeniencyRangeOfPosition(Vector2 targetPosition)
+    {
+        return Vector2.Distance(GetMob().GetPosition(), targetPosition) <= GetMob().GetMainActionRange() * GetMob().LIENENCY_RANGE_MULTIPLIER;
+    }
+
+    /// <summary>
     /// Sorts the list of targets this Mob has elected to target by
     /// priority. This method is called after UpdateTargets() and
     /// before the Mob acts on its targets.
@@ -316,7 +338,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
         if (!GetTargets().Contains(target)) return false; // Need to target before holding
         if (NumTargetsHolding() >= HOLDING_LIMIT) return false;
         if (target.PickedUp()) return false;
-        if (target.CashedIn()) return false;
+        if (target.DroppedByMob()) return false;
 
         return true;
     }
@@ -332,7 +354,15 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
 
         modelsHolding.Add(target);
         target.SetPickedUp(GetMob(), GetMob().HOLDER_OFFSET);
+        int nexusCoordX = TileGrid.PositionToCoordinate(target.GetPosition().x);
+        int nexusCoordY = TileGrid.PositionToCoordinate(target.GetPosition().y);
+        //TileGrid.RemoveFromTile(new Vector2Int(nexusCoordX, nexusCoordY));
 
+        // Make a new Nexus at this spot to simulate infinite Nexus
+        GameObject nexusOb = NexusFactory.GetNexusPrefab();
+        Nexus nexusComp = nexusOb.GetComponent<Nexus>();
+        ControllerManager.MakeModelController(nexusComp);
+        TileGrid.PlaceOnTileUsingCoordinates(new Vector2Int(nexusCoordX, nexusCoordY), nexusComp);
     }
 
     /// <summary>

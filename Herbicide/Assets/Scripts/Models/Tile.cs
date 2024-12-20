@@ -98,7 +98,7 @@ public abstract class Tile : Model, ISurface
 
         SetTileCoordinates(x, y);
         SetupRangeIndicator();
-        SetBaseTint(Color.white);
+        ResetBaseTint();
         name = type.ToString() + " (" + x + ", " + y + ")";
         defined = true;
     }
@@ -307,22 +307,26 @@ public abstract class Tile : Model, ISurface
     }
 
     /// <summary>
-    /// Removes the PlaceableObject on this Tile. This does not
+    /// Returns and removes the PlaceableObject on this Tile. This does not
     /// destroy the occupant; that is the responsibility of its controller. 
     /// </summary>
     /// <param name="neighbors">This Tiles's neighbors.</param>
-    public virtual void Remove(ISurface[] neighbors)
+    /// <returns>the PlaceableObject that was removed; null if there was none.</returns>
+    public virtual PlaceableObject Remove(ISurface[] neighbors)
     {
         AssertDefined();
         Assert.IsTrue(CanRemove(neighbors), "Need to check removal validity.");
 
-        if (Floored()) GetFlooring().Remove(neighbors);
+        PlaceableObject removed = null;
+        if (Floored()) return GetFlooring().Remove(neighbors);
         else
         {
+            removed = occupant;
             occupant.OnRemove();
             nexusHoleOccupant = null;
             occupant = null;
         }
+        return removed;
     }
 
     /// <summary>
@@ -486,7 +490,14 @@ public abstract class Tile : Model, ISurface
 
         hollowRenderer.sortingLayerName = "Trees";
         hollowRenderer.sortingOrder = GetY();
-        hollowRenderer.color = new Color32(255, 255, 255, 200);
+
+        Color32 ghostTint = ghost.GetCurrentTint();
+        MaterialPropertyBlock materialPropertyBlock = new MaterialPropertyBlock();
+        hollowRenderer.GetPropertyBlock(materialPropertyBlock);
+        materialPropertyBlock.SetColor("_Color", ghostTint);
+        hollowRenderer.SetPropertyBlock(materialPropertyBlock);
+        Color32 ghostColor = ghost.GetColor();
+        hollowRenderer.color = new Color32(ghostColor.r, ghostColor.g, ghostColor.b, 200);
         hollowCopy.transform.position = transform.position;
         hollowCopy.transform.SetParent(transform);
 
@@ -623,8 +634,8 @@ public abstract class Tile : Model, ISurface
     /// <param name="tintColor">The tint color to set.</param>
     public void SetTintOfSurfaceAndAllOccupants(Color32 tintColor)
     {
-        SetTint(tintColor);
-        if(Occupied()) GetOccupant().SetTint(tintColor);
+        SetAppliedTint(tintColor);
+        if(Occupied()) GetOccupant().SetAppliedTint(tintColor);
         if (Floored()) GetFlooring().SetTintOfSurfaceAndAllOccupants(tintColor);
     }
 
@@ -633,9 +644,9 @@ public abstract class Tile : Model, ISurface
     /// </summary>
     public void RemoveTintOfSurfaceAndAllOccupants()
     {
-        RemoveNonBaseTint();
+        ResetAppliedTint();
         if(Floored()) GetFlooring().RemoveTintOfSurfaceAndAllOccupants();
-        if(Occupied()) GetOccupant().RemoveNonBaseTint();
+        if(Occupied()) GetOccupant().ResetAppliedTint();
     }
 
     /// <summary>

@@ -21,7 +21,7 @@ public class Kudzu : Enemy
     /// The base hop cooldown of a Kudzu. This scales
     /// proportionally to the Kudzu's modified movement speed.
     /// </summary>
-    private float BASE_HOP_COOLDOWN => 0.5f;
+    private float BASE_HOP_COOLDOWN => 0.75f;
 
     /// <summary>
     /// Type of a Kudzu.
@@ -31,7 +31,7 @@ public class Kudzu : Enemy
     /// <summary>
     /// Base health of a Kudzu.
     /// </summary>
-    public override float BASE_HEALTH => 20;
+    public override float BASE_HEALTH => 25;
 
     /// <summary>
     /// Upper bound of a Kudzu's health. 
@@ -96,7 +96,7 @@ public class Kudzu : Enemy
     /// <summary>
     /// Starting movement animation duration of a Kudzu.
     /// </summary>
-    public override float BASE_MOVEMENT_ANIMATION_DURATION => 0.2f;
+    public override float BASE_MOVEMENT_ANIMATION_DURATION => 0.3f;
  
     /// <summary>
     /// How many seconds a Kudzu's idle animation lasts,

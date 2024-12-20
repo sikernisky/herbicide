@@ -43,7 +43,11 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     /// </summary>
     /// <param name="defender">The Defender controlled by this
     ///  DefenderController.</param>
-    public DefenderController(Defender defender) : base(defender) { }
+    ///  <param name="tier">The tier of the Defender.</param>
+    public DefenderController(Defender defender, int tier = 1) : base(defender)
+    {
+        GetDefender().Upgrade(tier);
+    }
 
     /// <summary>
     /// Returns this DefenderController's Defender reference. 
@@ -66,9 +70,33 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
         if (!enemyTarget.Spawned()) return false;
         if (!enemyTarget.Targetable()) return false;
         if (!GetDefender().IsPlaced()) return false;
-        if (DistanceToPositionFromTree(enemyTarget.GetPosition()) > GetDefender().GetMainActionRange()) return false;
+
+        bool previousTarget = (target as Enemy) == stickyTarget;
+        if (previousTarget && !IsMobInLeniencyRangeOfPosition(enemyTarget.GetPosition())) return false;
+        if (!previousTarget && !IsMobInRangeOfPosition(enemyTarget.GetPosition())) return false; 
 
         return true;
+    }
+
+    /// <summary>
+    /// Returns true if the distance between the Defender and a target position is less
+    /// than or equal to the Defender's current main action range.
+    /// </summary>
+    /// <param name="targetPosition">The position of the target.</param>
+    /// <returns>true if in range; otherwise, false.</returns>
+    protected override bool IsMobInRangeOfPosition(Vector2 targetPosition)
+    {
+        return DistanceToPositionFromTree(targetPosition) <= GetDefender().GetMainActionRange();
+    }
+
+    /// <summary>
+    /// Returns true if the Model is within the grace range of the Defender.
+    /// </summary>
+    /// <param name="targetPosition">The position of the target.</param>
+    /// <returns>true if within grace range; otherwise, false.</returns>
+    protected override bool IsMobInLeniencyRangeOfPosition(Vector2 targetPosition)
+    {
+        return DistanceToPositionFromTree(targetPosition) <= GetDefender().GetMainActionRange() * GetDefender().LIENENCY_RANGE_MULTIPLIER;
     }
 
     /// <summary>
@@ -151,8 +179,18 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
             }
         }
 
-        if (nexusCarrier != null) stickyTarget = nexusCarrier;
-        else if (stickyTarget != null && enemyTargets.Contains(stickyTarget))
+        // Prioritize the Nexus Carrier.
+        if (nexusCarrier != null) 
+        {
+            stickyTarget = nexusCarrier;
+            enemyTargets.Remove(nexusCarrier);
+            enemyTargets.Insert(0, nexusCarrier);
+            targets.Clear();
+            targets.AddRange(enemyTargets);
+            return;
+        }
+        // Prioritize the prev. sticky target.
+        else if (stickyTarget != null && enemyTargets.Contains(stickyTarget)) 
         {
             enemyTargets.Remove(stickyTarget);
             enemyTargets.Insert(0, stickyTarget);
@@ -160,19 +198,14 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
             targets.AddRange(enemyTargets);
             return;
         }
-        else if (enemyTargets.Count > 0)
+        // Prioritize the first target.
+        else if (enemyTargets.Count > 0) 
         {
             stickyTarget = enemyTargets[0];
+            targets.Clear();
+            targets.AddRange(enemyTargets);
+            return;
         }
-
-        if (stickyTarget != null)
-        {
-            enemyTargets.Remove(stickyTarget); 
-            enemyTargets.Insert(0, stickyTarget);
-        }
-
-        targets.Clear();
-        targets.AddRange(enemyTargets);
     }
 
     /// <summary>

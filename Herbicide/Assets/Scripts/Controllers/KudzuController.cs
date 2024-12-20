@@ -485,7 +485,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
             foreach (Model target in GetHeldTargets())
             {
                 Nexus nexusTarget = target as Nexus;
-                if (nexusTarget != null) nexusTarget.CashIn();
+                if (nexusTarget != null) nexusTarget.Drop();
             }
         }
         Assert.IsTrue(NumTargetsHolding() > 0, "You need to hold targets to exit.");

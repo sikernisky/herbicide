@@ -50,8 +50,9 @@ public class BunnyController : DefenderController<BunnyController.BunnyState>
     /// Creates a BunnyController reference.
     /// </summary>
     /// <param name="Bunny">The Bunny defender.</param>
+    /// <param name="tier">The tier of the Bunny.</param>
     /// <returns>a new BunnyController reference.</returns>
-    public BunnyController(Bunny Bunny) : base(Bunny) { }
+    public BunnyController(Bunny Bunny, int tier) : base(Bunny, tier) { }
 
     /// <summary>
     /// Main update loop for the Bunny.

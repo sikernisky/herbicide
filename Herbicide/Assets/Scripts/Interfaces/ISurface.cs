@@ -28,7 +28,8 @@ public interface ISurface
     /// Removes the PlaceableObject on this ISurface.
     /// </summary>
     /// <param name="neighbors">This ISurface's neighbors.</param>
-    void Remove(ISurface[] neighbors);
+    /// <returns>the PlaceableObject that was removed; null if there was none.</returns>
+    PlaceableObject Remove(ISurface[] neighbors);
 
     /// <summary>
     /// Returns true if there is a PlaceableObject on this ISurface that

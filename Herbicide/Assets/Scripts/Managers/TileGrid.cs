@@ -535,6 +535,8 @@ public class TileGrid : MonoBehaviour
         if (!instance.tileObjectMap.ContainsKey(target)) instance.tileObjectMap[target] = new HashSet<PlaceableObject>();
         instance.tileObjectMap[target].Add(candidate);
 
+        Debug.Log("Placed " + candidate + " on " + target.GetX() + " " + target.GetY());
+
         if (!candidate.OCCUPIER) return true;
         target.SetOccupant(candidate);
 
@@ -574,7 +576,8 @@ public class TileGrid : MonoBehaviour
         if (!target.CanRemove(neighbors)) return false;
 
         // We can remove.
-        target.Remove(neighbors);
+        PlaceableObject removed = target.Remove(neighbors);
+        if(removed != null) instance.tileObjectMap[target].Remove(removed);
         return true;
     }
 

@@ -396,14 +396,15 @@ public class ShopController : MonoBehaviour
         Assert.IsNotNull(slotPrefab);
         Model slotModel = slotPrefab.GetComponent<Model>();
         Assert.IsNotNull(slotModel);
-
-        PlacementController.StartPlacingObject(slotModel);
         EconomyController.Withdraw(ModelType.DEW, clickedSlot.Buy(EconomyController.GetBalance(ModelType.DEW)));
         UpdateShopCards();
 
-        // The ControllerManager handles upgrading and combination logic
+        // The ControllerManager handles upgrading and combination logic.
         OnBuyModel?.Invoke(slotModel);
         numCardsPurchased++;
+
+        // This will return in-method if there's a combination because ControllerManager will start the placement event.
+        PlacementController.StartPlacingObject(slotModel);
 
         bool allSlotsEmpty = true;
         foreach (ShopSlot shopSlot in shopSlots) { if (!shopSlot.Empty()) allSlotsEmpty = false; }

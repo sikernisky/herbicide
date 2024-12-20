@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -26,6 +27,21 @@ public class NexusController : MobController<NexusController.NexusState>
     /// Maximum number of targets a Nexus can have.
     /// </summary>
     protected override int MAX_TARGETS => 0;
+
+    /// <summary>
+    /// The number of seconds that this Nexus has been dropped.
+    /// </summary>
+    private float droppedCounter;
+
+    /// <summary>
+    /// How long it takes for a Nexus to return to its spawn position when dropped.
+    /// </summary>
+    private const float RESPAWN_RATE = 5f;
+
+    /// <summary>
+    /// true if the Nexus resets; otherwise, false.
+    /// </summary>
+    private bool resets = false;
 
     #endregion
 
@@ -61,7 +77,7 @@ public class NexusController : MobController<NexusController.NexusState>
     /// Returns true if the Nexus should be removed.
     /// </summary>
     /// <returns>true if the Nexus should be removed; otherwise, false.</returns>
-    public override bool ValidModel() => !GetNexus().CashedIn();
+    public override bool ValidModel() => !GetNexus().DroppedByMob();
 
     /// <summary>
     /// Returns the Nexus model.
@@ -96,7 +112,7 @@ public class NexusController : MobController<NexusController.NexusState>
                 if (GetNexus().PickedUp()) SetState(NexusState.PICKED_UP);
                 break;
             case NexusState.PICKED_UP:
-                if (!GetNexus().PickedUp() && !GetNexus().CashedIn()) SetState(NexusState.IDLE);
+                if (!GetNexus().PickedUp() && !GetNexus().DroppedByMob()) SetState(NexusState.IDLE);
                 break;
             default:
                 break;
@@ -127,7 +143,12 @@ public class NexusController : MobController<NexusController.NexusState>
         if (GetState() != NexusState.IDLE) return;
         if (!ValidModel()) return;
         if (GetNexus().PickedUp()) return;
-        if (GetNexus().CashedIn()) return;
+        if (GetNexus().DroppedByMob()) return;
+
+        int xPosCoord = TileGrid.PositionToCoordinate(GetNexus().GetPosition().x);
+        int yPosCoord = TileGrid.PositionToCoordinate(GetNexus().GetPosition().y);
+        int xSpawn = TileGrid.PositionToCoordinate(GetNexus().GetSpawnWorldPosition().x);
+        int ySpawn = TileGrid.PositionToCoordinate(GetNexus().GetSpawnWorldPosition().y);
 
         if (TileGrid.IsNexusHole(GetNexus().GetPosition()))
         {
@@ -139,7 +160,18 @@ public class NexusController : MobController<NexusController.NexusState>
             FallIntoMovePos(3f);
 
             if (!ReachedMovementTarget()) return;
-            GetNexus().CashIn();
+            GetNexus().Drop();
+        }
+
+        else if(resets && (xPosCoord != xSpawn || yPosCoord != ySpawn))
+        {
+            if(droppedCounter >= RESPAWN_RATE)
+            {
+                TileGrid.RemoveFromTile(new Vector2Int(xPosCoord, yPosCoord));
+                TileGrid.PlaceOnTileUsingCoordinates(new Vector2Int(xSpawn, ySpawn), GetNexus());
+                droppedCounter = 0;
+            }
+            else droppedCounter += Time.deltaTime;
         }
     }
 
@@ -153,6 +185,7 @@ public class NexusController : MobController<NexusController.NexusState>
         if (!GetNexus().PickedUp()) return;
 
         GetNexus().SetWorldPosition(GetNexus().GetHeldPosition());
+        droppedCounter = 0;
     }
 
     #endregion

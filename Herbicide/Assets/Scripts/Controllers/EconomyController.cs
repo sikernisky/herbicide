@@ -91,7 +91,7 @@ public class EconomyController : MonoBehaviour
         Assert.IsNotNull(economyControllers, "Array of EconomyControllers is null.");
         Assert.AreEqual(1, economyControllers.Length);
         instance = economyControllers[0];
-        instance.passiveIncomeEnabled = true;
+        instance.passiveIncomeEnabled = false;
     }
 
     /// <summary>
@@ -161,6 +161,20 @@ public class EconomyController : MonoBehaviour
 
         if(currency.GetValue() > 0) Deposit(currency.TYPE, currency.GetValue());
         else Withdraw(currency.TYPE, currency.GetValue());
+    }
+
+    /// <summary>
+    /// Cashes in an Enemy, potentially modifying the player's balance. Used to
+    /// reward the player for defeating an enemy.
+    /// </summary>
+    /// <param name="enemy">The enemy to cash in.</param>
+    public static void CashIn(Enemy enemy)
+    {
+        Assert.IsNotNull(enemy, "Enemy is null.");
+
+        int value = enemy.CURRENCY_VALUE_ON_DEATH;
+        if(value > 0) Deposit(ModelType.DEW, value);
+        else Withdraw(ModelType.DEW, value);
     }
 
     /// <summary>

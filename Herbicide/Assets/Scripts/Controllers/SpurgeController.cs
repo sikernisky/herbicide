@@ -163,7 +163,7 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
             if (nexusTarget == null) return false;
             if (!nexusTarget.Targetable()) return false;
             if (nexusTarget.PickedUp()) return false;
-            if (nexusTarget.CashedIn()) return false;
+            if (nexusTarget.DroppedByMob()) return false;
             if (!IsClosestTargetableNexusAlongPath(nexusTarget)) return false;
             if (!TileGrid.CanReach(GetSpurge().GetPosition(), nexusTarget.GetPosition())) return false;
 
@@ -426,7 +426,7 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
             foreach (Model target in GetHeldTargets())
             {
                 Nexus nexusTarget = target as Nexus;
-                if (nexusTarget != null) nexusTarget.CashIn();
+                if (nexusTarget != null) nexusTarget.Drop();
             }
         }
 

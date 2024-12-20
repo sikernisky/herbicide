@@ -208,9 +208,11 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
             Nexus nexusTarget = heldTarget as Nexus;
             if (nexusTarget != null)
             {
-                nexusTarget.SetDropped();
-                if (GetEnemy().Exited()) nexusTarget.CashIn();
-                else TileGrid.PlaceOnTileUsingCoordinates(new Vector2Int(GetEnemy().GetX(), GetEnemy().GetY()), nexusTarget);
+                int spawnX = TileGrid.PositionToCoordinate(nexusTarget.GetSpawnWorldPosition().x);
+                int spawnY = TileGrid.PositionToCoordinate(nexusTarget.GetSpawnWorldPosition().y);
+                nexusTarget.Drop();
+                if (GetEnemy().Exited()) nexusTarget.Drop();
+                //else TileGrid.PlaceOnTileUsingCoordinates(new Vector2Int(spawnX, spawnY), nexusTarget);
             }
 
         }
@@ -225,20 +227,22 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
         if (DroppedDeathLoot()) return;
         if (GetEnemy().Exited()) return;
 
-/*        Vector3 lootPos = GetEnemy().Exited() ? GetEnemy().GetExitPos() : GetEnemy().GetPosition();
-        int value = GetEnemy().CURRENCY_VALUE_ON_DEATH;*/
+        /*        Vector3 lootPos = GetEnemy().Exited() ? GetEnemy().GetExitPos() : GetEnemy().GetPosition();
+                int value = GetEnemy().CURRENCY_VALUE_ON_DEATH;*/
 
-/*        Dew dew = CollectableFactory.GetCollectablePrefab(ModelType.DEW).GetComponent<Dew>();
-        DewController dewController = new DewController(dew, lootPos, value);
-        ControllerManager.AddModelController(dewController);*/
+        /*        Dew dew = CollectableFactory.GetCollectablePrefab(ModelType.DEW).GetComponent<Dew>();
+                DewController dewController = new DewController(dew, lootPos, value);
+                ControllerManager.AddModelController(dewController);*/
 
-/*        BasicTreeSeed basicTreeSeed = CollectableFactory.GetCollectablePrefab(ModelType.BASIC_TREE_SEED).GetComponent<BasicTreeSeed>();
-        BasicTreeSeedController basicTreeSeedController = new BasicTreeSeedController(basicTreeSeed, lootPos);
-        ControllerManager.AddModelController(basicTreeSeedController);*/
+        /*        BasicTreeSeed basicTreeSeed = CollectableFactory.GetCollectablePrefab(ModelType.BASIC_TREE_SEED).GetComponent<BasicTreeSeed>();
+                BasicTreeSeedController basicTreeSeedController = new BasicTreeSeedController(basicTreeSeed, lootPos);
+                ControllerManager.AddModelController(basicTreeSeedController);*/
 
-/*        SpeedTreeSeed speedTreeSeed = CollectableFactory.GetCollectablePrefab(ModelType.SPEED_TREE_SEED).GetComponent<SpeedTreeSeed>();
-        SpeedTreeSeedController speedTreeSeedController = new SpeedTreeSeedController(speedTreeSeed, lootPos);
-        ControllerManager.AddModelController(speedTreeSeedController);*/
+        /*        SpeedTreeSeed speedTreeSeed = CollectableFactory.GetCollectablePrefab(ModelType.SPEED_TREE_SEED).GetComponent<SpeedTreeSeed>();
+                SpeedTreeSeedController speedTreeSeedController = new SpeedTreeSeedController(speedTreeSeed, lootPos);
+                ControllerManager.AddModelController(speedTreeSeedController);*/
+
+        EconomyController.CashIn(GetEnemy());
 
         if(ControllerManager.NumEnemiesRemainingInclusive() == 0)
         {
@@ -345,10 +349,13 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     /// the given Nexus; otherwise, false.</returns>
     protected bool IsValidNexusTarget(Nexus nexusTarget)
     {
+        if(nexusTarget == null) return false;
+/*        Debug.Log("null? " + (nexusTarget == null) + " targetable? " + nexusTarget.Targetable() + " picked up? " + nexusTarget.PickedUp() + " cashed in? " + nexusTarget.CashedIn());
+*/
         return nexusTarget != null
             && nexusTarget.Targetable()
             && !nexusTarget.PickedUp()
-            && !nexusTarget.CashedIn();
+            && !nexusTarget.DroppedByMob();
     }
 
     /// <summary>

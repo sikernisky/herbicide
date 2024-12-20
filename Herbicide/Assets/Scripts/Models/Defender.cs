@@ -61,6 +61,11 @@ public abstract class Defender : Mob
     /// </summary>
     public override float BASE_MOVEMENT_ANIMATION_DURATION => 0;
 
+    /// <summary>
+    /// Returns the base attack speed of this Defender. Depends on the Defender's tier.
+    /// </summary>
+    public override float BASE_MAIN_ACTION_SPEED => CalculateBaseMainActionSpeed();
+
     #endregion
 
     #region Methods
@@ -84,22 +89,24 @@ public abstract class Defender : Mob
     public void ResetTier() => tier = MIN_TIER;
 
     /// <summary>
-    /// Upgrades this Defender's tier by one if it is less than 3. Adds
-    /// the upgrades the Defender gets at its new tier.
+    /// Upgrades this Defender's tier to the given tier.
     /// </summary>
-    public virtual void Upgrade()
+    /// <param name="newTier">the new tier of this Defender.</param>
+    public virtual void Upgrade(int newTier)
     {
-        Assert.IsFalse(tier == MAX_TIER, "Cannot upgrade a Defender that is already at max tier.");
-        Assert.IsTrue(tier >= MIN_TIER, "Cannot upgrade a Defender that is at a tier less than 1.");
+        Assert.IsFalse(newTier > MAX_TIER, "Cannot upgrade a Defender that is already at max tier.");
+        Assert.IsTrue(newTier >= MIN_TIER, "Cannot upgrade a Defender that is at a tier less than 1.");
 
-        if (tier < MAX_TIER)
-        {
-            tier++;
-            if(tier == 2) SetBaseTint(Color.cyan);
-            else if(tier == 3) SetBaseTint(Color.magenta);
-        }
+        tier = newTier;
+        ResetBaseTint();
         RestartMainActionCooldown();
     }
+
+    /// <summary>
+    /// Returns the Defender's base main action speed. Depends on the Defender's tier.
+    /// </summary>
+    /// <returns>the Defender's base main action speed.</returns>
+    protected abstract float CalculateBaseMainActionSpeed();
 
     /// <summary>
     /// Returns this Defender's current tier.
@@ -119,6 +126,17 @@ public abstract class Defender : Mob
     /// <returns>the animation track that represents this Defender when placing.
     /// </returns>
     public override Sprite[] GetPlacementTrack() => DefenderFactory.GetPlacementTrack(TYPE, GetTier());
+
+    /// <summary>
+    /// Returns this Defender's starting base tint. Depends on the Defender's tier.
+    /// </summary>
+    /// <returns>this Defender's starting base tint.</returns>
+    protected override Color32 CalculateStartingBaseTint()
+    {
+        if(GetTier() == 1) return Color.white;
+        else if(GetTier() == 2) return Color.cyan;
+        else return Color.magenta;
+    }
 
     #endregion
 }

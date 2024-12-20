@@ -164,6 +164,12 @@ public abstract class Mob : PlaceableObject
     /// </summary>
     public override bool OCCUPIER => false;
 
+    /// <summary>
+    /// The multiplier for the range of this Mob's main action when targeting
+    /// Models that have entered its range already. Promotes sticking to targets.
+    /// </summary>
+    public virtual float LIENENCY_RANGE_MULTIPLIER => 1.25f;
+
     #endregion
 
     #region Methods
@@ -203,6 +209,7 @@ public abstract class Mob : PlaceableObject
     /// Returns this Mob's current main action range.
     /// </summary>
     /// <returns>this Mob's current main action range.</returns>
+    /// <param name="isTolerant">true if the range should be tolerant; otherwise, false.</param>
     public float GetMainActionRange() => mainActionRange;
 
     /// <summary>
@@ -245,7 +252,7 @@ public abstract class Mob : PlaceableObject
     /// Returns this Mob's current main action speed.
     /// </summary>
     /// <returns>this Mob's current main action speed.</returns>
-    public float GetMainActionSpeed() => mainActionSpeed;
+    public virtual float GetMainActionSpeed() => mainActionSpeed;
 
     /// <summary>
     /// Sets this Mob's main action animation duration to a new value.
@@ -403,6 +410,7 @@ public abstract class Mob : PlaceableObject
                 totalAttackSpeedModifier += attackSpeedEffect.AttackSpeedMagnitude;
             }
         }
+
         mainActionSpeed = Mathf.Clamp(BASE_MAIN_ACTION_SPEED * (1 + totalAttackSpeedModifier), MIN_MAIN_ACTION_SPEED, MAX_MAIN_ACTION_SPEED);
     }
 

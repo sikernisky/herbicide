@@ -100,7 +100,7 @@ public abstract class Enemy : Mob
     /// How much a currency collectable dropped by this Enemy on death
     /// is worth.
     /// </summary>
-    public virtual int CURRENCY_VALUE_ON_DEATH => 25;
+    public virtual int CURRENCY_VALUE_ON_DEATH => 5;
 
     #endregion
 

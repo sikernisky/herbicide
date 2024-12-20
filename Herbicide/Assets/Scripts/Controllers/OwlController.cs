@@ -54,9 +54,10 @@ public class OwlController : DefenderController<OwlController.OwlState>
     /// <summary>
     /// Creates a OwlController reference.
     /// </summary>
-    /// <param name="Owl">The Owl defender.</param>
+    /// <param name="owl">The Owl defender.</param>
+    /// <param name="tier">The tier of the Owl.</param>
     /// <returns>a new OwlController reference.</returns>
-    public OwlController(Owl owl) : base(owl) { }
+    public OwlController(Owl owl, int tier) : base(owl, tier) { }
 
     /// <summary>
     /// Main update loop for the Owl.

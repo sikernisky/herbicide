@@ -55,8 +55,9 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     /// Makes a new SquirrelController.
     /// </summary>
     /// <param name="defender">The Squirrel Defender. </param>
+    /// <param name="tier">The tier of the Squirrel.</param>
     /// <returns>The created SquirrelController.</returns>
-    public SquirrelController(Squirrel squirrel) : base(squirrel) { }
+    public SquirrelController(Squirrel squirrel, int tier) : base(squirrel, tier) { }
 
     /// <summary>
     /// Main update loop for the Squirrel.
@@ -100,6 +101,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     {
         Assert.IsTrue(delayBetweenAcorns >= 0, "Delay needs to be non-negative");
 
+        //Debug.Log(GetSquirrel().GetMainActionSpeed());
         for (int i = 0; i < numAcorns; i++)
         {
             Enemy target = GetTarget() as Enemy;
@@ -166,7 +168,6 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
             return;
         }
 
-
         Enemy target = GetTarget() as Enemy;
         switch (GetState())
         {
@@ -175,14 +176,14 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
                 break;
             case SquirrelState.IDLE:
                 if (target == null || !target.Targetable()) break;
-                if (DistanceToTargetFromTree() <= GetSquirrel().GetMainActionRange() &&
+                if (GetTarget() != null &&
                     GetSquirrel().GetMainActionCooldownRemaining() <= 0) SetState(SquirrelState.ATTACK);
                 break;
             case SquirrelState.ATTACK:
                 if (target == null || !target.Targetable()) SetState(SquirrelState.IDLE);
                 if (GetAnimationCounter() > 0) break;
                 if (GetSquirrel().GetMainActionCooldownRemaining() > 0) SetState(SquirrelState.IDLE);
-                else if (DistanceToTarget() > GetSquirrel().GetMainActionRange()) SetState(SquirrelState.IDLE);
+                else if (GetTarget() == null) SetState(SquirrelState.IDLE);
                 break;
             case SquirrelState.INVALID:
                 throw new System.Exception("Invalid State.");
@@ -209,8 +210,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         if (!ValidModel()) return;
         if (GetState() != SquirrelState.IDLE) return;
         Enemy target = GetTarget() as Enemy;
-        if (target != null && DistanceToTargetFromTree() <= GetSquirrel().GetMainActionRange())
-            FaceTarget();
+        if (target != null) FaceTarget();
         else GetSquirrel().FaceDirection(Direction.SOUTH);
 
         SetNextAnimation(GetSquirrel().IDLE_ANIMATION_DURATION,

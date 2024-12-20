@@ -178,7 +178,7 @@ public class PlacementController : MonoBehaviour
         Vector3 placementDimensionsConv = new Vector3(placementDimensions.x, placementDimensions.y, 1);
 
         instance.dummy.SetActive(true);
-        instance.dummyImage.color = DEFAULT_PLACE_COLOR;
+        instance.dummyImage.color = instance.GetPlacementDummyColorBasedOnModel(m);
         instance.dummyImage.sprite = m.GetPlacementTrack()[0]; // TODO: Animation
         instance.dummyImage.rectTransform.sizeDelta = placementDimensionsConv;
         instance.placing = true;
@@ -373,6 +373,27 @@ public class PlacementController : MonoBehaviour
     {
         Assert.IsNotNull(handler, "Handler is null.");
         instance.OnFinishPlacing += handler;
+    }
+
+    /// <summary>
+    /// Returns the correct color for the placement dummy depending on the Model
+    /// we are placing.
+    /// </summary>
+    /// <param name="m">The Model we are placing.</param>
+    /// <returns>the correct color for the placement dummy depending on the Model
+    /// we are placing.</returns>
+    private Color32 GetPlacementDummyColorBasedOnModel(Model m)
+    {
+        Defender d = m as Defender;
+        if(d != null)
+        {
+            int tier = d.GetTier();
+            if (tier == 1) return DEFAULT_PLACE_COLOR;
+            else if (tier == 2) return Color.cyan;
+            else return Color.magenta;
+        }
+
+        return DEFAULT_PLACE_COLOR;
     }
 
     #endregion

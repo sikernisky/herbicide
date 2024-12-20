@@ -35,7 +35,6 @@ public class SceneController : MonoBehaviour
     public static void UpdateScene()
     {
         timeElapsed += Time.deltaTime;
-
         if (InputController.DidKeycodeDown(KeyCode.N)) LoadNextLevelWithFadeDelay();
     }
 

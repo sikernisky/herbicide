@@ -28,10 +28,7 @@ public class SpeedTreeEffect : Effect, IAttackSpeedEffect
     /// <summary>
     /// Makes a new IceChunkEffect with the default duration and magnitude.
     /// </summary>
-    public SpeedTreeEffect() : base()
-    {
-        AttackSpeedMagnitude = SPEED_TREE_MAGNITUDE;
-    }
+    public SpeedTreeEffect() : base() { AttackSpeedMagnitude = SPEED_TREE_MAGNITUDE; }
 
     /// <summary>
     /// Returns true if this effect can afflict the given Model.

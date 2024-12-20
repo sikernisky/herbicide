@@ -74,11 +74,6 @@ public class Squirrel : Defender
     public override float MIN_MAIN_ACTION_RANGE => 0f;
 
     /// <summary>
-    /// Number of attacks per second a Squirrel starts with.
-    /// </summary>
-    public override float BASE_MAIN_ACTION_SPEED => 1.25f;
-
-    /// <summary>
     /// Most amount of attack cooldown this Squirrel can have.
     /// </summary>
     public override float MAX_MAIN_ACTION_SPEED => float.MaxValue;
@@ -161,6 +156,25 @@ public class Squirrel : Defender
         if (GetTier() == 1) return base.GetAbility();
         else if (GetTier() == 2) return tierTwoAbility;
         else return tierThreeAbility;
+    }
+
+    /// <summary>
+    /// Returns the Squirrel's base main action speed. Depends on the Squirrel's tier.
+    /// </summary>
+    /// <returns>the Squirrel's base main action speed.</returns>
+    protected override float CalculateBaseMainActionSpeed()
+    {
+        switch (GetTier())
+        {
+            case 1:
+                return 1.00f;
+            case 2:
+                return 1.25f;
+            case 3:
+                return 1.75f;
+            default:
+                return 1.00f;
+        }
     }
 
     #endregion
