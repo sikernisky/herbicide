@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -83,7 +85,7 @@ public abstract class ModelController
         GetModel().ResetModel();
         GetModel().SubscribeToCollision(HandleCollision);
         GetModel().SubscribeToProjectileCollisionEvent(HandleProjectileCollision);
-        
+
         ALL_MODELS.Add(model);
     }
 
@@ -249,15 +251,6 @@ public abstract class ModelController
     public static IReadOnlyList<Model> GetAllModels() => ALL_MODELS.AsReadOnly();
 
     /// <summary>
-    /// Checks if the player clicked on this Model this frame.
-    /// </summary>
-    protected bool ModelClickedUp()
-    {
-        if (!ValidModel()) return false;
-        return InputController.ModelClickedUp(GetModel());
-    }
-
-    /// <summary>
     /// Returns this ModelController's Model to its Factory.
     /// </summary>
     public abstract void ReturnModelToFactory();
@@ -278,6 +271,36 @@ public abstract class ModelController
         Assert.IsNotNull(combiningModels, "Combining Models is null.");
         combiningModels.ForEach(m => Assert.IsNotNull(m, "Combining Model is null."));
         combiningModels.ForEach(m => Assert.IsTrue(GetModel().TYPE == m.TYPE, "Model types do not match."));
+    }
+
+    /// <summary>
+    /// Returns true if a given Model is the closest Model of its type to 
+    /// the Model controlled by this ModelController.
+    /// </summary>
+    /// <param name="targetModel">The Model to check.</param>
+    /// <returns>true if a given Model is the closest Model of its type to 
+    /// the Model controlled by this ModelController; otherwise, false. </returns>
+    protected bool IsClosestTargetableModelAlongPath(Model targetModel)
+    {
+        Assert.IsNotNull(targetModel);
+
+        Model closestModel = null;
+        float minDistance = float.MaxValue;
+
+        foreach (Model otherModel in GetAllModels())
+        {
+            if (otherModel == null) continue;
+            if (otherModel.TYPE != targetModel.TYPE) continue;
+            if (otherModel == GetModel()) continue;
+
+            float distance = TileGrid.GetPathfindingTileDistance(GetModel().GetPosition(), otherModel.GetPosition());
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                closestModel = otherModel;
+            }
+        }
+        return closestModel == targetModel;
     }
 
     #endregion

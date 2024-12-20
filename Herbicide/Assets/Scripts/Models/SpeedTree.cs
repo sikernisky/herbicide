@@ -119,18 +119,19 @@ public class SpeedTree : Tree
     }
 
     /// <summary>
-    /// Removes the PlaceableObject from this SpeedTree. This does not
+    /// Returns and removes the PlaceableObject from this SpeedTree. This does not
     /// destroy the occupant; that is the responsibility of its controller. 
     /// </summary>
     /// <param name="neighbors">This SpeedTree's neighbors.</param>
-    public override void Remove(ISurface[] neighbors)
+    /// <returns>the PlaceableObject that was removed from this SpeedTree.</returns>
+    public override PlaceableObject Remove(ISurface[] neighbors)
     {
         if(appliedSpeedTreeEffect != null)
         {
             GetOccupant().TryRemoveEffect(appliedSpeedTreeEffect);
             appliedSpeedTreeEffect = null;
         }
-        base.Remove(neighbors);
+        return base.Remove(neighbors);
     }
 
     /// <summary>

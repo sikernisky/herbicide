@@ -9,11 +9,6 @@ public class Nexus : Mob
     #region Fields
 
     /// <summary>
-    /// true if this Nexus was brought to the target position.
-    /// </summary>
-    private bool cashedIn;
-
-    /// <summary>
     /// The Transform of the Model that picked this Nexus up; null if
     /// it is not picked up.
     /// </summary>
@@ -23,6 +18,11 @@ public class Nexus : Mob
     /// The HOLDER_OFFSET of the model that picked this Model up.
     /// </summary>
     private Vector2 holdingOffset;
+
+    /// <summary>
+    /// true if this Nexus was dropped by a Mob; otherwise, false.
+    /// </summary>
+    private bool droppedByMob;
 
     #endregion
 
@@ -159,12 +159,18 @@ public class Nexus : Mob
     /// </summary>
     /// <returns>true if this Nexus was brought to the target spot; otherwise,
     /// false. </returns>
-    public bool CashedIn() => cashedIn;
+    public bool DroppedByMob() => droppedByMob;
 
     /// <summary>
-    /// Informs this Nexus that it was brought to the target spot.
+    /// Drops the nexus.
     /// </summary>
-    public void CashIn() => cashedIn = true;
+    public void Drop()
+    {
+        Assert.IsTrue(PickedUp(), "Not picked up.");
+        holder = null;
+        droppedByMob = true;
+        SetSortingLayer(SortingLayers.GROUNDMOBS);
+    }
 
     /// <summary>
     /// Informs this Model that it has been picked up.
@@ -178,16 +184,6 @@ public class Nexus : Mob
         this.holdingOffset = holdingOffset;
         holder.OnHoldNexus();
         SetSortingLayer(SortingLayers.PICKEDUPITEMS);
-    }
-
-    /// <summary>
-    /// Informs this Model that it not picked up anymore.
-    /// </summary>
-    public void SetDropped()
-    {
-        Assert.IsNotNull(holder, "Not picked up.");
-        holder = null;
-        SetSortingLayer(SortingLayers.GROUNDMOBS);
     }
 
     /// <summary>

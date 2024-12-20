@@ -137,7 +137,7 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
             if (nexusHoleTarget == null) return false;
             if (!nexusHoleTarget.Targetable()) return false;
             if (!GetKnotwood().IsExiting() && !TileGrid.CanReach(GetKnotwood().GetPosition(), nexusHoleTarget.GetPosition())) return false;
-            if (!IsClosestNexusHole(nexusHoleTarget)) return false;
+            if (!IsClosestTargetableModelAlongPath(nexusHoleTarget)) return false;
 
             return true;
         }
@@ -148,7 +148,7 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
             if (nexusTarget == null) return false;
             if (!nexusTarget.Targetable()) return false;
             if (nexusTarget.PickedUp()) return false;
-            if (nexusTarget.CashedIn()) return false;
+            if (!IsClosestTargetableNexusAlongPath(nexusTarget)) return false;
             if (!TileGrid.CanReach(GetKnotwood().GetPosition(), nexusTarget.GetPosition())) return false;
 
             return true;
@@ -415,7 +415,7 @@ public class KnotwoodController : EnemyController<KnotwoodController.KnotwoodSta
             foreach (Model target in GetHeldTargets())
             {
                 Nexus nexusTarget = target as Nexus;
-                if (nexusTarget != null) nexusTarget.CashIn();
+                if (nexusTarget != null) nexusTarget.Drop();
             }
         }
 

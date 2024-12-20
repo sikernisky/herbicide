@@ -49,8 +49,9 @@ public class BearController : DefenderController<BearController.BearState>
     /// Makes a new BearController.
     /// </summary>
     /// <param name="bear">The Bear Defender. </param>
+    /// <param name="tier">The tier of the Bear.</param>
     /// <returns>The created BearController.</returns>
-    public BearController(Bear bear) : base(bear) { }
+    public BearController(Bear bear, int tier) : base(bear, tier) { }
 
     /// <summary>
     /// Main update loop for the Squirrel.

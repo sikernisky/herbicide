@@ -84,6 +84,22 @@ public abstract class Model : MonoBehaviour
     /// </summary>
     private Color32 baseColor;
 
+    /// <summary>
+    /// The current base tint of this Model: when tint is removed, this is the color
+    /// of the Model's tint.
+    /// </summary>
+    private Color32 baseTint;
+
+    /// <summary>
+    /// The current applied tint of this Model: the color placed over the base tint.
+    /// </summary>
+    private Color32 appliedTint = Color.white;
+
+    /// <summary>
+    /// true if a Mob is targeting this Model; otherwise, false.
+    /// </summary>
+    private bool isTargetOfMob;
+
     #endregion
 
     #region Stats
@@ -118,6 +134,11 @@ public abstract class Model : MonoBehaviour
     /// The base color of this Model.
     /// </summary>
     public virtual Color32 BASE_COLOR => new Color32(255, 255, 255, 255);
+
+    /// <summary>
+    /// The starting base tint of this Model.
+    /// </summary>
+    protected virtual Color32 STARTING_BASE_TINT => CalculateStartingBaseTint();
 
     #endregion
 
@@ -177,13 +198,7 @@ public abstract class Model : MonoBehaviour
     /// Sets this Model's SpriteRenderer's color.
     /// </summary>
     /// <param name="color">the color to set to.</param>
-    public virtual void SetColor(Color32 newColor) => modelRenderer.color = modelRenderer != null ? newColor : modelRenderer.color;
-
-    /// <summary>
-    /// Returns this Model's base color.
-    /// </summary>
-    /// <returns>this Model's SpriteRenderer's color. </returns>
-    public Color GetColor() => modelRenderer.color;
+    public virtual void SetColor(Color32 newColor) => modelRenderer.color = newColor;
 
     /// <summary>
     /// Sets this Model's base color.
@@ -196,6 +211,85 @@ public abstract class Model : MonoBehaviour
     /// </summary>
     /// <returns>this model's base color. </returns>
     public Color GetBaseColor() => baseColor;
+
+    /// <summary>
+    /// Returns this Model's current color.
+    /// </summary>
+    /// <returns>this Model's current color.</returns>
+    public Color32 GetColor() => modelRenderer.color;
+
+    /// <summary>
+    /// Returns this Model's starting base tint.
+    /// </summary>
+    /// <returns>this Model's starting base tint.</returns>
+    protected virtual Color32 CalculateStartingBaseTint() => new Color32(255, 255, 255, 255);
+
+    /// <summary>
+    /// Combines the base tint and the applied tint of this Model
+    /// and applies the result to the Model's SpriteRenderer component.
+    /// </summary>
+    private void CombineAndApplyTint()
+    {
+        MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
+        modelRenderer.GetPropertyBlock(propertyBlock);
+        Color32 combinedTint = new Color32(
+            (byte)(appliedTint.r * baseTint.r / 255),
+            (byte)(appliedTint.g * baseTint.g / 255),
+            (byte)(appliedTint.b * baseTint.b / 255),
+            (byte)(appliedTint.a * baseTint.a / 255)
+        );
+        propertyBlock.SetColor("_Color", combinedTint);
+        modelRenderer.SetPropertyBlock(propertyBlock);
+    }
+
+    /// <summary>
+    /// Returns the current tint of the Model's SpriteRenderer component.
+    /// </summary>
+    /// <returns>the tint of the Model's SpriteRenderer component.</returns>
+    public Color32 GetCurrentTint()
+    {
+        MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
+        modelRenderer.GetPropertyBlock(propertyBlock);
+        Color32 currentTint = propertyBlock.GetColor("_Color");
+        return currentTint;
+    }
+
+    /// <summary>
+    /// Sets the tint of the Model's SpriteRenderer component to its
+    /// base tint. Defines the base tint of the Model.
+    /// </summary>
+    /// <param name="tintColor">the color of the tint to apply.</param>
+    public virtual void SetBaseTint(Color32 tintColor)
+    {
+        baseTint = tintColor;
+        CombineAndApplyTint();
+    }
+
+    /// <summary>
+    /// Sets the tint of the Model's SpriteRenderer component over its
+    /// current tint. 
+    /// </summary>
+    /// <param name="tintColor">the color of the tint to apply.</param>
+    public void SetAppliedTint(Color32 tintColor)
+    {
+        appliedTint = tintColor;
+        CombineAndApplyTint();
+    }
+
+    /// <summary>
+    /// Sets the tint of the Model's SpriteRenderer component to its
+    /// starting base tint.
+    /// </summary>
+    public void ResetBaseTint()
+    {
+        baseTint = STARTING_BASE_TINT;
+        CombineAndApplyTint();
+    }
+
+    /// <summary>
+    /// Sets the applied tint to white, effectively removing any tint.
+    /// </summary>
+    public void ResetAppliedTint() => SetAppliedTint(Color.white);
 
     /// <summary>
     /// Sets this Model's SpriteRenderer component's sorting
@@ -369,9 +463,11 @@ public abstract class Model : MonoBehaviour
     /// </summary>
     public virtual void ResetModel()
     {
-        OnCollision = null;
+        OnCollision = null; 
         OnProjectileImpact = null;
         SetColor(BASE_COLOR);
+        ResetAppliedTint();
+        ResetBaseTint();
     }
 
     /// <summary>

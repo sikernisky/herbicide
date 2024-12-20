@@ -1,3 +1,4 @@
+using System.Data.Common;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -67,72 +68,59 @@ public class LevelController : MonoBehaviour
     }
 
     /// <summary>
-    /// Main update loop: <br></br>
-    /// 
-    /// (1) Update and inform controllers of game state.<br></br>
-    /// (2) Update Scene.<br></br>
-    /// (3) Updates placement and input events.<br></br>
-    /// (4) Update Model Controllers.<br></br>
-    /// (5) Update Currencies.<br></br>
-    /// (6) Update Balance.<br></br>
-    /// (7) Update TileGrid.<br></br>
-    /// (8) Update Canvas.<br></br>
-    /// (9) Update StageController. <br></br>
-    /// (10) Update LevelCompletionController. <br></br>
-    /// (11) Update SettingsController. <br></br>
-    /// (12) Update the LevelBehaviourController. <br></br>
-    /// (13) Update the Time Scale. <br></br>
-    /// (14) Update the LightManager. <br></br>
-    /// (15) Update the CollectionManager.
+    /// Main update loop for singletons.
     /// </summary>
     void Update()
     {
-        //(1) Update and inform controllers of game state
+        // Update and inform controllers of game state
         GameState gameState = DetermineGameState();
         if (gameState == GameState.INVALID) return;
 
-        //(2) Update Scene.
+        // Update Scene.
         SceneController.UpdateScene();
 
-        //(3) Update input and placement events.
+        // Update input and placement events.
         PlacementController.UpdatePlacementEvents(gameState, InputController.DidEscapeDown());
         PlacementController.UpdateCombinationEvents();
         UpdateInputEvents();
 
-        //(4) Update ModelControllers.
+        // Update ModelControllers.
         ControllerManager.UpdateModelControllers(gameState);
 
-        //(5) Update the Economy.
+        // Update the Economy.
         EconomyController.UpdateEconomy(gameState);
 
-        //(6) Update Shop.
+        // Update Shop.
         ShopManager.UpdateShopManager(gameState);
 
-        //(7) Update TileGrid.
+        // Update the InsightManager.
+        InsightManager.UpdateInsightManager(gameState);
+
+        // Update TileGrid.
         TileGrid.UpdateTiles();
 
-        //(8) Update Canvas.
+        // Update Canvas.
         CanvasController.UpdateCanvas(gameState);
 
-        //(9) Update StageController.
+        // Update StageController.
         StageController.UpdateStageController(gameState);
 
-        //(10) Update LevelCompletionController.   
+        // Update LevelCompletionController.   
         LevelCompletionController.UpdateLevelCompletionController(gameState);
 
-        //(11) Update SettingsController.
+        // Update SettingsController.
         SettingsController.UpdateSettingsMenu();
 
-        //(12) Update the LevelBehaviourController.
+        // Update the LevelBehaviourController.
         LevelBehaviourController.UpdateLevelBehaviourController();
 
-        //(13) Update the Time Scale.
+        // Update the Time Scale.
         UpdateTimeScale();
 
-        //(14) Update the LightManager.
+        // Update the LightManager.
         LightManager.UpdateLightManager();
 
-        //(15) Update the CollectionManager.
+        // Update the CollectionManager.
         CollectionManager.UpdateCollectionManager();
     }
 
@@ -173,6 +161,7 @@ public class LevelController : MonoBehaviour
         LightManager.SetSingleton(instance);
         StageController.SetSingleton(instance);
         ExplosionController.SetSingleton(instance);
+        InsightManager.SetSingleton(instance);
     }
 
     /// <summary>

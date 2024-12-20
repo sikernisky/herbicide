@@ -40,7 +40,8 @@ public class NexusHoleFactory : Factory
     }
 
     /// <summary>
-    /// Returns a fresh NexusHole prefab from the object pool.
+    /// Returns a fresh NexusHole prefab from the object pool. By default, this is
+    /// a spawn point for enemies.
     /// </summary>
     /// <returns>a GameObject with a NexusHole component attached to it</returns>
     public static GameObject GetNexusHolePrefab() => instance.RequestObject(ModelType.NEXUS_HOLE);

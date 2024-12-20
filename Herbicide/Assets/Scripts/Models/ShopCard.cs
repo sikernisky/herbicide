@@ -30,6 +30,12 @@ public class ShopCard : UIModel
     private TMP_Text cardCost;
 
     /// <summary>
+    /// Text to represent the ShopCard's combo available status.
+    /// </summary>
+    [SerializeField]
+    private TMP_Text comboAvailableText;
+
+    /// <summary>
     /// The ShopCard's RectTransform component.
     /// </summary>
     [SerializeField]
@@ -40,18 +46,6 @@ public class ShopCard : UIModel
     /// </summary>
     [SerializeField]
     private Model model;
-
-    /// <summary>
-    /// The ShopCard's button component.
-    /// </summary>
-    [SerializeField]
-    private Button cardButton;
-
-    /// <summary>
-    /// true if the player clicked on this ShopCard; otherwise,
-    /// false. 
-    /// </summary>
-    private bool clicked;
 
     #endregion
 
@@ -98,25 +92,6 @@ public class ShopCard : UIModel
     public int GetPrice() => model.COST;
 
     /// <summary>
-    /// #BUTTON EVENT#
-    /// 
-    /// Called when the player clicks this ShopCard. Stores
-    /// the click.
-    /// </summary>
-    public void ClickShopCard()
-    {
-        if (EconomyController.GetBalance(ModelType.DEW) < model.COST) return;
-        clicked = true;
-    }
-
-    /// <summary>
-    /// Returns true if the player clicked this ShopCard.
-    /// </summary>
-    /// <returns>true if the player clicked this ShopCard;
-    /// otherwise, false. /// </returns>
-    public bool ClickedOn() => clicked;
-
-    /// <summary>
     /// Sets the color of the ShopCard's background and title.
     /// </summary>
     /// <param name="color">The color to set the ShopCard to.</param>
@@ -128,9 +103,23 @@ public class ShopCard : UIModel
     }
 
     /// <summary>
+    /// Sets the combo available text of this ShopCard to active or
+    /// inactive.
+    /// </summary>
+    /// <param name="active">true if the combo available text should
+    /// be active; otherwise, false.</param>    
+    public void SetComboAvailableTextActive(bool active) => comboAvailableText.gameObject.SetActive(active);    
+
+    /// <summary>
     /// Sets the cost text of this ShopCard to its Model's cost.
     /// </summary>
     public void RefreshCostText() => cardCost.text = model.COST.ToString();
+
+    /// <summary>
+    /// Returns the Image of this ShopCard.
+    /// </summary>
+    /// <returns>the Image of this ShopCard.</returns>
+    public Image GetCardBackgroundImage() => cardBackgroundImage;
 
     #endregion
 }

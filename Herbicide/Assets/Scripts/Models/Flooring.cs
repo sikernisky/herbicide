@@ -206,22 +206,26 @@ public abstract class Flooring : Model, ISurface
     }
 
     /// <summary>
-    /// Removes the PlaceableObject from this Flooring. This does not
+    /// Returns and removes the PlaceableObject from this Flooring. This does not
     /// destroy the occupant; that is the responsibility of its controller. 
     /// </summary>
     /// <param name="neighbors">This Flooring's neighbors.</param>
-    public virtual void Remove(ISurface[] neighbors)
+    /// <returns>the PlaceableObject on this Flooring; null if there is none.</returns>
+    public virtual PlaceableObject Remove(ISurface[] neighbors)
     {
         AssertDefined();
         Assert.IsTrue(CanRemove(neighbors), "Need to check removal validity.");
-
         Tree treeOccupant = GetOccupant() as Tree;
-        if (treeOccupant != null) treeOccupant.Remove(neighbors);
+
+        PlaceableObject removed;
+        if (treeOccupant != null) return treeOccupant.Remove(neighbors);
         else
         {
+            removed = GetOccupant();
             occupant.OnRemove();
             occupant = null;
         }
+        return removed;
     }
 
     /// <summary>
@@ -304,8 +308,13 @@ public abstract class Flooring : Model, ISurface
 
         hollowRenderer.sortingLayerName = ghost.GetSortingLayer().ToString().ToLower();
         hollowRenderer.sortingOrder = GetY();
-        hollowRenderer.color = new Color32(255, 255, 255, 200);
-        hollowCopy.transform.position = transform.position;
+        Color32 ghostTint = ghost.GetCurrentTint();
+        MaterialPropertyBlock materialPropertyBlock = new MaterialPropertyBlock();
+        hollowRenderer.GetPropertyBlock(materialPropertyBlock);
+        materialPropertyBlock.SetColor("_Color", ghostTint);
+        hollowRenderer.SetPropertyBlock(materialPropertyBlock);
+        Color32 ghostColor = ghost.GetColor();
+        hollowRenderer.color = new Color32(ghostColor.r, ghostColor.g, ghostColor.b, 200); hollowCopy.transform.position = transform.position;
         hollowCopy.transform.SetParent(transform);
         hollowCopy.transform.localScale = Vector3.one;
 
@@ -379,6 +388,54 @@ public abstract class Flooring : Model, ISurface
     /// <returns> a Sprite that represents this Flooring when it is
     /// being placed.</returns>
     public override Sprite[] GetPlacementTrack() => throw new System.NotSupportedException();
+
+    /// <summary>
+    /// Displays this Flooring's occupant's information using the
+    /// insight manager. Does nothing if this Flooring is not occupied.
+    /// If the occupant is an ISurface, passes the event to that ISurface.
+    /// </summary>
+    public void ShowMobOccupantAbility() 
+    {
+        if (Occupied())
+        {
+            ISurface occupantSurf = GetOccupant() as ISurface;
+            if (occupantSurf != null) occupantSurf.ShowMobOccupantAbility();
+        }
+        else
+        {
+            Mob occupantAsMob = GetOccupant() as Mob;
+            if (occupantAsMob != null) InsightManager.DisplayAbilityOfMob(occupantAsMob);
+        }
+    }
+
+    /// <summary>
+    /// Sets the tint of this Tile and all its occupants.
+    /// </summary>
+    /// <param name="tintColor">The tint color to set.</param>
+    public void SetTintOfSurfaceAndAllOccupants(Color32 tintColor)
+    {
+        SetAppliedTint(tintColor);
+        if(Occupied())
+        {
+            ISurface occupantSurf = GetOccupant() as ISurface;
+            if (occupantSurf != null) occupantSurf.SetTintOfSurfaceAndAllOccupants(tintColor);
+            else GetOccupant().SetAppliedTint(tintColor);
+        }
+    }
+
+    /// <summary>
+    /// Removes the tint of this Tile and all its occupants.
+    /// </summary>
+    public void RemoveTintOfSurfaceAndAllOccupants()
+    {
+        ResetAppliedTint();
+        if (Occupied())
+        {
+            ISurface occupantSurf = GetOccupant() as ISurface;
+            if (occupantSurf != null) occupantSurf.RemoveTintOfSurfaceAndAllOccupants();
+            else GetOccupant().ResetAppliedTint();
+        }
+    }
 
     #endregion
 }

@@ -55,8 +55,9 @@ public class RaccoonController : DefenderController<RaccoonController.RaccoonSta
     /// Creates a RaccoonController reference.
     /// </summary>
     /// <param name="raccoon">The Raccoon defender.</param>
+    /// <param name="tier">The tier of the Raccoon.</param>
     /// <returns>a new RaccoonController reference.</returns>
-    public RaccoonController(Raccoon raccoon) : base(raccoon) { }
+    public RaccoonController(Raccoon raccoon, int tier) : base(raccoon, tier) { }
 
     /// <summary>
     /// Main update loop for the Raccoon.

@@ -33,11 +33,6 @@ public class Porcupine : Defender
     public override float MIN_MAIN_ACTION_RANGE => 0f;
 
     /// <summary>
-    /// Starting attack speed of a Porcupine.
-    /// </summary>
-    public override float BASE_MAIN_ACTION_SPEED => 1.6f;
-
-    /// <summary>
     /// Maximum attack speed of a Porcupine.
     /// </summary>
     public override float MAX_MAIN_ACTION_SPEED => float.MaxValue;
@@ -112,6 +107,25 @@ public class Porcupine : Defender
     /// </summary>
     /// <returns>the (X, Y) dimensions of the Porcupine's placement track.</returns>
     public override Vector2Int GetPlacementTrackDimensions() => new Vector2Int(19, 23);
+
+    /// <summary>
+    /// Returns the Porcupine's base main action speed. Depends on the Porcupine's tier.
+    /// </summary>
+    /// <returns>the Porcupine's base main action speed.</returns>
+    protected override float CalculateBaseMainActionSpeed()
+    {
+        switch (GetTier())
+        {
+            case 1:
+                return 1.50f;
+            case 2:
+                return 2.00f;
+            case 3:
+                return 2.75f;
+            default:
+                return 0.50f;
+        }
+    }
 
     #endregion
 }

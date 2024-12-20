@@ -10,17 +10,29 @@ public class Squirrel : Defender
     /// <summary>
     /// The amount of damage a Squirrel's acorn does in tier one.
     /// </summary>
-    public int ACORN_DAMAGE_TIER_ONE => 4;
+    public int ACORN_DAMAGE_TIER_ONE => 5;
 
     /// <summary>
     /// The amount of damage a Squirrel's acorn does in tier two.
     /// </summary>
-    public int ACORN_DAMAGE_TIER_TWO => 3;
+    public int ACORN_DAMAGE_TIER_TWO => 5;
 
     /// <summary>
     /// The amount of damage a Squirrel's acorn does in tier three.
     /// </summary>
-    public int ACORN_DAMAGE_TIER_THREE => 3;
+    public int ACORN_DAMAGE_TIER_THREE => 5;
+
+    /// <summary>
+    /// The Ability of a Squirrel in tier two.
+    /// </summary>
+    [SerializeField]
+    private Ability tierTwoAbility;
+
+    /// <summary>
+    /// The Ability of a Squirrel in tier three.
+    /// </summary>
+    [SerializeField]
+    private Ability tierThreeAbility;
 
     #endregion
 
@@ -49,7 +61,7 @@ public class Squirrel : Defender
     /// <summary>
     /// Starting attack range of a Squirrel
     /// </summary>
-    public override float BASE_MAIN_ACTION_RANGE => 3.5f;
+    public override float BASE_MAIN_ACTION_RANGE => 3f;
 
     /// <summary>
     /// Maximum attack range of a Squirrel
@@ -60,11 +72,6 @@ public class Squirrel : Defender
     /// Minimum attack range of a Squirrel
     /// </summary>
     public override float MIN_MAIN_ACTION_RANGE => 0f;
-
-    /// <summary>
-    /// Number of attacks per second a Squirrel starts with.
-    /// </summary>
-    public override float BASE_MAIN_ACTION_SPEED => .45f;
 
     /// <summary>
     /// Most amount of attack cooldown this Squirrel can have.
@@ -139,6 +146,36 @@ public class Squirrel : Defender
     /// </summary>
     /// <returns>the (X, Y) dimensions of the Bear's placement track.</returns>
     public override Vector2Int GetPlacementTrackDimensions() => new Vector2Int(32, 32);
+
+    /// <summary>
+    /// Returns the Squirrel's ability. This depends on the Squirrel's tier.
+    /// </summary>
+    /// <returns>the Squirrel's ability.</returns>
+    public override Ability GetAbility()
+    {
+        if (GetTier() == 1) return base.GetAbility();
+        else if (GetTier() == 2) return tierTwoAbility;
+        else return tierThreeAbility;
+    }
+
+    /// <summary>
+    /// Returns the Squirrel's base main action speed. Depends on the Squirrel's tier.
+    /// </summary>
+    /// <returns>the Squirrel's base main action speed.</returns>
+    protected override float CalculateBaseMainActionSpeed()
+    {
+        switch (GetTier())
+        {
+            case 1:
+                return 1.00f;
+            case 2:
+                return 1.25f;
+            case 3:
+                return 1.75f;
+            default:
+                return 1.00f;
+        }
+    }
 
     #endregion
 }

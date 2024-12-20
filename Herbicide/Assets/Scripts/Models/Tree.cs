@@ -101,8 +101,7 @@ public abstract class Tree : Mob, ISurface
         candidate.transform.SetParent(transform);
         candidate.SetLocalScale(Vector3.one);
         Vector2 defenderOffset = GetOffsetOfDefenderOnTree(candidate.TYPE);
-        candidate.transform.localPosition =
-            new Vector3(defenderOffset.x, defenderOffset.y, 1);
+        candidate.transform.localPosition = new Vector3(defenderOffset.x, defenderOffset.y, 1);
         candidate.OnPlace(new Vector2Int(GetX(), GetY()));
     }
 
@@ -124,15 +123,18 @@ public abstract class Tree : Mob, ISurface
     }
 
     /// <summary>
-    /// Removes the PlaceableObject from this Tree. This does not
+    /// Returns and removes the PlaceableObject from this Tree. This does not
     /// destroy the occupant; that is the responsibility of its controller. 
     /// </summary>
     /// <param name="neighbors">This Tree's neighbors.</param>
-    public virtual void Remove(ISurface[] neighbors)
+    /// <returns>The PlaceableObject that was removed from this Tree.</returns>
+    public virtual PlaceableObject Remove(ISurface[] neighbors)
     {
         Assert.IsTrue(CanRemove(neighbors), "Need to check removal validity.");
+        PlaceableObject removed = defender;
         defender.OnRemove();
         defender = null;
+        return removed;
     }
 
     /// <summary>
@@ -218,7 +220,13 @@ public abstract class Tree : Mob, ISurface
 
         hollowRenderer.sortingLayerName = "collectables";
         hollowRenderer.sortingOrder = GetSortingOrder() + 1;
-        hollowRenderer.color = new Color32(255, 255, 255, 200);
+        Color32 ghostTint = ghost.GetCurrentTint();
+        MaterialPropertyBlock materialPropertyBlock = new MaterialPropertyBlock();
+        hollowRenderer.GetPropertyBlock(materialPropertyBlock);
+        materialPropertyBlock.SetColor("_Color", ghostTint);
+        hollowRenderer.SetPropertyBlock(materialPropertyBlock);
+        Color32 ghostColor = ghost.GetColor();
+        hollowRenderer.color = new Color32(ghostColor.r, ghostColor.g, ghostColor.b, 200);
         hollowCopy.transform.SetParent(transform);
         hollowCopy.transform.localScale = Vector3.one;
         Vector2 defenderOffset = GetOffsetOfDefenderOnTree(ghost.TYPE);
@@ -305,6 +313,41 @@ public abstract class Tree : Mob, ISurface
             default:
                 return Vector2.zero;
         }
+    }
+
+    /// <summary>
+    /// Displays this Tree's occupant's information using the
+    /// insight manager. Does nothing if this Tree is not occupied.
+    /// If the occupant is an ISurface, passes the event to that ISurface.
+    /// </summary>
+    public void ShowMobOccupantAbility()
+    {
+        if (Occupied())
+        {
+            ISurface occupantSurf = GetOccupant() as ISurface;
+            Mob mobOccupant = GetOccupant() as Mob;
+            if(occupantSurf != null) occupantSurf.ShowMobOccupantAbility();
+            else if (mobOccupant != null) InsightManager.DisplayAbilityOfMob(mobOccupant);
+        }
+    }
+
+    /// <summary>
+    /// Sets the tint of this Tile and all its occupants.
+    /// </summary>
+    /// <param name="tintColor">The tint color to set.</param>
+    public void SetTintOfSurfaceAndAllOccupants(Color32 tintColor)
+    {
+        SetAppliedTint(tintColor);
+        if(Occupied()) GetOccupant().SetAppliedTint(tintColor);
+    }
+
+    /// <summary>
+    /// Removes the tint of this Tile and all its occupants.
+    /// </summary>
+    public void RemoveTintOfSurfaceAndAllOccupants()
+    {
+        ResetAppliedTint();
+        if (Occupied()) GetOccupant().ResetAppliedTint();
     }
 
     #endregion

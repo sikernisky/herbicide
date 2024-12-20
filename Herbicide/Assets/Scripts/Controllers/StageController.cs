@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using TMPro;
 using UnityEngine.UI;
-using UnityEngine.SocialPlatforms;
 
 /// <summary>
 /// Controls the flow and display of stages throughout the game.
@@ -126,7 +125,6 @@ public class StageController : MonoBehaviour
 
             float timePercentage = instance.intermissionTimer / instance.TIME_BETWEEN_STAGES;
             instance.intermissionTimerBarFill.transform.localScale = new Vector3(1 - timePercentage, 1, 1);
-
             if (instance.intermissionTimer >= instance.TIME_BETWEEN_STAGES)
             {
                 instance.isActiveIntermission = false;
@@ -135,7 +133,7 @@ public class StageController : MonoBehaviour
                 instance.intermissionTimer = 0;
                 instance.timeSinceLastStage = 0f;
                 LightManager.AdjustLightingForStageOfDay(instance.currentStage);
-                ControllerManager.ResetNexiiToSpawnPositions(instance);
+                // ControllerManager.ResetAllNexiiToSpawnPositions(instance);
             }
         }
         else

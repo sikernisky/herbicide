@@ -166,7 +166,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
             if (nexusHoleTarget == null) return false;
             if (!nexusHoleTarget.Targetable()) return false;
             if (!GetKudzu().IsExiting() && !TileGrid.CanReach(GetKudzu().GetPosition(), nexusHoleTarget.GetPosition())) return false;
-            if (!IsClosestNexusHole(nexusHoleTarget)) return false;
+            if (!IsClosestTargetableModelAlongPath(nexusHoleTarget)) return false;
 
             return true;
         }
@@ -174,10 +174,8 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
         // If not escaping, only target Nexii.
         else
         {
-            if (nexusTarget == null) return false;
-            if (!nexusTarget.Targetable()) return false;
-            if (nexusTarget.PickedUp()) return false;
-            if (nexusTarget.CashedIn()) return false;
+            if(!IsValidNexusTarget(nexusTarget)) return false;
+            if (!IsClosestTargetableNexusAlongPath(nexusTarget)) return false;
             if (!TileGrid.CanReach(GetKudzu().GetPosition(), nexusTarget.GetPosition())) return false;
 
             return true;
@@ -212,9 +210,6 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
             SetState(KudzuState.IDLE);
             return;
         }
-
-        /*if (GetTarget() == null) Debug.Log(null);
-        else Debug.Log(GetTarget().NAME + " at " + GetTarget().GetPosition() + " is target.");*/
 
         Mob target = GetTarget() as Mob;
         bool targetExists = target != null && target.Targetable();
@@ -490,7 +485,7 @@ public class KudzuController : EnemyController<KudzuController.KudzuState>
             foreach (Model target in GetHeldTargets())
             {
                 Nexus nexusTarget = target as Nexus;
-                if (nexusTarget != null) nexusTarget.CashIn();
+                if (nexusTarget != null) nexusTarget.Drop();
             }
         }
         Assert.IsTrue(NumTargetsHolding() > 0, "You need to hold targets to exit.");

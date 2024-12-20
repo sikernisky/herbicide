@@ -55,8 +55,9 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     /// Makes a new SquirrelController.
     /// </summary>
     /// <param name="defender">The Squirrel Defender. </param>
+    /// <param name="tier">The tier of the Squirrel.</param>
     /// <returns>The created SquirrelController.</returns>
-    public SquirrelController(Squirrel squirrel) : base(squirrel) { }
+    public SquirrelController(Squirrel squirrel, int tier) : base(squirrel, tier) { }
 
     /// <summary>
     /// Main update loop for the Squirrel.
@@ -100,6 +101,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
     {
         Assert.IsTrue(delayBetweenAcorns >= 0, "Delay needs to be non-negative");
 
+        //Debug.Log(GetSquirrel().GetMainActionSpeed());
         for (int i = 0; i < numAcorns; i++)
         {
             Enemy target = GetTarget() as Enemy;
@@ -121,7 +123,9 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
             else acornDamage = GetSquirrel().ACORN_DAMAGE_TIER_THREE;
 
             Vector3 targetPosition = GetTarget().GetAttackPosition();
-            int numSplits = GetSquirrel().GetTier() - 1;
+            int numSplits = 0;
+            if (GetSquirrel().GetTier() == 2) numSplits = 1;
+            else if(GetSquirrel().GetTier() == 3) numSplits = int.MaxValue;
             AcornController acornController = new AcornController(acornComp, GetSquirrel().GetPosition(), targetPosition, numSplits);
             acornComp.SetDamage(acornDamage);
 
@@ -164,7 +168,6 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
             return;
         }
 
-
         Enemy target = GetTarget() as Enemy;
         switch (GetState())
         {
@@ -173,16 +176,14 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
                 break;
             case SquirrelState.IDLE:
                 if (target == null || !target.Targetable()) break;
-/*                Debug.Log("distance to target: " + DistanceToTargetFromTree());
-                Debug.Log("main action range: " + GetSquirrel().GetMainActionRange());*/
-                if (DistanceToTargetFromTree() <= GetSquirrel().GetMainActionRange() &&
+                if (GetTarget() != null &&
                     GetSquirrel().GetMainActionCooldownRemaining() <= 0) SetState(SquirrelState.ATTACK);
                 break;
             case SquirrelState.ATTACK:
                 if (target == null || !target.Targetable()) SetState(SquirrelState.IDLE);
                 if (GetAnimationCounter() > 0) break;
                 if (GetSquirrel().GetMainActionCooldownRemaining() > 0) SetState(SquirrelState.IDLE);
-                else if (DistanceToTarget() > GetSquirrel().GetMainActionRange()) SetState(SquirrelState.IDLE);
+                else if (GetTarget() == null) SetState(SquirrelState.IDLE);
                 break;
             case SquirrelState.INVALID:
                 throw new System.Exception("Invalid State.");
@@ -209,8 +210,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         if (!ValidModel()) return;
         if (GetState() != SquirrelState.IDLE) return;
         Enemy target = GetTarget() as Enemy;
-        if (target != null && DistanceToTargetFromTree() <= GetSquirrel().GetMainActionRange())
-            FaceTarget();
+        if (target != null) FaceTarget();
         else GetSquirrel().FaceDirection(Direction.SOUTH);
 
         SetNextAnimation(GetSquirrel().IDLE_ANIMATION_DURATION,
@@ -232,11 +232,7 @@ public class SquirrelController : DefenderController<SquirrelController.Squirrel
         FaceTarget();
         if (!CanPerformMainAction()) return;
 
-        // Calculate the number of acorns to fire based on the Squirrel's tier.
-        int tier = GetSquirrel().GetTier();
         int numAcornsToFire = 1;
-        if (tier == 2) numAcornsToFire = 2;
-        else if (tier >= 3) numAcornsToFire = 4;
         GetSquirrel().StartCoroutine(FireAcorns(numAcornsToFire));
 
         // Reset attack animation.

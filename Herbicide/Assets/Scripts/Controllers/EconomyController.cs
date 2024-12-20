@@ -91,7 +91,7 @@ public class EconomyController : MonoBehaviour
         Assert.IsNotNull(economyControllers, "Array of EconomyControllers is null.");
         Assert.AreEqual(1, economyControllers.Length);
         instance = economyControllers[0];
-        instance.passiveIncomeEnabled = true;
+        instance.passiveIncomeEnabled = false;
     }
 
     /// <summary>
@@ -164,6 +164,20 @@ public class EconomyController : MonoBehaviour
     }
 
     /// <summary>
+    /// Cashes in an Enemy, potentially modifying the player's balance. Used to
+    /// reward the player for defeating an enemy.
+    /// </summary>
+    /// <param name="enemy">The enemy to cash in.</param>
+    public static void CashIn(Enemy enemy)
+    {
+        Assert.IsNotNull(enemy, "Enemy is null.");
+
+        int value = enemy.CURRENCY_VALUE_ON_DEATH;
+        if(value > 0) Deposit(ModelType.DEW, value);
+        else Withdraw(ModelType.DEW, value);
+    }
+
+    /// <summary>
     /// Removes some amount of currency from the player's balance.
     ///</summary>
     ///<param name="currencyType">The type of currency to remove. </param>
@@ -228,12 +242,12 @@ public class EconomyController : MonoBehaviour
         switch (level)
         {
             case 0:
-                currencies.Add(ModelType.DEW, 50);
+                currencies.Add(ModelType.DEW, 500);
                 currencies.Add(ModelType.BASIC_TREE_SEED, 0);
                 currencies.Add(ModelType.SPEED_TREE_SEED, 0);
                 break;
             default:
-                currencies.Add(ModelType.DEW, 75);
+                currencies.Add(ModelType.DEW, 750);
                 currencies.Add(ModelType.BASIC_TREE_SEED, 0);
                 currencies.Add(ModelType.SPEED_TREE_SEED, 0);
                 break;

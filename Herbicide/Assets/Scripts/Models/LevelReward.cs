@@ -121,10 +121,6 @@ public class LevelReward : Collectable
                 SetSprite(porcupineRewardSprite);
                 SetShadowSprite(porcupineRewardSpriteShadow);
                 break;
-            case ModelType.COMBINATION_BADGE:
-                SetSprite(combinationBadgeRewardSprite);
-                SetShadowSprite(combinationBadgeRewardSpriteShadow);
-                break;
             case ModelType.REROLL_BADGE:
                 SetSprite(rerollBadgeRewardSprite);
                 SetShadowSprite(rerollBadgeRewardSpriteShadow);

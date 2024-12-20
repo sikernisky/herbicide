@@ -64,17 +64,15 @@ public class LevelRewardController : CollectableController<LevelRewardController
         switch (SaveLoadManager.GetLoadedGameLevel())
         {
             case 0:
-                return ModelType.COMBINATION_BADGE;
-            case 1:
                 return ModelType.BUNNY;
-            case 2:
-                return ModelType.RACCOON;
-            case 3:
+            case 1:
                 return ModelType.OWL;
-            case 4:
-                return ModelType.REROLL_BADGE;
-            case 5:
+            case 2:
                 return ModelType.PORCUPINE;
+            case 3:
+                return ModelType.REROLL_BADGE;
+            case 4:
+                return ModelType.RACCOON;
             default:
                 return ModelType.SQUIRREL;
         }
@@ -150,7 +148,6 @@ public class LevelRewardController : CollectableController<LevelRewardController
         ModelType modelTypeReward = GetModelTypeRewardBasedOnLevel();
         bool rewardIsUnlockableInCollection = ModelTypeHelper.IsDefender(modelTypeReward);
         if (rewardIsUnlockableInCollection) CollectionManager.UnlockModel(modelTypeReward);
-        if (modelTypeReward == ModelType.COMBINATION_BADGE) CollectionManager.UnlockCombinations();
         if (modelTypeReward == ModelType.REROLL_BADGE) ShopManager.UnlockReroll();
     }
 

@@ -24,9 +24,9 @@ public class InputController : MonoBehaviour
     private Canvas canvas;
 
     /// <summary>
-    /// the Tile the player is hovering; null if not hovering over a Tile.
+    /// the Model the player is hovering; null if not hovering over a Model.
     /// </summary>
-    private Tile tileHovering;
+    private Model modelHovering;
 
     /// <summary>
     /// Reference to the GraphicRaycaster Canvas component.
@@ -138,12 +138,12 @@ public class InputController : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns the Tile the player hovered on at this specific frame; returns
-    /// null if no Tile was hovered on this frame.
+    /// Returns the Model the player hovered on at this specific frame; returns
+    /// null if no Model was hovered on this frame.
     /// </summary>
-    /// <returns>the Tile the player hovered on this frame, 
+    /// <returns>the Model the player hovered on this frame, 
     /// or null if they didn't.</returns>
-    public static Tile TileHovered()
+    public static Model ModelHovered()
     {
         instance.AssertTempObjectsMade();
 
@@ -153,23 +153,23 @@ public class InputController : MonoBehaviour
 
         foreach (RaycastHit2D hit in instance.hitTemp)
         {
-            if (hit.collider != null && instance.tileHovering == null)
+            if (hit.collider != null && instance.modelHovering == null)
             {
-                Tile t = hit.collider.gameObject.GetComponent<Tile>();
-                if (t != null) instance.tileHovering = t;
-                return t;
+                Model m = hit.collider.gameObject.GetComponent<Model>();
+                if (m != null) instance.modelHovering = m;
+                return m;
             }
         }
         return null;
     }
 
     /// <summary>
-    /// Returns the Tile the player hovered off at this specific frame; returns
-    /// null if no Tile was hovered off this frame.
+    /// Returns the Model the player hovered off at this specific frame; returns
+    /// null if no Model was hovered off this frame.
     /// </summary>
-    /// <returns>the Tile the player hovered off this frame, 
+    /// <returns>the Model the player hovered off this frame, 
     /// or null if they didn't.</returns>
-    public static Tile TileDehovered()
+    public static Model ModelDehovered()
     {
         instance.AssertTempObjectsMade();
 
@@ -179,46 +179,96 @@ public class InputController : MonoBehaviour
 
         foreach (RaycastHit2D hit in instance.hitTemp)
         {
-            //If any raycast hit in the array equal to the hovering tile,
-            //you're still hovering over that tile, so return null -- nothing was dehovered
-            if (hit.collider != null && instance.tileHovering != null)
+            //If any raycast hit in the array equal to the hovering model,
+            //you're still hovering over that model, so return null -- nothing was dehovered
+            if (hit.collider != null && instance.modelHovering != null)
             {
-                Tile t = hit.collider.GetComponent<Tile>();
-                if (t != null && t == instance.tileHovering) return null;
+                Model m = hit.collider.GetComponent<Model>();
+                if (m != null && m == instance.modelHovering) return null;
             }
         }
 
-        Tile dehoveredTile = instance.tileHovering;
-        instance.tileHovering = null;
-        return dehoveredTile;
+        Model dehoveredModel = instance.modelHovering;
+        instance.modelHovering = null;
+        return dehoveredModel;
     }
 
     /// <summary>
-    /// Returns the first Tile the player clicked on at this specific frame; returns
-    /// null if no Tile was clicked on this frame.
+    /// Returns true if the player is hovering over a specific Tile or any of its
+    /// placed objects.
     /// </summary>
-    /// <returns>the Tile the player clicked on this frame, 
+    /// <param name="tile">The Tile to check.</param>
+    /// <param name="placedObjects">The objects on the Tile to check.</param>
+    /// <returns>true if the player is hovering over a specific Tile or any of its
+    /// placed objects; otherwise, false.</returns>
+    public static bool IsHoveringOneOrMorePlacedObjectsOnTile(Tile tile, HashSet<PlaceableObject> placedObjects)
+    {
+        instance.mousePosTemp = GetUIMousePosition();
+        instance.worldPosTemp = CameraController.ScreenToWorldPoint(instance.mousePosTemp);
+        instance.hitTemp = Physics2D.RaycastAll(instance.worldPosTemp, Vector2.zero);
+
+        foreach (RaycastHit2D hit in instance.hitTemp)
+        {
+            if (hit.collider != null)
+            {
+                Tile t = hit.collider.GetComponent<Tile>();
+                if (t != null && t == tile) return true;
+                PlaceableObject obj = hit.collider.GetComponent<PlaceableObject>();
+                if (obj != null && placedObjects.Contains(obj)) return true;
+            }
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Returns true if the player is hovering over a specific Model.
+    /// </summary>
+    /// <param name="m">The Model to check.</param>
+    /// <returns>true if the player is hovering over a specific Model; otherwise,
+    /// false.</returns>
+    public static bool IsHoveringModel(Model m)
+    {
+        instance.mousePosTemp = GetUIMousePosition();
+        instance.worldPosTemp = CameraController.ScreenToWorldPoint(instance.mousePosTemp);
+        instance.hitTemp = Physics2D.RaycastAll(instance.worldPosTemp, Vector2.zero);
+
+        foreach (RaycastHit2D hit in instance.hitTemp)
+        {
+            if (hit.collider != null)
+            {
+                Model hitModel = hit.collider.GetComponent<Model>();
+                if (hitModel == m) return true;
+            }
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Returns the first Model the player clicked on at this specific frame; returns
+    /// null if no Model was clicked on this frame.
+    /// </summary>
+    /// <returns>the Model the player clicked on this frame, 
     /// or null if they didn't.</returns>
-    public static Tile TileClickedDown()
+    public static Model ModelClickedDown()
     {
         instance.AssertTempObjectsMade();
 
         if (!DidPrimaryDown()) return null;
-        return instance.GetTileFromRaycast();
+        return instance.GetModelFromRaycast();
     }
 
     /// <summary>
-    /// Returns the first Tile the player clicked on at this specific frame; returns
-    /// null if no Tile was clicked on this frame.
+    /// Returns the first Model the player clicked on at this specific frame; returns
+    /// null if no Model was clicked on this frame.
     /// </summary>
-    /// <returns>the Tile the player clicked on this frame, 
+    /// <returns>the Model the player clicked on this frame, 
     /// or null if they didn't.</returns>
-    public static Tile TileClickedUp()
+    public static Model ModelClickedUp()
     {
         instance.AssertTempObjectsMade();
 
         if (!DidPrimaryUp()) return null;
-        return instance.GetTileFromRaycast();
+        return instance.GetModelFromRaycast();
     }
 
     /// <summary>
@@ -234,7 +284,7 @@ public class InputController : MonoBehaviour
         Assert.IsNotNull(m, "Model m is null.");
 
         if (!DidPrimaryUp()) return false;
-        return instance.CheckModelFromRaycast(m);
+        return instance.ClickedModelThisFrame(m);
     }
 
     /// <summary>
@@ -244,7 +294,7 @@ public class InputController : MonoBehaviour
     /// <param name="m">The Model to check for. </param>
     /// <returns>true if the player clicked on a specific Model this
     /// frame; otherwise, false.</returns>
-    private bool CheckModelFromRaycast(Model m)
+    private bool ClickedModelThisFrame(Model m)
     {
         AssertTempObjectsMade();
 
@@ -263,14 +313,14 @@ public class InputController : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns the first Tile component found after iterating through a
+    /// Returns the first Model component found after iterating through a
     /// RayCastHit2D array generated from the player's mouse position.
-    /// Returns null if no Tile component was found.
+    /// Returns null if no Model component was found.
     /// </summary>
-    /// <returns>the first Tile component found after iterating through a
-    /// RayCastHit2D array. Returns null if no Tile component was found.
+    /// <returns>the first Model component found after iterating through a
+    /// RayCastHit2D array. Returns null if no Model component was found.
     /// </returns>
-    private Tile GetTileFromRaycast()
+    private Model GetModelFromRaycast()
     {
         AssertTempObjectsMade();
 
@@ -281,8 +331,8 @@ public class InputController : MonoBehaviour
         foreach (RaycastHit2D hit in instance.hitTemp)
         {
             if (hit.collider == null) continue;
-            Tile t = hit.collider.gameObject.GetComponent<Tile>();
-            if (t != null) return t;
+            Model m = hit.collider.gameObject.GetComponent<Model>();
+            if (m != null) return m;
         }
 
         return null;

@@ -55,8 +55,9 @@ public class PorcupineController : DefenderController<PorcupineController.Porcup
     /// Creates a PorcupineController reference.
     /// </summary>
     /// <param name="porcupine">The Porcupine defender.</param>
+    /// <param name="tier">The tier of the Porcupine.</param>
     /// <returns>a new PorcupineController reference.</returns>
-    public PorcupineController(Porcupine porcupine) : base(porcupine) { }
+    public PorcupineController(Porcupine porcupine, int tier) : base(porcupine, tier) { }
 
     /// <summary>
     /// Main update loop for the Porcupine.

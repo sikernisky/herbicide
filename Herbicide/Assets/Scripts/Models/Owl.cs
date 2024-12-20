@@ -33,11 +33,6 @@ public class Owl : Defender
     public override float MIN_MAIN_ACTION_RANGE => 0f;
 
     /// <summary>
-    /// Starting attack speed of a Owl.
-    /// </summary>
-    public override float BASE_MAIN_ACTION_SPEED => 0.4f;
-
-    /// <summary>
     /// Maximum attack speed of a Owl.
     /// </summary>
     public override float MAX_MAIN_ACTION_SPEED => float.MaxValue;
@@ -117,6 +112,25 @@ public class Owl : Defender
     /// </summary>
     /// <returns>the (X, Y) dimensions of the Owl's placement track.</returns>
     public override Vector2Int GetPlacementTrackDimensions() => new Vector2Int(32, 32);
+
+    /// <summary>
+    /// Returns the Owl's base main action speed. Depends on the Owl's tier.
+    /// </summary>
+    /// <returns>the Owl's base main action speed.</returns>
+    protected override float CalculateBaseMainActionSpeed()
+    {
+        switch (GetTier())
+        {
+            case 1:
+                return 0.50f;
+            case 2:
+                return 0.75f;
+            case 3:
+                return 1.00f;
+            default:
+                return 0.50f;
+        }
+    }
 
     #endregion
 }

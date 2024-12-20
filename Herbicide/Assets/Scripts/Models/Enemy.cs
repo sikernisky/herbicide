@@ -100,7 +100,7 @@ public abstract class Enemy : Mob
     /// How much a currency collectable dropped by this Enemy on death
     /// is worth.
     /// </summary>
-    public virtual int CURRENCY_VALUE_ON_DEATH => 25;
+    public virtual int CURRENCY_VALUE_ON_DEATH => 5;
 
     #endregion
 
@@ -115,6 +115,7 @@ public abstract class Enemy : Mob
         Assert.IsTrue(ReadyToSpawn(), "Not Ready.");
         base.OnSpawn();
 
+        ToggleHealthBar(false);
         GetCollider().enabled = true;
         activeDOTs = new HashSet<DamageOverTime>();
         appliedDOTsThisCycle = new HashSet<DamageOverTime.DOTType>();
@@ -182,6 +183,7 @@ public abstract class Enemy : Mob
     {
         entered = false;
         entering = true;
+        ToggleHealthBar(true);
         this.enterPos = enterPos;
     }
 
@@ -236,6 +238,7 @@ public abstract class Enemy : Mob
     {
         exited = false;
         exiting = true;
+        ToggleHealthBar(false);
         this.exitPos = exitPos;
     }
 
@@ -324,17 +327,8 @@ public abstract class Enemy : Mob
     {
         Assert.IsNotNull(healthBarBackground, "HealthBarBackground is null.");
         Assert.IsNotNull(healthBarFill, "HealthBarFill is null.");
-
-        if (showHealthBar && IsEntered())
-        {
-            healthBarBackground.enabled = true;
-            healthBarFill.enabled = true;
-        }
-        else
-        {
-            healthBarBackground.enabled = false;
-            healthBarFill.enabled = false;
-        }
+        healthBarBackground.enabled = showHealthBar;
+        healthBarFill.enabled = showHealthBar;
     }
 
     /// <summary>

@@ -24,7 +24,7 @@ public class Acorn : Projectile
     /// <summary>
     /// Starting speed of an Acorn.
     /// </summary>
-    public override float BASE_SPEED => 9f;
+    public override float BASE_SPEED => 20f;
 
     /// <summary>
     /// Maximum speed of an Acorn.
@@ -39,7 +39,7 @@ public class Acorn : Projectile
     /// <summary>
     /// Starting damage of an Acorn.
     /// </summary>
-    public override int BASE_DAMAGE => 4;
+    public override int BASE_DAMAGE => 5;
 
     /// <summary>
     /// Maximum damage of an Acorn.
