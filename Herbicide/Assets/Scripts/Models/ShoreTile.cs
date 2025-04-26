@@ -11,14 +11,9 @@ public class ShoreTile : EdgeTile
     #region Stats
 
     /// <summary>
-    /// Tile type of a ShoreTile.
-    /// </summary>
-    protected override TileType type => TileType.SHORE;
-
-    /// <summary>
     /// Shore Tiles are not walkable.
     /// </summary>
-    public override bool WALKABLE => false;
+    public override bool IsTraversable => false;
 
     /// <summary>
     /// Model type of a ShoreTile.

@@ -44,7 +44,7 @@ public class StoneWall : Wall
     /// <summary>
     /// Starting main action animation duration of a StoneWall.
     /// </summary>
-    public override float BASE_MAIN_ACTION_ANIMATION_DURATION => 0f;
+    public override float BaseMainActionAnimationDuration => 0f;
 
     /// <summary>
     /// Starting chase range of a StoneWall.
@@ -79,7 +79,7 @@ public class StoneWall : Wall
     /// <summary>
     /// Starting movement animation duration of a StoneWall.
     /// </summary>
-    public override float BASE_MOVEMENT_ANIMATION_DURATION => 0;
+    public override float BaseMovementAnimationDuration => 0;
 
     #endregion
 

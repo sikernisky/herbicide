@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 /// <summary>
 /// Holds a ShopCard in the Shop.
@@ -10,116 +11,97 @@ public class ShopSlot : MonoBehaviour
     #region Fields
 
     /// <summary>
+    /// The ShopCard in this slot; null if this slot is empty.
+    /// </summary>
+    public ShopCard Occupant { get; private set; }
+
+    /// <summary>
+    /// true if this ShopSlot is filled with a ShopCard; otherwise, false.
+    /// </summary>
+    public bool Filled => Occupant != null;
+
+    /// <summary>
+    /// true if this ShopSlot is defined; otherwise, false.
+    /// </summary>
+    public bool Defined => Filled && Occupant.IsDefined;
+
+    /// <summary>
     /// The index of this ShopSlot -- each slot has its
     /// own index.
     /// </summary>
-    private int slotIndex;
-
-    /// <summary>
-    /// The ShopCard in this slot; null if this slot is empty.
-    /// </summary>
-    private ShopCard occupant;
+    public int SlotIndex { get; private set; }
 
     /// <summary>
     /// The button on this ShopSlot.
     /// </summary>
+    [SerializeField]
     private Button button;
-
-    /// <summary>
-    /// true if the ShopManager has initialized this ShopSlot; otherwise, false.
-    /// </summary>
-    private bool setupByManager;
-
-    /// <summary>
-    /// true if this ShopSlot is active in the Shop; otherwise, false if it is
-    /// disabled.
-    /// </summary>
-    private bool activeInShop;
 
     #endregion
 
     #region Methods
 
     /// <summary>
-    /// Fills the ShopSlot with a ShopCard.
+    /// Fills the ShopSlot with a ShopCard, index, and assigns an onClick event.
     /// </summary>
+    /// <param name="slotIndex">The index of this ShopSlot.</param>
     /// <param name="shopCard">The ShopCard to display.</param>
-    public void Fill(ShopCard shopCard)
+    /// <param name="onClickEvent">The event to trigger when the ShopCard is clicked.</param>
+    public void Setup(int slotIndex, ShopCard shopCard, UnityAction<int> onClickEvent)
     {
         Assert.IsNotNull(shopCard);
-        Assert.IsTrue(IsSetup());
+        Assert.IsNotNull(onClickEvent);
+        Assert.IsFalse(Filled, "Already filled with a ShopCard prefab.");
+        
+        SlotIndex = slotIndex;
+        Occupant = shopCard;
+        PositionShopCardInSlot(Occupant);
+        ConfigureSlotButton(Occupant);
+        button.onClick.AddListener(() => onClickEvent(slotIndex));
+    }
 
-        if (occupant != null) Destroy(occupant.gameObject);
-        occupant = null;
-        occupant = shopCard;
-        RectTransform cardTransform = occupant.GetCardTransform();
+    /// <summary>
+    /// Positions the ShopCard in the slot.
+    /// </summary>
+    /// <param name="shopCard">the ShopCard prefab to position.</param>
+    private void PositionShopCardInSlot(ShopCard shopCard)
+    {
+        Assert.IsNotNull(shopCard);
+        RectTransform cardTransform = Occupant.gameObject.GetComponent<RectTransform>();
         cardTransform.SetParent(transform);
         cardTransform.localScale = Vector3.one;
         cardTransform.localPosition = Vector3.zero;
-        occupant.RefreshCostText();
+    }
 
+    /// <summary>
+    /// Defines the filled slot with new ShopCardData, potentially
+    /// changing its appearance and functionality.
+    /// </summary>
+    /// <param name="shopCardData">the ShopCardData to define with. </param>
+    public void DefineCard(ShopCardData shopCardData)
+    {
+        Assert.IsNotNull(shopCardData);
+        Assert.IsTrue(Filled, "Need to fill the slot with a ShopCard prefab first.");
+
+        Occupant.gameObject.SetActive(true);
+        Occupant.DefineShopCard(shopCardData);
+        ConfigureSlotButton(Occupant);
+    }
+
+    /// <summary>
+    /// Configures the button on this ShopSlot to match the ShopCard that
+    /// occupies it.
+    /// </summary>
+    /// <param name="shopCard">the ShopCard that occupies this slot.</param>
+    private void ConfigureSlotButton(ShopCard shopCard)
+    {
+        Assert.IsNotNull(shopCard);
         ColorBlock buttonColors = button.colors;
         buttonColors.normalColor = new Color32(255, 255, 255, 255);
         buttonColors.highlightedColor = new Color32(200, 200, 200, 255);
         button.colors = buttonColors;
-        button.targetGraphic = occupant.GetCardBackgroundImage();
-    }
-
-    /// <summary>
-    /// Fills the ShopSlot with a blank ShopCard.
-    /// </summary>
-    public void FillWithBlank()
-    {
-        GameObject blankCard = ShopFactory.GetShopCardPrefab(ModelType.SHOP_CARD_BLANK);
-        Assert.IsNotNull(blankCard);
-        Fill(blankCard.GetComponent<ShopCard>());
-        occupant = null;
-    }
-
-    /// <summary>
-    /// Returns true if this ShopSlot has been setup by the ShopManager.
-    /// </summary>
-    /// <returns> true if this ShopSlot has been setup by the ShopManager;
-    /// otherwise, false. </returns>
-    public bool IsSetup() => setupByManager;    
-
-    /// <summary>
-    /// Sets this ShopSlot's necessary attributes so that it
-    /// can function in the scene.
-    /// </summary>
-    /// <param name="slotIndex">The unique index of this ShopSlot.</param>
-    /// <param name="button">The button on this ShopSlot.</param>
-    public void SetupSlot(int slotIndex, Button button)
-    {
-        Assert.IsFalse(IsSetup());
-
-        EnableSlot();
-        this.slotIndex = slotIndex;
-        this.button = button;
-        setupByManager = true;
-    }
-
-    /// <summary>
-    /// Returns an instantiated GameObject with this ShopSlot's Model
-    /// attached. 
-    /// </summary>
-    /// <returns>an instantiated GameObject with this ShopSlot's Model
-    /// attached.</returns>
-    public GameObject GetCardPrefab()
-    {
-        Assert.IsTrue(IsSetup(), "Not setup.");
-        return occupant.GetShopCardModelPrefab();
-    }
-
-    /// <summary>
-    /// Returns the ModelType of the ShopCard in this ShopSlot.
-    /// </summary>
-    /// <returns>the ModelType of the ShopCard in this ShopSlot.</returns>
-    public ModelType GetModelTypeOfCardInSlot()
-    {
-        Assert.IsTrue(IsSetup(), "Not setup.");
-        return occupant.GetModelType();
-    }
+        button.targetGraphic = shopCard.GetCardBackgroundImage();
+    }  
 
     /// <summary>
     /// Returns true if the player meets all conditions to buy the ShopCard that
@@ -127,37 +109,12 @@ public class ShopSlot : MonoBehaviour
     /// </summary>
     /// <param name="currentBalance">How much currency the player has.</param>
     /// <returns></returns>
-    public bool CanBuy(int currentBalance) => occupant.GetPrice() <= currentBalance;
+    public bool CanBuy(int currentBalance) => Occupant.ShopCardData.CardCost <= currentBalance;
 
     /// <summary>
-    /// Returns how much currency it takes to buy the ShopCard in this ShopSlot.
-    /// Buys and removes the card.
+    /// Sets the ShopCard in this ShopSlot to be bought.
     /// </summary>
-    /// <param name="currentBalance">How much currency the player has.</param>
-    /// <returns></returns>
-    public int Buy(int currentBalance)
-    {
-        Assert.IsTrue(CanBuy(currentBalance));
-
-        int price = occupant.GetPrice();
-        Destroy(occupant.gameObject);
-
-        return price;
-    }
-
-    /// <summary>
-    /// Returns this ShopSlot's unique index.
-    /// </summary>
-    /// <returns>this ShopSlot's unique index.</returns>
-    public int GetSlotIndex() => slotIndex;
-
-    /// <summary>
-    /// Returns true if this ShopSlot has been purchased and hosts
-    /// no ShopCard.
-    /// </summary>
-    /// <returns>true if this ShopSlot has been purchased and hosts
-    /// no ShopCard; otherwise, false. </returns>
-    public bool Empty() => occupant == null;
+    public void OnBuy() => Occupant.gameObject.SetActive(false);
 
     /// <summary>
     /// Sets the color of the ShopCard occupant's background and title.
@@ -165,45 +122,9 @@ public class ShopSlot : MonoBehaviour
     /// <param name="color">The color to set the ShopCard to.</param>
     public void SetOccupantCardColor(Color32 color)
     {
-        Assert.IsFalse(Empty());
-        occupant.SetCardColor(color);
+        Assert.IsTrue(Filled);
+        Occupant.SetCardColor(color);
     }
-
-    /// <summary>
-    /// Sets the active status of the ShopCard occupant's combo
-    /// available text.
-    /// </summary>
-    /// <param name="active">true if the combo available text should be active;
-    /// otherwise, false.</param>
-    public void SetOccupantComboAvailableTextActive(bool active)
-    {
-        Assert.IsFalse(Empty());
-        occupant.SetComboAvailableTextActive(active);
-    }
-
-    /// <summary>
-    /// Disables this ShopSlot.
-    /// </summary>
-    public void DisableSlot()
-    {
-        activeInShop = false;
-        gameObject.SetActive(false);
-    }
-
-    /// <summary>
-    /// Enables this ShopSlot.
-    /// </summary>
-    public void EnableSlot()
-    {
-        activeInShop = true;
-        gameObject.SetActive(true);
-    }
-
-    /// <summary>
-    /// Returns true if this ShopSlot is enabled in the Shop.
-    /// </summary>
-    /// <returns>true if this ShopSlot is enabled; otherwise, false. </returns>
-    public bool IsEnabled() => activeInShop;
 
     #endregion
 }

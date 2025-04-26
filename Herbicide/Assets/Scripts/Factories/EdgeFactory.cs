@@ -51,11 +51,11 @@ public class EdgeFactory : MonoBehaviour
     /// </summary>
     /// <param name="type">the type/name of the Edge</param>
     /// <param name="index">the Sprite index </param>
-    public static Sprite GetEdgeSprite(string type, int index)
+    public static Sprite GetEdgeSprite(ModelType type, int index)
     {
         Assert.IsTrue(ValidEdgeIndex(index), index + " is not valid.");
 
-        if (type.ToLower() == "shore") return instance.shoreEdgeSprites[index];
+        if (type == ModelType.SHORE_TILE) return instance.shoreEdgeSprites[index];
 
         return null;
     }

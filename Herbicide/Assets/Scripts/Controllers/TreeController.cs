@@ -58,8 +58,8 @@ public abstract class TreeController<T> : MobController<T> where T : Enum
     {
         if (!ValidModel()) return;
 
-        int layer = -Mathf.FloorToInt(GetModel().GetPosition().y);
-        if (GetTree().Occupied()) layer -= 1;
+        int layer = -Mathf.FloorToInt(GetModel().GetWorldPosition().y);
+        if (GetTree().IsOccupied()) layer -= 1;
         GetModel().SetSortingOrder(layer);
     }
 

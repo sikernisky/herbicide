@@ -13,15 +13,6 @@ public class SpeedTree : Tree
     /// </summary>
     private SpeedTreeEffect appliedSpeedTreeEffect;
 
-    #endregion
-
-    #region Stats
-
-    /// <summary>
-    /// How much currency it takes to place a SpeedTree
-    /// </summary>
-    public override int COST => 1;
-
     /// <summary>
     /// Type of a SpeedTree.
     /// </summary>
@@ -30,17 +21,17 @@ public class SpeedTree : Tree
     /// <summary>
     /// Starting health of a SpeedTree.
     /// </summary>
-    public override float BASE_HEALTH => 200;
+    public override float BaseHealth => 200;
 
     /// <summary>
     /// Maximum health of a SpeedTree.
     /// </summary>
-    public override float MAX_HEALTH => 200;
+    public override float MaxHealth => 200;
 
     /// <summary>
     /// Minimum health of a SpeedTree.
     /// </summary>
-    public override float MIN_HEALTH => 0;
+    public override float MinHealth => 0;
 
     /// <summary>
     /// Starting attack range of a SpeedTree.
@@ -102,20 +93,22 @@ public class SpeedTree : Tree
     #region Methods
 
     /// <summary>
-    /// Returns true if a Defender can place on this SpeedTree. If
+    /// Returns true if a candidate can place on this SpeedTree. If
     /// so, places it and applies the SpeedTreeEffect.
     /// </summary>
-    /// <param name="candidate">The candidate Defender.</param>
-    /// <param name="neighbors">This SpeedTree's neighboring ISurfaces.</param>
-    /// <returns>true if a Defender was placed on this SpeedTree; otherwise,
+    /// <param name="candidate">The candidate.</param>
+    /// <returns>true if a candidate was placed on this SpeedTree; otherwise,
     /// false. </returns>
-    public override void Place(PlaceableObject candidate, ISurface[] neighbors)
+    public override bool Place(ISurfacePlaceable candidate)
     {
-        base.Place(candidate, neighbors);
+        if(!base.Place(candidate)) return false;
         SpeedTreeEffect effect = new SpeedTreeEffect();
-        if (!effect.CanAfflict(candidate)) return;
-        appliedSpeedTreeEffect = effect;
-        candidate.AddEffect(appliedSpeedTreeEffect);
+        if (effect.CanAfflict(candidate.Object))
+        {
+            appliedSpeedTreeEffect = effect;
+            candidate.Object.AddEffect(appliedSpeedTreeEffect);
+        }
+        return true;
     }
 
     /// <summary>
@@ -124,14 +117,14 @@ public class SpeedTree : Tree
     /// </summary>
     /// <param name="neighbors">This SpeedTree's neighbors.</param>
     /// <returns>the PlaceableObject that was removed from this SpeedTree.</returns>
-    public override PlaceableObject Remove(ISurface[] neighbors)
+    public override PlaceableObject Remove()
     {
         if(appliedSpeedTreeEffect != null)
         {
-            GetOccupant().TryRemoveEffect(appliedSpeedTreeEffect);
+            Occupant.Object.RemoveEffect(appliedSpeedTreeEffect);
             appliedSpeedTreeEffect = null;
         }
-        return base.Remove(neighbors);
+        return base.Remove();
     }
 
     /// <summary>

@@ -49,7 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelRenderer: {fileID: 562383745849371865}
   modelCollider: {fileID: 6701418950225822535}
-  lineRenderer: {fileID: 8772412671662813672}
+  _lineRenderer: {fileID: 8772412671662813672}
 --- !u!212 &562383745849371865
 SpriteRenderer:
   m_ObjectHideFlags: 0

@@ -40,6 +40,16 @@ public abstract class TimedEffect : Effect
     }
 
     /// <summary>
+    /// Creates a new TimedEffect with the same values as the given TimedEffect.
+    /// </summary>
+    /// <param name="other">the given TimedEffect</param>
+    protected TimedEffect(TimedEffect other) : base(other)
+    {
+        duration = other.duration;
+        timer = other.timer;
+    }
+
+    /// <summary>
     /// Apply this effect to the given Model.
     /// </summary>
     /// <param name="model">the Model to afflict. </param>

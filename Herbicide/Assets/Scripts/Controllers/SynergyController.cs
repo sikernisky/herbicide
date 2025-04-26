@@ -25,7 +25,7 @@ public class SynergyController : MonoBehaviour
     /// <summary>
     /// Up to date list of active PlaceableObjects.
     /// </summary>
-    private static List<PlaceableObject> placeableObjects;
+    private static List<PlaceableObject> useableObjects;
 
     /// <summary>
     /// The Synergy slots.
@@ -88,7 +88,7 @@ public class SynergyController : MonoBehaviour
     {
         Assert.IsNotNull(targetables);
 
-        SynergyController.placeableObjects = targetables;
+        SynergyController.useableObjects = targetables;
         UpdateSynergySlots();
     }
 
@@ -116,11 +116,11 @@ public class SynergyController : MonoBehaviour
     /// 0 if no tier has been met.</returns>
     private static int GetTripleThreatTier()
     {
-        Assert.IsNotNull(placeableObjects);
+        Assert.IsNotNull(useableObjects);
         Assert.IsTrue(instance.chosenSynergies.Contains(Synergy.TRIPLE_THREAT));
 
         int numSquirrels = 0;
-        foreach (PlaceableObject target in placeableObjects)
+        foreach (PlaceableObject target in useableObjects)
         {
             if (target as Squirrel != null) numSquirrels++;
         }
@@ -136,13 +136,13 @@ public class SynergyController : MonoBehaviour
     /// </summary>
     private static void UpdateSynergySlots()
     {
-        foreach (SynergySlot slot in instance.slots)
+/*        foreach (SynergySlot slot in instance.slots)
         {
             Synergy synergy = slot.GetSynergy();
             int tier = GetSynergyTier(synergy);
-            bool hovering = InputController.IsHoveringUIElement(slot.gameObject);
+            bool hovering = InputManager.CurrentHoveredUIModel != null;
             slot.UpdateSynergySlot(tier, hovering, instance.lerpCurve);
-        }
+        }*/
     }
 
     #endregion

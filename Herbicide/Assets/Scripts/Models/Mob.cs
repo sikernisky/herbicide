@@ -97,7 +97,7 @@ public abstract class Mob : PlaceableObject
     /// <summary>
     /// Starting duration of this Mob's main action animation.
     /// </summary>
-    public abstract float BASE_MAIN_ACTION_ANIMATION_DURATION { get; }
+    public abstract float BaseMainActionAnimationDuration { get; }
 
     /// <summary>
     /// Maximum duration of this Mob's main action animation.
@@ -142,7 +142,7 @@ public abstract class Mob : PlaceableObject
     /// <summary>
     /// Starting duration of this Mob's movement animation.
     /// </summary>
-    public abstract float BASE_MOVEMENT_ANIMATION_DURATION { get; }
+    public abstract float BaseMovementAnimationDuration { get; }
 
     /// <summary>
     /// Maximum duration of this Mob's movement animation.
@@ -160,11 +160,6 @@ public abstract class Mob : PlaceableObject
     public virtual float ENTERING_MOVEMENT_SPEED => GetMovementSpeed() * 2.5f;
 
     /// <summary>
-    /// By default, Mobs do not occupy Tiles.
-    /// </summary>
-    public override bool OCCUPIER => false;
-
-    /// <summary>
     /// The multiplier for the range of this Mob's main action when targeting
     /// Models that have entered its range already. Promotes sticking to targets.
     /// </summary>
@@ -173,11 +168,6 @@ public abstract class Mob : PlaceableObject
     #endregion
 
     #region Methods
-
-    /// <summary>
-    /// Called when this Mob activates in the scene.
-    /// </summary>
-    public virtual void OnSpawn() => spawned = true;
 
     /// <summary>
     /// Returns this Mob's spawn position in world space.
@@ -204,6 +194,18 @@ public abstract class Mob : PlaceableObject
     /// </summary>
     /// <returns>true if this Mob is spawned in the scene.</returns>
     public bool Spawned() => spawned;
+
+    /// <summary>
+    /// Returns true if this Mob is ready to spawn in the scene.
+    /// </summary>
+    /// <returns>true if this Mob is ready to spawn in the scene;
+    /// otherwise, false.</returns>
+    public virtual bool ReadyToSpawn() => !Spawned();
+
+    /// <summary>
+    /// Called when this Mob activates in the scene.
+    /// </summary>
+    public virtual void OnSpawn() => spawned = true;
 
     /// <summary>
     /// Returns this Mob's current main action range.
@@ -286,7 +288,7 @@ public abstract class Mob : PlaceableObject
     /// <summary>
     /// Resets this Mob's main action animation duration to its starting value.
     /// </summary>
-    public void ResetMainActionAnimationDuration() => mainActionAnimationDuration = BASE_MAIN_ACTION_ANIMATION_DURATION;
+    public void ResetMainActionAnimationDuration() => mainActionAnimationDuration = BaseMainActionAnimationDuration;
 
     /// <summary>
     /// Returns this Mob's current chase range.
@@ -333,7 +335,7 @@ public abstract class Mob : PlaceableObject
     /// <summary>
     /// Resets this Mob's movement animation duration to its starting value.
     /// </summary>
-    public void ResetMovementAnimationDuration() => movementAnimationDuration = BASE_MOVEMENT_ANIMATION_DURATION;
+    public void ResetMovementAnimationDuration() => movementAnimationDuration = BaseMovementAnimationDuration;
 
     /// <summary>
     /// Returns this Mob's current ability.
@@ -353,7 +355,7 @@ public abstract class Mob : PlaceableObject
         ResetMainActionSpeed();
         ResetMainActionAnimationDuration();
         ResetMovementAnimationDuration();
-        SetLocalScale(TileGrid.TILE_SIZE, TileGrid.TILE_SIZE);
+        transform.localScale = new Vector3(BoardConstants.TileSize, BoardConstants.TileSize, 1);
     }
 
     #endregion
@@ -378,7 +380,7 @@ public abstract class Mob : PlaceableObject
     {
         float totalSpeedModifier = 0;
         bool chilled = false;
-        foreach (IEffect effect in GetEffects())
+        foreach (IEffect effect in ActiveEffects)
         {
             if (effect is IMovementSpeedEffect speedEffect)
             {
@@ -389,10 +391,9 @@ public abstract class Mob : PlaceableObject
                 chilled = true;
             }
         }
-        if (chilled) SetBaseColor(new Color32(100, 100, 255, 255));
-        else SetBaseColor(BASE_COLOR);
+        if (chilled) SetColor(ColorConstants.ChilledModelColor);
         SetMovementSpeed(Mathf.Clamp(BASE_MOVEMENT_SPEED * (1 + totalSpeedModifier), MIN_MOVEMENT_SPEED, MAX_MOVEMENT_SPEED));
-        SetMovementAnimationDuration(Mathf.Clamp(BASE_MOVEMENT_ANIMATION_DURATION / (1 + totalSpeedModifier), MIN_MOVEMENT_ANIMATION_DURATION, MAX_MOVEMENT_ANIMATION_DURATION));
+        SetMovementAnimationDuration(Mathf.Clamp(BaseMovementAnimationDuration / (1 + totalSpeedModifier), MIN_MOVEMENT_ANIMATION_DURATION, MAX_MOVEMENT_ANIMATION_DURATION));
     }
 
     /// <summary>
@@ -403,7 +404,7 @@ public abstract class Mob : PlaceableObject
     protected virtual void ProcessAttackSpeedEffects()
     {
         float totalAttackSpeedModifier = 0;
-        foreach (IEffect effect in GetEffects())
+        foreach (IEffect effect in ActiveEffects)
         {
             if (effect is IAttackSpeedEffect attackSpeedEffect)
             {

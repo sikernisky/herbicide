@@ -42,7 +42,7 @@ public class QuillController : ProjectileController<QuillController.QuillState>
     /// <summary>
     /// Quills angle towards their target.
     /// </summary>
-    protected override bool angleTowardsTarget => true;
+    protected override bool ShouldAngleTowardsTarget => true;
 
     #endregion
 
@@ -87,8 +87,8 @@ public class QuillController : ProjectileController<QuillController.QuillState>
     /// <param name="other">Collider2D the projectile collided with.</param>
     protected override void DetonateProjectile(Collider2D other)
     {
-        GetQuill().GetCollider().enabled = false;
-        GetQuill().SetLocalScale(STUCK_SIZE);
+        GetQuill().ModelCollider.enabled = false;
+        GetQuill().transform.localScale = STUCK_SIZE;
         Quaternion currentRotation = GetQuill().transform.rotation;
         float randomAdjustment = Random.Range(-20, 21);
         Quaternion newRotation = Quaternion.Euler(0, 0, currentRotation.eulerAngles.z + randomAdjustment);
@@ -107,7 +107,7 @@ public class QuillController : ProjectileController<QuillController.QuillState>
     public override bool ValidModel()
     {
         if (GetQuill().Expired()) return false;
-        if (!GetQuill().IsActive()) return false;
+        if (!GetQuill().IsActive) return false;
         if(GetQuill().HasExploded()) return false;
 
         return true;
@@ -133,7 +133,7 @@ public class QuillController : ProjectileController<QuillController.QuillState>
                 SetState(QuillState.MOVING);
                 break;
             case QuillState.MOVING:
-                if(GetProjectile().Collided()) SetState(QuillState.STUCK);
+                if(GetProjectile().HasCollided) SetState(QuillState.STUCK);
                 break;
             case QuillState.STUCK: 
                 break;
@@ -156,7 +156,7 @@ public class QuillController : ProjectileController<QuillController.QuillState>
         if (!ValidModel()) return;
         if (GetState() != QuillState.MOVING) return;
 
-        SetNextAnimation(GetQuill().MID_AIR_ANIMATION_DURATION, ProjectileFactory.GetMidAirAnimationTrack(GetQuill()));
+        SetNextAnimation(GetQuill().MidAirAnimationDuration, ProjectileFactory.GetMidAirAnimationTrack(GetProjectile().TYPE));
         LinearShot();
     }
 
@@ -188,7 +188,7 @@ public class QuillController : ProjectileController<QuillController.QuillState>
     public override void AgeAnimationCounter()
     {
         QuillState state = GetState();
-        if (state == QuillState.MOVING) midAirAnimationCounter += Time.deltaTime;
+        if (state == QuillState.MOVING) MidAirAnimationCounter += Time.deltaTime;
     }
 
     /// <summary>
@@ -198,7 +198,7 @@ public class QuillController : ProjectileController<QuillController.QuillState>
     public override float GetAnimationCounter()
     {
         QuillState state = GetState();
-        if (state == QuillState.MOVING) return midAirAnimationCounter;
+        if (state == QuillState.MOVING) return MidAirAnimationCounter;
         return 0;
     }
 
@@ -208,7 +208,7 @@ public class QuillController : ProjectileController<QuillController.QuillState>
     public override void ResetAnimationCounter()
     {
         QuillState state = GetState();
-        if (state == QuillState.MOVING) midAirAnimationCounter = 0;
+        if (state == QuillState.MOVING) MidAirAnimationCounter = 0;
     }
 
     #endregion

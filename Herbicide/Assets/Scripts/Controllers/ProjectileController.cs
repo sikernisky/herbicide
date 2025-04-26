@@ -13,55 +13,50 @@ using System.Collections.Generic;
 /// <typeparam name="T">Enum to represent state of the Projectile.</typeparam>
 public abstract class ProjectileController<T> : ModelController, IStateTracker<T> where T : Enum
 {
+
     #region Fields
 
     /// <summary>
     /// The Projectile's state.
     /// </summary>
-    private T state;
+    private T State { get; set; }
 
     /// <summary>
     /// The State that triggered the Projectile's most recent animation.
     /// </summary>
-    private T animationState;
+    private T AnimationState { get; set; }
 
     /// <summary>
     /// Where the projectile started.
     /// </summary>
-    private Vector3 start;
+    private Vector3 StartPosition { get; set; }
 
     /// <summary>
     /// Where the projectile should go.
     /// </summary>
-    private Vector3 destination;
+    private Vector3 TargetPosition { get; set; }
 
     /// <summary>
     /// The direction of the projectile during a LinearShot.
     /// </summary>
-    private Vector3 linearDirection;
+    private Vector3 LinearDirection { get; set; }
 
     /// <summary>
     /// The linear interpolation value for a LobShot.
     /// </summary>
-    private float lobLerp;
+    private float LobShotLinearInterpretation { get; set; }
 
     /// <summary>
     /// Counts the number of seconds in the mid air animation; resets
     /// on step.
     /// </summary>
-    protected float midAirAnimationCounter;
+    protected float MidAirAnimationCounter { get; set; }
 
     /// <summary>
-    /// All Colliders2D that this Projectile has collided with.
-    /// </summary>
-    private HashSet<Collider2D> collidees;
-
-
-    /// <summary>
-    /// True if the Projectile should angle towards its target; otherwise,
+    /// true if the Projectile should angle towards its target; otherwise,
     /// false.
     /// </summary>
-    protected abstract bool angleTowardsTarget { get; }
+    protected abstract bool ShouldAngleTowardsTarget { get; }
 
     #endregion
 
@@ -73,21 +68,26 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// <param name="projectile">the Projectile that needs a controller.</param>
     /// <param name="start">where the Projectile started.</param>
     /// <param name="destination">where the Projectile should go.</param>
-    public ProjectileController(Projectile projectile, Vector3 start, Vector3 destination)
-     : base(projectile)
+    public ProjectileController(Projectile projectile, Vector3 start, Vector3 destination) : base(projectile)
     {
         Assert.IsNotNull(projectile, "Projectile cannot be null.");
-        this.start = start;
-        this.destination = destination;
-        projectile.transform.position = start;
-        linearDirection = (destination - start).normalized;
-        if (angleTowardsTarget)
-        {
-            float angle = Mathf.Atan2(linearDirection.y, linearDirection.x) * Mathf.Rad2Deg;
-            if(linearDirection.x < 0) angle += 180;
-            projectile.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
-        }
-        if (collidees == null) collidees = new HashSet<Collider2D>();
+        StartPosition = start;
+        GetProjectile().transform.position = start;
+        TargetPosition = destination;
+        LinearDirection = (destination - start).normalized;
+        RotateProjectileUsingLinearDirection();
+    }
+
+    /// <summary>
+    /// Rotates the Projectile to face its target based on its linear direction if
+    /// it should angle towards its target.
+    /// </summary>
+    private void RotateProjectileUsingLinearDirection()
+    {
+        if(!ShouldAngleTowardsTarget) return;
+        float angle = Mathf.Atan2(LinearDirection.y, LinearDirection.x) * Mathf.Rad2Deg;
+        if (LinearDirection.x < 0) angle += 180;
+        GetProjectile().transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
     }
 
     /// <summary>
@@ -121,7 +121,7 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// Returns the position to where the Projectile should go.
     /// </summary>
     /// <returns>the position to where the Projectile should go.</returns>
-    protected Vector3 GetDestination() => destination;
+    protected Vector3 GetDestination() => TargetPosition;
 
     /// <summary>
     /// Returns true if this controller's Projectile should be destoyed and
@@ -131,9 +131,9 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// set to null; otherwise, false.</returns>
     public override bool ValidModel()
     {
-        if (GetProjectile().Collided()) return false;
+        if (GetProjectile().HasCollided) return false;
         if (GetProjectile().Expired()) return false;
-        if (!GetProjectile().IsActive()) return false;
+        if (!GetProjectile().IsActive) return false;
 
         return true;
     }
@@ -144,13 +144,13 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// </summary>
     /// <returns>the distance between the Projectile's starting position
     /// to its target position.</returns>
-    protected float GetInitialTargetDistance() => Vector3.Distance(start, destination);
+    protected float GetInitialTargetDistance() => Vector3.Distance(StartPosition, TargetPosition);
 
     /// <summary>
     /// Returns the linear direction of the Projectile.
     /// </summary>
     /// <returns>the linear direction of the Projectile.</returns>
-    protected Vector3 GetLinearDirection() => linearDirection;
+    protected Vector3 GetLinearDirection() => LinearDirection;
 
     /// <summary>
     /// Handles a collision between the Projectile and some other Collider2D.
@@ -160,40 +160,27 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     {
         if (other == null) return;
         Model model = other.gameObject.GetComponent<Model>();
-        if (model == null) return;
-        if (lobLerp > 0 && lobLerp < .75f) return; // Keep the lob illusion
-        if (IgnoreCollider(other)) return;
-        if (GetProjectile().Collided()) return;
-
+        if(!CanCollide(other, model)) return;
         model.TriggerProjectileCollision(GetProjectile());
         GetProjectile().SetCollided(true);
         DetonateProjectile(other);
-        AddColliderToIgnore(other);
+        GetProjectile().AddColliderToIgnore(other);
     }
 
     /// <summary>
-    /// Adds a Collider2D to the list of Colliders2D to ignore.
-    /// The projectile will not detonate when colliding with this Collider2D.
+    /// Returns true if the Projectile can collide with a given Collider2D.
     /// </summary>
-    /// <param name="other">The collider to ignore. </param>
-    public void AddColliderToIgnore(Collider2D other)
+    /// <param name="other">the Collider2D to check for collision.</param>
+    /// <param name="model">the Model of the Collider2D to check for collision.</param>
+    /// <returns></returns>
+    private bool CanCollide(Collider2D other, Model model)
     {
-        Assert.IsNotNull(other);
-        if (collidees == null) collidees = new HashSet<Collider2D>();
-        
-        collidees.Add(other);
-    }
-
-    /// <summary>
-    /// Returns true if this Projectile should ignore a given Collider2D.
-    /// </summary>
-    /// <param name="other">the Collider2D to check</param>
-    /// <returns>true if this Projectile should ignore a given Collider2D;
-    /// otherwise, false. </returns>
-    protected bool IgnoreCollider(Collider2D other)
-    {
-        if (collidees == null) return false;
-        return collidees.Contains(other);
+        if (GetProjectile().HasCollided) return false;
+        if (GetProjectile().IgnoresCollider(other)) return false;
+        if (model == null) return false;
+        if(model.IgnoresCollider(GetProjectile().GetComponent<Collider2D>())) return false;
+        if (LobShotLinearInterpretation > 0 && LobShotLinearInterpretation < .75f) return false; // Keep the lob illusion
+        return true;
     }
 
     /// <summary>
@@ -212,7 +199,70 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// a given Collider2D.
     /// </summary>
     /// <param name="other">The Collider2D with which the Projectile collided. </param>
-    protected virtual void DetonateProjectile(Collider2D other) { return; }
+    protected virtual void DetonateProjectile(Collider2D other) 
+    {
+        FireSplitProjectiles(other.gameObject.GetComponent<Model>());
+    }
+
+    /// <summary>
+    /// Handles the splitting of a Projectile. This method is called when a
+    /// splitting projectile detonates.
+    /// </summary>
+    /// <param name="target">the Model on which the Projectile split.</param>
+    protected virtual void FireSplitProjectiles(Model target)
+    {
+        if(GetProjectile().NumSplits <= 0) return;
+        (Projectile splitLeft, Projectile splitRight) = MakePerpendicularProjectiles();
+        (Vector2 leftTarget, Vector2 rightTarget) = GetPerpendicularTargetPositions();
+        if(target != null) IgnorePerpendicularColliders(target, splitLeft, splitRight);
+        FireProjectileFromModel(splitLeft, leftTarget, false);
+        FireProjectileFromModel(splitRight, rightTarget, false);
+    }
+
+    /// <summary>
+    /// Returns and creates two perpendicular Projectiles to the original Projectile.
+    /// Reduces the number of splits by one for each new Projectile.
+    /// </summary>
+    /// <returns>two perpendicular Projectiles to the original Projectile.</returns>
+    private (Projectile, Projectile) MakePerpendicularProjectiles()
+    {
+        Projectile splitLeft = GetProjectile().CreateNew().GetComponent<Projectile>();
+        Projectile splitRight = GetProjectile().CreateNew().GetComponent<Projectile>();
+        splitLeft.CloneFrom(GetProjectile());
+        splitRight.CloneFrom(GetProjectile());
+        splitLeft.SetNumSplits(GetProjectile().NumSplits-1);
+        splitRight.SetNumSplits(GetProjectile().NumSplits-1);
+        return (splitLeft, splitRight);
+    }
+
+    /// <summary>
+    /// Returns two perpendicular vectors to the original target.
+    /// </summary>
+    /// <returns>two perpendicular vectors to the original target.</returns>
+    private (Vector3 perp1, Vector3 perp2) GetPerpendicularTargetPositions()
+    {
+        Vector3 direction = (TargetPosition - StartPosition).normalized;
+        Vector3 perpendicularLeft = new Vector3(-direction.y, direction.x, 0);
+        Vector3 perpendicularRight = new Vector3(direction.y, -direction.x, 0);
+        Vector3 leftTarget = TargetPosition + perpendicularLeft * PhysicsConstants.ProjectileSplitDistance;
+        Vector3 rightTarget = TargetPosition + perpendicularRight * PhysicsConstants.ProjectileSplitDistance;
+        return (leftTarget, rightTarget);
+    }
+
+    /// <summary>
+    /// Adds the left and right split Projectiles to the list of Colliders2D to ignore.
+    /// </summary>
+    /// <param name="target">the Model on which the Projectile split.</param>
+    /// <param name="splitLeft">the left split Projectile.</param>
+    /// <param name="splitRight">the right split Projectile.</param>
+    private void IgnorePerpendicularColliders(Model target, Projectile splitLeft, Projectile splitRight)
+    {
+        Assert.IsNotNull(target);
+        Assert.IsNotNull(splitLeft);
+        Assert.IsNotNull(splitRight);
+        target.AddColliderToIgnore(splitLeft.GetComponent<Collider2D>());
+        target.AddColliderToIgnore(splitRight.GetComponent<Collider2D>());
+    }
 
     #endregion
 
@@ -224,7 +274,7 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// for the FSM logic. 
     /// </summary>
     /// <param name="state">The new state.</param>
-    public void SetState(T state) => this.state = state;
+    public void SetState(T state) => this.State = state;
 
     /// <summary>
     /// Returns the State of this ProjectileController. This helps keep track of
@@ -232,12 +282,12 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// for the FSM logic. 
     /// </summary>
     /// <returns>The State of this ProjectileController. </returns>
-    public T GetState() => state;
+    public T GetState() => State;
 
     /// <summary>
     /// Processes this ProjectileController's state FSM to determine the
     /// correct state. Takes the current state and chooses whether
-    /// or not to switch to another based on game conditions. /// 
+    /// or not to switch to another based on game conditions.
     /// </summary>
     public abstract void UpdateFSM();
 
@@ -262,14 +312,14 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
     /// </summary>
     /// <returns>the State that triggered the Projectile's most recent
     /// animation.</returns>
-    public T GetAnimationState() { return animationState; }
+    public T GetAnimationState() { return AnimationState; }
 
     /// <summary>
     /// Sets the State that triggered the Projectile's most recent
     /// animation.
     /// </summary>
     /// <param name="animationState">the animation state to set.</param>
-    public void SetAnimationState(T animationState) => this.animationState = animationState;
+    public void SetAnimationState(T animationState) => this.AnimationState = animationState;
 
     #endregion
 
@@ -284,11 +334,11 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
         Projectile projectile = GetProjectile();
         if (projectile == null) return;
 
-        Vector3 currentPosition = projectile.GetPosition();
-        float tileScale = TileGrid.TILE_SIZE;
-        float adjustedSpeed = projectile.GetSpeed() * tileScale; // Adjust speed based on tile scale
+        Vector3 currentPosition = projectile.GetWorldPosition();
+        float tileScale = BoardConstants.TileSize;
+        float adjustedSpeed = projectile.Speed * tileScale; // Adjust speed based on tile scale
         float step = adjustedSpeed * Time.deltaTime;
-        Vector3 newPosition = currentPosition + linearDirection.normalized * step;
+        Vector3 newPosition = currentPosition + LinearDirection.normalized * step;
         projectile.SetWorldPosition(newPosition);
     }
 
@@ -301,27 +351,27 @@ public abstract class ProjectileController<T> : ModelController, IStateTracker<T
         if (GetProjectile() == null) return;
 
         // The lob is done and nothing was hit: detonate the projectile.
-        if (lobLerp >= 1)
+        if (LobShotLinearInterpretation >= 1)
         {
-            DetonateProjectile(GetProjectile().GetPosition());
+            DetonateProjectile(GetProjectile().GetWorldPosition());
             GetProjectile().SetCollided(true);
             return;
         }
 
-        Vector3 linearProgress = Vector3.Lerp(start, destination, lobLerp);
-        float tileScale = TileGrid.TILE_SIZE;
-        float height = Mathf.Sin(lobLerp * Mathf.PI) * GetProjectile().LOB_HEIGHT;
+        Vector3 linearProgress = Vector3.Lerp(StartPosition, TargetPosition, LobShotLinearInterpretation);
+        float tileScale = BoardConstants.TileSize;
+        float height = Mathf.Sin(LobShotLinearInterpretation * Mathf.PI) * GetProjectile().LobHeight;
         Vector3 newProjectilePos = new Vector3(linearProgress.x, linearProgress.y + height, linearProgress.z);
         GetProjectile().SetWorldPosition(newProjectilePos);
 
         // Adjust shadow position to appear lower as the projectile reaches its peak
-        float shadowHeight = 1 - height / GetProjectile().LOB_HEIGHT; // Normalize shadow height
+        float shadowHeight = 1 - height / GetProjectile().LobHeight; // Normalize shadow height
         Vector3 shadowPosition = new Vector3(linearProgress.x, linearProgress.y - shadowHeight, linearProgress.z);
         GetProjectile().SetShadowPosition(shadowPosition);
 
         // Adjust lobLerp to scale with the tile size, affecting the increment speed
-        lobLerp += GetProjectile().GetSpeed() * tileScale * Time.deltaTime;
-        if (Vector3.Distance(GetProjectile().GetPosition(), destination) < 0.05f) lobLerp = 1;
+        LobShotLinearInterpretation += GetProjectile().Speed * tileScale * Time.deltaTime;
+        if (Vector3.Distance(GetProjectile().GetWorldPosition(), TargetPosition) < 0.05f) LobShotLinearInterpretation = 1;
     }
 
     #endregion

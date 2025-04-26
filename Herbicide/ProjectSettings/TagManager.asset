@@ -71,3 +71,6 @@ TagManager:
   - name: rangeindicators
     uniqueID: 673403977
     locked: 0
+  - name: debug
+    uniqueID: 2229902777
+    locked: 0

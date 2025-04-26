@@ -1042,7 +1042,7 @@ GameObject:
   - component: {fileID: 1593500095}
   - component: {fileID: 1593500096}
   m_Layer: 0
-  m_Name: InputContoller
+  m_Name: InputManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1072,11 +1072,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1593500094}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 661d501e16c5d44c68002eb0a75580cf, type: 3}
+  m_Script: {fileID: 11500000, guid: 651a081ec452db846997c559cbd64cc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 598028594}
-  eventSystem: {fileID: 992951284}
+  _graphicRaycaster: {fileID: 598028592}
+  _eventSystem: {fileID: 992951284}
 --- !u!1 &1629457858
 GameObject:
   m_ObjectHideFlags: 0

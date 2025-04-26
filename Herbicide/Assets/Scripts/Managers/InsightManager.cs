@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
-using TMPro;
+using System.Collections.Generic;
 
 /// <summary>
 /// Controls insights; tooltips, ability icons and descriptions,
@@ -16,43 +16,16 @@ public class InsightManager : MonoBehaviour
     /// </summary>
     private static InsightManager instance;
 
-    /// <summary>
-    /// The current game state.
-    /// </summary>
-    private GameState gameState;
-
-    /// <summary>
-    /// The mob whose ability is currently being displayed.
-    /// </summary>
-    private Mob currentMob;
-
-    /// <summary>
-    /// The image component that displays the ability icon.
+    /// <summary>   
+    /// Backing field for the EquippedItemImages property.
     /// </summary>
     [SerializeField]
-    private Image abilityImage;
+    private Image[] _equippedItemImages;
 
-    /// <summary>
-    /// The image component that displays the tooltip.
+    /// <summary>   
+    /// The image components that display the equipped items.
     /// </summary>
-    [SerializeField]
-    private Image tooltipImage;
-
-    /// <summary>
-    /// The text component that displays the tooltip text.
-    /// </summary>
-    [SerializeField]
-    private TMP_Text tooltipText;
-
-    /// <summary>
-    /// The offset of the ability image from the mob's position.
-    /// </summary>
-    private Vector3 iconOffsetFromMob => new Vector3(0, 120, 1);
-
-    /// <summary>
-    /// The offset of the tooltip image from the ability icon.
-    /// </summary>
-    private Vector3 tooltipOffsetFromIcon => new Vector3(0, 96, 1);
+    private Image[] EquippedItemImages { get { return _equippedItemImages; } }
 
     #endregion
 
@@ -70,7 +43,7 @@ public class InsightManager : MonoBehaviour
         Assert.IsNotNull(insightManagers, "Array of LightManagers is null.");
         Assert.AreEqual(1, insightManagers.Length);
         instance = insightManagers[0];
-        instance.abilityImage.enabled = false;
+        Assert.IsTrue(instance.EquippedItemImages.Length == GameConstants.MaxEquipmentSlots, "EquippedItemImages array is not the correct length.");
     }
 
     /// <summary>
@@ -79,97 +52,77 @@ public class InsightManager : MonoBehaviour
     /// <param name="gameState">The current game state</param>
     public static void UpdateInsightManager(GameState gameState)
     {
-        instance.gameState = gameState;
+        if(gameState != GameState.ONGOING) return;
+        instance.CheckAndHandleMouseHoverModel();
+        instance.CheckAndHandleMouseExitModel();
     }
 
     /// <summary>
-    /// Checks for input events.
+    /// Checks if the mouse has entered a model and handles the event.
     /// </summary>
-    public static void CheckInputEvents()
+    private void CheckAndHandleMouseHoverModel()
     {
-        if (InputController.DidPrimaryUp()) StopDisplayingAbility();
+        OnMouseHoverModel(InputManager.CurrentHoveredWorldModel);
     }
 
     /// <summary>
-    /// Displays the ability icon and description of the selected mob
-    /// over its GameObject.
+    /// Handles the event when the mouse hovers a Model. Called every frame.
     /// </summary>
-    /// <param name="mobToDisplayOver">The mob to display the ability icon and description over.</param>
-    public static void DisplayAbilityOfMob(Mob mobToDisplayOver)
+    /// <param name="modelHovering">the Model that the mouse is hovering.</param>
+    private void OnMouseHoverModel(Model modelHovering)
     {
-        Assert.IsNotNull(mobToDisplayOver, "Mob is null.");
-        if(mobToDisplayOver == instance.currentMob)
+        if (modelHovering == null) return;
+        DisplayEquipmentImages(modelHovering);
+    }
+
+    /// <summary>
+    /// Activates, positions, and defines the dummy equipment images
+    /// such that they display a Model's list of Equipment.
+    /// </summary>
+    /// <param name="modelHovering">the Model to display Equipment for.</param>
+    private void DisplayEquipmentImages(Model modelHovering)
+    {
+        if (modelHovering == null) return;
+        List<ModelType> equippedItems = modelHovering.EquippedItems;        
+        for(int i = 0; i < equippedItems.Count; i++)
         {
-            StopDisplayingAbility();
-            return;
+            EquippedItemImages[i].gameObject.SetActive(true);
+            EquippedItemImages[i].sprite = InventoryFactory.GetInventoryItemIcon(equippedItems[i]);
+            EquippedItemImages[i].transform.position = Camera.main.WorldToScreenPoint(modelHovering.transform.position + UIConstants.InsightEquipmentImageScreenOffset);
         }
-
-        Ability mobAbility = mobToDisplayOver.GetAbility();
-        Assert.IsNotNull(mobAbility, "Mob ability is null.");
-
-        instance.abilityImage.enabled = true;
-        instance.abilityImage.sprite = mobAbility.GetAbilityIcon();
-        Vector3 abilityWorldPosition = mobToDisplayOver.GetPosition();
-        Vector3 abilityScreenPosition = CameraController.WorldToScreenPoint(abilityWorldPosition);
-        abilityScreenPosition += instance.iconOffsetFromMob;
-        instance.abilityImage.transform.position = abilityScreenPosition;
-        instance.currentMob = mobToDisplayOver;
     }
 
     /// <summary>
-    /// Stops displaying the ability icon and description of the selected mob.
+    /// Checks if the mouse has exited a model and handles the event.
     /// </summary>
-    public static void StopDisplayingAbility()
+    private void CheckAndHandleMouseExitModel()
     {
-        instance.currentMob = null;
-        instance.abilityImage.sprite = null;
-        instance.abilityImage.enabled = false;
-        instance.tooltipImage.sprite = null;
-        instance.tooltipImage.enabled = false;
-        instance.tooltipText.text = "";
-        instance.tooltipText.enabled = false;
+        if (InputManager.TryGetPreviouslyHoveredWorldModel<Model>(out var modelExited)) OnMouseExitModel(modelExited);
     }
 
     /// <summary>
-    /// Stops displaying the tooltip.
+    /// Handles the event when the mouse exits a Model.
     /// </summary>
-    public static void StopDisplayingTooltip()
+    /// <param name="modelExited">the Model that the mouse exited.</param>
+    private void OnMouseExitModel(Model modelExited)
     {
-        instance.tooltipImage.sprite = null;
-        instance.tooltipImage.enabled = false;
-        instance.tooltipText.text = "";
-        instance.tooltipText.enabled = false;
-        instance.abilityImage.color = Color.white;
+        if (modelExited == null) return;
+        HideEquipmentImages(modelExited);
     }
 
     /// <summary>
-    /// Returns true if an ability is currently being displayed.
+    /// Hides the dummy equipment images.
     /// </summary>
-    /// <returns>true if an ability is currently being displayed; otherwise, false.</returns>
-    public static bool IsDisplayingAbility() => instance.abilityImage.enabled;
-
-    #endregion
-
-    #region Button Events
-
-    /// <summary>
-    /// Triggered when the ability icon is clicked. Displays
-    /// a tooltip with the ability description.
-    /// </summary>
-    public void OnPointerEnterOrExitAbilityIcon()
+    /// <param name="modelExited">the Model to hide Equipment for.</param>
+    private void HideEquipmentImages(Model modelExited)
     {
-        Assert.IsNotNull(currentMob, "Current ability is null.");
-
-        if(tooltipText.enabled) StopDisplayingTooltip();
-        else
+        if (modelExited == null) return;
+        for(int i = 0; i < EquippedItemImages.Length; i++)
         {
-            instance.tooltipImage.transform.position = instance.abilityImage.transform.position + instance.tooltipOffsetFromIcon;
-            instance.tooltipImage.enabled = true;
-            instance.tooltipText.enabled = true;
-            instance.tooltipText.text = currentMob.GetAbility().GetAbilityDescription();
-            instance.abilityImage.color = Color.yellow;
+            EquippedItemImages[i].gameObject.SetActive(false);
         }
-    } 
+    }
+
 
     #endregion
 }

@@ -28,7 +28,19 @@ public class SpeedTreeEffect : Effect, IAttackSpeedEffect
     /// <summary>
     /// Makes a new IceChunkEffect with the default duration and magnitude.
     /// </summary>
-    public SpeedTreeEffect() : base() { AttackSpeedMagnitude = SPEED_TREE_MAGNITUDE; }
+    public SpeedTreeEffect() =>  AttackSpeedMagnitude = SPEED_TREE_MAGNITUDE;
+
+    /// <summary>
+    /// Makes a copy of this SpeedTreeEffect.
+    /// </summary>
+    /// <param name="other">the given SpeedTreeEffect</param>
+    protected SpeedTreeEffect(SpeedTreeEffect other) : base(other) => AttackSpeedMagnitude = other.AttackSpeedMagnitude;
+
+    /// <summary>
+    /// Returns a copy of this SpeedTreeEffect.
+    /// </summary>
+    /// <returns>a copy of this SpeedTreeEffect.</returns>
+    public override Effect Clone() => new SpeedTreeEffect(this);
 
     /// <summary>
     /// Returns true if this effect can afflict the given Model.

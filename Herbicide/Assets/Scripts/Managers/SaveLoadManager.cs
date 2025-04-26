@@ -2,9 +2,7 @@ using UnityEngine;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine.Assertions;
-using System.Collections.Generic;
 using System;
-using System.Data.Common;
 
 /// <summary>
 /// Manages saving and loading PlayerData to and from a file.
@@ -22,11 +20,6 @@ public class SaveLoadManager : MonoBehaviour
     /// The PlayerData object that we are currently using.
     /// </summary>
     private GameSaveData currentLoad;
-
-    /// <summary>
-    /// The path to the file where we save the player data.
-    /// </summary>
-    private string SAVE_PATH => Application.persistentDataPath + "/playerData.sav";
 
     /// <summary>
     /// The Action that is invoked when a save is requested.
@@ -87,7 +80,7 @@ public class SaveLoadManager : MonoBehaviour
         if(instance.currentLoad == null) return;
         instance.OnSaveRequested?.Invoke();
         BinaryFormatter formatter = new BinaryFormatter();
-        FileStream stream = new FileStream(instance.SAVE_PATH, FileMode.Create);
+        FileStream stream = new FileStream(FilePathConstants.SaveDataPath, FileMode.Create);
         formatter.Serialize(stream, instance.currentLoad);
         stream.Close();
     }
@@ -104,10 +97,10 @@ public class SaveLoadManager : MonoBehaviour
         if(instance.loaded) return;
         instance.currentLoad = null;
 
-        if (File.Exists(instance.SAVE_PATH))
+        if (File.Exists(FilePathConstants.SaveDataPath))
         {
             BinaryFormatter formatter = new BinaryFormatter();
-            FileStream stream = new FileStream(instance.SAVE_PATH, FileMode.Open);
+            FileStream stream = new FileStream(FilePathConstants.SaveDataPath, FileMode.Open);
             try
             {
                 GameSaveData data = formatter.Deserialize(stream) as GameSaveData;
@@ -131,7 +124,7 @@ public class SaveLoadManager : MonoBehaviour
     public static void WipeCurrentSave()
     {
         instance.currentLoad = new GameSaveData(); // Clear in-memory data
-        if (File.Exists(instance.SAVE_PATH)) File.Delete(instance.SAVE_PATH);
+        if (File.Exists(FilePathConstants.SaveDataPath)) File.Delete(FilePathConstants.SaveDataPath);
         else Debug.Log("Save file not found to delete.");
     }
 
@@ -176,7 +169,8 @@ public class SaveLoadManager : MonoBehaviour
     public static int GetLoadedGameLevel() 
     {
         Assert.IsNotNull(instance.currentLoad, "currentLoad is null.");
-        return instance.currentLoad.furthestLevel; 
+        //return instance.currentLoad.furthestLevel; 
+        return 2;
     }
 
     /// <summary>
@@ -234,7 +228,6 @@ public class SaveLoadManager : MonoBehaviour
     /// </summary>
     public static void OnQuit()
     {
-        SaveGameLevel(0);
         Save();
         WipeCurrentSave(); // temporary
     }

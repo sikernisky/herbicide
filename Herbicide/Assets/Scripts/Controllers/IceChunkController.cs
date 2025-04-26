@@ -24,7 +24,7 @@ public class IceChunkController : ProjectileController<IceChunkController.IceChu
     /// <summary>
     /// IceChunks do not angle towards their target.
     /// </summary>
-    protected override bool angleTowardsTarget => false;
+    protected override bool ShouldAngleTowardsTarget => false;
 
     #endregion
 
@@ -96,7 +96,7 @@ public class IceChunkController : ProjectileController<IceChunkController.IceChu
         if (!ValidModel()) return;
         if (GetState() != IceChunkState.MOVING) return;
 
-        SetNextAnimation(GetIceChunk().MID_AIR_ANIMATION_DURATION, ProjectileFactory.GetMidAirAnimationTrack(GetIceChunk()));
+        SetNextAnimation(GetIceChunk().MidAirAnimationDuration, ProjectileFactory.GetMidAirAnimationTrack(GetProjectile().TYPE));
         LinearShot();
     }
 
@@ -111,7 +111,7 @@ public class IceChunkController : ProjectileController<IceChunkController.IceChu
     public override void AgeAnimationCounter()
     {
         IceChunkState state = GetState();
-        if (state == IceChunkState.MOVING) midAirAnimationCounter += Time.deltaTime;
+        if (state == IceChunkState.MOVING) MidAirAnimationCounter += Time.deltaTime;
     }
 
     /// <summary>
@@ -121,7 +121,7 @@ public class IceChunkController : ProjectileController<IceChunkController.IceChu
     public override float GetAnimationCounter()
     {
         IceChunkState state = GetState();
-        if (state == IceChunkState.MOVING) return midAirAnimationCounter;
+        if (state == IceChunkState.MOVING) return MidAirAnimationCounter;
         return 0;
     }
 
@@ -131,7 +131,7 @@ public class IceChunkController : ProjectileController<IceChunkController.IceChu
     public override void ResetAnimationCounter()
     {
         IceChunkState state = GetState();
-        if (state == IceChunkState.MOVING) midAirAnimationCounter = 0;
+        if (state == IceChunkState.MOVING) MidAirAnimationCounter = 0;
     }
 
     #endregion

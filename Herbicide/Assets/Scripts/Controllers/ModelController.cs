@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -115,34 +116,19 @@ public abstract class ModelController
         if (!ValidModel()) return;
         this.gameState = gameState;
 
-        UpdateTilePositions();
         FixSortingOrder();
         StepAnimation();
         GetModel().ProcessEffects();
     }
 
     /// <summary>
-    /// Finds the coordinates of the Tile(s) the Model is on.
-    /// </summary>
-    private void UpdateTilePositions()
-    {
-        if (!ValidModel()) return;
-
-        // Placed tile position
-        Vector2 worldPos = GetModel().GetPosition();
-        int tileX = TileGrid.PositionToCoordinate(worldPos.x);
-        int tileY = TileGrid.PositionToCoordinate(worldPos.y);
-        GetModel().SetTileCoordinates(tileX, tileY);
-    }
-
-    /// <summary>
     /// Destroys and detatches the Model from this Controller.
     /// </summary>
-    protected virtual void DestroyAndRemoveModel()
+    private void DestroyAndRemoveModel()
     {
         if (GetModel() == null || modelRemoved) return;
 
-        DropDeathLoot();
+        // Subclasses can apply effects to game before destroying & removing the Model.
         OnDestroyModel();
 
         ALL_MODELS.Remove(GetModel());
@@ -172,7 +158,7 @@ public abstract class ModelController
     {
         if (!ValidModel()) return;
 
-        GetModel().SetSortingOrder(-Mathf.FloorToInt(GetModel().GetPosition().y));
+        GetModel().SetSortingOrder(-Mathf.FloorToInt(GetModel().GetWorldPosition().y));
     }
 
     /// <summary>
@@ -258,7 +244,7 @@ public abstract class ModelController
     /// <summary>
     /// Performs logic right before this Model is destroyed.
     /// </summary>
-    protected virtual void OnDestroyModel() { }
+    protected virtual void OnDestroyModel() => DropDeathLoot();
 
     /// <summary>
     /// Takes the stats of a Model that is being combined into this Model
@@ -293,7 +279,7 @@ public abstract class ModelController
             if (otherModel.TYPE != targetModel.TYPE) continue;
             if (otherModel == GetModel()) continue;
 
-            float distance = TileGrid.GetPathfindingTileDistance(GetModel().GetPosition(), otherModel.GetPosition());
+            float distance = TileGrid.GetPathfindingTileDistance(GetModel().GetWorldPosition(), otherModel.GetWorldPosition());
             if (distance < minDistance)
             {
                 minDistance = distance;
@@ -301,6 +287,85 @@ public abstract class ModelController
             }
         }
         return closestModel == targetModel;
+    }
+
+    /// <summary>
+    /// Configures and produces a Collectable from the Model's position.
+    /// </summary>
+    /// <param name="resourceType">the type of Collectable to produce.</param>
+    /// <param name="spawnCenter">the center of the circle to spawn within.</param>
+    /// <param name="spawnRadius">the radius of the circle to spawn within.</param>
+    /// <param name="ignoreEquipment">true if the Collectable should ignore equipment effects;
+    /// otherwise, false.</param>
+    public virtual void ProduceCollectableFromModel(ModelType resourceType, Vector2 spawnCenter, float spawnRadius, bool ignoreEquipment)
+    {
+        GameObject resourcePrefab = CollectableFactory.GetCollectablePrefab(resourceType);
+        Currency currencyComp = resourcePrefab.GetComponent<Currency>();
+        if (!ignoreEquipment) HandleCollectableEquipmentEffects(currencyComp, spawnCenter, spawnRadius);
+        Vector2 spawnPosition = GetRandomCurrencySpawnPositionFromModelPosition(spawnRadius) + spawnCenter;
+        ControllerManager.CreateCollectableController(resourceType, currencyComp, spawnPosition);
+    }
+
+    /// <summary>
+    /// Returns a position that is a random spot within a circle of a given radius
+    /// from the Model's position.
+    /// </summary>
+    /// <param name="spawnRadius">the radius of the circle to spawn within.</param>
+    /// <returns>a position that is a random spot within a circle of a given radius
+    /// from the Model's position.</returns>
+    private Vector2 GetRandomCurrencySpawnPositionFromModelPosition(float spawnRadius)
+    {
+        float angle = UnityEngine.Random.Range(0, 2 * Mathf.PI);
+        float randomRadius = UnityEngine.Random.Range(0f, 1f) * spawnRadius;
+        return new Vector2(Mathf.Cos(angle) * randomRadius, Mathf.Sin(angle) * randomRadius);
+    }
+
+    /// <summary>
+    /// Modifies Collectable behavior based on equipped items.
+    /// </summary>
+    /// <param name="collectable">the Collectable to apply effects to.</param>
+    /// <param name="spawnCenter">the center of the circle to spawn within.</param>
+    /// <param name="spawnRadius">the radius of the circle to spawn within.</param>
+    protected virtual void HandleCollectableEquipmentEffects(Collectable collectable, Vector2 spawnCenter, float spawnRadius)
+    {
+        Assert.IsNotNull(collectable, "Collectable cannot be null.");
+    }
+
+    /// <summary>
+    /// Configures and shoots a projectile from the Model's world position towards a target position.
+    /// </summary>
+    /// <param name="projectileType">the type of projectile to configure and fire.</param>
+    /// <param name="targetPosition">the position to fire the projectile towards.</param>
+    /// <param name="ignoreEquipment">true if the projectile should ignore equipment effects;
+    public virtual void FireProjectileFromModel(ModelType projectileType, Vector3 targetPosition, bool ignoreEquipment)
+    {
+        Assert.IsTrue(ModelTypeHelper.IsProjectile(projectileType));
+        var projectile = ProjectileFactory.GetProjectilePrefab(projectileType).GetComponent<Projectile>();
+        ControllerManager.CreateProjectileController(projectileType, projectile, GetModel().GetWorldPosition(), targetPosition);
+        if (!ignoreEquipment) HandleProjectileEquipmentEffects(projectile);
+    }
+
+    /// <summary>
+    /// Configures and shoots a pre-made projectile from the Model's world position towards a target position.
+    /// </summary>
+    /// <param name="projectile">the type of projectile to configure and fire.</param>
+    /// <param name="targetPosition">the position to fire the projectile towards.</param>
+    /// <param name="ignoreEquipment">true if the projectile should ignore equipment effects;
+    public virtual void FireProjectileFromModel(Projectile projectile, Vector3 targetPosition, bool ignoreEquipment)
+    {
+        Assert.IsNotNull(projectile, "Projectile cannot be null.");
+        ControllerManager.CreateProjectileController(projectile.TYPE, projectile, GetModel().GetWorldPosition(), targetPosition);
+        if (!ignoreEquipment) HandleProjectileEquipmentEffects(projectile);
+    }
+
+    /// <summary>
+    /// Modifies projectile behavior based on equipped items.
+    /// </summary>
+    /// <param name="projectile">The type projectile to modify.</param>
+    protected virtual void HandleProjectileEquipmentEffects(Projectile projectile)
+    {
+        Assert.IsNotNull(projectile, "Projectile cannot be null.");
+        if (GetModel().IsEquipped(ModelType.INVENTORY_ITEM_ACORNOL)) projectile.SetNumSplits(AbilityItemConstants.AcornolSplits);
     }
 
     #endregion
@@ -335,7 +400,7 @@ public abstract class ModelController
     protected void SetNextAnimation(float cycleDuration, Sprite[] track)
     {
         if (GetModel().HasAnimationTrack() && GetModel().GetNumCyclesOfCurrentAnimationCompleted() == 0
-              && GetModel().GetDirectionOfMostRecentAnimation() == GetModel().GetDirection()) return;
+              && GetModel().GetDirectionOfMostRecentAnimation() == GetModel().Direction) return;
         else SetCurrentAnimation(cycleDuration, track);
     }
 
@@ -396,10 +461,10 @@ public abstract class ModelController
     protected void MoveLinearlyTowards(Vector3 targetPosition, float speed)
     {
         Vector3 adjusted = new Vector3(targetPosition.x, targetPosition.y, 1);
-        float step = speed * Time.deltaTime * TileGrid.TILE_SIZE;
+        float step = speed * Time.deltaTime * BoardConstants.TileSize;
         step = Mathf.Clamp(step, 0f, step);
-        Vector3 newPosition = Vector3.MoveTowards(GetModel().GetPosition(), adjusted, step);
-        if (GetModel().GetPosition() != adjusted) GetModel().FaceDirection(adjusted);
+        Vector3 newPosition = Vector3.MoveTowards(GetModel().GetWorldPosition(), adjusted, step);
+        if (GetModel().GetWorldPosition() != adjusted) GetModel().FaceDirection(adjusted);
         GetModel().SetWorldPosition(newPosition);
     }
 
@@ -415,7 +480,7 @@ public abstract class ModelController
         float parabola = 1.0f - 4.0f * (parabolaProgress - 0.5f) * (parabolaProgress - 0.5f);
         Vector3 nextPos = Vector3.Lerp(parabolaStartPos, parabolaTarget, parabolaProgress);
         nextPos.y += parabola * arcHeight;
-        if (GetModel().GetPosition() != nextPos) GetModel().FaceDirection(nextPos);
+        if (GetModel().GetWorldPosition() != nextPos) GetModel().FaceDirection(nextPos);
         GetModel().SetWorldPosition(nextPos);
     }
 
@@ -426,7 +491,7 @@ public abstract class ModelController
     {
         parabolaProgress = 0f;
         parabolaScale = scale;
-        parabolaStartPos = GetModel().GetPosition();
+        parabolaStartPos = GetModel().GetWorldPosition();
         parabolaTarget = targetPosition;
     }
 
@@ -440,18 +505,18 @@ public abstract class ModelController
     protected void FallTowards(Vector3 targetPosition, float speed, float acceleration)
     {
         Vector3 adjusted = new Vector3(targetPosition.x, targetPosition.y, 1);
-        float distance = Vector3.Distance(GetModel().GetPosition(), adjusted);
+        float distance = Vector3.Distance(GetModel().GetWorldPosition(), adjusted);
         float fallSpeed = speed + acceleration * distance;
         float step = fallSpeed * Time.deltaTime;
         step = Mathf.Clamp(step, 0f, step);
 
-        Vector3 newPosition = Vector3.MoveTowards(GetModel().GetPosition(), adjusted, step);
-        if (GetModel().GetPosition() != adjusted) GetModel().FaceDirection(adjusted);
+        Vector3 newPosition = Vector3.MoveTowards(GetModel().GetWorldPosition(), adjusted, step);
+        if (GetModel().GetWorldPosition() != adjusted) GetModel().FaceDirection(adjusted);
         GetModel().SetWorldPosition(newPosition);
 
         float scaleStep = 3.5f * Time.deltaTime;
-        Vector3 newScale = Vector3.Lerp(GetModel().GetLocalScale(), Vector3.zero, scaleStep);
-        GetModel().SetLocalScale(newScale);
+        Vector3 newScale = Vector3.Lerp(GetModel().transform.localScale, Vector3.zero, scaleStep);
+        GetModel().transform.localScale = newScale;
     }
 
     /// <summary>
@@ -467,12 +532,12 @@ public abstract class ModelController
         float step = speed * Time.deltaTime;
         step = Mathf.Clamp(step, 0f, step);
 
-        Vector3 newPosition = Vector3.MoveTowards(GetModel().GetPosition(), adjusted, step);
-        if (GetModel().GetPosition() != adjusted) GetModel().FaceDirection(adjusted);
+        Vector3 newPosition = Vector3.MoveTowards(GetModel().GetWorldPosition(), adjusted, step);
+        if (GetModel().GetWorldPosition() != adjusted) GetModel().FaceDirection(adjusted);
         GetModel().SetWorldPosition(newPosition);
 
         // Calculate the scaling factor based on the distance to the target position
-        float distanceToTarget = Vector3.Distance(GetModel().GetPosition(), adjusted);
+        float distanceToTarget = Vector3.Distance(GetModel().GetWorldPosition(), adjusted);
         float totalDistance = Vector3.Distance(popStartPosition, adjusted);
         float scaleFraction = 1 - distanceToTarget / totalDistance;
 
@@ -480,9 +545,9 @@ public abstract class ModelController
         scaleFraction = Mathf.Clamp01(scaleFraction);
 
         // Calculate the new scale
-        Vector3 endScale = new Vector3(TileGrid.TILE_SIZE, TileGrid.TILE_SIZE, 1);
+        Vector3 endScale = new Vector3(BoardConstants.TileSize, BoardConstants.TileSize, 1);
         Vector3 newScale = Vector3.Lerp(new Vector3(0.1f, 0.1f, 0.1f), endScale, scaleFraction);
-        GetModel().SetLocalScale(newScale);
+        GetModel().transform.localScale = newScale;
     }
 
     #endregion

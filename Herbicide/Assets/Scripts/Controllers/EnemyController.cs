@@ -18,14 +18,19 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     #region Fields
 
     /// <summary>
-    /// true if the Enemy has popped out of a NexusHole and is fully spawned.
-    /// </summary>
-    private bool poppedOutOfHole;
-
-    /// <summary>
     /// Enemies find targets.
     /// </summary>
     protected override bool FINDS_TARGETS => true;
+
+    /// <summary>
+    /// The path the Enemy is following.
+    /// </summary>
+    private int pathId;
+
+    /// <summary>
+    /// The index of the current waypoint in the path.
+    /// </summary>
+    private int currentWaypointIndex;
 
     #endregion
 
@@ -43,15 +48,14 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     protected override void UpdateMob()
     {
         if (!ValidModel()) return;
-        base.UpdateMob();
         if (GetGameState() != GameState.ONGOING) return;
-
-        if (!GetEnemy().Spawned()) SpawnMob();
+        base.UpdateMob();
         if (!GetEnemy().Spawned()) return;
 
         UpdateEnemyHealthState();
         UpdateEnemyCollider();
         GetEnemy().UpdateDamageOverTimeEffects();
+        UpdateCurrentWaypoint();
     }
 
     /// <summary>
@@ -63,8 +67,8 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     {
         targets.Sort((a, b) =>
         {
-            float distA = Vector2.Distance(GetEnemy().GetPosition(), a.GetPosition());
-            float distB = Vector2.Distance(GetEnemy().GetPosition(), b.GetPosition());
+            float distA = Vector2.Distance(GetEnemy().GetWorldPosition(), a.GetWorldPosition());
+            float distB = Vector2.Distance(GetEnemy().GetWorldPosition(), b.GetWorldPosition());
             return distA.CompareTo(distB);
         });
     }
@@ -75,9 +79,10 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     /// </summary>
     protected override void SpawnMob()
     {
-        if (!GetEnemy().ReadyToSpawn()) return;
-        GetMob().SetWorldPosition(NexusHoleSpawnPos(GetMob().GetSpawnWorldPosition()));
         base.SpawnMob();
+        GetMob().SetWorldPosition(SpawnHoleSpawnPos(GetMob().GetSpawnWorldPosition()));
+        pathId = UnityEngine.Random.Range(0, Waypoint.GetNumPaths());
+        currentWaypointIndex = 0;
     }
 
     /// <summary>
@@ -98,6 +103,30 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     private void UpdateEnemyCollider() => GetEnemy().SetColliderProperties();
 
     /// <summary>
+    /// Updates the current waypoint index by checking the Enemy's position
+    /// against the waypoint it is currently moving towards. If the Enemy has
+    /// reached the waypoint, the current waypoint index is incremented.
+    /// </summary>
+    private void UpdateCurrentWaypoint()
+    {
+        Vector3 worldPositionOfNextWaypoint = TileGrid.GetNextWaypointWorldPosition(GetPathId(), GetCurrentWaypointIndex());
+        bool reachedWaypoint = Vector2.Distance(GetEnemy().GetWorldPosition(), worldPositionOfNextWaypoint) <= BoardConstants.TileSize / 2f;
+        if(reachedWaypoint) currentWaypointIndex++;
+    }
+
+    /// <summary>
+    /// Returns the ID of the path the Enemy is following.
+    /// </summary>
+    /// <returns>the ID of the path the Enemy is following.</returns>
+    protected int GetPathId() => pathId;    
+
+    /// <summary>
+    /// Returns the index of the current waypoint in the path.
+    /// </summary>
+    /// <returns>the index of the current waypoint in the path.</returns>
+    protected int GetCurrentWaypointIndex() => currentWaypointIndex;
+
+    /// <summary>
     /// Returns true if the Enemy's current state renders it immune
     /// to damage.
     /// </summary>
@@ -113,12 +142,10 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     /// set to null; otherwise, false.</returns>
     public override bool ValidModel()
     {
+        if (GetEnemy().IsEscaped()) return false;
         if (!GetEnemy().Spawned()) return true;
         if (IsCurrentStateImmune()) return true;
-
-        if (!TileGrid.OnWalkableTile(GetEnemy().GetPosition())) return false;
-        else if (GetEnemy().Dead()) return false;
-        else if (GetEnemy().Exited()) return false;
+        if (GetEnemy().Dead()) return false;
 
         return true;
     }
@@ -156,23 +183,52 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
     private void TakeProjectileHit(Projectile projectile)
     {
         if (projectile == null) return;
-        GetEnemy().AdjustHealth(-projectile.GetDamage());
+        GetEnemy().AdjustHealth(-projectile.Damage);
         SoundController.PlaySoundEffect("kudzuHit");
     }
 
     /// <summary>
-    /// Destroys the Enemy and removes it from the scene.
+    /// Drops a resource at the Kudzu's resource drop rate.
     /// </summary>
-    protected override void DestroyAndRemoveModel()
+    protected override void DropDeathLoot()
     {
-        if(GetEnemy() == null) return;
+        if (DroppedDeathLoot()) return;
+        if (GetEnemy().IsEscaped()) return;
+
+        if(ControllerManager.NumEnemiesRemainingInclusive() == 0)
+        {
+            LevelReward levelReward = CollectableFactory.GetCollectablePrefab(ModelType.LEVEL_REWARD).GetComponent<LevelReward>();
+            LevelRewardController levelRewardController = new LevelRewardController(levelReward, GetEnemy().GetWorldPosition());
+            ControllerManager.AddModelController(levelRewardController);
+        }
+
+        base.DropDeathLoot();
+    }
+
+    /// <summary>
+    /// Applies the Enemy's death effects right before its reference is
+    /// removed from the scene.
+    /// </summary>
+    protected override void OnDestroyModel()
+    {
+        base.OnDestroyModel();
+        EjectQuills();
+        RemoveLivesOnEscape();
+        RewardCurrencyOnKill();
+    }
+
+    /// <summary>
+    /// Fires out the Quills stuck in the Enemy.
+    /// </summary>
+    private void EjectQuills()
+    {
         if (GetEnemy().GetQuillsStuckInEnemy() != null)
         {
             List<Quill> quillsStuck = GetEnemy().GetQuillsStuckInEnemy();
             GetEnemy().RemoveQuills();
             int totalQuills = quillsStuck.Sum(quill => quill.IsDoubleQuill() ? 2 : 1);
             float angleStep = 360.0f / totalQuills;
-            Vector3 enemyPosition = GetEnemy().GetPosition();
+            Vector3 enemyPosition = GetEnemy().GetWorldPosition();
             int quillIndex = 0;
 
             foreach (Quill stuckQuill in quillsStuck)
@@ -193,90 +249,33 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
                 }
             }
         }
-        base.DestroyAndRemoveModel();
     }
 
     /// <summary>
-    /// Performs logic right before the Enemy is destroyed.
+    /// Removes lives from the player when the Enemy escapes.
     /// </summary>
-    protected override void OnDestroyModel()
+    private void RemoveLivesOnEscape()
     {
-        // Drop held targets.
-        foreach (PlaceableObject heldTarget in GetHeldTargets())
-        {
-            if (heldTarget == null) continue;
-            Nexus nexusTarget = heldTarget as Nexus;
-            if (nexusTarget != null)
-            {
-                int spawnX = TileGrid.PositionToCoordinate(nexusTarget.GetSpawnWorldPosition().x);
-                int spawnY = TileGrid.PositionToCoordinate(nexusTarget.GetSpawnWorldPosition().y);
-                nexusTarget.Drop();
-                if (GetEnemy().Exited()) nexusTarget.Drop();
-                //else TileGrid.PlaceOnTileUsingCoordinates(new Vector2Int(spawnX, spawnY), nexusTarget);
-            }
-
-        }
-        base.OnDestroyModel();
+        if(!GetEnemy().IsEscaped()) return;
+        for (int i = 0; i < GetEnemy().LIVES_LOST_ON_EXIT; i++) { HealthController.LoseLife(); }
     }
 
     /// <summary>
-    /// Drops a resource at the Kudzu's resource drop rate.
+    /// Grants the player currency when the Enemy is killed.
     /// </summary>
-    protected override void DropDeathLoot()
+    private void RewardCurrencyOnKill()
     {
-        if (DroppedDeathLoot()) return;
-        if (GetEnemy().Exited()) return;
-
-        /*        Vector3 lootPos = GetEnemy().Exited() ? GetEnemy().GetExitPos() : GetEnemy().GetPosition();
-                int value = GetEnemy().CURRENCY_VALUE_ON_DEATH;*/
-
-        /*        Dew dew = CollectableFactory.GetCollectablePrefab(ModelType.DEW).GetComponent<Dew>();
-                DewController dewController = new DewController(dew, lootPos, value);
-                ControllerManager.AddModelController(dewController);*/
-
-        /*        BasicTreeSeed basicTreeSeed = CollectableFactory.GetCollectablePrefab(ModelType.BASIC_TREE_SEED).GetComponent<BasicTreeSeed>();
-                BasicTreeSeedController basicTreeSeedController = new BasicTreeSeedController(basicTreeSeed, lootPos);
-                ControllerManager.AddModelController(basicTreeSeedController);*/
-
-        /*        SpeedTreeSeed speedTreeSeed = CollectableFactory.GetCollectablePrefab(ModelType.SPEED_TREE_SEED).GetComponent<SpeedTreeSeed>();
-                SpeedTreeSeedController speedTreeSeedController = new SpeedTreeSeedController(speedTreeSeed, lootPos);
-                ControllerManager.AddModelController(speedTreeSeedController);*/
-
+        if (GetEnemy().IsEscaped()) return;
         EconomyController.CashIn(GetEnemy());
-
-        if(ControllerManager.NumEnemiesRemainingInclusive() == 0)
-        {
-            LevelReward levelReward = CollectableFactory.GetCollectablePrefab(ModelType.LEVEL_REWARD).GetComponent<LevelReward>();
-            LevelRewardController levelRewardController = new LevelRewardController(levelReward, GetEnemy().GetPosition());
-            ControllerManager.AddModelController(levelRewardController);
-        }
-
-        base.DropDeathLoot();
     }
 
     /// <summary>
-    /// Returns the spawn position of the Enemy when in a NexusHole.
+    /// Returns the spawn position of the Enemy when in a SpawnHole.
     /// </summary>
-    /// <param name="originalSpawnPos">The position of the NexusHole it is
+    /// <param name="originalSpawnPos">The position of the SpawnHole it is
     /// spawning from.</param>
-    /// <returns> the spawn position of the Enemy when in a NexusHole.</returns>
-    protected virtual Vector3 NexusHoleSpawnPos(Vector3 originalSpawnPos) => originalSpawnPos;
-
-    /// <summary>
-    /// Sets the EnemyController as popped out of a NexusHole.
-    /// </summary>
-    protected void SetPoppedOutOfHole()
-    {
-        poppedOutOfHole = true;
-        GetEnemy().SetMaskInteraction(SpriteMaskInteraction.None);
-    }
-
-    /// <summary>
-    /// Returns true if the Enemy has popped out of a NexusHole.
-    /// </summary>
-    /// <returns> true if the Enemy has popped out of a NexusHole; otherwise,
-    /// false. </returns>
-    protected bool PoppedOutOfHole() => poppedOutOfHole;
+    /// <returns> the spawn position of the Enemy when in a SpawnHole.</returns>
+    protected virtual Vector3 SpawnHoleSpawnPos(Vector3 originalSpawnPos) => originalSpawnPos;
 
     /// <summary>
     /// Returns the Enemy closest to the one controlled by this EnemyController
@@ -293,12 +292,11 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
         {
             Enemy enemyCarrier = carrier as Enemy;
             if (enemyCarrier == null) continue;
-            if (!enemyCarrier.IsHoldingNexus()) continue;
             if (enemyCarrier == currentEnemy) continue;
-            if (enemyCarrier.Exited()) continue;
+            if (enemyCarrier.IsEscaped()) continue;
             if (enemyCarrier.IsExiting()) continue;
 
-            float dist = Vector2.Distance(currentEnemy.GetPosition(), enemyCarrier.GetPosition());
+            float dist = Vector2.Distance(currentEnemy.GetWorldPosition(), enemyCarrier.GetWorldPosition());
             if (dist < nearestCarrierDist)
             {
                 nearestCarrier = enemyCarrier;
@@ -307,55 +305,6 @@ public abstract class EnemyController<T> : MobController<T> where T : Enum
         }
 
         return nearestCarrier;
-    }
-
-    /// <summary>
-    /// Returns true if a given Nexus is the closest Nexus of its type to 
-    /// the Nexus controlled by this NexusController.
-    /// </summary>
-    /// <param name="nexusTarget">The Nexus to check.</param>
-    /// <returns>true if a given Nexus is the closest Nexus of its type to 
-    /// the Nexus controlled by this NexusController; otherwise, false. </returns>
-    protected bool IsClosestTargetableNexusAlongPath(Nexus nexusTarget)
-    {
-        Assert.IsNotNull(nexusTarget);
-
-        Nexus closestNexus = null;
-        float minDistance = float.MaxValue;
-
-        foreach (Model otherModel in GetAllModels())
-        {
-            Nexus otherNexus = otherModel as Nexus;
-            if (otherNexus == null) continue;
-            if (otherNexus == GetModel()) continue;
-            if (!IsValidNexusTarget(otherNexus)) continue;
-
-            float distance = TileGrid.GetPathfindingTileDistance(GetModel().GetPosition(), otherNexus.GetPosition());
-            if (distance < minDistance)
-            {
-                minDistance = distance;
-                closestNexus = otherNexus;
-            }
-        }
-        return closestNexus == nexusTarget;
-    }
-
-    /// <summary>
-    /// Returns true if the Enemy controlled by this EnemyController can target
-    /// a given Nexus.
-    /// </summary>
-    /// <param name="nexusTarget">The Nexus to check.</param>
-    /// <returns>true if the Enemy controlled by this EnemyController can target
-    /// the given Nexus; otherwise, false.</returns>
-    protected bool IsValidNexusTarget(Nexus nexusTarget)
-    {
-        if(nexusTarget == null) return false;
-/*        Debug.Log("null? " + (nexusTarget == null) + " targetable? " + nexusTarget.Targetable() + " picked up? " + nexusTarget.PickedUp() + " cashed in? " + nexusTarget.CashedIn());
-*/
-        return nexusTarget != null
-            && nexusTarget.Targetable()
-            && !nexusTarget.PickedUp()
-            && !nexusTarget.DroppedByMob();
     }
 
     /// <summary>

@@ -25,7 +25,7 @@ public class RaspberryController : ProjectileController<RaspberryController.Rasp
     /// <summary>
     /// Blackberries do not angle towards their target.
     /// </summary>
-    protected override bool angleTowardsTarget => false;
+    protected override bool ShouldAngleTowardsTarget => false;
 
     #endregion
 
@@ -62,7 +62,7 @@ public class RaspberryController : ProjectileController<RaspberryController.Rasp
         int explosionY = TileGrid.PositionToCoordinate(explosionPosition.y);
         Vector2 tileExplosionPos = new Vector2(explosionX, explosionY);
         ExplosionController.ExplodeOnEnemies(tileExplosionPos,
-            GetRaspberry().EXPLOSION_RADIUS, GetRaspberry().BASE_DAMAGE, immuneObjects);
+            GetRaspberry().EXPLOSION_RADIUS, GetRaspberry().BaseDamage, immuneObjects);
 
     }
 
@@ -135,7 +135,7 @@ public class RaspberryController : ProjectileController<RaspberryController.Rasp
         if (!ValidModel()) return;
         if (GetState() != RaspberryState.MOVING) return;
 
-        SetNextAnimation(GetRaspberry().MID_AIR_ANIMATION_DURATION, ProjectileFactory.GetMidAirAnimationTrack(GetRaspberry()));
+        SetNextAnimation(GetRaspberry().MidAirAnimationDuration, ProjectileFactory.GetMidAirAnimationTrack(GetProjectile().TYPE));
         LobShot();
     }
 
@@ -150,7 +150,7 @@ public class RaspberryController : ProjectileController<RaspberryController.Rasp
     public override void AgeAnimationCounter()
     {
         RaspberryState state = GetState();
-        if (state == RaspberryState.MOVING) midAirAnimationCounter += Time.deltaTime;
+        if (state == RaspberryState.MOVING) MidAirAnimationCounter += Time.deltaTime;
     }
 
     /// <summary>
@@ -160,7 +160,7 @@ public class RaspberryController : ProjectileController<RaspberryController.Rasp
     public override float GetAnimationCounter()
     {
         RaspberryState state = GetState();
-        if (state == RaspberryState.MOVING) return midAirAnimationCounter;
+        if (state == RaspberryState.MOVING) return MidAirAnimationCounter;
         return 0;
     }
 
@@ -170,7 +170,7 @@ public class RaspberryController : ProjectileController<RaspberryController.Rasp
     public override void ResetAnimationCounter()
     {
         RaspberryState state = GetState();
-        if (state == RaspberryState.MOVING) midAirAnimationCounter = 0;
+        if (state == RaspberryState.MOVING) MidAirAnimationCounter = 0;
     }
 
     #endregion

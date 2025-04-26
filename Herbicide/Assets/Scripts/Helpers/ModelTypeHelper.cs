@@ -1,28 +1,10 @@
 using System;
-using System.Collections.Generic;
-using StageOfDay = StageController.StageOfDay;
+using UnityEngine.Assertions;
 
 /// <summary>
 /// Helper class for the ModelType enum.
 /// </summary>
 public static class ModelTypeHelper {
-
-    #region Fields
-
-    /// <summary>
-    /// Dictionary of purchasable stages for each ModelType.
-    /// </summary>
-    private static readonly Dictionary<ModelType, List<StageOfDay>> PURCHASABLE_STAGES = new Dictionary<ModelType, List<StageOfDay>>
-    {
-        { ModelType.SQUIRREL, new List<StageOfDay> { StageOfDay.MORNING, StageOfDay.NOON, StageOfDay.EVENING, StageOfDay.NIGHT } },
-        { ModelType.BEAR, new List<StageOfDay> { StageOfDay.MORNING, StageOfDay.NOON, StageOfDay.EVENING, StageOfDay.NIGHT } },
-        { ModelType.BUNNY, new List<StageOfDay> { StageOfDay.MORNING, StageOfDay.NOON, StageOfDay.EVENING, StageOfDay.NIGHT } },
-        { ModelType.PORCUPINE, new List<StageOfDay> { StageOfDay.MORNING, StageOfDay.NOON, StageOfDay.EVENING, StageOfDay.NIGHT } },
-        { ModelType.RACCOON, new List<StageOfDay> { StageOfDay.MORNING, StageOfDay.NOON, StageOfDay.EVENING, StageOfDay.NIGHT } },
-        { ModelType.OWL, new List<StageOfDay> { StageOfDay.MORNING, StageOfDay.EVENING, StageOfDay.NIGHT } }
-    };
-
-    #endregion
 
     #region Methods
 
@@ -32,10 +14,7 @@ public static class ModelTypeHelper {
     /// <param name="modelTypeString">The string to convert.</param>
     public static ModelType ConvertStringToModelType(string modelTypeString)
     {
-        if (Enum.TryParse(modelTypeString, true, out ModelType result))
-        {
-            return result;
-        }
+        if (Enum.TryParse(modelTypeString, true, out ModelType result)) return result;
         throw new ArgumentException($"Invalid ModelType: {modelTypeString}");
     }
 
@@ -46,38 +25,9 @@ public static class ModelTypeHelper {
     /// <returns>the ShopCard ModelType based on the given ModelType.</returns>
     public static ModelType GetShopCardModelTypeFromModelType(ModelType modelType)
     {
-        HashSet<ModelType> shopCardTypes = new HashSet<ModelType>
-        {
-            ModelType.SHOP_CARD_SQUIRREL,
-            ModelType.SHOP_CARD_BEAR,
-            ModelType.SHOP_CARD_BUNNY,
-            ModelType.SHOP_CARD_PORCUPINE,
-            ModelType.SHOP_CARD_RACCOON,
-            ModelType.SHOP_CARD_OWL,
-            ModelType.SHOP_CARD_BLANK
-        };
-
-        if (shopCardTypes.Contains(modelType)) return modelType;
-
-        switch (modelType)
-        {
-            case ModelType.SQUIRREL:
-                return ModelType.SHOP_CARD_SQUIRREL;
-            case ModelType.BEAR:
-                return ModelType.SHOP_CARD_BEAR;
-            case ModelType.BUNNY:
-                return ModelType.SHOP_CARD_BUNNY;
-            case ModelType.PORCUPINE:
-                return ModelType.SHOP_CARD_PORCUPINE;
-            case ModelType.RACCOON:
-                return ModelType.SHOP_CARD_RACCOON;
-            case ModelType.OWL:
-                return ModelType.SHOP_CARD_OWL;
-            default:
-                break;
-        }
-
-        throw new System.Exception("ModelType " + modelType + " does not have a corresponding ShopCard ModelType.");
+        if (ModelTypeConstants.ShopCardTypes.Contains(modelType)) return modelType;
+        Assert.IsTrue(ModelTypeConstants.ModelToShopCard.ContainsKey(modelType), "ModelType does not have a corresponding ShopCard ModelType.");
+        return ModelTypeConstants.ModelToShopCard[modelType];
     }
 
     /// <summary>
@@ -86,36 +36,9 @@ public static class ModelTypeHelper {
     /// <param name="shopCardModelType">The ShopCard ModelType to convert to a ModelType.</param>
     /// <returns>the ModelType based on the given ShopCard ModelType.</returns>
     public static ModelType GetModelTypeFromShopCardModelType(ModelType shopCardModelType)
-    {
-        HashSet<ModelType> modelTypes = new HashSet<ModelType>
-        {
-            ModelType.SQUIRREL,
-            ModelType.BEAR,
-            ModelType.BUNNY,
-            ModelType.PORCUPINE,
-            ModelType.RACCOON,
-            ModelType.OWL,
-        };
-
-        switch (shopCardModelType)
-        {
-            case ModelType.SHOP_CARD_SQUIRREL:
-                return ModelType.SQUIRREL;
-            case ModelType.SHOP_CARD_BEAR:
-                return ModelType.BEAR;
-            case ModelType.SHOP_CARD_BUNNY:
-                return ModelType.BUNNY;
-            case ModelType.SHOP_CARD_PORCUPINE:
-                return ModelType.PORCUPINE;
-            case ModelType.SHOP_CARD_RACCOON:
-                return ModelType.RACCOON;
-            case ModelType.SHOP_CARD_OWL:
-                return ModelType.OWL;
-            default:
-                break;
-        }
-
-        throw new System.Exception("ModelType " + shopCardModelType + " does not have a corresponding ModelType.");
+    {       
+        Assert.IsTrue(ModelTypeConstants.ShopCardTypes.Contains(shopCardModelType), "ShopCard ModelType does not have a corresponding ModelType.");
+        return ModelTypeConstants.ShopCardToModel[shopCardModelType];
     }
 
     /// <summary>
@@ -123,32 +46,71 @@ public static class ModelTypeHelper {
     /// </summary>
     /// <param name="modelType">The ModelType to check.</param>
     /// <returns>true if the given ModelType is a defender; false otherwise.</returns>
-    public static bool IsDefender(ModelType modelType)
-    {
-        HashSet<ModelType> defenderTypes = new HashSet<ModelType>
-        {
-            ModelType.SQUIRREL,
-            ModelType.BEAR,
-            ModelType.BUNNY,
-            ModelType.PORCUPINE,
-            ModelType.RACCOON,
-            ModelType.OWL
-        };
+    public static bool IsDefender(ModelType modelType) => ModelTypeConstants.DefenderTypes.Contains(modelType);
 
-        return defenderTypes.Contains(modelType);
+    /// <summary>
+    /// Returns true if the given ModelType is a ticket; false otherwise.
+    /// </summary>
+    /// <param name="modelType">the ModelType to check.</param>
+    /// <returns>true if the given ModelType is a ticket; false otherwise.</returns>
+    public static bool IsTicket(ModelType modelType) => modelType.ToString().ToLower().Contains("ticket");
+
+    /// <summary>
+    /// Returns true if the given ModelType is an inventory item; false otherwise.
+    /// </summary>
+    /// <param name="modelType">the ModelType to check.</param>
+    /// <returns>true if the given ModelType is an inventory item; false otherwise.</returns>
+    public static bool IsInventoryItem(ModelType modelType) => modelType.ToString().ToLower().Contains("inventory_item");
+
+    /// <summary>
+    /// Returns the ModelType of the inventory item corresponding to the given ticket ModelType.
+    /// </summary>
+    /// <param name="ticketModelType">the ticket ModelType to convert.</param>
+    /// <returns>the ModelType of the inventory item corresponding to the given ticket ModelType.</returns>
+    public static ModelType GetInventoryItemTypeFromTicketType(ModelType ticketModelType)
+    {
+        Assert.IsTrue(IsTicket(ticketModelType), "ModelType is not a ticket.");
+        Assert.IsTrue(ModelTypeConstants.TicketToInventory.ContainsKey(ticketModelType), ticketModelType + " does not have a corresponding inventory item ModelType.");
+        return ModelTypeConstants.TicketToInventory[ticketModelType];
     }
 
     /// <summary>
-    /// Returns true if the given ModelType can be purchased during the given stage; false otherwise.
+    /// Returns the ModelType of the inventory item container corresponding to the given inventory item ModelType.
+    /// </summary>
+    /// <param name="inventoryItemType">the inventory item type to convert.</param>
+    /// <returns>the ModelType of the inventory item container corresponding to the given inventory item ModelType.</returns>
+    public static ModelType GetInventoryItemContainerTypeFromInventoryType(ModelType inventoryItemType)
+    {
+        Assert.IsTrue(IsInventoryItem(inventoryItemType), "ModelType is not an inventory item.");
+        Assert.IsTrue(ModelTypeConstants.InventoryItemToInventoryItemContainer.ContainsKey(inventoryItemType), inventoryItemType + " does not have a corresponding inventory item container ModelType.");
+        return ModelTypeConstants.InventoryItemToInventoryItemContainer[inventoryItemType];
+    }
+
+    /// <summary>
+    /// Returns the ModelType of the ticket corresponding to the given inventory item ModelType.
+    /// </summary>
+    /// <param name="inventoryModelType">the inventory item ModelType to convert.</param>
+    /// <returns>the ModelType of the ticket corresponding to the given inventory item ModelType.</returns>
+    public static ModelType GetTicketTypeFromInventoryItemType(ModelType inventoryModelType)
+    {
+        Assert.IsTrue(IsInventoryItem(inventoryModelType), "ModelType is not an inventory item.");
+        Assert.IsTrue(ModelTypeConstants.InventoryToTicket.ContainsKey(inventoryModelType), "ModelType does not have a corresponding ticket ModelType.");
+        return ModelTypeConstants.InventoryToTicket[inventoryModelType];
+    }
+
+    /// <summary>
+    /// Returns true if the given ModelType is an equipment; false otherwise.
     /// </summary>
     /// <param name="modelType">The ModelType to check.</param>
-    /// <param name="stage">The stage to check.</param>
-    /// <returns>true if the given ModelType can be purchased during the given stage; false otherwise.</returns>
-    public static bool CanPurchaseDuringStage(ModelType modelType, StageOfDay stage)
-    {
-        if(!PURCHASABLE_STAGES.ContainsKey(modelType)) return false;
-        return PURCHASABLE_STAGES[modelType].Contains(stage);
-    }
+    /// <returns>true if the given ModelType is an equipment; false otherwise.</returns>
+    public static bool IsEquipment(ModelType modelType) => ModelTypeConstants.EquipmentTypes.Contains(modelType);
+
+    /// <summary>
+    /// Returns true if the given ModelType is a projectile; false otherwise.
+    /// </summary>
+    /// <param name="modelType">the ModelType to check.</param>
+    /// <returns>true if the given ModelType is a projectile; false otherwise.</returns>
+    public static bool IsProjectile(ModelType modelType) => ModelTypeConstants.ProjectileTypes.Contains(modelType);
 
     #endregion
 }

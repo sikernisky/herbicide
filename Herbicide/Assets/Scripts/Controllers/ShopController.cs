@@ -45,11 +45,6 @@ public class ShopController : MonoBehaviour
     private TMP_Text rerollText;
 
     /// <summary>
-    /// true if the reroll feature is enabled; false otherwise.
-    /// </summary>
-    private bool rerollEnabled;
-
-    /// <summary>
     /// How much currency it costs to reroll the shop.
     /// </summary>
     private static readonly int REROLL_COST = 25;
@@ -65,15 +60,15 @@ public class ShopController : MonoBehaviour
     private float timeSinceLastReroll;
 
     /// <summary>
-    /// Defines a delegate for buying a Model from the shop.
+    /// Defines a delegate for buying a Defender from the shop.
     /// </summary>
-    /// <param name="modelType">The Model that was bought.</param>
-    public delegate void BuyModelDelegate(Model purchasedModel);
+    /// <param name="defenderType">The type of Defender that was bought.</param>
+    public delegate Defender BuyModelDelegate(ModelType defenderType);
 
     /// <summary>
-    /// Event triggered when a Model is bought from the Shop.
+    /// Event triggered when a Defender is bought from the Shop.
     /// </summary>
-    public event BuyModelDelegate OnBuyModel;
+    public event BuyModelDelegate OnBuyDefender;
 
     /// <summary>
     /// true if the shop has been loaded; false otherwise.
@@ -102,26 +97,43 @@ public class ShopController : MonoBehaviour
     {
         if (gameState != GameState.ONGOING) return;
 
-        #if UNITY_EDITOR
-        if (InputController.DidKeycodeDown(KeyCode.S)) { Reroll(false); }
-        #endif
+        UpdateRerollButtonBasedOnPlayerBalance();
+        UpdateRerollTimer();
+    }
 
-        // Enable / Disable reroll button depending on balance
-        if (rerollEnabled)
-        {
-            if (EconomyController.GetBalance(ModelType.DEW) < REROLL_COST)
-            {
-                rerollButton.interactable = false;
-                rerollText.color = new Color32(100, 100, 100, 255);
-            }
-            else
-            {
-                rerollButton.interactable = true;
-                rerollText.color = new Color32(255, 255, 255, 255);
-            }
-        }
+    /// <summary>
+    /// Updates the Reroll button based on the player's balance.
+    /// </summary>
+    private void UpdateRerollButtonBasedOnPlayerBalance()
+    {
+        bool canAffordReroll = EconomyController.GetBalance(ModelType.DEW) >= REROLL_COST;
+        if (canAffordReroll) EnableRerollButton();
+        else DisableRerollButton();
+    }
 
-        // Update reroll timer
+    /// <summary>
+    /// Activates the Reroll button.
+    /// </summary>
+    private void EnableRerollButton()
+    {
+        rerollButton.interactable = true;
+        rerollText.color = new Color32(255, 255, 255, 255);
+    }
+
+    /// <summary>
+    /// Deactivates the Reroll button.
+    /// </summary>
+    private void DisableRerollButton()
+    {
+        rerollButton.interactable = false;
+        rerollText.color = new Color32(100, 100, 100, 255);
+    }
+
+    /// <summary>
+    /// Updates the Reroll timer.
+    /// </summary>
+    private void UpdateRerollTimer()
+    {
         float timePercentage = timeSinceLastReroll / AUTOMATIC_REROLL_TIME;
         timerBarFill.transform.localScale = new Vector3(timePercentage, 1, 1);
         if (timeSinceLastReroll <= 0) Reroll(true);
@@ -132,41 +144,37 @@ public class ShopController : MonoBehaviour
     /// Sets up the shop with the types of ShopCards it can sell.
     /// </summary>
     /// <param name="shopManager">the ShopManager singleton</param>
-    /// <param name="startingModels">the starting models for the shop</param>
-    /// <param name="numSlotsToSetActive">the number of slots to set as active / in use this level</param>
-    public void InitializeShop(ShopManager shopManager, List<ModelType> startingModels, int numSlotsToSetActive)
+    public void InitializeShop(ShopManager shopManager)
     {
         Assert.IsNotNull(shopManager, "ShopManager is null.");
-        Assert.IsNotNull(startingModels, "Starting models list is null.");
-        Assert.IsTrue(numSlotsToSetActive > 0 && numSlotsToSetActive <= shopSlots.Count, "Invalid number of slots.");
+        Assert.IsFalse(shopActive || shopLoaded);
 
-        if (shopActive) return;
-        if (!shopLoaded)
-        {
-            SetRerollEnabled(false);
-            EconomyController.SubscribeToBalanceUpdatedDelegate(UpdateShopCards);
-            numCardsPurchased = 0;
-            PlacementController.SubscribeToFinishPlacingDelegate(OnFinishPlacing);
-
-            for(int i = 0; i < shopSlots.Count; i++)
-            {
-                ShopSlot slotToActivate = shopSlots[i];
-                Button button = slotToActivate.gameObject.AddComponent<Button>();
-                button.onClick.AddListener(() => ClickShopSlotButton(slotToActivate.GetSlotIndex()));
-                slotToActivate.SetupSlot(i, button);
-            }
-
-            for (int i = numSlotsToSetActive; i < shopSlots.Count; i++)
-            {
-                shopSlots[i].DisableSlot();
-            }
-
-            Reroll(true, startingModels);
-            timeSinceLastReroll = AUTOMATIC_REROLL_TIME;
-        }
-        else shopSlots.ForEach(ss => ss.EnableSlot());
+        SubscribeToDelegates();
+        SetupSerializedShopSlots();
+        Reroll(true);
+        timeSinceLastReroll = AUTOMATIC_REROLL_TIME;
         shopLoaded = true;
         shopActive = true;
+    }
+
+    /// <summary>
+    /// Subscribes to the necessary delegates.
+    /// </summary>
+    private void SubscribeToDelegates()
+    {
+        EconomyController.SubscribeToBalanceUpdatedDelegate(UpdateShopCards);
+    }
+
+    /// <summary>
+    /// Sets up the ShopSlots with ShopCards.
+    /// </summary>
+    private void SetupSerializedShopSlots()
+    {
+        for (int slotIndex = 0; slotIndex < shopSlots.Count; slotIndex++)
+        {
+            ShopSlot slotToActivate = shopSlots[slotIndex];
+            slotToActivate.Setup(slotIndex, ShopFactory.GetShopCardPrefab(ModelType.SHOP_CARD).GetComponent<ShopCard>(), HandleShopSlotButtonClick);
+        }
     }
 
     /// <summary>
@@ -175,32 +183,10 @@ public class ShopController : MonoBehaviour
     /// <returns>a set of ModelTypes that can be purchased from the shop.</returns>
     private List<ModelType> GetUpdatedCardPool()
     {
-        HashSet<ModelType> shopCardsToLoad = new HashSet<ModelType>();
-        List<ModelType> unlockedModelTypes = new List<ModelType>(CollectionManager.GetAllUnlockedModelTypes());
-        unlockedModelTypes.ForEach(umt => shopCardsToLoad.Add(umt));
-
-        // Remove any ModelTypes that can't be purchased during the current stage
-        StageController.StageOfDay currentStage = StageController.GetCurrentStage();
-        unlockedModelTypes.RemoveAll(umt => !ModelTypeHelper.CanPurchaseDuringStage(umt, currentStage));
-
-        // Remove any duplicate ModelTypes
-        List<ModelType> uniqueModelTypes = new List<ModelType>();
-        unlockedModelTypes.ForEach(umt => { if (!uniqueModelTypes.Contains(umt)) uniqueModelTypes.Add(umt); });
-
-        return uniqueModelTypes;
-    }
-
-    /// <summary>
-    /// Sets the Reroll button to be active or inactive.
-    /// </summary>
-    /// <param name="active">true if setting the button to be active;
-    /// otherwise false. </param>
-    public void SetRerollEnabled(bool active)
-    {
-        rerollEnabled = active;
-        rerollButton.interactable = active;
-        if(active) rerollText.color = new Color32(255, 255, 255, 255);
-        else rerollText.color = new Color32(100, 100, 100, 255);
+        List<ModelType> unlockedModelTypes = new List<ModelType>(CollectionManager.GetAllUnlockedDefenders());
+        unlockedModelTypes.RemoveAll(mt => !ModelTypeHelper.IsDefender(mt));
+        unlockedModelTypes = unlockedModelTypes.Distinct().ToList();
+        return unlockedModelTypes;
     }
 
     /// <summary>
@@ -211,73 +197,52 @@ public class ShopController : MonoBehaviour
     /// false if it will. </param>
     private void Reroll(bool isFree)
     {
-        if (!isFree)
-        {
-            bool canReroll = EconomyController.GetBalance(ModelType.DEW) >= REROLL_COST;
-            if (!canReroll) return;
-            EconomyController.Withdraw(ModelType.DEW, REROLL_COST);
-        }
+        if(!isFree && EconomyController.GetBalance(ModelType.DEW) < REROLL_COST) return;
+        if(!isFree) EconomyController.Withdraw(ModelType.DEW, REROLL_COST);
+        shopSlots.ForEach(ss => DefineSlotWithShopCard(ss, PullRandomDefenderType()));
+        PostReroll();
+    }
 
+    /// <summary>
+    /// Returns a random Defender from the ShopManager's card pool.
+    /// </summary>
+    /// <returns>a random Defender from the ShopManager's card pool.</returns>
+    private ModelType PullRandomDefenderType()
+    {
         List<ModelType> pool = GetUpdatedCardPool();
-        foreach (ShopSlot cardSlot in shopSlots)
-        {
-            if (!cardSlot.IsEnabled()) continue;
-            Assert.IsNotNull(cardSlot);
-            int randomIndex = Random.Range(0, pool.Count);
-            var randomKey = pool[randomIndex];
-            ModelType randomType = randomKey;
-            GameObject shopCardPrefab = ShopFactory.GetShopCardPrefab(randomType);
-            Assert.IsNotNull(shopCardPrefab);
-            ShopCard shopCardComp = shopCardPrefab.GetComponent<ShopCard>();
-            Assert.IsNotNull(shopCardComp);
-            cardSlot.Fill(shopCardComp);
-        }
+        int randomIndex = Random.Range(0, pool.Count);
+        var randomKey = pool[randomIndex];
+        ModelType randomType = randomKey;
+        return randomType;
+    }
 
+    /// <summary>
+    /// Called after a reroll is completed.
+    /// </summary>
+    private void PostReroll()
+    {
         UpdateShopCards();
-
         timeSinceLastReroll = AUTOMATIC_REROLL_TIME;
-        shopActive = true;
     }
 
     /// <summary>
-    /// Rerolls the shop, replacing every ShopSlot with a new ShopCard
-    /// from the ShopManager's card pool.
+    /// Defines a ShopSlot with a ShopCard of a given ModelType.
     /// </summary>
-    /// <param name="isFree">true if this reroll won't charge the player;
-    /// false if it will. </param>
-    /// <param name="guaranteedRolls">A list of ModelTypes that will be
-    /// included in the reroll. </param>
-    private void Reroll(bool isFree, List<ModelType> guaranteedRolls)
+    /// <param name="defenderType">The ModelType of the Defender to define.</param>
+    /// <param name="slotToDefine">The ShopSlot to define.</param>
+    private void DefineSlotWithShopCard(ShopSlot slotToDefine, ModelType defenderType)
     {
-        if (!isFree)
-        {
-            bool canReroll = EconomyController.GetBalance(ModelType.DEW) >= REROLL_COST;
-            if (!canReroll) return;
-        }
-        Assert.IsNotNull(guaranteedRolls);
-        Reroll(isFree);
-
-        for(int i = 0; i < shopSlots.Count; i++)
-        {
-            if(i >= guaranteedRolls.Count) break;
-            if (!shopSlots[i].IsEnabled()) continue;
-            ModelType modelType = guaranteedRolls[i];
-            GameObject shopCardPrefab = ShopFactory.GetShopCardPrefab(modelType);
-            Assert.IsNotNull(shopCardPrefab);
-            ShopCard shopCardComp = shopCardPrefab.GetComponent<ShopCard>();
-            Assert.IsNotNull(shopCardComp);
-            shopSlots[i].Fill(shopCardComp);
-        }
+        Assert.IsNotNull(slotToDefine, "Slot is null");
+        Assert.IsTrue(slotToDefine.Filled, "Slot is not filled.");
+        Assert.IsTrue(ModelTypeHelper.IsDefender(defenderType), "ModelType is not a Defender.");
+        ShopCardData cardData = ShopFactory.GetShopCardData(defenderType);
+        slotToDefine.DefineCard(cardData);
     }
 
     /// <summary>
-    /// Called when the player finishes placing a Model.
+    /// Called when the player finishes placing an IUseable.
     /// </summary>
-    private void OnFinishPlacing(Model m)
-    {
-        Assert.IsNotNull(m, "Placed model is null.");
-        UpdateShopCards();
-    }
+    private void OnFinishPlacing() => UpdateShopCards();
 
     /// <summary>
     /// Iterates through the ShopSlots and darkens the ones the player
@@ -285,24 +250,20 @@ public class ShopController : MonoBehaviour
     /// </summary>
     private void UpdateShopCards()
     {
-        // Update the color of the ShopSlots based on the player's balance
+        // Color / Appearance of ShopSlots
         foreach (ShopSlot shopSlot in shopSlots)
         {
-            if (shopSlot.Empty()) continue;
+            if (!shopSlot.Defined) continue;
             if (!shopSlot.CanBuy(EconomyController.GetBalance(ModelType.DEW))) shopSlot.SetOccupantCardColor(new Color32(100, 100, 100, 255));
             else shopSlot.SetOccupantCardColor(new Color32(255, 255, 255, 255));
         }
-
-        // Update the combo available text of the ShopSlots based on the current board
-        foreach (ShopSlot shopSlot in shopSlots)
-        {
-            if (shopSlot.Empty()) continue;
-            ModelType modelTypeInSlot = ModelTypeHelper.GetModelTypeFromShopCardModelType(shopSlot.GetModelTypeOfCardInSlot());
-            bool willTriggerCombo = ControllerManager.WillTriggerCombination(modelTypeInSlot); 
-            if(ControllerManager.WillTriggerCombination(modelTypeInSlot)) shopSlot.SetOccupantComboAvailableTextActive(true);
-            else shopSlot.SetOccupantComboAvailableTextActive(false);
-        }
     }
+
+    /// <summary>
+    /// Returns true if the shop is empty; false otherwise.
+    /// </summary>
+    /// <returns>true if the shop is empty; false otherwise.</returns>
+    private bool IsShopEmpty() => shopSlots.All(ss => !ss.Filled);
 
     /// <summary>
     /// Subscribes a handler (the ControllerManager) to the request upgrade event.
@@ -311,7 +272,7 @@ public class ShopController : MonoBehaviour
     public void SubscribeToBuyDefenderDelegate(BuyModelDelegate handler)
     {
         Assert.IsNotNull(handler, "Handler is null.");
-        OnBuyModel += handler;
+        OnBuyDefender += handler;
     }
 
     /// <summary>
@@ -330,12 +291,7 @@ public class ShopController : MonoBehaviour
     /// Called when the player clicks the Reroll button. Refreshes
     /// the shop if they have enough money.
     /// </summary>
-    public void ClickRerollButton()
-    {
-        Assert.IsTrue(rerollEnabled, "Reroll button should not be interactable because reroll enabled" +
-            " is false.");
-        Reroll(false);
-    }
+    public void ClickRerollButton() => Reroll(false);
 
     /// <summary>
     /// # BUTTON EVENT #
@@ -352,7 +308,7 @@ public class ShopController : MonoBehaviour
         Assert.IsNotNull(basicTreePrefab, "BasicTree prefab is null.");
         Model basicTreeModel = basicTreePrefab.GetComponent<Model>();
         Assert.IsNotNull(basicTreeModel, "BasicTree model is null.");
-        PlacementController.StartPlacingObject(basicTreeModel);
+        PlacementManager.StartPlacing(basicTreeModel);
     }
 
     /// <summary>
@@ -370,7 +326,7 @@ public class ShopController : MonoBehaviour
         Assert.IsNotNull(speedTreePrefab, "SpeedTree prefab is null.");
         Model speedTreeModel = speedTreePrefab.GetComponent<Model>();
         Assert.IsNotNull(speedTreeModel, "SpeedTree model is null.");
-        PlacementController.StartPlacingObject(speedTreeModel);
+        PlacementManager.StartPlacing(speedTreeModel);
     }
 
     /// <summary>
@@ -379,36 +335,40 @@ public class ShopController : MonoBehaviour
     /// Called when a ShopSlot button is clicked. Starts placing
     /// from the clicked slot if possible. /// </summary>
     /// <param name="slotIndex">The Slot that was clicked.</param>
-    public void ClickShopSlotButton(int slotIndex)
+    public void HandleShopSlotButtonClick(int slotIndex)
     {
         Assert.IsTrue(slotIndex >= 0 && slotIndex < shopSlots.Count);
-        InsightManager.StopDisplayingAbility();
-        ShopSlot clickedSlot = shopSlots.First(ss => ss.GetSlotIndex() == slotIndex);
-        if (clickedSlot.Empty()) return;
-        if (PlacementController.IsPlacing()) return;
-        if (PlacementController.IsCombining()) return;
-        if (!clickedSlot.CanBuy(EconomyController.GetBalance(ModelType.DEW))) return;
-        ModelType modelTypeInSlot = ModelTypeHelper.GetModelTypeFromShopCardModelType(clickedSlot.GetModelTypeOfCardInSlot());
-        if (!ControllerManager.IsSpaceForModelOnSomeTree(modelTypeInSlot)) return;
+        ShopSlot clickedSlot = shopSlots.First(ss => ss.SlotIndex == slotIndex);
+        if(!CanBuyClickedSlotFromShop(clickedSlot)) return;
 
-        // Get a fresh copy of the Model we bought
-        GameObject slotPrefab = clickedSlot.GetCardPrefab();
-        Assert.IsNotNull(slotPrefab);
-        Model slotModel = slotPrefab.GetComponent<Model>();
-        Assert.IsNotNull(slotModel);
-        EconomyController.Withdraw(ModelType.DEW, clickedSlot.Buy(EconomyController.GetBalance(ModelType.DEW)));
+        ModelType modelTypeInSlot = clickedSlot.Occupant.ShopCardData.DefenderType;
+        EconomyController.Withdraw(ModelType.DEW, clickedSlot.Occupant.ShopCardData.CardCost);
+        clickedSlot.OnBuy();
         UpdateShopCards();
+        Defender constructedDefender = OnBuyDefender?.Invoke(modelTypeInSlot);
+        Assert.IsNotNull(constructedDefender, "Constructed Defender is null.");
+        TicketManager.OnPurchaseOrUseModel(modelTypeInSlot);
+        PlacementManager.OnPlacementFinished += (success) => { OnFinishPlacing(); };
+        PlacementManager.StartPlacing(constructedDefender);
 
-        // The ControllerManager handles upgrading and combination logic.
-        OnBuyModel?.Invoke(slotModel);
         numCardsPurchased++;
+        if (IsShopEmpty()) Reroll(true);
+    }
 
-        // This will return in-method if there's a combination because ControllerManager will start the placement event.
-        PlacementController.StartPlacingObject(slotModel);
 
-        bool allSlotsEmpty = true;
-        foreach (ShopSlot shopSlot in shopSlots) { if (!shopSlot.Empty()) allSlotsEmpty = false; }
-        if (allSlotsEmpty) Reroll(true);
+    /// <summary>
+    /// Returns true if the player can buy the clicked slot's contents from the shop.
+    /// </summary>
+    /// <param name="clickedSlot">the slot clicked.</param>
+    /// <returns>true if the player can buy the clicked slot's contents from the shop;
+    /// otherwise, false. </returns>
+    private bool CanBuyClickedSlotFromShop(ShopSlot clickedSlot)
+    {
+        if(!clickedSlot.Filled) return false;
+        if(!clickedSlot.CanBuy(EconomyController.GetBalance(ModelType.DEW))) return false;
+        if(PlacementManager.IsPlacing) return false;
+        if(!ControllerManager.IsSpaceForModelOnSomeTree(clickedSlot.Occupant.ShopCardData.DefenderType)) return false;
+        return true;
     }
 
     #endregion

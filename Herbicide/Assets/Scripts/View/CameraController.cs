@@ -89,7 +89,7 @@ public class CameraController : MonoBehaviour
     /// <summary>
     /// Sets the camera's position.
     /// </summary>
-    public static void MoveCamera(Vector2 pos) => instance.GetCamera().transform.position = pos;
+    public static void MoveCamera(Vector3 pos) => instance.GetCamera().transform.position = pos;
 
     /// <summary>
     /// Converts a position from screen coordinates to world coordinates.
@@ -120,15 +120,6 @@ public class CameraController : MonoBehaviour
     {
         var camera = GetCamera();
         if(camera == null) return;
-/*        switch (level)
-        {
-            case 0:
-                camera.orthographicSize = 8.5f;
-                break;
-            default:
-                camera.orthographicSize = 8.5f;
-                break;
-        }*/
     }
 
     /// <summary>

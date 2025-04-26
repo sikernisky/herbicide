@@ -15,7 +15,7 @@ public abstract class Factory : MonoBehaviour
     /// This Factory's (non-instantiated) list of model prefabs.
     /// </summary>
     [SerializeField]
-    private List<GameObject> prefabs;
+    protected List<GameObject> prefabs;
 
     /// <summary>
     /// An ObjectPool for each prefab type this Factory pumps out.
@@ -82,11 +82,12 @@ public abstract class Factory : MonoBehaviour
         Assert.IsNotNull(prefabs);
 
         Model model = returnedPrefab.GetComponent<Model>();
-        ModelType returnedType = model.TYPE;
+        UIModel uIModel = returnedPrefab.GetComponent<UIModel>();
+        ModelType returnedType = model != null ? model.TYPE : uIModel.GetModelType();
         ObjectPool objectPool = pools.Find(op => op.GetPoolType() == returnedType);
         Assert.IsNotNull(objectPool, "No pool found for model type " + returnedType);
 
-        model.ResetModel();
+        if(model != null) model.ResetModel();
         objectPool.ReturnToPool(returnedPrefab);
     }
 

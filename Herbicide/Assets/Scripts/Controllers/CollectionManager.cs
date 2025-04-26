@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using static TreeEditor.TreeEditorHelper;
 using Requirements = ModelUpgradeRequirements.ModelUpgradeRequirementsData;
 
 /// <summary>
@@ -12,7 +13,7 @@ public class CollectionManager : MonoBehaviour
     #region Fields
 
     /// <summary>
-    /// Reference to the ModelUpgradeSaveData singleton.
+    /// Reference to the SaveData singleton.
     /// </summary>
     private static CollectionManager instance;
 
@@ -25,7 +26,7 @@ public class CollectionManager : MonoBehaviour
     /// <summary>
     /// The player's collection of Models and their upgrade data.
     /// </summary>
-    private List<ModelUpgradeSaveData> modelUpgradeSaveData;
+    private List<ModelSaveData> unlockedModels;
 
     /// <summary>
     /// Tracks the number of points the player has earned for each ModelType
@@ -57,7 +58,7 @@ public class CollectionManager : MonoBehaviour
     public static void UpdateCollectionManager()
     {
         #if UNITY_EDITOR
-            if (InputController.DidKeycodeDown(KeyCode.U))
+            if (InputManager.DidKeycodeDown(KeyCode.U))
             {
                 UnlockModel(ModelType.BUNNY);
                 UnlockModel(ModelType.RACCOON);
@@ -65,10 +66,10 @@ public class CollectionManager : MonoBehaviour
                 UnlockModel(ModelType.PORCUPINE);
                 ShopManager.UnlockReroll();
             }
-            if (InputController.DidKeycodeDown(KeyCode.B)) UnlockModel(ModelType.BUNNY);
-            if (InputController.DidKeycodeDown(KeyCode.A)) UnlockModel(ModelType.RACCOON);
-            if (InputController.DidKeycodeDown(KeyCode.O)) UnlockModel(ModelType.OWL);
-            if (InputController.DidKeycodeDown(KeyCode.R)) ShopManager.UnlockReroll();  
+            if (InputManager.DidKeycodeDown(KeyCode.B)) UnlockModel(ModelType.BUNNY);
+            if (InputManager.DidKeycodeDown(KeyCode.A)) UnlockModel(ModelType.RACCOON);
+            if (InputManager.DidKeycodeDown(KeyCode.O)) UnlockModel(ModelType.OWL);
+            if (InputManager.DidKeycodeDown(KeyCode.R)) ShopManager.UnlockReroll();  
         #endif
     }
 
@@ -85,22 +86,12 @@ public class CollectionManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns the upgrade data for a given Model type.
-    /// </summary>
-    /// <param name="modelType">the given Model type.</param>
-    /// <returns>the upgrade data for a given Model type.</returns>
-    public static Requirements GetUpgradeRequirementsData(ModelType modelType)
-    {
-        return instance.requirements.GetUpgradeData(modelType);
-    }
-
-    /// <summary>
     /// Returns true if the given ModelType is unlocked.
     /// </summary>
     /// <param name="modelType">the given ModelType to check. </param>
     /// <returns>true if the given ModelType is unlocked; otherwise, false.</returns>
     public static bool IsModelUnlocked(ModelType modelType) => 
-        instance.modelUpgradeSaveData.Exists(data => data.GetModelType() == modelType);
+        instance.unlockedModels.Exists(data => data.GetModelType() == modelType);
 
     /// <summary>
     /// Adds upgrade points to the given ModelType.
@@ -156,10 +147,10 @@ public class CollectionManager : MonoBehaviour
     public static void UnlockModel(ModelType modelToUnlock) 
     {
         if(IsModelUnlocked(modelToUnlock)) return;
-        Assert.IsFalse(instance.modelUpgradeSaveData.Exists(data => data.GetModelType() == modelToUnlock));
+        Assert.IsFalse(instance.unlockedModels.Exists(data => data.GetModelType() == modelToUnlock));
 
-        ModelUpgradeSaveData data = new ModelUpgradeSaveData(modelToUnlock);
-        instance.modelUpgradeSaveData.Add(data);
+        ModelSaveData data = new ModelSaveData(modelToUnlock, instance.requirements.GetUpgradeData(modelToUnlock));
+        instance.unlockedModels.Add(data);
         instance.modelUpgradePointsTracker[modelToUnlock] = 0;
     }
 
@@ -167,10 +158,39 @@ public class CollectionManager : MonoBehaviour
     /// Returns a set of all unlocked ModelTypes.
     /// </summary>
     /// <returns>a set of all unlocked ModelTypes.</returns>
-    public static HashSet<ModelType> GetAllUnlockedModelTypes()
+    public static HashSet<ModelType> GetAllUnlockedModels()
     {
-        List<ModelType> modelTypes = instance.modelUpgradeSaveData.ConvertAll(data => data.GetModelType());
+        List<ModelType> modelTypes = instance.unlockedModels.ConvertAll(data => data.GetModelType());
         return new HashSet<ModelType>(modelTypes);
+    }
+
+    /// <summary>
+    /// Returns a set of all unlocked Defenders.
+    /// </summary>
+    /// <returns> a set of all unlocked Defenders.</returns>
+    public static HashSet<ModelType> GetAllUnlockedDefenders()
+    {
+        HashSet<ModelType> unlockedDefenders = new HashSet<ModelType>();
+        foreach (ModelType modelType in GetAllUnlockedModels())
+        {
+            if (ModelTypeHelper.IsDefender(modelType)) unlockedDefenders.Add(modelType);
+        }
+        return unlockedDefenders;
+    }
+
+    /// <summary>
+    /// Returns a set of all unlocked Tickets.
+    /// </summary>
+    /// <returns>a set of all unlocked Tickets.</returns>
+    public static HashSet<ModelType> GetAllUnlockedTickets()
+    {
+        HashSet<ModelType> unlockedTickets = new HashSet<ModelType>();
+        foreach (ModelType modelType in GetAllUnlockedModels())
+        {
+            if (ModelTypeHelper.IsTicket(modelType)) unlockedTickets.Add(modelType);
+        }
+
+        return unlockedTickets;
     }
 
     /// <summary>
@@ -178,10 +198,21 @@ public class CollectionManager : MonoBehaviour
     /// </summary>
     /// <param name="modelType">the ModelType to get data for. </param>
     /// <returns>the upgrade data for the given unlocked ModelType.</returns>
-    public static ModelUpgradeSaveData GetUnlockedModelUpgradeSaveData(ModelType modelType)
+    public static ModelSaveData GetUnlockedModelSaveData(ModelType modelType)
     {
         Assert.IsTrue(IsModelUnlocked(modelType), modelType + " is not unlocked and has no upgrade data.");
-        return instance.modelUpgradeSaveData.Find(data => data.GetModelType() == modelType);
+        return instance.unlockedModels.Find(data => data.GetModelType() == modelType);
+    }
+
+    /// <summary>
+    /// Returns the upgrade requirements for the given ModelType.
+    /// </summary>
+    /// <param name="modelType">the Model Type to get info for. </param>
+    /// <returns>the upgrade requirements for the given ModelType.</returns>
+    public static Requirements GetModelUpgradeRequirementsData(ModelType modelType)
+    {
+        Assert.IsTrue(IsModelUnlocked(modelType), modelType + " is not unlocked and has no upgrade data.");
+        return instance.requirements.GetUpgradeData(modelType);
     }
 
     /// <summary>
@@ -191,7 +222,7 @@ public class CollectionManager : MonoBehaviour
     {
         // Pack
         CollectionSaveData collectionSaveData = new CollectionSaveData();
-        collectionSaveData.modelSaveData = modelUpgradeSaveData;
+        collectionSaveData.modelSaveData = unlockedModels;
 
         // Save
         SaveLoadManager.SaveCollection(instance, collectionSaveData);
@@ -207,15 +238,14 @@ public class CollectionManager : MonoBehaviour
         if (saveData == null) saveData = new CollectionSaveData();
 
         // Unpack
-        List<ModelUpgradeSaveData> modelUpgradeSaveData = saveData.modelSaveData;
-        if (modelUpgradeSaveData == null) instance.modelUpgradeSaveData = new List<ModelUpgradeSaveData>();
-        else instance.modelUpgradeSaveData = saveData.modelSaveData;
+        List<ModelSaveData> modelSaveData = saveData.modelSaveData;
+        if (modelSaveData == null) instance.unlockedModels = new List<ModelSaveData>();
+        else instance.unlockedModels = saveData.modelSaveData;
 
         instance.modelUpgradePointsTracker = new Dictionary<ModelType, int>();
-        if (instance.modelUpgradeSaveData == null) instance.modelUpgradeSaveData = new List<ModelUpgradeSaveData>();
-        int level = SaveLoadManager.GetLoadedGameLevel();
-        if(level == 0) UnlockModel(ModelType.SQUIRREL);
-        foreach (ModelUpgradeSaveData data in instance.modelUpgradeSaveData)
+        if (instance.unlockedModels == null) instance.unlockedModels = new List<ModelSaveData>();
+        UnlockModel(ModelType.SQUIRREL);
+        foreach (ModelSaveData data in instance.unlockedModels)
         {
             instance.modelUpgradePointsTracker[data.GetModelType()] = 0;
         }

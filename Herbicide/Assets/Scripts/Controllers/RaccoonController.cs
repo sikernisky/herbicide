@@ -96,11 +96,11 @@ public class RaccoonController : DefenderController<RaccoonController.RaccoonSta
             SetNextAnimation(GetRaccoon().GetMainActionAnimationDuration() / numBerries,
                 DefenderFactory.GetMainActionTrack(
                     ModelType.RACCOON,
-                    GetRaccoon().GetDirection(), GetRaccoon().GetTier()));
+                    GetRaccoon().Direction, GetRaccoon().GetTier()));
 
             int raccoonTier = GetRaccoon().GetTier();
             Vector3 targetPosition = GetTarget().GetAttackPosition();
-            Vector3 raccoonPosition = GetRaccoon().GetPosition();
+            Vector3 raccoonPosition = GetRaccoon().GetWorldPosition();
 
             if (raccoonTier == 1)
             {
@@ -256,7 +256,7 @@ public class RaccoonController : DefenderController<RaccoonController.RaccoonSta
         if (!ValidModel()) return;
         if (GetState() != RaccoonState.SPAWN) return;
 
-        GetRaccoon().FaceDirection(Direction.SOUTH);
+        GetRaccoon().Direction = Direction.SOUTH;
         base.ExecuteSpawnState();
     }
 
@@ -270,12 +270,12 @@ public class RaccoonController : DefenderController<RaccoonController.RaccoonSta
         Enemy target = GetTarget() as Enemy;
         if (target != null && DistanceToTargetFromTree() <= GetRaccoon().GetMainActionRange())
             FaceTarget();
-        else GetRaccoon().FaceDirection(Direction.SOUTH);
+        else GetRaccoon().Direction = Direction.SOUTH;
 
         SetNextAnimation(GetRaccoon().IDLE_ANIMATION_DURATION,
             DefenderFactory.GetIdleTrack(
                 ModelType.RACCOON,
-                GetRaccoon().GetDirection(), GetRaccoon().GetTier()));
+                GetRaccoon().Direction, GetRaccoon().GetTier()));
     }
 
     /// <summary>

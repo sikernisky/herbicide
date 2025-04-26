@@ -64,7 +64,6 @@ public class SettingsController : MonoBehaviour
     /// </summary>
     public static void UpdateSettingsMenu()
     {
-        if (InputController.DidEscapeDown()) OnEscape();
         if (SettingsMenuOpen()) instance.UpdateSliders();
     }
 
@@ -89,15 +88,6 @@ public class SettingsController : MonoBehaviour
     {
         if (SettingsMenuOpen()) CloseSettingsMenu();
         else OpenSettingsMenu();
-    }
-
-    /// <summary>
-    /// Performs logic when the escape button is pressed.
-    /// </summary>
-    public static void OnEscape()
-    {
-        if (SettingsMenuOpen()) instance.CloseSettingsMenu();
-        else instance.OpenSettingsMenu();
     }
 
     /// <summary>

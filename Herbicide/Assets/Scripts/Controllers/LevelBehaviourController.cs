@@ -16,6 +16,11 @@ public abstract class LevelBehaviourController : MonoBehaviour
     private static LevelBehaviourController instance;
 
     /// <summary>
+    /// The most recent GameState.
+    /// </summary>
+    private GameState gameState;
+
+    /// <summary>
     /// List of events that must be triggered in order.
     /// </summary>
     protected Queue<LevelBehaviourEvent> sequentialEvents = new Queue<LevelBehaviourEvent>();
@@ -48,20 +53,32 @@ public abstract class LevelBehaviourController : MonoBehaviour
         // Not all levels have a LevelBehaviourController.
         if(levelBehaviourControllers.Length == 0) return;
         instance = levelBehaviourControllers[0];
+
         instance.InitializeLevelBehaviorEvents();
+
+        instance.AddDynamicEvent(new LevelBehaviourEvent(
+            () => instance.DidPlayerLose(),
+            () => instance.OnLose()));
+
+        instance.AddDynamicEvent(new LevelBehaviourEvent(
+            () => instance.DidPlayerWin(),
+            () => instance.OnWin()));
+
+        instance.OnStart();
     }
 
     /// <summary>
     /// Main update loop for the LevelBehaviourController. Calls
     /// the instance's UpdateLevelBehaviour method.
     /// </summary>
-    public static void UpdateLevelBehaviourController()
+    /// <param name="gameState">The most recent GameState.</param>
+    public static void UpdateLevelBehaviourController(GameState gameState)
     {
         if(instance == null) return;
+        instance.gameState = gameState;
 
         instance.ProcessDynamicEvents();
         instance.ProcessSequentialEvents();
-
         instance.UpdateLevelBehaviourInstance();
     }
 
@@ -72,12 +89,24 @@ public abstract class LevelBehaviourController : MonoBehaviour
     protected abstract void UpdateLevelBehaviourInstance();
 
     /// <summary>
+    /// Called when the player loses the level.
+    /// </summary>
+    protected abstract void OnLose();
+
+    /// <summary>
+    /// Called when the player wins the level.
+    /// </summary>
+    protected abstract void OnWin();
+
+    /// <summary>
+    /// Called when the game is starting.
+    /// </summary>
+    protected abstract void OnStart();
+
+    /// <summary>
     /// Called when the game is quitting. Destroys the LevelBehaviourController.
     /// </summary>
-    public static void OnQuit()
-    {
-        instance = null;
-    }
+    public static void OnQuit() => instance = null;
 
     /// <summary>
     /// Runs through each dynamic LevelBehaviourEvent and checks
@@ -147,6 +176,18 @@ public abstract class LevelBehaviourController : MonoBehaviour
     /// <returns>true if some level-specific event is currently pausing
     /// the level; otherwise, false.</returns>
     public static bool IsPaused() => isPaused;
+
+    /// <summary>
+    /// Returns true if the player has lost the level; otherwise, false.
+    /// </summary>
+    /// <returns>true if the player has lost the level; otherwise, false.</returns>
+    private bool DidPlayerLose() => gameState == GameState.LOSE;
+
+    /// <summary>
+    /// Returns true if the player has won the level; otherwise, false.
+    /// </summary>
+    /// <returns>true if the player has won the level; otherwise, false.</returns>
+    private bool DidPlayerWin() => gameState == GameState.WIN;
 
     #endregion
 }

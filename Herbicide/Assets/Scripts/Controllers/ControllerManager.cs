@@ -32,6 +32,11 @@ public class ControllerManager : MonoBehaviour
     /// </summary>
     private static bool collectedReward;
 
+    /// <summary>
+    /// true if combining Defenders is enabled; otherwise, false.
+    /// </summary>
+    private readonly bool IS_COMBINATION_ENABLED = false;
+
     #endregion
 
     #region Controller Lists
@@ -112,6 +117,40 @@ public class ControllerManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Creates an appropriate ProjectileController based on the projectile type.
+    /// </summary>
+    /// <param name="projectileType">The type of projectile to create a controller for.</param>
+    /// <param name="projectile">The projectile to create a controller for.</param>
+    /// <param name="mobPosition">The position of the Model firing the projectile.</param>
+    /// <param name="targetPosition">The position of the target the projectile is firing towards.</param>
+    public static void CreateProjectileController(ModelType projectileType, Projectile projectile, Vector3 mobPosition, Vector3 targetPosition)
+    {
+        ModelController controller = projectileType switch
+        {
+            ModelType.ACORN => new AcornController((Acorn)projectile, mobPosition, targetPosition),
+            ModelType.BLACKBERRY => new BlackberryController((Blackberry)projectile, mobPosition, targetPosition),
+            _ => throw new ArgumentException("Unsupported projectile type", nameof(projectileType))
+        };
+        AddModelController(controller);
+    }
+
+    /// <summary>
+    /// Creates an appropriate CollectableController based on the collectable type.
+    /// </summary>
+    /// <param name="collectableType">the type of collectable to create a controller for.</param>
+    /// <param name="currencyComp">the Currency component of the collectable.</param>
+    /// <param name="spawnPosition">the position to spawn the collectable at.</param>
+    public static void CreateCollectableController(ModelType collectableType, Currency currencyComp, Vector2 spawnPosition)
+    {
+        ModelController controller = collectableType switch
+        {
+            ModelType.DEW => new DewController((Dew)currencyComp, spawnPosition),
+            _ => null
+        };
+        AddModelController(controller);
+    }
+
+    /// <summary>
     /// Returns a Controller of the given ModelType and adds it to the list
     /// of active controllers that are updated and tracked. If a Defender is
     /// passed, it is assumed to be of tier 1.
@@ -148,6 +187,13 @@ public class ControllerManager : MonoBehaviour
                 Assert.IsNotNull(bunny);
                 BunnyController bnc = MakeDefenderController(bunny, 1) as BunnyController;
                 return bnc;
+            case ModelType.GOAL_HOLE:
+                GoalHole goalHole = model as GoalHole;
+                Assert.IsNotNull(goalHole, "GoalHole is null.");
+                GoalHoleController ghc = new GoalHoleController(goalHole);
+                instance.counts.SetCount(instance, model.TYPE, instance.counts.GetCount(model.TYPE) + 1);
+                instance.structureControllers.Add(ghc);
+                return ghc;
             case ModelType.KNOTWOOD:
                 Knotwood knotwood = model as Knotwood;
                 Assert.IsNotNull(knotwood, "Knotwood is null.");
@@ -162,17 +208,10 @@ public class ControllerManager : MonoBehaviour
                 instance.counts.SetCount(instance, model.TYPE, instance.counts.GetCount(model.TYPE) + 1);
                 instance.enemyControllers.Add(kzc);
                 return kzc;
-            case ModelType.NEXUS:
-                Nexus nexus = model as Nexus;
-                Assert.IsNotNull(nexus, "Nexus is null.");
-                NexusController nxc = new NexusController(nexus);
-                instance.counts.SetCount(instance, model.TYPE, instance.counts.GetCount(model.TYPE) + 1);
-                instance.structureControllers.Add(nxc);
-                return nxc;
-            case ModelType.NEXUS_HOLE:
-                NexusHole nexusHole = model as NexusHole;
-                Assert.IsNotNull(nexusHole, "NexusHole is null.");
-                NexusHoleController nhc = new NexusHoleController(nexusHole);
+            case ModelType.SPAWN_HOLE:
+                SpawnHole SpawnHole = model as SpawnHole;
+                Assert.IsNotNull(SpawnHole, "SpawnHole is null.");
+                SpawnHoleController nhc = new SpawnHoleController(SpawnHole);
                 instance.counts.SetCount(instance, model.TYPE, instance.counts.GetCount(model.TYPE) + 1);
                 instance.structureControllers.Add(nhc);
                 return nhc;
@@ -337,7 +376,7 @@ public class ControllerManager : MonoBehaviour
             Enemy model = pc.GetModel() as Enemy;
             if (model == null) continue;
             if (!pc.ValidModel()) continue;
-            if (!model.Dead() && !model.Exited()) counter++;
+            if (!model.Dead() && !model.IsEscaped()) counter++;
         }
         return counter;
     }
@@ -354,22 +393,7 @@ public class ControllerManager : MonoBehaviour
             if (pc == null || !pc.ValidModel()) continue;
             Enemy model = pc.GetModel() as Enemy;
             if (model == null) continue;
-            if (!model.Dead() && !model.Exited() && model.Spawned()) counter++;
-        }
-        return counter;
-    }
-
-    /// <summary>
-    /// Returns the number of alive, active Nexii.
-    /// </summary>
-    /// <returns>the number of alive, active Nexii.</returns>
-    public static int NumActiveNexii()
-    {
-        int counter = 0;
-        foreach (ModelController mc in instance.structureControllers)
-        {
-            Nexus nexus = mc.GetModel() as Nexus;
-            if (nexus != null && !nexus.DroppedByMob()) counter++;
+            if (!model.Dead() && !model.IsEscaped() && model.Spawned()) counter++;
         }
         return counter;
     }
@@ -384,7 +408,7 @@ public class ControllerManager : MonoBehaviour
         foreach (ModelController mc in instance.defenderControllers)
         {
             Defender defender = mc.GetModel() as Defender;
-            if (defender != null && defender.IsPlaced()) counter++;
+            if (defender != null && defender.PlacedOnSurface) counter++;
         }
         return counter;
     }
@@ -406,10 +430,10 @@ public class ControllerManager : MonoBehaviour
             if (tree == null) continue;
             
             // There is an empty tree, and we can place the defender on it
-            if(!tree.Occupied()) return true;
+            if(!tree.IsOccupied()) return true;
 
             // Check if the defender on the tower is of the same class and tier
-            Defender defender = tree.GetOccupant() as Defender;
+            Defender defender = tree.Occupant.Object as Defender;
             if(defender == null) continue;
 
             if (defender.TYPE == modelType && defender.GetTier() == 1)
@@ -430,14 +454,15 @@ public class ControllerManager : MonoBehaviour
     /// <returns>true if purchasing this defender triggers a combination; otherwise, false.</returns>
     public static bool WillTriggerCombination(ModelType modelType)
     {
+        if(!instance.IS_COMBINATION_ENABLED) return false;
         int defendersOfSameTypeAndTier = 0;
         foreach (ModelController treeController in instance.treeControllers)
         {
             if (!treeController.ValidModel()) continue;
             Tree tree = treeController.GetModel() as Tree;
             if (tree == null) continue;
-            if (!tree.Occupied()) continue;
-            Defender defender = tree.GetOccupant() as Defender;
+            if (!tree.IsOccupied()) continue;
+            Defender defender = tree.Occupant as Defender;
             if (defender == null) continue;
 
             if (defender.TYPE == modelType && defender.GetTier() == 1)
@@ -448,46 +473,6 @@ public class ControllerManager : MonoBehaviour
         }
 
         return false;
-    }
-
-    /// <summary>
-    /// Resets all Nexii to their spawn positions.
-    /// </summary>
-    /// <param name="stageController">The StageController singleton.</param>
-    public static void ResetAllNexiiToSpawnPositions(StageController stageController)
-    {
-        Assert.IsNotNull(stageController, "StageController is null.");
-        foreach(ModelController nexusController in instance.structureControllers)
-        {
-            if (!nexusController.ValidModel()) continue;
-            Nexus nexusModel = nexusController.GetModel() as Nexus;
-            if (nexusModel == null) continue;
-            int xSpawn = TileGrid.PositionToCoordinate(nexusModel.GetSpawnWorldPosition().x);
-            int ySpawn = TileGrid.PositionToCoordinate(nexusModel.GetSpawnWorldPosition().y);
-            int xPosCoord = TileGrid.PositionToCoordinate(nexusModel.GetPosition().x);
-            int yPosCoord = TileGrid.PositionToCoordinate(nexusModel.GetPosition().y);
-            TileGrid.RemoveFromTile(new Vector2Int(xPosCoord, yPosCoord));
-            TileGrid.PlaceOnTileUsingCoordinates(new Vector2Int(xSpawn, ySpawn), nexusModel);
-        }
-    }
-
-    /// <summary>
-    /// Resets the given Nexus to its spawn position.
-    /// </summary>
-    /// <param name="nexus">The Nexus to reset.</param>
-    public static void ResetNexusToSpawnPosition(Nexus nexus)
-    {
-        Assert.IsNotNull(nexus, "Nexus is null.");
-        foreach (ModelController nexusController in instance.structureControllers)
-        {
-            if (!nexusController.ValidModel()) continue;
-            Nexus nexusModel = nexusController.GetModel() as Nexus;
-            if (nexusModel == null) continue;
-            if (nexusModel != nexus) continue;
-            int xSpawn = TileGrid.PositionToCoordinate(nexusModel.GetSpawnWorldPosition().x);
-            int ySpawn = TileGrid.PositionToCoordinate(nexusModel.GetSpawnWorldPosition().y);
-            TileGrid.PlaceOnTileUsingCoordinates(new Vector2Int(xSpawn, ySpawn), nexusModel);
-        }
     }
 
     /// <summary>
@@ -511,21 +496,48 @@ public class ControllerManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Sets the color of all Nexii in the scene. This method is
-    /// called by the TutorialLevelBehaviourController.
+    /// Sets the tier of all Squirrels in the scene.
     /// </summary>
-    /// <param name="tutorialLevelBehaviourController">the TutorialLevelBehaviourController singleton</param>
-    /// <param name="color">the color to set to</param>
-    public static void SetColorOfAllNexii(TutorialLevelBehaviourController tutorialLevelBehaviourController, Color32 color)
+    /// <param name="tier">the tier to set to.</param>
+    public static void SetTierOfAllSquirrels(int tier)
     {
-        Assert.IsNotNull(tutorialLevelBehaviourController, "TutorialLevelBehaviourController is null.");
-
-        List<ModelController> nexusControllers = instance.structureControllers.Where(sc => sc.GetModel().TYPE == ModelType.NEXUS).ToList();
-        foreach (ModelController sc in nexusControllers)
+        foreach (ModelController dc in instance.defenderControllers)
         {
-            NexusController nc = sc as NexusController;
-            Assert.IsNotNull(nc, "BasicTreeController is null.");
-            nc.GetModel().SetColor(color);
+            Squirrel squirrel = dc.GetModel() as Squirrel;
+            if (squirrel == null) continue;
+            squirrel.SetTier(tier);
+        }
+    }
+
+    /// <summary>
+    /// Applies the given Effect to all Models of the given ModelType. Takes in a constructed
+    /// Effect object and clones it to each Model of the given ModelType.
+    /// </summary>
+    /// <param name="effect">the effect to apply.</param>
+    /// <param name="modelType">the type of Model to apply to</param>
+    public static void ApplyEffectToAllModelsOfType(Effect effect, ModelType modelType)
+    {
+        Assert.IsNotNull(effect, "Effect is null.");
+        foreach (ModelController mc in instance.enemyControllers)
+        {
+            if (mc.GetModel().TYPE == modelType)
+            {
+                Model model = mc.GetModel();
+                model.AddEffect(effect.Clone());
+            }
+        }
+    }
+
+    /// <summary>
+    /// Forces each Bunny to generate a resource at its location.
+    /// </summary>
+    public static void MakeAllBunniesGenerateResource()
+    {
+        foreach (ModelController mc in instance.defenderControllers)
+        {
+            BunnyController bc = mc as BunnyController;
+            if (bc == null) continue;
+            bc.GenerateResource();
         }
     }
 
@@ -676,25 +688,28 @@ public class ControllerManager : MonoBehaviour
         instance.structureControllers.ForEach(c => c.InformOfModelCounts(counts));
     }
 
-
     /// <summary>
-    /// Called when the player buys a Model from the shop. Makes its controller
+    /// Called when the player buys a Defender from the shop. Makes its controller
     /// and handles any upgrades needed.
     /// </summary>
-    /// <param name="purchasedModel">the Model that was just purchased.</param>
-    private void OnPurchaseModelFromShop(Model purchasedModel)
+    /// <param name="defenderType">the type of Defender that was just purchased.</param>
+    private Defender OnPurchaseModelFromShop(ModelType defenderType)
     {
-        Assert.IsTrue(IsSpaceForModelOnSomeTree(purchasedModel.TYPE), "You need to ensure there is space to place" +
-            "this Model");
+        Assert.IsTrue(IsSpaceForModelOnSomeTree(defenderType), "You need to ensure there is space to place this Model");
+        GameObject defenderOb = DefenderFactory.GetDefenderPrefab(defenderType);
+        Assert.IsNotNull(defenderOb);
+        Defender purchasedDefender = defenderOb.GetComponent<Defender>();
+        Assert.IsNotNull(purchasedDefender);
+        MakeModelController(purchasedDefender);
+        return purchasedDefender;
 
         // Create the model controller for the newly purchased model
-        MakeModelController(purchasedModel);
-        Defender purchasedDefender = purchasedModel as Defender;
-        if(purchasedDefender == null) return;
-        StartCoroutine(CheckAndCombineDefenders(purchasedDefender));
+        // if(purchasedDefender == null) return;
+        // if(!IS_COMBINATION_ENABLED) return;
+        // StartCoroutine(CheckAndCombineDefenders(purchasedDefender));
     }
     
-    /// <summary>
+/*    /// <summary>
     /// Checks if there is a combination of Defenders that can be made.
     /// If so, triggers a combination event in PlacementController and
     /// makes a recursive call to check for more combinations.
@@ -721,8 +736,8 @@ public class ControllerManager : MonoBehaviour
                 yield return new WaitWhile(() => PlacementController.IsCombining());
 
                 Defender combinationResult = CombineDefenders(defendersOfTypeAndTier, newDefender.GetTier());
-                PlacementController.StopPlacingObject();
-                PlacementController.StartPlacingObject(combinationResult);
+                //PlacementController.StopPlacing();
+                PlacementManager.StartPlacing(combinationResult);
                 yield return StartCoroutine(CheckAndCombineDefenders(combinationResult));
             }
         }
@@ -754,9 +769,9 @@ public class ControllerManager : MonoBehaviour
         modelController.AquireStatsOfCombiningModels(combinedDefenderModels);
 
         return newDefenderComp;
-    }
+    }*/
 
-    /// <summary>
+   /* /// <summary>
     /// Removes a Defender and its associated Controller from the scene.
     /// </summary>
     /// <param name="defenderToRemove">the Defender to remove. </param>
@@ -805,7 +820,7 @@ public class ControllerManager : MonoBehaviour
         }
 
         return placedDefenders;
-    }
+    }*/
 
     #endregion
 }

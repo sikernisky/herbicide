@@ -15,11 +15,6 @@ public class Spurge : Enemy
     #region Stats
 
     /// <summary>
-    /// Cost of placing a Spurge from the inventory. 
-    /// </summary>
-    public override int COST => 0;
-
-    /// <summary>
     /// Type of a Spurge.
     /// </summary>
     public override ModelType TYPE => ModelType.SPURGE;
@@ -27,17 +22,17 @@ public class Spurge : Enemy
     /// <summary>
     /// Base health of a Spurge.
     /// </summary>
-    public override float BASE_HEALTH => 35;
+    public override float BaseHealth => 35;
 
     /// <summary>
     /// Upper bound of a Spurge's health. 
     /// </summary>
-    public override float MAX_HEALTH => BASE_HEALTH;
+    public override float MaxHealth => BaseHealth;
 
     /// <summary>
     /// Minimum health of a Spurge
     /// </summary>
-    public override float MIN_HEALTH => 0;
+    public override float MinHealth => 0;
 
     /// <summary>
     /// Amount of attack cooldown this Spurge starts with.
@@ -52,7 +47,7 @@ public class Spurge : Enemy
     /// <summary>
     /// Starting main action animation duration of a Spurge.
     /// </summary>
-    public override float BASE_MAIN_ACTION_ANIMATION_DURATION => .25f;
+    public override float BaseMainActionAnimationDuration => .25f;
 
     /// <summary>
     /// Starting attack range of a Spurge.
@@ -87,7 +82,7 @@ public class Spurge : Enemy
     /// <summary>
     /// Starting movement animation duration of a Spurge.
     /// </summary>
-    public override float BASE_MOVEMENT_ANIMATION_DURATION => 0.4f;
+    public override float BaseMovementAnimationDuration => 0.4f;
 
     /// <summary>
     /// How many seconds a Spurge's idle animation lasts,

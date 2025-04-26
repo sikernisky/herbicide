@@ -26,7 +26,7 @@ public class SalmonberryController : ProjectileController<SalmonberryController.
     /// <summary>
     /// Blackberries do not angle towards their target.
     /// </summary>
-    protected override bool angleTowardsTarget => false;
+    protected override bool ShouldAngleTowardsTarget => false;
 
     #endregion
 
@@ -63,7 +63,7 @@ public class SalmonberryController : ProjectileController<SalmonberryController.
         int explosionY = TileGrid.PositionToCoordinate(explosionPosition.y);
         Vector2 tileExplosionPos = new Vector2(explosionX, explosionY);
         ExplosionController.ExplodeOnEnemies(tileExplosionPos,
-            GetSalmonberry().EXPLOSION_RADIUS, GetSalmonberry().BASE_DAMAGE, immuneObjects);
+            GetSalmonberry().EXPLOSION_RADIUS, GetSalmonberry().BaseDamage, immuneObjects);
 
     }
 
@@ -136,7 +136,7 @@ public class SalmonberryController : ProjectileController<SalmonberryController.
         if (!ValidModel()) return;
         if (GetState() != SalmonberryState.MOVING) return;
 
-        SetNextAnimation(GetSalmonberry().MID_AIR_ANIMATION_DURATION, ProjectileFactory.GetMidAirAnimationTrack(GetSalmonberry()));
+        SetNextAnimation(GetSalmonberry().MidAirAnimationDuration, ProjectileFactory.GetMidAirAnimationTrack(GetProjectile().TYPE));
         LobShot();
     }
 
@@ -151,7 +151,7 @@ public class SalmonberryController : ProjectileController<SalmonberryController.
     public override void AgeAnimationCounter()
     {
         SalmonberryState state = GetState();
-        if (state == SalmonberryState.MOVING) midAirAnimationCounter += Time.deltaTime;
+        if (state == SalmonberryState.MOVING) MidAirAnimationCounter += Time.deltaTime;
     }
 
     /// <summary>
@@ -161,7 +161,7 @@ public class SalmonberryController : ProjectileController<SalmonberryController.
     public override float GetAnimationCounter()
     {
         SalmonberryState state = GetState();
-        if (state == SalmonberryState.MOVING) return midAirAnimationCounter;
+        if (state == SalmonberryState.MOVING) return MidAirAnimationCounter;
         return 0;
     }
 
@@ -171,7 +171,7 @@ public class SalmonberryController : ProjectileController<SalmonberryController.
     public override void ResetAnimationCounter()
     {
         SalmonberryState state = GetState();
-        if (state == SalmonberryState.MOVING) midAirAnimationCounter = 0;
+        if (state == SalmonberryState.MOVING) MidAirAnimationCounter = 0;
     }
 
     #endregion

@@ -40,7 +40,7 @@ public class Knotwood : Enemy
     /// <summary>
     /// Starting main action animation duration of a Knotwood.
     /// </summary>
-    public override float BASE_MAIN_ACTION_ANIMATION_DURATION => .25f;
+    public override float BaseMainActionAnimationDuration => .25f;
 
     /// <summary>
     /// Starting chase range of a Knotwood.
@@ -75,17 +75,17 @@ public class Knotwood : Enemy
     /// <summary>
     /// Starting health of a Knotwood.
     /// </summary>
-    public override float BASE_HEALTH => 20;
+    public override float BaseHealth => 20;
 
     /// <summary>
     /// Maximum health of a Knotwood.
     /// </summary>
-    public override float MAX_HEALTH => BASE_HEALTH;
+    public override float MaxHealth => BaseHealth;
 
     /// <summary>
     /// Minimum health of a Knotwood.
     /// </summary>
-    public override float MIN_HEALTH => 0f;
+    public override float MinHealth => 0f;
 
     /// <summary>
     /// ModelType of a Knotwood.
@@ -95,7 +95,7 @@ public class Knotwood : Enemy
     /// <summary>
     /// Starting movement animation duration of a Knotwood.
     /// </summary>
-    public override float BASE_MOVEMENT_ANIMATION_DURATION => 0.3f;
+    public override float BaseMovementAnimationDuration => 0.3f;
 
     /// <summary>
     /// How many seconds a Knotwood's idle animation lasts,
@@ -111,16 +111,6 @@ public class Knotwood : Enemy
     #endregion
 
     #region Methods
-
-    /// <summary>
-    /// Sets this Knotwood's Collider2D properties.
-    /// </summary>
-    public override void SetColliderProperties()
-    {
-        BoxCollider2D collider = GetCollider() as BoxCollider2D;
-        Assert.IsNotNull(collider, "Collider is null.");
-        collider.offset = new Vector2(0, .5f);
-    }
 
     /// <summary>
     /// Returns the position at which an attacker will aim at when

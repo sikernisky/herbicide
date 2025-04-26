@@ -77,7 +77,7 @@ public class ModelUpgradeRequirements : ScriptableObject
             if (data.GetModelType() == modelType) return data;
         }
 
-        throw new System.Exception("Model type " + modelType + " not found in upgrade data.");
+        return default; // The default value of a struct is a struct with all fields set to their default values.
     }
 
     #endregion

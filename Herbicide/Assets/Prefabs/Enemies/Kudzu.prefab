@@ -218,6 +218,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelRenderer: {fileID: 6638087620076510427}
   modelCollider: {fileID: -2548071115174396759}
+  defaultAbility:
+    abilityName: 
+    abilityIcon: {fileID: 0}
+    abilityDescription: 
   healthBarBackground: {fileID: 4831859848913998220}
   healthBarFill: {fileID: 6057719719714501982}
 --- !u!212 &6638087620076510427
@@ -279,13 +283,13 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7290264091372080636}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.0073046684, y: 0.7921857}
+  m_Offset: {x: -0.0111813545, y: 0.59974104}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.25}
@@ -296,5 +300,5 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.8542762, y: 1.087052}
+  m_Size: {x: 0.8912482, y: 1.4719414}
   m_EdgeRadius: 0

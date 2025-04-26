@@ -116,17 +116,12 @@ public class ProjectileFactory : Factory
     /// </summary>
     /// <param name="m">The ModelType of the Projectile to get</param>
     /// <returns>the animation track that represents this Projectile when mid air.</returns>
-    public static Sprite[] GetMidAirAnimationTrack(Model m)
+    public static Sprite[] GetMidAirAnimationTrack(ModelType projectileType)
     {
-        switch (m.TYPE)
+        switch (projectileType)
         {
             case ModelType.ACORN:
                 return instance.acornAnimationSet.GetMidAirAnimation();
-            case ModelType.QUILL:
-                Quill quill = m as Quill;
-                Assert.IsNotNull(quill, "Quill is null.");
-                if(quill.IsDoubleQuill()) return instance.quillAnimationSet.GetDoubleQuillMidAirAnimation();
-                else return instance.quillAnimationSet.GetMidAirAnimation();
             case ModelType.BLACKBERRY:
                 return instance.blackberryAnimationSet.GetMidAirAnimation();
             case ModelType.RASPBERRY:

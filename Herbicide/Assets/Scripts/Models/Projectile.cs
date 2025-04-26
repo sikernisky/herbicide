@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Assertions;
 
 /// <summary>
 /// Represents something that can be shot and collide with a
@@ -12,22 +11,32 @@ public abstract class Projectile : Model
     /// <summary>
     /// Current speed of this Projectile.
     /// </summary>
-    private float speed;
+    public float Speed { get; private set; }
 
     /// <summary>
     /// Current damage of this Projectile.
     /// </summary>
-    private int damage;
+    public int Damage { get; private set; }
 
     /// <summary>
     /// How long this Projectile has been active
     /// </summary>
-    private float age;
+    public float Age { get; private set; }
 
     /// <summary>
     /// true if this Projectile is active in the scene.
     /// </summary>
-    private bool active = true;
+    public bool IsActive { get; private set; }
+
+    /// <summary>
+    /// true if this Projectile has hit something; otherwise, false. 
+    /// </summary>
+    public bool HasCollided { get; private set; }
+
+    /// <summary>
+    /// The number of times this Projectile will split upon impact.
+    /// </summary>
+    public int NumSplits { get; private set; }
 
     /// <summary>
     /// Projectile's RigidBody component.
@@ -42,72 +51,56 @@ public abstract class Projectile : Model
     private GameObject shadow;
 
     /// <summary>
-    /// true if this Projectile hit something; otherwise, false. 
-    /// </summary>
-    private bool collided;
-
-    /// <summary>
-    /// true if this Projectile traveled and reached its target destination;
-    /// otherwise, false. Note: some projectiles do not have a "target" and
-    /// move forever -- in that case, this is irrelevant. 
-    /// </summary>
-    private bool reachedTarget;
-
-    #endregion
-
-    #region Stats
-
-    /// <summary>
     /// Starting speed of this Projectile.
     /// </summary>
-    public abstract float BASE_SPEED { get; }
+    public abstract float BaseSpeed { get; }
 
     /// <summary>
     /// Maximum speed of this Projectile.
     /// </summary>
-    public abstract float MAX_SPEED { get; }
+    public abstract float MaxSpeed { get; }
 
     /// <summary>
     /// Minimum speed of this Projectile.
     /// </summary>
-    public abstract float MIN_SPEED { get; }
-
-    /// <summary>
-    /// How high this Projectile will be lobbed.
-    /// </summary>
-    public virtual float LOB_HEIGHT => 2f;
+    public abstract float MinSpeed { get; }
 
     /// <summary>
     /// Starting damage of this Projectile.
     /// </summary>
-    public abstract int BASE_DAMAGE { get; }
+    public abstract int BaseDamage { get; }
 
     /// <summary>
     /// Maximum damage of this Projectile.
     /// </summary>
-    public abstract int MAX_DAMAGE { get; }
+    public abstract int MaxDamage { get; }
 
     /// <summary>
     /// Minimum damage of this Projectile.
     /// </summary>
-    public abstract int MIN_DAMAGE { get; }
+    public abstract int MinDamage { get; }
 
     /// <summary>
     /// How many seconds this Projectile can last in the scene.
     /// </summary>
-    public abstract float LIFESPAN { get; }
-
-    /// <summary>
-    /// The duration of the animation that plays when this Projectile
-    /// is mid-air.
-    /// </summary>
-    public virtual float MID_AIR_ANIMATION_DURATION => .2f;
+    public abstract float Lifespan { get; }
 
     /// <summary>
     /// How many seconds a Projectile's move animation lasts,
     /// from start to finish. 
     /// </summary>
-    public abstract float MOVE_ANIMATION_DURATION { get; }
+    public abstract float MovementAnimationDuration { get; }
+
+    /// <summary>
+    /// How high this Projectile will be lobbed.
+    /// </summary>
+    public virtual float LobHeight => ModelStatConstants.ProjectileLobHeight;
+
+    /// <summary>
+    /// The duration of the animation that plays when this Projectile
+    /// is mid-air.
+    /// </summary>
+    public virtual float MidAirAnimationDuration => AnimationConstants.ProjectileMidAirAnimationDuration;
 
     #endregion
 
@@ -120,109 +113,32 @@ public abstract class Projectile : Model
     /// some Model; otherwise, false.</param>
     public void SetCollided(bool collided)
     {
-        this.collided = collided;
-        GetCollider().enabled = !collided;
+        HasCollided = collided;
+        ModelCollider.enabled = !collided;
     }
-
-    /// <summary>
-    /// Returns true if this Projectile has collided with something.
-    /// </summary>
-    /// <returns>true if this Projectile has collided with something;
-    /// otherwise, false.</returns>
-    public bool Collided() => collided;
-
-    /// <summary>
-    /// Informs this Projectile that it reached its positional target.
-    /// </summary>
-    public void SetReachedTarget() => reachedTarget = true;
-
-    /// <summary>
-    /// Returns true if this Projectile reached its positional target.
-    /// </summary>
-    /// <returns>true if this Projectile reached its positional target;
-    /// otherwise, false. </returns>
-    public bool HasReachedTarget() => reachedTarget;
-
-    /// <summary>
-    /// Returns this Projectile's RigidBody2D component.
-    /// </summary>
-    /// <returns>this Projectile's RigidBody2D component.</returns>
-    public Rigidbody2D GetBody() => projectileBody;
-
-    /// <summary>
-    /// Returns this Projectile's current speed.
-    /// </summary>
-    /// <returns>this Projectile's current speed.</returns>
-    public float GetSpeed() => speed;
-
-    /// <summary>
-    /// Adds to this Projectile's current speed.
-    /// </summary>
-    /// <param name="amount">the amount of speed to add.</param>
-    public void AdjustSpeed(float amount) => speed += amount;
 
     /// <summary>
     /// Resets the Projectile's speed to its starting value.
     /// </summary>
-    public void ResetSpeed() => speed = BASE_SPEED;
-
-    /// <summary>
-    /// Returns this Projectile's current damage.
-    /// </summary>
-    /// <returns>this Projectile's current damage.</returns>
-    public int GetDamage() => damage;
-
-    /// <summary>
-    /// Sets this Projectile's damage to a new value.
-    /// </summary>
-    /// <param name="newDamage">the new damage value.</param>
-    public void SetDamage(int newDamage) => damage = Mathf.Clamp(newDamage, MIN_DAMAGE, MAX_DAMAGE);
-
-    /// <summary>
-    /// Resets the Projectile's damange to its starting value.
-    /// </summary>
-    public void ResetDamage() => damage = BASE_DAMAGE;
-
-    /// <summary>
-    /// Returns true if this Projectile is active in the scene.
-    /// </summary>
-    /// <returns>true if this Projectile is active in the scene; otherwise,
-    /// false.</returns>
-    public bool IsActive() => active;
-
-    /// <summary>
-    /// Sets this Projectile as inactive.
-    /// </summary>
-    public void SetAsInactive() => active = false;
-
-    /// <summary>
-    /// Sets this Projectile as active.
-    /// </summary>
-    private void SetActive() => active = true;
+    public void ResetSpeed() => Speed = BaseSpeed;
 
     /// <summary>
     /// Adds to this Projectile's current age.
     /// </summary>
     /// <param name="time">the amount of time to add.</param>
-    public void AddToLifespan(float time) => age = time <= 0 ? age : age + time;
+    public void AddToLifespan(float time) => Age = time <= 0 ? Age : Age + time;
 
     /// <summary>
     /// Returns true if this Projectile has hit its lifespan.
     /// </summary>
     /// <returns>true if this Projectile has hit its lifespan;
     /// otherwise, false.</returns>
-    public bool Expired() => age >= LIFESPAN;
+    public bool Expired() => Age >= Lifespan;
 
     /// <summary>
     /// Resets this Projectile's age to zero.
     /// </summary>
-    private void ResetAge() => age = 0;
-
-    /// <summary>
-    /// Returns the number of seconds that this Projectile has been active.
-    /// </summary>
-    /// <returns>the number of seconds that this Projectile has been active.</returns>
-    public float GetAge() => age;
+    private void ResetAge() => Age = 0;
 
     /// <summary>
     /// Resets this Projectile's stats to their starting
@@ -232,11 +148,18 @@ public abstract class Projectile : Model
     {
         base.ResetModel();
         ResetSpeed();
-        ResetDamage();
+        Damage = BaseDamage;
         SetCollided(false);
-        SetActive();
+        SetNumSplits(0);
+        IsActive = true;
         ResetAge();
     }
+
+    /// <summary>
+    /// Sets the number of times this Projectile will split upon impact.
+    /// </summary>
+    /// <param name="newNumSplits">the number of times this Projectile will split upon impact.</param>
+    public void SetNumSplits(int newNumSplits) => NumSplits = Mathf.Clamp(newNumSplits, 0, int.MaxValue);
 
     /// <summary>
     /// Sets this Projectile's 2D Collider's properties.
@@ -260,6 +183,19 @@ public abstract class Projectile : Model
     /// </summary>
     /// <returns>a fresh copy of this Projectile from the object pool.  </returns>
     public override GameObject CreateNew() => ProjectileFactory.GetProjectilePrefab(TYPE);
+
+    /// <summary>
+    /// Clones this Projectile from another Projectile.
+    /// </summary>
+    /// <param name="m">The Model to clone from.</param>
+    public override void CloneFrom(Model m)
+    {
+        base.CloneFrom(m);
+        if(m is not Projectile p) return;
+        Speed = p.Speed;
+        Damage = p.Damage;
+        NumSplits = p.NumSplits;
+    }
 
     /// <summary>
     /// Returns a Sprite that represents this Projectile when it is

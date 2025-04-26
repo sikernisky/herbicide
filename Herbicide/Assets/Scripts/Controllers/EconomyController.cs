@@ -49,25 +49,9 @@ public class EconomyController : MonoBehaviour
     public event BalanceUpdatedDelegate OnBalanceUpdated;
 
     /// <summary>
-    /// How much Dew the player gets per tick.
-    /// </summary>
-    private static readonly int DEW_PASSIVE_INCOME = 25;
-
-    /// <summary>
-    /// The number of seconds the player must wait until they
-    /// recieve another Dew passive income tick.
-    /// </summary>
-    private static readonly float DEW_PASSIVE_INCOME_FREQUENCY = 30f;
-
-    /// <summary>
     /// Number of seconds since the last passive income tick occured.
     /// </summary>
     private float timeSinceLastDewPassiveIncomeTick;
-
-    /// <summary>
-    /// true if passive income is enabled; otherwise, false.
-    /// </summary>
-    private bool passiveIncomeEnabled;
 
     /// <summary>
     /// The most recent GameState.
@@ -91,7 +75,6 @@ public class EconomyController : MonoBehaviour
         Assert.IsNotNull(economyControllers, "Array of EconomyControllers is null.");
         Assert.AreEqual(1, economyControllers.Length);
         instance = economyControllers[0];
-        instance.passiveIncomeEnabled = false;
     }
 
     /// <summary>
@@ -117,7 +100,7 @@ public class EconomyController : MonoBehaviour
     {
         instance.gameState = gameState;
         instance.UpdateCurrencyText();
-        if(instance.passiveIncomeEnabled) instance.UpdatePassiveIncome();
+        instance.UpdatePassiveIncome();
     }
 
     /// <summary>
@@ -126,8 +109,8 @@ public class EconomyController : MonoBehaviour
     private void UpdateCurrencyText()
     {
         dewBalanceText.text = currencies[ModelType.DEW].ToString();
-        basicTreeSeedBalanceText.text = currencies[ModelType.BASIC_TREE_SEED].ToString();
-        speedTreeSeedBalanceText.text = currencies[ModelType.SPEED_TREE_SEED].ToString();
+        basicTreeSeedBalanceText.text = string.Empty;
+        speedTreeSeedBalanceText.text = string.Empty;
     }
 
     /// <summary>
@@ -158,9 +141,7 @@ public class EconomyController : MonoBehaviour
     {
         Assert.IsNotNull(currency, "Currency is null.");
         if (!currencies.ContainsKey(currency.TYPE)) return;
-
-        if(currency.GetValue() > 0) Deposit(currency.TYPE, currency.GetValue());
-        else Withdraw(currency.TYPE, currency.GetValue());
+        instance.DepositOrWithdraw(currency.GetValue());
     }
 
     /// <summary>
@@ -171,9 +152,16 @@ public class EconomyController : MonoBehaviour
     public static void CashIn(Enemy enemy)
     {
         Assert.IsNotNull(enemy, "Enemy is null.");
+        instance.DepositOrWithdraw(enemy.CURRENCY_VALUE_ON_DEATH);
+    }
 
-        int value = enemy.CURRENCY_VALUE_ON_DEATH;
-        if(value > 0) Deposit(ModelType.DEW, value);
+    /// <summary>
+    /// Cash in a value of currency.
+    /// </summary>
+    /// <param name="value">How much to cash in.</param>
+    private void DepositOrWithdraw(int value)
+    {
+        if (value > 0) Deposit(ModelType.DEW, value);
         else Withdraw(ModelType.DEW, value);
     }
 
@@ -212,13 +200,11 @@ public class EconomyController : MonoBehaviour
     private void UpdatePassiveIncome()
     {
         if (gameState != GameState.ONGOING) return;
-
         timeSinceLastDewPassiveIncomeTick += Time.deltaTime;
-
-        if (timeSinceLastDewPassiveIncomeTick >= DEW_PASSIVE_INCOME_FREQUENCY)
+        if (timeSinceLastDewPassiveIncomeTick >= GameConstants.PassiveIncomeTickInterval)
         {
             timeSinceLastDewPassiveIncomeTick = 0;
-            Deposit(ModelType.DEW, DEW_PASSIVE_INCOME);
+            Deposit(ModelType.DEW, GameConstants.PassiveIncomeAmountPerTick);
         }
     }
 
@@ -237,21 +223,10 @@ public class EconomyController : MonoBehaviour
     /// </summary>
     private void LoadEconomyData()
     {
-        int level = SaveLoadManager.GetLoadedGameLevel();
-        currencies = new Dictionary<ModelType, int>();
-        switch (level)
+        currencies = new Dictionary<ModelType, int>
         {
-            case 0:
-                currencies.Add(ModelType.DEW, 500);
-                currencies.Add(ModelType.BASIC_TREE_SEED, 0);
-                currencies.Add(ModelType.SPEED_TREE_SEED, 0);
-                break;
-            default:
-                currencies.Add(ModelType.DEW, 750);
-                currencies.Add(ModelType.BASIC_TREE_SEED, 0);
-                currencies.Add(ModelType.SPEED_TREE_SEED, 0);
-                break;
-        }
+            { ModelType.DEW, GameConstants.StartingCurrency }
+        };
     }
 
     /// <summary>

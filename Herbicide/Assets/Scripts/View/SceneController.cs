@@ -35,7 +35,7 @@ public class SceneController : MonoBehaviour
     public static void UpdateScene()
     {
         timeElapsed += Time.deltaTime;
-        if (InputController.DidKeycodeDown(KeyCode.N)) LoadNextLevelWithFadeDelay();
+        if (InputManager.DidKeycodeDown(KeyCode.N)) LoadNextLevelWithFadeDelay();
     }
 
     /// <summary>
@@ -180,7 +180,7 @@ public class SceneController : MonoBehaviour
         {
             // Update the loading progress.
             float progress = Mathf.Clamp01(asyncLoad.progress / 0.9f);
-            Debug.Log($"Loading progress: {progress * 100}%");
+            //Debug.Log($"Loading progress: {progress * 100}%");
             yield return null;
         }
         loadingScene = false;

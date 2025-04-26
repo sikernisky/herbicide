@@ -147,7 +147,7 @@ public class BearController : DefenderController<BearController.BearState>
         if (!ValidModel()) return;
         if (GetState() != BearState.SPAWN) return;
 
-        GetBear().FaceDirection(Direction.SOUTH);
+        GetBear().Direction = Direction.SOUTH;
         base.ExecuteSpawnState();
     }
 
@@ -160,11 +160,11 @@ public class BearController : DefenderController<BearController.BearState>
         if (GetState() != BearState.IDLE) return;
 
         if (GetTarget() != null) FaceTarget();
-        else GetBear().FaceDirection(Direction.SOUTH);
+        else GetBear().Direction = Direction.SOUTH;
 
         SetNextAnimation(GetBear().IDLE_ANIMATION_DURATION,
             DefenderFactory.GetIdleTrack(ModelType.BEAR,
-                GetBear().GetDirection(),
+                GetBear().Direction,
                 GetBear().GetTier()));
     }
 
@@ -183,7 +183,7 @@ public class BearController : DefenderController<BearController.BearState>
         FaceTarget();
 
         SetNextAnimation(GetBear().GetMainActionAnimationDuration(),
-        DefenderFactory.GetMainActionTrack(ModelType.BEAR, GetBear().GetDirection(), GetBear().GetTier()));
+        DefenderFactory.GetMainActionTrack(ModelType.BEAR, GetBear().Direction, GetBear().GetTier()));
 
         if (!CanPerformMainAction()) return;
 

@@ -12,11 +12,6 @@ public class BasicTree : Tree
     #region Stats
 
     /// <summary>
-    /// How much currency it takes to place a BasicTree
-    /// </summary>
-    public override int COST => 1;
-
-    /// <summary>
     /// Type of a BasicTree.
     /// </summary>
     public override ModelType TYPE => ModelType.BASIC_TREE;
@@ -24,17 +19,17 @@ public class BasicTree : Tree
     /// <summary>
     /// Starting health of a BasicTree.
     /// </summary>
-    public override float BASE_HEALTH => 200;
+    public override float BaseHealth => 200;
 
     /// <summary>
     /// Maximum health of a BasicTree.
     /// </summary>
-    public override float MAX_HEALTH => 200;
+    public override float MaxHealth => 200;
 
     /// <summary>
     /// Minimum health of a BasicTree.
     /// </summary>
-    public override float MIN_HEALTH => 0;
+    public override float MinHealth => 0;
 
     /// <summary>
     /// Starting attack range of a BasicTree.

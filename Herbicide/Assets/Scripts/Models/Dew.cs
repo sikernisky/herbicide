@@ -6,24 +6,10 @@ public class Dew : Currency
 {
     #region Fields
 
-    #endregion
-
-    #region Stats
-
     /// <summary>
-    /// Starting value of a Dew.
+    /// Value of a Dew.
     /// </summary>
-    public override int BASE_VALUE => 25;
-
-    /// <summary>
-    /// Maximum value of a Dew.
-    /// </summary>
-    public override int MAX_VALUE => int.MaxValue;
-
-    /// <summary>
-    /// Mimimum value of a Dew.
-    /// </summary>
-    public override int MIN_VALUE => 0;
+    public override int Value => ModelStatConstants.CollectableDewValue;
 
     /// <summary>
     /// Type of a Dew.
