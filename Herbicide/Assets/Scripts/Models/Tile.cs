@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -6,530 +5,344 @@ using UnityEngine.Assertions;
 /// Represents a set of space in the TileGrid with unique (X, Y) coordinates.
 /// Tiles may be floored and placed on.
 /// </summary>
-public abstract class Tile : Model, ISurface
+public abstract class Tile : Model, IFixedSurface
 {
     #region Fields
 
     /// <summary>
-    /// Represents a Type of Tile.
+    /// The PlaceableObject that is currently on this Tile.
     /// </summary>
-    public enum TileType
+    public PlaceableObject Occupant { get; private set; }
+
+    /// <summary>
+    /// The Ghost GameObject that is currently on this Tile.
+    /// </summary>
+    public GameObject GhostOccupant { get; private set; }
+
+    /// <summary>
+    /// Backing field for the LineRenderer property.
+    /// </summary>
+    [SerializeField]
+    private LineRenderer _lineRenderer;
+
+    /// <summary>
+    /// Reference to the LineRenderer for this Tile.
+    /// </summary>
+    public LineRenderer LineRenderer { get { return _lineRenderer; } }
+
+    /// <summary>
+    /// true a Mob can traverse this; otherwise, false.
+    /// </summary>
+    public virtual bool IsTraversable => true;
+
+    /// <summary>
+    /// Backing field for the neighbors property.
+    /// </summary>
+    private ISurface[] _neighbors;
+
+    /// <summary>
+    /// The eight ISurfaces that are adjacent to this Tile.
+    /// </summary>
+    public ISurface[] Neighbors
     {
-        GRASS,
-        WATER,
-        SHORE
+        get { return (ISurface[])_neighbors.Clone(); }
+        private set { _neighbors = value; }
     }
 
     /// <summary>
-    /// Reference to the LineRenderer for thihis Tile.
+    /// The (X, Y) coordinates of this Tile.
     /// </summary>
-    [SerializeField]
-    private LineRenderer lineRenderer;
+    public Vector2Int Coordinates { get; private set; }
 
     /// <summary>
-    /// Number of segments in the range indicator.
+    /// true if this Tile has been defined with coordinates; otherwise, false.
     /// </summary>
-    private int RANGE_INDICATOR_SEGMENTS => 50;
-
-    /// <summary>
-    /// The PlaceableObject on this Tile; null if Tile is unoccupied.
-    /// </summary>
-    private PlaceableObject occupant;
-
-    /// <summary>
-    /// The NexusHole on this Tile; null if there is none.
-    /// </summary>
-    private NexusHole nexusHoleOccupant;
-
-    /// <summary>
-    /// The ghost/preview of something that would place on this Tile.
-    /// </summary>
-    private GameObject ghostOccupant;
-
-    /// <summary>
-    /// The flooring on this Tile; null if there is none.
-    /// </summary>
-    private Flooring flooring;
-
-    /// <summary>
-    /// true if this Tile is spawned in a TileGrid.
-    /// </summary>
-    private bool defined;
-
-    /// <summary>
-    /// This Tile's four neighbors.
-    /// </summary>
-    private Tile[] neighbors;
-
-    /// <summary>
-    /// true if an Enemy is on this Tile; otherwise, false.
-    /// </summary>
-    private bool occupiedByEnemy;
-
-    /// <summary>
-    /// This Tile's Type.
-    /// </summary>
-    protected abstract TileType type { get; }
-
-
-    #endregion
-
-    #region Stats
-
-    /// <summary>
-    /// true if an Enemy can walk on this Tile
-    /// </summary>
-    public virtual bool WALKABLE => true;
+    public bool Defined { get; private set; }
 
     #endregion
 
     #region Methods
 
     /// <summary>
-    /// Defines this Tile to be within a TileGrid at coordinates (x, y).
+    /// Defines this Tile with its coordinates.
     /// </summary>
-    /// <param name="x">the x-coordinate of this Tile</param>
-    /// <param name="y">the y-coordinate of this Tile</param>
-    public virtual void Define(int x, int y)
+    /// <param name="x">The X-coordinate of this Tile.</param>
+    /// <param name="y">The Y-coordinate of this Tile.</param>
+    public virtual void DefineWithCoordinates(int x, int y)
     {
-        //Safety checks
+        if (Defined) return;
 
-        if (defined) return;
-
-        SetTileCoordinates(x, y);
-        SetupRangeIndicator();
-        ResetBaseTint();
-        name = type.ToString() + " (" + x + ", " + y + ")";
-        defined = true;
+        Coordinates = new Vector2Int(x, y);
+        name = TYPE.ToString() + " " + Coordinates.ToString();
+        Defined = true;
     }
 
     /// <summary>
-    /// Main update loop for this Tile.
+    /// Sets the four ISurfaces that are adjacent to this Tile. If this Tile has an occupant
+    /// that is an IFixedSurface, sets the neighbors of that occupant as well.
     /// </summary>
-    public void UpdateTile()
+    /// <param name="neighbors">the four ISurfaces that are adjacent to this Tile.</param>
+    public void SetNeighbors(ISurface[] neighbors)
     {
-        Nexus nexusOccupant = occupant as Nexus;
-        if (nexusOccupant != null)
-        {
-            ISurface[] neigbors = GetSurfaceNeighbors();
-            if (nexusOccupant.PickedUp() && CanRemove(neigbors)) Remove(neigbors);
-        }
+        Assert.IsNotNull(neighbors);
+        Assert.IsTrue(neighbors.Length == 4);
+        Neighbors = neighbors;
+        if(IsOccupied() && Occupant.Object is IFixedSurface fixedSurface) fixedSurface.SetNeighbors(neighbors);
     }
 
     /// <summary>
-    /// Returns true if this Tile has an Enemy on it; otherwise, returns
-    /// false.
+    /// Returns true if an IFixedSurface candidate can be placed on this Tile. If so,
+    /// places the candidate.
     /// </summary>
-    /// <returns>true if this Tile has an Enemy on it; otherwise, false.
-    /// </returns>
-    public bool OccupiedByEnemy() => occupiedByEnemy;
+    /// <param name="candidate">The candidate to place.</param>
+    /// <returns>true if a candidate can be placed on this Tile; otherwise,
+    /// false.</returns>
+    public bool Place(IFixedSurface candidate)
+    {
+        if (candidate is not ISurfacePlaceable surfacePlaceable) return false;
+        if (!Place(surfacePlaceable)) return false;
+        candidate.DefineWithCoordinates(Coordinates.x, Coordinates.y);
+        candidate.SetNeighbors(Neighbors);
+        UpdateAppearanceBasedOnNeighbors();
+        UpdateAppearanceOfNeighbors();
+        return true;
+    }
+
+    /// <summary>
+    /// Returns true if a candidate can be placed on this Tile. If so,
+    /// places the candidate.
+    /// </summary>
+    /// <param name="candidate">The candidate to place.</param>
+    /// <returns>true if a candidate can be placed on this Tile; otherwise,
+    /// false.</returns>
+    public bool Place(ISurfacePlaceable candidate)
+    {
+        if (Occupant is ISurface surface) return surface.Place(candidate);
+        if (!CanPlace(candidate)) return false;
+        SetupCandidateOnTile(candidate.Object);
+        Occupant = candidate.Object;
+        UpdateAppearanceBasedOnNeighbors();
+        UpdateAppearanceOfNeighbors();
+        return true;
+    }
+
+    /// <summary>
+    /// Returns true if a candidate can be placed on this Tile.
+    /// </summary>
+    /// <param name="candidate">The candidate to place.</param>
+    /// <returns>true if a candidate can be placed on this Tile;
+    /// otherwise, false.</returns>
+    private bool CanPlace(ISurfacePlaceable candidate)
+    {
+        if (IsOccupied()) return false;
+        if (candidate == null) return false;
+        if (candidate as Flooring == null && candidate as SpawnHole == null && candidate as GoalHole == null) return false;
+        return true;
+    }
 
     /// <summary>
     /// Returns true if this Tile is occupied.
     /// </summary>
     /// <returns>true if this Tile is occupied.</returns>
-    public bool Occupied()
-    {
-        AssertDefined();
-        if (Floored()) return GetFlooring().Occupied();
-        return occupant != null;
-    }
+    public bool IsOccupied() => Occupant != null;
 
     /// <summary>
-    /// Sets this Tile's occupant.
+    /// Physically sets up the candidate on this Tile.
     /// </summary>
-    /// <param name="occupant">The occupant.</param>
-    public void SetOccupant(PlaceableObject occupant) => this.occupant = occupant;
-
-    /// <summary>
-    /// Returns this Tile's TileType.
-    /// </summary>
-    /// <returns>this Tile's TileType.</returns>
-    public TileType GetTileType()
+    /// <param name="candidate">the candidate to set up.</param>
+    private void SetupCandidateOnTile(PlaceableObject candidate)
     {
-        AssertDefined();
-        return type;
-    }
-
-    /// <summary>
-    /// Returns true if this Tile has a flooring on it.
-    /// </summary>
-    /// <returns>true if this Tile has a flooring; otherwise, false.</returns>
-    public bool Floored()
-    {
-        AssertDefined();
-        return GetFlooring() != null;
-    }
-
-    /// <summary>
-    /// Returns the Flooring on this Tile, or null if there is none.
-    /// </summary>
-    /// <returns>the Flooring on this Tile, or null if there is none.
-    /// </returns>
-    private Flooring GetFlooring()
-    {
-        AssertDefined();
-        return flooring;
-    }
-
-    /// <summary>
-    /// Returns true if this Tile can be Floored with some flooring prefab.
-    /// </summary>
-    /// <param name="flooring">The flooring prefab to check.</param>
-    /// <param name="neighbors">This Tile's neighbors.</param>
-    /// <returns>true if this Tile can be Floored with some flooring prefab;
-    /// otherwise, false. </returns>
-    public bool CanFloor(Flooring flooring, ISurface[] neighbors)
-    {
-        AssertDefined();
-        if (flooring == null || neighbors == null) return false;
-        if (flooring.GetComponent<Flooring>() == null) return false;
-        if (Floored()) return false;
-        if (HostsNexusHole()) return false;
-
-        return true;
-    }
-
-    /// <summary>
-    /// Returns true if this Tile can be floored with a Flooring. If so,
-    /// floors the Tile.
-    /// </summary>
-    /// <param name="flooring">the GameObject with a Flooring component to check
-    ///  with.</param>
-    /// <returns>true if this Tile can be floored with a Flooring; otherwise,
-    /// false.</returns>
-    public void Floor(Flooring flooring, ISurface[] neighbors)
-    {
-        //Safety checks
-        AssertDefined();
-        Assert.IsTrue(CanFloor(flooring, neighbors));
-
-        UpdateSurfaceNeighbors(neighbors);
-
-        //Setup the new flooring on this Tile.
-        flooring.Define(GetX(), GetY(), GetTileType(), GetFlooringNeighbors());
-        flooring.transform.position = transform.position;
-        flooring.transform.SetParent(transform);
-        flooring.SetLocalScale(Vector3.one);
-        this.flooring = flooring;
-    }
-
-    /// <summary>
-    /// Returns an array of this Tile's neighbors' Flooring components.
-    /// </summary>
-    /// <returns>an array of this Tile's neighbors' Flooring components.
-    /// </returns>
-    private Flooring[] GetFlooringNeighbors()
-    {
-        AssertDefined();
-        Assert.IsNotNull(neighbors);
-        Flooring[] flooringNeighbors = new Flooring[neighbors.Length];
-        for (int i = 0; i < neighbors.Length; i++)
-        {
-            if (neighbors[i] != null) flooringNeighbors[i] = neighbors[i].GetFlooring();
-        }
-        return flooringNeighbors;
-    }
-
-    /// <summary>
-    /// Places a PlaceableObject on this Tile.
-    /// </summary>
-    /// <param name="candidate">The PlaceableObject to place.</param>
-    /// <param name="neighbors">This Tile's neighbors.</param>
-    public virtual void Place(PlaceableObject candidate, ISurface[] neighbors)
-    {
-        //Safety check
-        AssertDefined();
-        Assert.IsNotNull(candidate, "Placement candidate can't be null.");
-        Assert.IsNotNull(neighbors, "Placement candidate's neighbors can't be null.");
-        Assert.IsTrue(CanPlace(candidate, neighbors), "Need to make sure placement is valid.");
-
-        foreach (ISurface surface in neighbors)
-        {
-            if (surface != null) Assert.IsNotNull(surface as Tile);
-        }
-
-        //1. If has a flooring, pass event to that flooring.
-        if (Floored())
-        {
-            Flooring[] flooringNeighbors = new Flooring[4];
-            for (int i = 0; i < flooringNeighbors.Length; i++)
-            {
-                if (neighbors[i] == null) continue;
-                Tile t = (Tile)neighbors[i];
-                flooringNeighbors[i] = t.GetFlooring();
-            }
-            GetFlooring().Place(candidate, flooringNeighbors);
-            return;
-        }
-
-        //3. Place on this Tile.
-
-        SpriteRenderer prefabRenderer = candidate.GetComponent<SpriteRenderer>();
-
-        prefabRenderer.sortingOrder = GetY();
-        candidate.transform.position = transform.position;
+        Assert.IsNotNull(candidate);
+        candidate.SetSortingOrder(Coordinates.y);
         candidate.transform.SetParent(transform);
-        candidate.SetLocalScale(Vector3.one);
-        candidate.OnPlace(new Vector2Int(GetX(), GetY()));
-        if (candidate.OCCUPIER) SetOccupant(candidate);
-
-        NexusHole nexusHole = candidate as NexusHole;
-        if (nexusHole != null) nexusHoleOccupant = nexusHole;
+        candidate.transform.localPosition = new Vector3(BoardConstants.XPlacementOffset, BoardConstants.YPlacementOffset, transform.localPosition.z + BoardConstants.ZPlacementOffset);
+        candidate.transform.localScale = Vector3.one;
     }
 
     /// <summary>
-    /// Returns true if a PlaceableObject can be placed on this Tile.
+    /// Updates the appearance of this Tile based on its neighbors.
     /// </summary>
-    /// <param name="candidate">The PlaceableObject to place.</param>
-    /// <param name="neighbors">This Tile's neighbors.</param>
-    /// <returns>true if a PlaceableObject can be placed on this Tile;
-    /// otherwise, false.</returns>
-    public virtual bool CanPlace(PlaceableObject candidate, ISurface[] neighbors)
+    public void UpdateAppearanceBasedOnNeighbors()
     {
-        AssertDefined();
-        if (candidate == null || neighbors == null) return false;
-        if (Floored()) return GetFlooring().CanPlace(candidate, neighbors);
-
-        ModelType candidateType = candidate.TYPE;
-        List<ModelType> acceptedTypes = new List<ModelType>()
-        {
-            ModelType.NEXUS,
-            ModelType.NEXUS_HOLE,
-            ModelType.SOIL_FLOORING,
-            ModelType.STONE_WALL
-        };
-
-        if (Occupied()) return false;
-        if (!acceptedTypes.Contains(candidateType)) return false;
-
-        return true;
+        if (!Defined) return;
+        if (Occupant is IFixedSurface fixedSurfaceOccupant) fixedSurfaceOccupant.UpdateAppearanceBasedOnNeighbors();
     }
 
     /// <summary>
-    /// Returns and removes the PlaceableObject on this Tile. This does not
-    /// destroy the occupant; that is the responsibility of its controller. 
+    /// Updates the appearance of this Tile's neighbors who
+    /// implement IFixedSurface.
     /// </summary>
-    /// <param name="neighbors">This Tiles's neighbors.</param>
-    /// <returns>the PlaceableObject that was removed; null if there was none.</returns>
-    public virtual PlaceableObject Remove(ISurface[] neighbors)
+    private void UpdateAppearanceOfNeighbors()
     {
-        AssertDefined();
-        Assert.IsTrue(CanRemove(neighbors), "Need to check removal validity.");
-
-        PlaceableObject removed = null;
-        if (Floored()) return GetFlooring().Remove(neighbors);
-        else
+        foreach (IFixedSurface neighbor in Neighbors)
         {
-            removed = occupant;
-            occupant.OnRemove();
-            nexusHoleOccupant = null;
-            occupant = null;
+            if (neighbor is IFixedSurface fixedSurfaceNeighbor) fixedSurfaceNeighbor.UpdateAppearanceBasedOnNeighbors();
         }
+    }
+
+    /// <summary>
+    /// Returns true if the given Model type lies on this Tile or
+    /// any of its occupants.
+    /// </summary>
+    /// <typeparam name="T">The Model type to check for.</typeparam>
+    /// <returns> true if the given Model type lies on this Tile or
+    /// any of its occupants; otherwise, false.</returns>
+    public bool HasModel<T>()
+    {
+        ISurface current = this;
+        while (current != null)
+        {
+            if (current.Occupant?.Object is T) return true;
+            current = current.Occupant as ISurface;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Returns true if the given Model type lies on this Tile or
+    /// any of its occupants.
+    /// </summary>
+    /// <param name="modelType">The Model type to check for.</param>
+    /// <returns>true if the given Model type lies on this Tile or
+    /// any of its occupants; otherwise, false.</returns>
+    public bool HasModel(ModelType modelType)
+    {
+        ISurface current = this;
+        while (current != null)
+        {
+            if (current.Occupant?.Object.TYPE == modelType) return true;
+            current = current.Occupant as ISurface;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Returns and removes the PlaceableObject on this Tile.
+    /// </summary>
+    /// <returns>the PlaceableObject that was removed; null if there was none.</returns>
+    public PlaceableObject Remove()
+    {
+        if (Occupant is ISurface surface) return surface.Remove();
+        if (!IsOccupied()) return null;
+        PlaceableObject removed = Occupant;
+        Occupant = null;
         return removed;
     }
 
     /// <summary>
-    /// Returns true if there is a PlaceableObject on this Tile that can be
-    /// removed. 
-    /// /// </summary>
-    /// <param name="neighbors">This Tile's neighbors.</param>
-    /// <returns>true if there is a PlaceableObject on this Tile that can be
-    /// removed; otherwise, false. </returns>
-    public virtual bool CanRemove(ISurface[] neighbors)
-    {
-        AssertDefined();
-        Assert.IsNotNull(neighbors, "Array of neighbors is null.");
-
-        if (Floored()) return GetFlooring().CanRemove(neighbors);
-
-        if (!Occupied()) return false;
-
-        return true;
-    }
-
-    /// <summary>
-    /// Updates this Tile's array of neighbors. If it has a Flooring component,
-    /// updates the neighbors of that component too. 
-    /// </summary>
-    /// <param name="newNeighbors">this Tile's new neighbors.</param>
-    public void UpdateSurfaceNeighbors(ISurface[] newNeighbors)
-    {
-        AssertDefined();
-        Assert.IsNotNull(newNeighbors);
-
-        Tile[] tileNeighbors = new Tile[4];
-        for (int i = 0; i < newNeighbors.Length; i++)
-        {
-            tileNeighbors[i] = newNeighbors[i] as Tile;
-        }
-        neighbors = tileNeighbors;
-
-        // If hosting a flooring, pass this event to the flooring.
-        if (Floored()) flooring.UpdateSurfaceNeighbors(GetFlooringNeighbors());
-        else
-        {
-            if (occupant != null) occupant.UpdateNeighbors(GetPlaceableObjectNeighbors());
-        }
-    }
-
-    /// <summary>
-    /// Returns this Tile's four neighbors.
-    /// </summary>
-    /// <returns>this Tile's four neighbors.</returns>
-    public ISurface[] GetSurfaceNeighbors()
-    {
-        AssertDefined();
-        return neighbors;
-    }
-
-    /// <summary>
-    /// Returns this Tile's four neighbors' PlaceableObjects.
-    /// </summary>
-    /// <returns>this Tile's four neighbors' PlaceableObjects.</returns>
-    public PlaceableObject[] GetPlaceableObjectNeighbors()
-    {
-        AssertDefined();
-        if (neighbors == null) return null;
-
-        PlaceableObject[] placeableNeighbors = new PlaceableObject[4];
-        for (int i = 0; i < neighbors.Length; i++)
-        {
-            ISurface neighbor = neighbors[i];
-            if (neighbor != null) placeableNeighbors[i] = neighbor.GetOccupant();
-        }
-
-        return placeableNeighbors;
-    }
-
-    /// <summary>
-    /// Returns the PlaceableObject on this Tile.
-    /// </summary>
-    /// <returns>the PlaceableObject on this Tile; null if
-    /// it is unoccupied.</returns>
-    public PlaceableObject GetOccupant()
-    {
-        if (occupant != null) return occupant;
-        if (Floored() && GetFlooring().Occupied()) return GetFlooring().GetOccupant();
-        return null;
-    }
-
-    /// <summary>
-    /// Sets the color of this Tile's SpriteRenderer. If it's floored, passes
-    /// this paint command to the flooring instead.
-    /// </summary>
-    /// <param name="paintColor">the color with which to paint this Tile.</param>
-    public override void SetColor(Color32 paintColor)
-    {
-        if (Floored()) GetFlooring().SetColor(paintColor);
-        else base.SetColor(paintColor);
-    }
-
-    /// <summary>
-    /// Asserts that this Tile has been formally defined with a type and coordinates
-    /// by the TileGrid.
-    /// </summary>
-    public void AssertDefined() => Assert.IsTrue(defined, "Tile not defined.");
-
-    /// <summary>
-    /// Returns true if a pathfinder can walk across this Tile. They
-    /// can do so if it is unoccupied and walkable by default.
-    /// </summary>
-    /// <returns>true if a pathfinder can walk across this Tile;
-    /// otherwise, false.</returns>
-    public virtual bool IsWalkable()
-    {
-        if (Floored()) return GetFlooring().IsWalkable();
-        return WALKABLE && !Occupied();
-    }
-
-    /// <summary>
-    /// Determines whether a PlaceableObject object can be potentially placed
-    /// on this Tile. This method is invoked alongside GhostPlace() during a
-    /// hover or placement action to validate the placement feasibility.
-    /// </summary>
-    /// <param name="ghost">The PlaceableObject object that we are
-    /// trying to virtually place on this Tile.</param>
-    /// <returns>true if the PlaceableObject object can be placed on this Tile;
-    /// otherwise, false.</returns>
-    public bool CanGhostPlace(PlaceableObject ghost)
-    {
-        return !Occupied() && ghost != null && ghostOccupant == null
-            && CanPlace(ghost, GetSurfaceNeighbors());
-    }
-
-    /// <summary>
-    /// Provides a visual simulation of placing a PlaceableObject on
+    /// Provides a visual simulation of placing a candidate on
     /// this Tile and is called during a hover / placement action.
-    /// This method does not carry out actual placement of the PlaceableObject on
+    /// This method does not carry out actual placement of the candidate on
     /// this Tile. Instead, it displays a potential placement scenario.
     /// </summary>
-    /// <param name="ghost">The PlaceableObject object that we are
+    /// <param name="candidate">The candidate object that we are
     /// trying to virtually place on this Tile.</param>
     /// <returns> true if the ghost place was successful; otherwise,
     /// false. </returns> 
-    public bool GhostPlace(PlaceableObject ghost)
+    public bool GhostPlace(ISurfacePlaceable candidate)
     {
-        //Are we floored? If so, pass the event.
-        if (Floored())
-        {
-            bool result = GetFlooring().GhostPlace(ghost);
-            if(result) DrawRangeIndicator(ghost as Defender);
-            return result;
-        }
-
-        if (!CanGhostPlace(ghost)) return false;
-
-
-        //Ghost place on this Tile.
-        GameObject hollowCopy = (ghost as PlaceableObject).MakeHollowObject();
-        Assert.IsNotNull(hollowCopy);
-        SpriteRenderer hollowRenderer = hollowCopy.GetComponent<SpriteRenderer>();
-        Assert.IsNotNull(hollowRenderer);
-
-
-        hollowRenderer.sortingLayerName = "Trees";
-        hollowRenderer.sortingOrder = GetY();
-
-        Color32 ghostTint = ghost.GetCurrentTint();
-        MaterialPropertyBlock materialPropertyBlock = new MaterialPropertyBlock();
-        hollowRenderer.GetPropertyBlock(materialPropertyBlock);
-        materialPropertyBlock.SetColor("_Color", ghostTint);
-        hollowRenderer.SetPropertyBlock(materialPropertyBlock);
-        Color32 ghostColor = ghost.GetColor();
-        hollowRenderer.color = new Color32(ghostColor.r, ghostColor.g, ghostColor.b, 200);
-        hollowCopy.transform.position = transform.position;
-        hollowCopy.transform.SetParent(transform);
-
-
-        ghostOccupant = hollowCopy;
+        if (Occupant is ISurface surface) return surface.GhostPlace(candidate);
+        if (!CanGhostPlace(candidate)) return false;
+        if (candidate.Object is Defender defender) DrawRangeIndicator(defender);
+        GhostOccupant = SetupGhostCandidateOnTile(candidate.Object);
         return true;
     }
 
     /// <summary>
-    /// Removes all visual simulations of placing a PlaceableObject on this
-    /// Tile. If there are none, does nothing.
+    /// Draws a range indicator around this Surface.
     /// </summary>
-    public void GhostRemove()
+    /// <param name="defender">The Defender to draw the range indicator for.</param>
+    public void DrawRangeIndicator(Defender defender)
     {
-        EraseRangeIndicator();
-        if (Floored()) GetFlooring().GhostRemove();
-
-        if (ghostOccupant == null) return;
-
-        Destroy(ghostOccupant);
-        ghostOccupant = null;
+        if (!ShouldDrawRangeIndicator(defender)) return;
+        SetupRangeIndicator();
+        float ar = defender.BASE_MAIN_ACTION_RANGE;
+        Assert.IsTrue(ar >= 0, "Range must be greater than or equal to 0.");
+        LineRenderer.positionCount = RenderingConstants.TileRangeIndicatorSegments + 1;
+        DrawRangeCircle(ar);
     }
 
     /// <summary>
-    /// Sets whether an Enemy is on this Tile.
+    /// Returns true if the given Defender should draw a range indicator.
     /// </summary>
-    /// <param name="occupiedByEnemy">true if an Enemy is 
-    /// on this Tile; otherwise, false.</param>
-    public void SetOccupiedByEnemy(bool occupiedByEnemy)
+    /// <returns>true if the given Defender should draw a range indicator;
+    /// otherwise, false.</returns> 
+    private bool ShouldDrawRangeIndicator(Defender defender) => defender != null && defender.DRAWS_RANGE_INDICATOR;
+
+    /// <summary>
+    /// Sets the LineRenderer component values for the range
+    /// indicator LineRenderer.
+    /// </summary>
+    private void SetupRangeIndicator()
     {
-        this.occupiedByEnemy = occupiedByEnemy;
-        if (Floored()) GetFlooring().SetOccupiedByEnemy(occupiedByEnemy);
+        LineRenderer.useWorldSpace = false;
+        LineRenderer.startWidth = RenderingConstants.SurfaceRangeIndicatorStartWidth;
+        LineRenderer.endWidth = RenderingConstants.SurfaceRangeIndicatorEndWidth;
+        LineRenderer.material = new Material(Shader.Find(FilePathConstants.DefaultMaterialPath));
+        LineRenderer.startColor = ColorConstants.SurfaceRangeIndicatorColor;
+        LineRenderer.endColor = ColorConstants.SurfaceRangeIndicatorColor;
+    }
+
+    /// <summary>
+    /// Determines whether a candidate object can be potentially placed
+    /// on this Tile. This method is invoked alongside GhostPlace() during a
+    /// hover or placement action to validate the placement feasibility.
+    /// </summary>
+    /// <param name="candidate">The candidate object that we are
+    /// trying to virtually place on this Tile.</param>
+    /// <returns>true if the candidate object can be placed on this Tile;
+    /// otherwise, false.</returns>
+    private bool CanGhostPlace(ISurfacePlaceable candidate) => !IsOccupied() && !IsGhostOccupied() && CanPlace(candidate);
+
+    /// <summary>
+    /// Draws the circular range indicator.
+    /// </summary>
+    private void DrawRangeCircle(float range)
+    {
+        float lineAngle = 0f;
+        for (int i = 0; i <= RenderingConstants.TileRangeIndicatorSegments; i++)
+        {
+            SetLineRendererPosition(i, lineAngle, range);
+            lineAngle += 360f / RenderingConstants.TileRangeIndicatorSegments;
+        }
+    }
+
+    /// <summary>
+    /// Sets a position in the line renderer.
+    /// </summary>
+    private void SetLineRendererPosition(int index, float angle, float range)
+    {
+        float x = Mathf.Sin(Mathf.Deg2Rad * angle) * range;
+        float y = Mathf.Cos(Mathf.Deg2Rad * angle) * range;
+        LineRenderer.SetPosition(index, new Vector3(x, y, 1));
+    }
+
+    /// <summary>
+    /// Returns the GameObject that represents the ghost candidate on this Tile.
+    /// Sets up the ghost candidate's SpriteRenderer and MaterialPropertyBlock.
+    /// </summary>
+    /// <param name="ghostCandidate">The ghost candidate to set up.</param>
+    /// <returns>the GameObject that represents the ghost candidate on this Tile.</returns>
+    private GameObject SetupGhostCandidateOnTile(PlaceableObject ghostCandidate)
+    {
+        GameObject hollowCopy = ghostCandidate.MakeHollowObject();
+        SpriteRenderer hollowRenderer = hollowCopy.GetComponent<SpriteRenderer>();
+        ConfigureGhostCandidateSpriteRenderer(hollowRenderer, ghostCandidate.GetColor());
+        hollowCopy.transform.position = transform.position;
+        hollowCopy.transform.SetParent(transform);
+        return hollowCopy;
+    }
+
+    /// <summary>
+    /// Configures the ghost candidate's SpriteRenderer.
+    /// </summary>
+    /// <param name="ghostRenderer">the ghost candidate's SpriteRenderer.</param>
+    /// <param name="ghostColor">the ghost candidate's color.</param>
+    private void ConfigureGhostCandidateSpriteRenderer(SpriteRenderer ghostRenderer, Color32 ghostColor)
+    {
+        ghostRenderer.sortingLayerName = GetSortingLayerName();
+        ghostRenderer.sortingOrder = GetSortingOrder() + 1;
+        ghostRenderer.color = new Color32(ghostColor.r, ghostColor.g, ghostColor.b, ColorConstants.GhostOccupantAlpha);
     }
 
     /// <summary>
@@ -537,10 +350,36 @@ public abstract class Tile : Model, ISurface
     /// </summary>
     /// <returns>true if the ghost occupant on this Tile is not null;
     /// otherwise, false.</returns>
-    public bool HasActiveGhostOccupant()
+    public bool IsGhostOccupied() => GhostOccupant != null;
+
+    /// <summary>
+    /// Removes all visual simulations of placing a PlaceableObject on this
+    /// Tile. If there are none, does nothing.
+    /// </summary>
+    public void GhostRemove()
     {
-        if (Floored()) return GetFlooring().HasActiveGhostOccupant();
-        return ghostOccupant != null;
+        if(Occupant is ISurface surface) surface.GhostRemove();
+        EraseRangeIndicator();
+        if (GhostOccupant == null) return;
+        Destroy(GhostOccupant);
+        GhostOccupant = null;
+    }
+
+    /// <summary>
+    /// Erases the range indicator.
+    /// </summary>
+    private void EraseRangeIndicator() => LineRenderer.positionCount = 0;
+
+    /// <summary>
+    /// Returns true if a pathfinder can walk across this Tile.
+    /// </summary>
+    /// <returns>true if a pathfinder can walk across this Tile;
+    /// otherwise, false.</returns>
+    public virtual bool IsCurrentlyWalkable()
+    {
+        if (Occupant is IFixedSurface fixedSurface) return fixedSurface.IsCurrentlyWalkable();
+        else if(IsOccupied() && !Occupant.IsTraversable) return false;
+        return IsTraversable;
     }
 
     /// <summary>
@@ -561,107 +400,13 @@ public abstract class Tile : Model, ISurface
     /// </summary>
     /// <returns> a Sprite that represents this Tile when it is
     /// being placed.</returns>
-    public override Sprite[] GetPlacementTrack() => throw new System.NotSupportedException("Tile placing not supported.");
+    public override Sprite[] GetPlacementTrack() => new Sprite[] { GetSprite() };
 
     /// <summary>
-    /// Returns true if there is a NexusHole on this Tile.
+    /// Sets the Sprite of this Tile using the given local Tiled ID.
     /// </summary>
-    /// <returns>true if there is a NexusHole on this Tile; otherwise,
-    /// false. </returns>
-    public bool HostsNexusHole() => nexusHoleOccupant != null;
-
-    /// <summary>
-    /// Sets the LineRenderer component values for the range
-    /// indicator LineRenderer.
-    /// </summary>
-    private void SetupRangeIndicator()
-    {
-        lineRenderer.useWorldSpace = false;
-        lineRenderer.startWidth = 0.05f; // Adjust width as needed
-        lineRenderer.endWidth = 0.05f;
-        lineRenderer.material = new Material(Shader.Find("Sprites/Default")); // Ensure this material supports transparency
-        lineRenderer.startColor = new Color(0.2f, 1f, 0f, 0.5f);
-        lineRenderer.endColor = new Color(0.2f, 1f, 0f, 0.5f);
-    }
-
-    /// <summary>
-    /// Draws a range indicator around this Mob.
-    /// </summary>
-    /// <param name="defender">The Defender to draw the range indicator for.</param>
-    private void DrawRangeIndicator(Defender defender)
-    {
-        if (defender == null) return;
-        if(!defender.DRAWS_RANGE_INDICATOR) return;
-
-        float ar = defender.BASE_MAIN_ACTION_RANGE;
-        Assert.IsTrue(ar >= 0, "Range must be greater than or equal to 0.");
-
-        lineRenderer.positionCount = RANGE_INDICATOR_SEGMENTS + 1;
-
-        float lineAngle = 0f;
-        for (int i = 0; i <= RANGE_INDICATOR_SEGMENTS; i++)
-        {
-            float x = Mathf.Sin(Mathf.Deg2Rad * lineAngle) * ar;
-            float y = Mathf.Cos(Mathf.Deg2Rad * lineAngle) * ar;
-            lineRenderer.SetPosition(i, new Vector3(x, y, 1));
-            lineAngle += 360f / RANGE_INDICATOR_SEGMENTS;
-        }
-    }
-
-    /// <summary>
-    /// Erases the range indicator.
-    /// </summary>
-    private void EraseRangeIndicator() => lineRenderer.positionCount = 0;
-
-    /// <summary>
-    /// Displays this Tile's occupant's information using the
-    /// insight manager. Does nothing if this Tile is not occupied.
-    /// If the occupant is an ISurface, passes the event to that ISurface.
-    /// </summary>
-    public void ShowMobOccupantAbility()
-    {
-        if(Floored()) GetFlooring().ShowMobOccupantAbility();
-        else
-        {
-            Mob occupantAsMob = GetOccupant() as Mob;
-            if (occupantAsMob != null) InsightManager.DisplayAbilityOfMob(occupantAsMob);
-        }
-    }
-
-    /// <summary>
-    /// Sets the tint of this Tile and all its occupants.
-    /// </summary>
-    /// <param name="tintColor">The tint color to set.</param>
-    public void SetTintOfSurfaceAndAllOccupants(Color32 tintColor)
-    {
-        SetAppliedTint(tintColor);
-        if(Occupied()) GetOccupant().SetAppliedTint(tintColor);
-        if (Floored()) GetFlooring().SetTintOfSurfaceAndAllOccupants(tintColor);
-    }
-
-    /// <summary>
-    /// Removes the tint of this Tile and all its occupants.
-    /// </summary>
-    public void RemoveTintOfSurfaceAndAllOccupants()
-    {
-        ResetAppliedTint();
-        if(Floored()) GetFlooring().RemoveTintOfSurfaceAndAllOccupants();
-        if(Occupied()) GetOccupant().ResetAppliedTint();
-    }
-
-    /// <summary>
-    /// Returns true if a Defender is on this Tile or on the Surface on this Tile.
-    /// </summary>
-    /// <returns>true if a Defender is on this Tile or on the Surface on this Tile;
-    /// otherwise, false.</returns>
-    public bool IsDefenderOnTile()
-    {
-        if (GetOccupant() as Defender != null) return true;
-        ISurface surface = GetOccupant() as ISurface;
-        if(surface != null && surface.GetOccupant() as Defender != null) return true;
-
-        return false;
-    }
+    /// <param name="localIndex">the local Tiled ID of this Tile in its Tiled tile set.</param>
+    public virtual void SetSpriteUsingLocalTiledIndex(int localIndex) => SetSprite(TileFactory.GetTileSprite(TYPE, localIndex));
 
     #endregion
 }

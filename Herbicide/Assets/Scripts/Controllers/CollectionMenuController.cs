@@ -33,9 +33,7 @@ public class CollectionMenuController : MonoBehaviour
     /// Main update loop: <br></br>
     /// 
     /// (1) Updates Game State. <br></br>
-    /// (2) Checks for input events.<br></br>
-    /// (3) Update Canvas.<br></br>
-    /// (4) Update SkillSlotControllers.
+    /// (2) Updates C nvas.<br></br>
     /// </summary>
     void Update()
     {
@@ -43,10 +41,7 @@ public class CollectionMenuController : MonoBehaviour
         GameState gameState = DetermineGameState();
         if (gameState == GameState.INVALID) return;
 
-        //(2) Check input events.
-        CheckInputEvents();
-
-        //(3) Update Canvas.
+        //(2) Update Canvas.
         CanvasController.UpdateCanvas(gameState);
     }
 
@@ -62,7 +57,6 @@ public class CollectionMenuController : MonoBehaviour
         SceneController.SetSingleton(instance);
         CameraController.SetSingleton(instance);
         CanvasController.SetSingleton(instance);
-        InputController.SetSingleton(instance);
         SoundController.SetSingleton(instance);
     }
 
@@ -78,22 +72,6 @@ public class CollectionMenuController : MonoBehaviour
         Assert.IsTrue(collectionMenuControllers.Length == 1, "not enough / too many " +
             "levelcontrollers in the scene (" + collectionMenuControllers.Length + ").");
         instance = collectionMenuControllers[0];
-    }
-
-    /// <summary>
-    /// Checks for input events.
-    /// </summary>
-    private void CheckInputEvents()
-    {
-        //UI Specific: does it matter if we're hovering over a UI element?
-        if (InputController.HoveringOverUIElement())
-        {
-            //Put events here to trigger if we're hovering over a Canvas / UI element.
-        }
-        else
-        {
-            //Put events here to trigger if we're NOT hovering over a Canvas / UI element.
-        }
     }
 
     /// <summary>

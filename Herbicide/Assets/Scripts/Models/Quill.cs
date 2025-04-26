@@ -29,43 +29,43 @@ public class Quill : Projectile
     /// <summary>
     /// Starting speed of an Quill.
     /// </summary>
-    public override float BASE_SPEED => 25f;
+    public override float BaseSpeed => 25f;
 
     /// <summary>
     /// Maximum speed of an Quill.
     /// </summary>
-    public override float MAX_SPEED => float.MaxValue;
+    public override float MaxSpeed => float.MaxValue;
 
     /// <summary>
     /// Minimum speed of an Quill.
     /// </summary>
-    public override float MIN_SPEED => 0f;
+    public override float MinSpeed => 0f;
 
     /// <summary>
     /// Starting damage of an Quill.
     /// </summary>
-    public override int BASE_DAMAGE => 2;
+    public override int BaseDamage => 2;
 
     /// <summary>
     /// Maximum damage of an Quill.
     /// </summary>
-    public override int MAX_DAMAGE => int.MaxValue;
+    public override int MaxDamage => int.MaxValue;
 
     /// <summary>
     /// Minimum damage of an Quill.
     /// </summary>
-    public override int MIN_DAMAGE => 0;
+    public override int MinDamage => 0;
 
     /// <summary>
     /// Lifespan of an Quill.
     /// </summary>
-    public override float LIFESPAN => float.MaxValue;
+    public override float Lifespan => float.MaxValue;
 
     /// <summary>
     /// How many seconds an Quill's move animation lasts,
     /// from start to finish. 
     /// </summary>
-    public override float MOVE_ANIMATION_DURATION => 0f;
+    public override float MovementAnimationDuration => 0f;
 
     #endregion
 

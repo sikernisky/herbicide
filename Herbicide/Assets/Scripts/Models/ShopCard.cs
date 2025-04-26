@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -12,84 +11,74 @@ public class ShopCard : UIModel
     #region Fields
 
     /// <summary>
-    /// Image that represents the ShopCard's background.
+    /// The ShopCardData that defines this ShopCard.
+    /// </summary>
+    public ShopCardData ShopCardData { get; private set; }
+
+    /// <summary>
+    /// true if this ShopCard is defined; otherwise, false.
+    /// </summary>
+    public bool IsDefined => ShopCardData != null;
+
+    /// <summary>
+    /// Image that represents the ShopCard's Defender.
     /// </summary>
     [SerializeField]
-    private Image cardBackgroundImage;
+    private Image splashImage;
 
     /// <summary>
     /// Text to represent the ShopCard's title.
     /// </summary>
     [SerializeField]
-    private TMP_Text cardTitle;
+    private TMP_Text nameText;
 
     /// <summary>
     /// Text to represent the ShopCard's cost.
     /// </summary>
     [SerializeField]
-    private TMP_Text cardCost;
-
-    /// <summary>
-    /// Text to represent the ShopCard's combo available status.
-    /// </summary>
-    [SerializeField]
-    private TMP_Text comboAvailableText;
-
-    /// <summary>
-    /// The ShopCard's RectTransform component.
-    /// </summary>
-    [SerializeField]
-    private RectTransform cardTransform;
-
-    /// <summary>
-    /// The Model this ShopCard produces
-    /// </summary>
-    [SerializeField]
-    private Model model;
+    private TMP_Text costText;
 
     #endregion
 
     #region Methods
 
     /// <summary>
-    /// Returns the ModelType of this ShopCard. To do this, examines
-    /// the Model attached to this ShopCard. We need to do this
-    /// in order to not make a class for each ShopCard type.
+    /// Defines this ShopCard with the given ShopCardData.
     /// </summary>
-    /// <returns> the ModelType of this ShopCard</returns>
-    public override ModelType GetModelType()
+    public void DefineShopCard(ShopCardData data)
     {
-        if(model == null) return ModelType.SHOP_CARD_BLANK;
-        return ModelTypeHelper.GetShopCardModelTypeFromModelType(model.TYPE);
+        Assert.IsNotNull(data, "ShopCardData is null.");
+        ShopCardData = data;
+        SetNameText();
+        SetCostText();
+        SetShopCardSplash();
     }
 
     /// <summary>
-    /// Returns this ShopCard's RectTransform component.
+    /// Sets the name text of this ShopCard to the name of the Defender
+    /// it represents.
     /// </summary>
-    /// <returns>this ShopCard's RectTransform component.</returns>
-    public RectTransform GetCardTransform() => cardTransform;
+    private void SetNameText() => nameText.text = ShopCardData.CardName;
 
     /// <summary>
-    /// Returns an instantiated GameObject with this ShopCard's Model
-    /// attached. 
+    /// Sets the cost text of this ShopCard to the cost of the Defender it represents.
     /// </summary>
-    /// <returns>an instantiated GameObject with this ShopCard's Model
-    /// attached.</returns>
-    public GameObject GetShopCardModelPrefab()
+    private void SetCostText() => costText.text = ShopCardData.CardCost.ToString();
+
+    /// <summary>
+    /// Sets the splash image of this ShopCard to the Defender it represents.
+    /// </summary>
+    private void SetShopCardSplash()
     {
-        Assert.IsNotNull(model, "Model is null.");
-        GameObject modelCopy = model.CreateNew();
-        modelCopy.transform.position = new Vector3(-1000, -1000, 1);
-        return modelCopy;
+        Sprite splash = ShopFactory.GetShopCardSprite(ShopCardData.DefenderType);
+        splashImage.sprite = splash;
     }
 
     /// <summary>
-    /// Returns the price of this ShopCard's Model. Returns 0 if this
-    /// is an upgrade card.
+    /// Returns the ModelType of this ShopCard.
     /// </summary>
-    /// <returns>the price of this ShopCard's Model, or 0 if this is
-    /// an upgrade card.</returns>
-    public int GetPrice() => model.COST;
+    /// <returns>the ModelType of this ShopCard.</returns>
+    public override ModelType GetModelType() => ModelType.SHOP_CARD;
 
     /// <summary>
     /// Sets the color of the ShopCard's background and title.
@@ -97,29 +86,16 @@ public class ShopCard : UIModel
     /// <param name="color">The color to set the ShopCard to.</param>
     public void SetCardColor(Color32 color)
     {
-        cardBackgroundImage.color = color;
-        cardTitle.color = color;
-        cardCost.color = color;
+        splashImage.color = color;
+        nameText.color = color;
+        costText.color = color;
     }
-
-    /// <summary>
-    /// Sets the combo available text of this ShopCard to active or
-    /// inactive.
-    /// </summary>
-    /// <param name="active">true if the combo available text should
-    /// be active; otherwise, false.</param>    
-    public void SetComboAvailableTextActive(bool active) => comboAvailableText.gameObject.SetActive(active);    
-
-    /// <summary>
-    /// Sets the cost text of this ShopCard to its Model's cost.
-    /// </summary>
-    public void RefreshCostText() => cardCost.text = model.COST.ToString();
 
     /// <summary>
     /// Returns the Image of this ShopCard.
     /// </summary>
     /// <returns>the Image of this ShopCard.</returns>
-    public Image GetCardBackgroundImage() => cardBackgroundImage;
+    public Image GetCardBackgroundImage() => splashImage;
 
     #endregion
 }

@@ -14,44 +14,27 @@ public class TutorialLevelBehaviourController : LevelBehaviourController
     /// <summary>
     /// true if the shop should pulse; otherwise, false.
     /// </summary>
-    private bool pulseShop;
+    private bool ShouldPulseShop { get; set; }
 
     /// <summary>
     /// true if the trees should pulse; otherwise, false.
     /// </summary>
-    private bool pulseTrees;
+    private bool ShouldPulseTrees { get; set; }
 
     /// <summary>
-    /// true if the nexii should pulse; otherwise, false.
+    /// Number of seconds between pulses.
     /// </summary>
-    private bool pulseNexii;
+    private float PulseTimer { get; set; }
 
     /// <summary>
-    /// The amount of time it takes for the shop to pulse from
-    /// light to dark and back again.
+    /// Number of seconds since the player used their first item.
     /// </summary>
-    private float pulseTime => 2.0f;
+    private float AfterUseFirstItemTimer { get; set; }
 
     /// <summary>
-    /// Keeps track of the time between pulses.
+    /// Number of seconds since the player placed their first Defender.
     /// </summary>
-    private float pulseTimer;
-
-    /// <summary>
-    /// The amount of time that has elapsed since the evening text
-    /// displayed.
-    /// </summary>
-    private float eveningTextTimeElapsed;
-
-    /// <summary>
-    /// true if the evening text timer should be updated; otherwise, false.
-    /// </summary>
-    private bool updateEveningTextTimer;
-
-    /// <summary>
-    /// The number of seconds the evening text should display for.
-    /// </summary>
-    private float eveningTextDisplayTime => 10.0f;
+    private float AfterPlaceFirstDefenderTimer { get; set; }
 
     /// <summary>
     /// The ShopSlots to manipulate in the scene.
@@ -71,16 +54,6 @@ public class TutorialLevelBehaviourController : LevelBehaviourController
     [SerializeField]
     private Image tutorialTextBackground;
 
-    /// <summary>
-    /// The dark color to pulse the shop cards to.
-    /// </summary>
-    private Color32 pulseDarkColor => new Color32(100, 100, 100, 255);
-
-    /// <summary>
-    /// The light color to pulse the shop cards to.
-    /// </summary>
-    private Color32 pulseLightColor => new Color32(255, 255, 255, 255);
-
     #endregion
 
     #region Methods
@@ -90,33 +63,33 @@ public class TutorialLevelBehaviourController : LevelBehaviourController
     /// </summary>
     protected override void InitializeLevelBehaviorEvents()
     {
-        AddDynamicEvent(new LevelBehaviourEvent(
+        AddSequentialEvent(new LevelBehaviourEvent(
             () => DidPurchaseShopCard(),
-            () => OnPurchaseShopCard(),
-            false));
+            () => OnPurchaseShopCard()));
 
-        AddDynamicEvent(new LevelBehaviourEvent(
+        AddSequentialEvent(new LevelBehaviourEvent(
             () => DidPlaceDefender(),
-            () => OnPlaceDefender(),
-            false));
+            () => OnPlaceDefender()));
 
         AddDynamicEvent(new LevelBehaviourEvent(
-            () => IsInEveningStage(),
-            () => OnEnterEveningStage(),
-            false));
+            () => DidWaitForTimeAfterPlacingFirstDefender(),
+            () => OnWaitForTimeAfterPlacingFirstDefender()));
 
         AddSequentialEvent(new LevelBehaviourEvent(
-            () => IsInFirstIntermission(),
-            () => OnFirstIntermission(),
-            true));
+            () => DidSatisfyTicketRequirements(),
+            () => OnSatisfyFirstTicket()));
 
         AddSequentialEvent(new LevelBehaviourEvent(
-            () => DidCompleteFirstIntermission(),
-            () => OnCompleteFirstIntermission(),
-            true));
+            () => DidCraftFirstTicket(),
+            () => OnCompleteFirstTicket()));
 
-        pulseShop = true;
-        tutorialTextBackground.gameObject.SetActive(true);
+        AddSequentialEvent(new LevelBehaviourEvent(
+            () => DidUseFirstItem(),
+            () => OnUseFirstItem()));
+
+        AddDynamicEvent(new LevelBehaviourEvent(
+            () => DidWaitForTimeAfterUsingItem(),
+            () => OnWaitForTimeAfterUsingFirstItem()));
     }
 
     /// <summary>
@@ -124,10 +97,10 @@ public class TutorialLevelBehaviourController : LevelBehaviourController
     /// </summary>
     protected override void UpdateLevelBehaviourInstance()
     {
-        if(pulseShop) PulseShop();
-        if(pulseTrees) PulseTrees();
-        if(pulseNexii) PulseNexii();
-        if(updateEveningTextTimer) UpdateEveningTextTimer();
+        if(ShouldPulseShop) PulseShop();
+        if(ShouldPulseTrees) PulseTrees();
+        if(DidUseFirstItem()) AfterUseFirstItemTimer += Time.deltaTime;
+        if(DidPlaceDefender()) AfterPlaceFirstDefenderTimer += Time.deltaTime;
     }
 
     /// <summary>
@@ -137,23 +110,27 @@ public class TutorialLevelBehaviourController : LevelBehaviourController
     /// </summary>
     private void PulseShop()
     {
-        if (pulseTimer < pulseTime / 2)
-        {
-            foreach (ShopSlot shopSlot in shopSlots)
-            {
-                shopSlot.SetOccupantCardColor(Color.Lerp(pulseLightColor, pulseDarkColor, pulseTimer / (pulseTime / 2)));
-            }
-        }
-        else
-        {
-            foreach (ShopSlot shopSlot in shopSlots)
-            {
-                shopSlot.SetOccupantCardColor(Color.Lerp(pulseDarkColor, pulseLightColor, (pulseTimer - pulseTime / 2) / (pulseTime / 2)));
-            }
-        }
+        float pulseTime = TutorialConstants.DefaultModelPulseTime;
+        Color32 pulseLightColor = TutorialConstants.PulseLightColor;
+        Color32 pulseDarkColor = TutorialConstants.PulseDarkColor;
+        UpdateShopSlotColors(PulseTimer, pulseTime, pulseLightColor, pulseDarkColor);
+        if (PulseTimer > pulseTime) PulseTimer = 0;
+        else PulseTimer += Time.deltaTime;
+    }
 
-        if (pulseTimer > pulseTime) pulseTimer = 0;
-        else pulseTimer += Time.deltaTime;
+    /// <summary>
+    /// Updates the shop slot colors based on the current pulse timer.
+    /// </summary>
+    /// <param name="timer">The current pulse timer.</param>
+    /// <param name="time">The total time for the pulse.</param>
+    /// <param name="lightColor">The light color to pulse to.</param>
+    /// <param name="darkColor">The dark color to pulse to.</param>
+    private void UpdateShopSlotColors(float timer, float time, Color32 lightColor, Color32 darkColor)
+    {
+        Color32 startColor = timer < time / 2 ? lightColor : darkColor;
+        Color32 endColor = timer < time / 2 ? darkColor : lightColor;
+        float lerpFactor = timer < time / 2 ? timer / (time / 2) : (timer - time / 2) / (time / 2);
+        foreach (ShopSlot shopSlot in shopSlots) { shopSlot.SetOccupantCardColor(Color.Lerp(startColor, endColor, lerpFactor)); }
     }
 
     /// <summary>
@@ -162,53 +139,32 @@ public class TutorialLevelBehaviourController : LevelBehaviourController
     /// </summary>
     private void PulseTrees()
     {
-        if (pulseTimer < pulseTime / 2)
+        float pulseTime = TutorialConstants.DefaultModelPulseTime;
+        Color32 pulseLightColor = TutorialConstants.PulseLightColor;
+        Color32 pulseDarkColor = TutorialConstants.PulseDarkColor;
+        if (PulseTimer < pulseTime / 2)
         {
-            ControllerManager.SetColorOfAllTrees(this, Color.Lerp(pulseLightColor, pulseDarkColor, pulseTimer / (pulseTime / 2)));
+            ControllerManager.SetColorOfAllTrees(this, Color.Lerp(pulseLightColor, pulseDarkColor, PulseTimer / (pulseTime / 2)));
         }
         else
         {
-            ControllerManager.SetColorOfAllTrees(this, Color.Lerp(pulseDarkColor, pulseLightColor, (pulseTimer - pulseTime / 2) / (pulseTime / 2)));
+            ControllerManager.SetColorOfAllTrees(this, Color.Lerp(pulseDarkColor, pulseLightColor, (PulseTimer - pulseTime / 2) / (pulseTime / 2)));
         }
-
-        if (pulseTimer > pulseTime) pulseTimer = 0;
-        else pulseTimer += Time.deltaTime;
+        if (PulseTimer > pulseTime) PulseTimer = 0;
+        else PulseTimer += Time.deltaTime;
     }
 
     /// <summary>
-    /// Darkens all Nexii over a set interval,
-    /// then lightens them back up.
-    private void PulseNexii()
-    {
-        if (pulseTimer < pulseTime / 2)
-        {
-            ControllerManager.SetColorOfAllNexii(this, Color.Lerp(pulseLightColor, pulseDarkColor, pulseTimer / (pulseTime / 2)));
-        }
-        else
-        {
-            ControllerManager.SetColorOfAllNexii(this, Color.Lerp(pulseDarkColor, pulseLightColor, (pulseTimer - pulseTime / 2) / (pulseTime / 2)));
-        }
-
-        if (pulseTimer > pulseTime) pulseTimer = 0;
-        else pulseTimer += Time.deltaTime;
-    }
-
-    /// <summary>
-    /// Updates the evening text timer.
+    /// Removes all effects that the tutorial has applied.
     /// </summary>
-    private void UpdateEveningTextTimer()
+    private void RemoveAllEffects()
     {
-        if (updateEveningTextTimer)
-        {
-            eveningTextTimeElapsed += Time.deltaTime;
-            if (eveningTextTimeElapsed > eveningTextDisplayTime)
-            {
-                tutorialText.text = "";
-                tutorialText.enabled = false;
-                tutorialTextBackground.enabled = false;
-                updateEveningTextTimer = false;
-            }
-        }
+        ShouldPulseShop = false;
+        ShouldPulseTrees = false;
+        tutorialText.text = string.Empty;
+        tutorialText.enabled = false;
+        tutorialTextBackground.enabled = false;
+        ControllerManager.SetColorOfAllTrees(this, TutorialConstants.PulseLightColor);
     }
 
     #endregion
@@ -230,26 +186,41 @@ public class TutorialLevelBehaviourController : LevelBehaviourController
     private bool DidPlaceDefender() => ControllerManager.NumPlacedDefenders() > 0;
 
     /// <summary>
-    /// Returns true if the player is entering the first intermission,
-    /// which happens after the morning stage.
+    /// Returns true if the player has satisfied the ticket requirements.
     /// </summary>
-    /// <returns>true if the player is entering the first intermission;
+    /// <returns>true if the player has satisfied the ticket requirements;
     /// otherwise, false.</returns>
-    private bool IsInFirstIntermission() => StageController.IsIntermissionActive();
+    private bool DidSatisfyTicketRequirements() => TicketManager.GetNumberOfSatisfiedTickets() > 0;
 
     /// <summary>
-    /// Returns true if the player has completed the first intermission.
+    /// Returns true if the player has crafted their first ticket.
     /// </summary>
-    /// <returns>true if the player has completed the first intermission;
+    /// <returns>true if the player has crafted their first ticket;
     /// otherwise, false.</returns>
-    private bool DidCompleteFirstIntermission() => !StageController.IsIntermissionActive();
+    private bool DidCraftFirstTicket() => TicketManager.NumCompletedTickets > 0;
 
     /// <summary>
-    /// Returns true if the current stage is the evening stage.
+    /// Returns true if the player has used their first item.
     /// </summary>
-    /// <returns>true if the current stage is the evening stage;
+    /// <returns>true if the player has used their first item;
     /// otherwise, false.</returns>
-    private bool IsInEveningStage() => StageController.GetCurrentStage() == StageController.StageOfDay.EVENING;
+    private bool DidUseFirstItem() => PlacementManager.NumUseablesEquipped > 0;
+
+    /// <summary>
+    /// Returns true if the player has waited for the specified time
+    /// after placing their first Defender.
+    /// </summary>
+    /// <returns>true if the player has waited for the specified time
+    /// after placing their first Defender; otherwise, false.</returns>
+    private bool DidWaitForTimeAfterPlacingFirstDefender() => AfterPlaceFirstDefenderTimer > TutorialConstants.OnPlaceFirstDefenderMessageDuration;
+
+    /// <summary>
+    /// Returns true if the player has waited for the specified time
+    /// after using their first item.
+    /// </summary>
+    /// <returns>true if the player has waited for the specified time
+    /// after using their first item; otherwise, false.</returns>
+    private bool DidWaitForTimeAfterUsingItem() => AfterUseFirstItemTimer > TutorialConstants.OnUseFirstItemMessageDuration;
 
     #endregion
 
@@ -260,11 +231,11 @@ public class TutorialLevelBehaviourController : LevelBehaviourController
     /// </summary>
     private void OnPurchaseShopCard()
     {
-        pulseShop = false;
-        pulseTrees = true;
+        ShouldPulseShop = false;
+        ShouldPulseTrees = true;
         tutorialTextBackground.enabled = true;
         tutorialText.enabled = true;
-        tutorialText.text = "Place the Defender on a Tree to protect your eggplant!";
+        tutorialText.text = TutorialConstants.OnBuyFirstDefenderMessage;
     }
 
     /// <summary>
@@ -272,46 +243,84 @@ public class TutorialLevelBehaviourController : LevelBehaviourController
     /// </summary>
     private void OnPlaceDefender()
     {
-        pulseTrees = false;
-        ControllerManager.SetColorOfAllTrees(this, pulseLightColor);
-        tutorialText.text = "";
+        ShouldPulseTrees = false;
+        ControllerManager.SetColorOfAllTrees(this, TutorialConstants.PulseLightColor);
+        tutorialTextBackground.enabled = true;
+        tutorialText.enabled = true;
+        tutorialText.text = TutorialConstants.OnPlaceFirstDefenderMessage;
+    }
+
+    /// <summary>
+    /// Called when the player waits for the specified time after placing their first Defender.
+    /// </summary>
+    private void OnWaitForTimeAfterPlacingFirstDefender()
+    {
+        tutorialText.text = string.Empty;
         tutorialText.enabled = false;
         tutorialTextBackground.enabled = false;
     }
 
     /// <summary>
-    /// Called when the player enters the first intermission.
+    /// Called when the player satisfies the first ticket.
     /// </summary>
-    private void OnFirstIntermission()
+    private void OnSatisfyFirstTicket()
     {
-        pulseNexii = true;
         tutorialText.enabled = true;
         tutorialTextBackground.enabled = true;
-        tutorialText.text = "Keep your eggplant safe through the night to win !";
+        tutorialText.text = TutorialConstants.OnSatisfyFirstTicketMessage;
     }
 
     /// <summary>
-    /// Called when the player completes the first intermission.
+    /// Called when the player crafts the satisfied ticket.
     /// </summary>
-    private void OnCompleteFirstIntermission()
+    private void OnCompleteFirstTicket()
     {
-        pulseNexii = false;
-        tutorialText.text = "";
+        tutorialText.enabled = true;
+        tutorialTextBackground.enabled = true;
+        tutorialText.text = TutorialConstants.OnCompleteFirstTicketMessage;
+    }
+
+    /// <summary>
+    /// Called when the player uses the first item.
+    /// </summary>
+    private void OnUseFirstItem()
+    {
+        tutorialText.enabled = true;
+        tutorialTextBackground.enabled = true;
+        tutorialText.text = TutorialConstants.OnUseFirstItemMessage;
+    }
+
+    /// <summary>
+    /// Called when the player waits for the specified time after using their first item.
+    /// </summary>
+    private void OnWaitForTimeAfterUsingFirstItem()
+    {
+        tutorialText.text = string.Empty;
         tutorialText.enabled = false;
         tutorialTextBackground.enabled = false;
-        ControllerManager.SetColorOfAllNexii(this, pulseLightColor);
     }
 
     /// <summary>
-    /// Called when the player enters the evening stage.
+    /// Called when the level starts
     /// </summary>
-    private void OnEnterEveningStage()
+    protected override void OnStart()
     {
-        updateEveningTextTimer = true;
+        ShouldPulseShop = true;
+        tutorialTextBackground.gameObject.SetActive(true);
         tutorialText.enabled = true;
         tutorialTextBackground.enabled = true;
-        tutorialText.text = "Your talent pool shows new Defenders if you wait long enough!";
+        tutorialText.text = TutorialConstants.OnStartTutorialMessage;
     }
+
+    /// <summary>
+    /// Called when the player loses the level.
+    /// </summary>
+    protected override void OnLose() => RemoveAllEffects();
+
+    /// <summary>
+    /// Called when the player loses the level.
+    /// </summary>
+    protected override void OnWin() => RemoveAllEffects();
 
     #endregion  
 }

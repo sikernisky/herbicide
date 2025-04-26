@@ -95,7 +95,7 @@ public class PorcupineController : DefenderController<PorcupineController.Porcup
             SetNextAnimation(GetPorcupine().GetMainActionAnimationDuration() / numQuills,
                 DefenderFactory.GetMainActionTrack(
                     ModelType.PORCUPINE,
-                    GetPorcupine().GetDirection(), GetPorcupine().GetTier()));
+                    GetPorcupine().Direction, GetPorcupine().GetTier()));
 
             GameObject quillPrefab = ProjectileFactory.GetProjectilePrefab(ModelType.QUILL);
             Assert.IsNotNull(quillPrefab);
@@ -103,7 +103,7 @@ public class PorcupineController : DefenderController<PorcupineController.Porcup
             Assert.IsNotNull(quillComp);
             bool doubleQuill = GetPorcupine().GetTier() > 2;
             Vector3 targetPosition = GetTarget().GetAttackPosition();
-            QuillController quillController = new QuillController(quillComp, GetPorcupine().GetPosition(), targetPosition, doubleQuill);
+            QuillController quillController = new QuillController(quillComp, GetPorcupine().GetWorldPosition(), targetPosition, doubleQuill);
             ControllerManager.AddModelController(quillController);
             CollectionManager.AddModelUpgradePoints(ModelType.PORCUPINE, 1);
 
@@ -185,7 +185,7 @@ public class PorcupineController : DefenderController<PorcupineController.Porcup
         if (!ValidModel()) return;
         if (GetState() != PorcupineState.SPAWN) return;
 
-        GetPorcupine().FaceDirection(Direction.SOUTH);
+        GetPorcupine().Direction = Direction.SOUTH;
         base.ExecuteSpawnState();
     }
 
@@ -199,12 +199,12 @@ public class PorcupineController : DefenderController<PorcupineController.Porcup
         Enemy target = GetTarget() as Enemy;
         if (target != null && DistanceToTargetFromTree() <= GetPorcupine().GetMainActionRange())
             FaceTarget();
-        else GetPorcupine().FaceDirection(Direction.SOUTH);
+        else GetPorcupine().Direction = Direction.SOUTH;
 
         SetNextAnimation(GetPorcupine().IDLE_ANIMATION_DURATION,
             DefenderFactory.GetIdleTrack(
                 ModelType.PORCUPINE,
-                GetPorcupine().GetDirection(), GetPorcupine().GetTier()));
+                GetPorcupine().Direction, GetPorcupine().GetTier()));
     }
 
     /// <summary>

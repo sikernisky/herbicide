@@ -60,11 +60,14 @@ public class LevelController : MonoBehaviour
 
         //(4) Spawn the TileGrid and set the Camera
         TiledData tiledData = JSONController.GetTiledData();
-        Vector2 cameraPos = TileGrid.SpawnGrid(instance, tiledData);
+        Vector3 cameraPos = TileGrid.SpawnGrid(instance, tiledData);
         CameraController.MoveCamera(cameraPos);
         
         //(5) Enable the correct LevelBehaviourController
         SetLevelBehaviourControllerSingleton();
+
+        //(6) Initialize the Ticket Pool
+        TicketManager.InitializeTickets();
     }
 
     /// <summary>
@@ -79,10 +82,11 @@ public class LevelController : MonoBehaviour
         // Update Scene.
         SceneController.UpdateScene();
 
-        // Update input and placement events.
-        PlacementController.UpdatePlacementEvents(gameState, InputController.DidEscapeDown());
-        PlacementController.UpdateCombinationEvents();
-        UpdateInputEvents();
+        // Update InputManager.
+        InputManager.UpdateInputManager();
+
+        // Update placement events.
+        PlacementManager.UpdatePlacementManager(gameState);
 
         // Update ModelControllers.
         ControllerManager.UpdateModelControllers(gameState);
@@ -90,20 +94,20 @@ public class LevelController : MonoBehaviour
         // Update the Economy.
         EconomyController.UpdateEconomy(gameState);
 
+        // Update Health.
+        HealthController.UpdateHealthController(gameState);
+
         // Update Shop.
         ShopManager.UpdateShopManager(gameState);
+
+        // Update TicketManager.
+        TicketManager.UpdateTicketManager(gameState);
 
         // Update the InsightManager.
         InsightManager.UpdateInsightManager(gameState);
 
-        // Update TileGrid.
-        TileGrid.UpdateTiles();
-
         // Update Canvas.
         CanvasController.UpdateCanvas(gameState);
-
-        // Update StageController.
-        StageController.UpdateStageController(gameState);
 
         // Update LevelCompletionController.   
         LevelCompletionController.UpdateLevelCompletionController(gameState);
@@ -112,7 +116,7 @@ public class LevelController : MonoBehaviour
         SettingsController.UpdateSettingsMenu();
 
         // Update the LevelBehaviourController.
-        LevelBehaviourController.UpdateLevelBehaviourController();
+        LevelBehaviourController.UpdateLevelBehaviourController(gameState);
 
         // Update the Time Scale.
         UpdateTimeScale();
@@ -147,21 +151,23 @@ public class LevelController : MonoBehaviour
         JSONController.SetSingleton(instance);
         TileGrid.SetSingleton(instance);
         CameraController.SetSingleton(instance);
-        InputController.SetSingleton(instance);
-        PlacementController.SetSingleton(instance);
+        InputManager.SetSingleton(instance);
+        PlacementManager.SetSingleton(instance);    
         EnemyManager.SetSingleton(instance);
         ShopManager.SetSingleton(instance);
         ControllerManager.SetSingleton(instance);
         EconomyController.SetSingleton(instance);
+        HealthController.SetSingleton(instance);
         CanvasController.SetSingleton(instance);
         SettingsController.SetSingleton(instance);
         SoundController.SetSingleton(instance);
         CollectionManager.SetSingleton(instance); 
         LevelCompletionController.SetSingleton(instance);
         LightManager.SetSingleton(instance);
-        StageController.SetSingleton(instance);
         ExplosionController.SetSingleton(instance);
         InsightManager.SetSingleton(instance);
+        TicketManager.SetSingleton(instance);
+        InventoryManager.SetSingleton(instance);
     }
 
     /// <summary>
@@ -175,12 +181,13 @@ public class LevelController : MonoBehaviour
         EmanationFactory.SetSingleton(instance);
         EnemyFactory.SetSingleton(instance);
         FlooringFactory.SetSingleton(instance);
-        NexusFactory.SetSingleton(instance);
-        NexusHoleFactory.SetSingleton(instance);
+        HoleFactory.SetSingleton(instance);
         ProjectileFactory.SetSingleton(instance);
         ShopFactory.SetSingleton(instance);
         TileFactory.SetSingleton(instance);
         WallFactory.SetSingleton(instance);
+        TicketFactory.SetSingleton(instance);
+        InventoryFactory.SetSingleton(instance);
     }
 
     /// <summary>
@@ -210,6 +217,7 @@ public class LevelController : MonoBehaviour
         CameraController.SubscribeToSaveLoadEvents(instance);
         CollectionManager.SubscribeToSaveLoadEvents(instance);
         EconomyController.SubscribeToSaveLoadEvents(instance);
+        HealthController.SubscribeToSaveLoadEvents(instance);
         ShopManager.SubscribeToSaveLoadEvents(instance);
     }
 
@@ -245,48 +253,15 @@ public class LevelController : MonoBehaviour
     /// <return>The most updated GameState.</return>
     private GameState DetermineGameState()
     {
-
         int activeEnemies = ControllerManager.NumEnemiesRemainingInclusive();
         int enemiesRemaining = EnemyManager.NumEnemiesThatRemainToBeSpawned(SceneController.GetTimeElapsed());
-        bool enemiesPresent = (enemiesRemaining > 0 || activeEnemies > 0);
-        bool nexusPresent = ControllerManager.NumActiveNexii() > 0;
+        bool enemiesPresent = enemiesRemaining > 0 || activeEnemies > 0;
 
-        // Win condition: All enemies dead, at least one nexus remaning. 
-        if (!enemiesPresent && nexusPresent) currentGameState = GameState.WIN;
-
-        // Lose condition: No nexii remaining.
-        else if (!nexusPresent) currentGameState = GameState.LOSE;
-
-        // Ongoing condition: At least one nexus present and at least one Enemy alive.
-        else if (enemiesPresent && nexusPresent) currentGameState = GameState.ONGOING;
-
-        // Something went wrong.
-        else currentGameState = GameState.INVALID;
-
+        if (HealthController.LivesRemaining() == 0) currentGameState = GameState.LOSE;
+        else if (!enemiesPresent && enemiesRemaining == 0) currentGameState = GameState.WIN;
+        else currentGameState = GameState.ONGOING;
         return currentGameState;
+
     }
-
-    /// <summary>
-    /// Checks for input events.
-    /// </summary>
-    private void UpdateInputEvents()
-    {
-        //Debug Toggle
-        debugOn = InputController.DidDebugDown() ? !debugOn : debugOn;
-        TileGrid.SetDebug(instance, debugOn);
-        CanvasController.SetDebug(instance, debugOn);
-
-        //UI Specific: does it matter if we're hovering over a UI element?
-        if (InputController.HoveringOverUIElement())
-        {
-            //Put events here to trigger if we're hovering over a Canvas / UI element.
-        }
-        else
-        {
-            //Put events here to trigger if we're NOT hovering over a Canvas / UI element.
-            TileGrid.CheckTileInputEvents();
-        }
-    }
-
     #endregion
 }

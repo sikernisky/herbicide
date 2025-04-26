@@ -131,24 +131,8 @@ public class LevelRewardController : CollectableController<LevelRewardController
     {
         if (!ValidModel()) return;
         if (GetState() != LevelRewardState.COLLECTING) return;
-
-        if (InCollectionRange())
-        {
-            GetLevelReward().OnCollect();
-            UnlockRewardBasedOnLevel();
-        }
+        if (InCollectionRange()) GetLevelReward().OnCollect();
         else MoveTowardsCursor();
-    }
-
-    /// <summary>
-    /// Unlocks the reward based on the current level.
-    /// </summary>
-    private void UnlockRewardBasedOnLevel()
-    {
-        ModelType modelTypeReward = GetModelTypeRewardBasedOnLevel();
-        bool rewardIsUnlockableInCollection = ModelTypeHelper.IsDefender(modelTypeReward);
-        if (rewardIsUnlockableInCollection) CollectionManager.UnlockModel(modelTypeReward);
-        if (modelTypeReward == ModelType.REROLL_BADGE) ShopManager.UnlockReroll();
     }
 
     #endregion

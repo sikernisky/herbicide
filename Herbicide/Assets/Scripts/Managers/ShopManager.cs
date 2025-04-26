@@ -64,11 +64,7 @@ public class ShopManager : MonoBehaviour
     /// <summary>
     /// Unlocks the reroll feature.
     /// </summary>
-    public static void UnlockReroll()
-    {
-        instance.isRerollUnlocked = true;
-        instance.shop.SetRerollEnabled(true);
-    }
+    public static void UnlockReroll() => instance.isRerollUnlocked = true;
 
     /// <summary>
     /// Loads the shop data.
@@ -81,36 +77,11 @@ public class ShopManager : MonoBehaviour
         if(shopSaveData == null) shopSaveData = new ShopSaveData();
         isRerollUnlocked = shopSaveData.isRerollUnlocked;
 
-        List<ModelType> starterModels = new List<ModelType>();
         shop.gameObject.SetActive(true);
-        int slotsToInitialize = 5;
-        switch (level)
-        {
-            case 0:
-                break;
-            case 1:
-                break;
-            case 2: 
-                starterModels.Add(ModelType.BUNNY);
-                starterModels.Add(ModelType.SQUIRREL);
-                break;
-            case 3:
-                starterModels.Add(ModelType.BUNNY);
-                starterModels.Add(ModelType.SQUIRREL);
-                break;
-            case 4:
-                starterModels.Add(ModelType.BUNNY);
-                starterModels.Add(ModelType.SQUIRREL);
-                starterModels.Add(ModelType.OWL);
-                break;
-            default:
-                slotsToInitialize = 5;
-                break;
-        }
-
-        shop.InitializeShop(instance, starterModels, slotsToInitialize);
+        if (SaveLoadManager.GetLoadedGameLevel() == 1) CollectionManager.UnlockModel(ModelType.BUNNY);
+        shop.InitializeShop(instance);
         shop.SubscribeToBuyDefenderDelegate(handlerToSubscribe);
-        if (isRerollUnlocked) shop.SetRerollEnabled(true);
+        //if (isRerollUnlocked) shop.SetRerollEnabled(true);
     }
 
     /// <summary>

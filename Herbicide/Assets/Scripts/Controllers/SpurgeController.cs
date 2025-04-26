@@ -104,12 +104,12 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
 
 
     /// <summary>
-    /// Returns the spawn position of the Spurge when in a NexusHole.
+    /// Returns the spawn position of the Spurge when in a SpawnHole.
     /// </summary>
-    /// <param name="originalSpawnPos">The position of the NexusHole it is
+    /// <param name="originalSpawnPos">The position of the SpawnHole it is
     /// spawning from.</param>
-    /// <returns> the spawn position of the Spurge when in a NexusHole.</returns>
-    protected override Vector3 NexusHoleSpawnPos(Vector3 originalSpawnPos)
+    /// <returns> the spawn position of the Spurge when in a SpawnHole.</returns>
+    protected override Vector3 SpawnHoleSpawnPos(Vector3 originalSpawnPos)
     {
         originalSpawnPos.y -= 2;
         return originalSpawnPos;
@@ -143,29 +143,15 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
             GetState() == SpurgeState.INACTIVE) return false;
 
 
-        Nexus nexusTarget = target as Nexus;
-        NexusHole nexusHoleTarget = target as NexusHole;
+        SpawnHole nexusHoleTarget = target as SpawnHole;
 
-        // If escaping, only target NexusHoles.
+        // If escaping, only target SpawnHoles.
         if (GetState() == SpurgeState.ESCAPE)
         {
             if (nexusHoleTarget == null) return false;
             if (!nexusHoleTarget.Targetable()) return false;
-            if (!GetSpurge().IsExiting() && !TileGrid.CanReach(GetSpurge().GetPosition(), nexusHoleTarget.GetPosition())) return false;
+            if (!GetSpurge().IsExiting() && !TileGrid.CanReach(GetSpurge().GetWorldPosition(), nexusHoleTarget.GetWorldPosition())) return false;
             if (!IsClosestTargetableModelAlongPath(nexusHoleTarget)) return false;
-
-            return true;
-        }
-
-        // If not escaping, only target Nexii.
-        else
-        {
-            if (nexusTarget == null) return false;
-            if (!nexusTarget.Targetable()) return false;
-            if (nexusTarget.PickedUp()) return false;
-            if (nexusTarget.DroppedByMob()) return false;
-            if (!IsClosestTargetableNexusAlongPath(nexusTarget)) return false;
-            if (!TileGrid.CanReach(GetSpurge().GetPosition(), nexusTarget.GetPosition())) return false;
 
             return true;
         }
@@ -224,7 +210,7 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
                 break;
 
             case SpurgeState.ENTERING:
-                if (PoppedOutOfHole()) SetState(SpurgeState.IDLE);
+                //if (PoppedOutOfHole()) SetState(SpurgeState.IDLE);
                 break;
 
             case SpurgeState.IDLE:
@@ -305,15 +291,15 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
 
         GetSpurge().SetEntering(GetSpurge().GetSpawnWorldPosition());
         SetNextAnimation(GetSpurge().GetMovementAnimationDuration(), EnemyFactory.GetSpawnTrack(
-            GetSpurge().TYPE, GetSpurge().GetDirection(), GetSpurge().GetHealthState()));
+            GetSpurge().TYPE, GetSpurge().Direction, GetSpurge().GetHealthState()));
 
-        PopOutOfMovePos(NexusHoleSpawnPos(GetSpurge().GetSpawnWorldPosition()));
-        GetSpurge().FaceDirection(Direction.SOUTH);
+        PopOutOfMovePos(SpawnHoleSpawnPos(GetSpurge().GetSpawnWorldPosition()));
+        GetSpurge().Direction = Direction.SOUTH;
 
         if (!ReachedMovementTarget()) return;
 
         // We have fully popped out of the hole.
-        SetPoppedOutOfHole();
+        // SetPoppedOutOfHole();
     }
 
     /// <summary>
@@ -326,12 +312,12 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
         GetSpurge().SetEntered();
         SetNextAnimation(GetSpurge().IDLE_ANIMATION_DURATION, EnemyFactory.GetIdleTrack(
             GetSpurge().TYPE,
-            GetSpurge().GetDirection(), GetSpurge().GetHealthState()));
+            GetSpurge().Direction, GetSpurge().GetHealthState()));
 
-        SetNextMovePos(GetSpurge().GetPosition());
+        SetNextMovePos(GetSpurge().GetWorldPosition());
         MoveLinearlyTowardsMovePos();
 
-        GetSpurge().FaceDirection(Direction.SOUTH);
+        GetSpurge().Direction = Direction.SOUTH;
     }
 
     /// <summary>
@@ -343,7 +329,7 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
 
         SetNextAnimation(GetSpurge().GetMovementAnimationDuration(), EnemyFactory.GetMovementTrack(
             GetSpurge().TYPE,
-            GetSpurge().GetDirection(), GetSpurge().GetHealthState()));
+            GetSpurge().Direction, GetSpurge().GetHealthState()));
 
         // Move to target.
         MoveLinearlyTowardsMovePos();
@@ -355,7 +341,7 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
 
         if (DistanceToTarget() <= GetSpurge().GetMainActionRange()) return;
 
-        Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetSpurge().GetPosition(), GetTarget().GetPosition());
+        Vector3 nextMove = TileGrid.NextTilePosTowardsGoalUsingAStar(GetSpurge().GetWorldPosition(), GetTarget().GetWorldPosition());
         SetNextMovePos(nextMove);
     }
 
@@ -368,7 +354,7 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
 
         SetNextAnimation(GetSpurge().GetMovementAnimationDuration(), EnemyFactory.GetMovementTrack(
             GetSpurge().TYPE,
-                       GetSpurge().GetDirection(), GetSpurge().GetHealthState()));
+                       GetSpurge().Direction, GetSpurge().GetHealthState()));
 
         // Move to target.
         MoveLinearlyTowardsMovePos();
@@ -377,7 +363,7 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
         if (!ReachedMovementTarget()) return;
         if (GetNearestCarrier() == null) return;
 
-        Vector3 nextMove = TileGrid.NextTilePosTowardsGoal(GetSpurge().GetPosition(), GetNearestCarrier().GetPosition());
+        Vector3 nextMove = TileGrid.NextTilePosTowardsGoalUsingAStar(GetSpurge().GetWorldPosition(), GetNearestCarrier().GetWorldPosition());
         SetNextMovePos(nextMove);
     }
 
@@ -390,7 +376,7 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
 
         SetNextAnimation(GetSpurge().GetMainActionAnimationDuration(), EnemyFactory.GetAttackTrack(
                 GetSpurge().TYPE,
-                       GetSpurge().GetDirection(), GetSpurge().GetHealthState()));
+                       GetSpurge().Direction, GetSpurge().GetHealthState()));
 
         //Attack Logic : Only if target is valid.
         Mob target = GetTarget() as Mob;
@@ -399,7 +385,6 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
         if (!validTarget) return;
 
         FaceTarget();
-        if (CanHoldTarget(target as Nexus)) HoldTarget(target as Nexus); // Hold.
         GetHeldTargets().ForEach(target => target.SetMaskInteraction(SpriteMaskInteraction.None));
         GetSpurge().RestartMainActionCooldown();
     }
@@ -409,30 +394,6 @@ public class SpurgeController : EnemyController<SpurgeController.SpurgeState>
     /// </summary>
     protected void ExecuteEscapeState()
     {
-        if (GetState() != SpurgeState.ESCAPE) return;
-        if (!ValidModel()) return;
-        if (GetTarget() == null) return;
-
-        SetNextAnimation(GetSpurge().GetMovementAnimationDuration(), EnemyFactory.GetMovementTrack(
-            GetSpurge().TYPE,
-                                  GetSpurge().GetDirection(), GetSpurge().GetHealthState()));
-
-        // Move to target.
-        MoveLinearlyTowardsMovePos();
-
-        if (Vector2.Distance(GetSpurge().GetPosition(), GetTarget().GetPosition()) < 0.05f)
-        {
-            GetSpurge().SetExited();
-            foreach (Model target in GetHeldTargets())
-            {
-                Nexus nexusTarget = target as Nexus;
-                if (nexusTarget != null) nexusTarget.Drop();
-            }
-        }
-
-        // We reached our move target, so we need a new one.
-        if (!ReachedMovementTarget()) return;
-        SetNextMovePos(TileGrid.NextTilePosTowardsGoal(GetSpurge().GetPosition(), GetTarget().GetPosition()));
     }
 
     #endregion

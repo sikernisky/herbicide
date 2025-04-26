@@ -33,6 +33,11 @@ public class Porcupine : Defender
     public override float MIN_MAIN_ACTION_RANGE => 0f;
 
     /// <summary>
+    /// Starting generation speed of a Porcupine.
+    /// </summary>
+    public override float BASE_MAIN_ACTION_SPEED => 1f;
+
+    /// <summary>
     /// Maximum attack speed of a Porcupine.
     /// </summary>
     public override float MAX_MAIN_ACTION_SPEED => float.MaxValue;
@@ -40,7 +45,7 @@ public class Porcupine : Defender
     /// <summary>
     /// Starting main action animation duration of a Porcupine.
     /// </summary>
-    public override float BASE_MAIN_ACTION_ANIMATION_DURATION => .2f;
+    public override float BaseMainActionAnimationDuration => .2f;
 
     /// <summary>
     /// Starting chase range of a Porcupine.
@@ -75,17 +80,17 @@ public class Porcupine : Defender
     /// <summary>
     /// Starting health value of a Porcupine.
     /// </summary>
-    public override float BASE_HEALTH => 100f;
+    public override float BaseHealth => 100f;
 
     /// <summary>
     /// Largest health value a Porcupine can have.
     /// </summary>
-    public override float MAX_HEALTH => 100f;
+    public override float MaxHealth => 100f;
 
     /// <summary>
     /// Smallest health value a Porcupine can have.
     /// </summary>
-    public override float MIN_HEALTH => 0f;
+    public override float MinHealth => 0f;
 
     /// <summary>
     /// How many seconds a Porcupine's idle animation lasts,
@@ -106,26 +111,7 @@ public class Porcupine : Defender
     /// Returns the (X, Y) dimensions of the Porcupine's placement track.
     /// </summary>
     /// <returns>the (X, Y) dimensions of the Porcupine's placement track.</returns>
-    public override Vector2Int GetPlacementTrackDimensions() => new Vector2Int(19, 23);
-
-    /// <summary>
-    /// Returns the Porcupine's base main action speed. Depends on the Porcupine's tier.
-    /// </summary>
-    /// <returns>the Porcupine's base main action speed.</returns>
-    protected override float CalculateBaseMainActionSpeed()
-    {
-        switch (GetTier())
-        {
-            case 1:
-                return 1.50f;
-            case 2:
-                return 2.00f;
-            case 3:
-                return 2.75f;
-            default:
-                return 0.50f;
-        }
-    }
+    public override Vector2Int GetPlacementSize() => new Vector2Int(19, 23);
 
     #endregion
 }

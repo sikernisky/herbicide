@@ -2,13 +2,29 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using System;
+using Unity.IO.LowLevel.Unsafe;
 
 /// <summary>
 /// Represents something Physical in the game.
 /// </summary>
-public abstract class Model : MonoBehaviour
+public abstract class Model : MonoBehaviour, IUseable
 {
     #region Fields
+
+    /// <summary>
+    /// Name of this Model.
+    /// </summary>
+    public string NAME => TYPE.ToString();
+
+    /// <summary>
+    /// Type of this Model.
+    /// </summary>
+    public abstract ModelType TYPE { get; }
+
+    /// <summary>
+    /// The Direction to which this Model faces.
+    /// </summary>
+    public Direction Direction { get; set; }
 
     /// <summary>
     /// This Model's active animation track.
@@ -23,7 +39,12 @@ public abstract class Model : MonoBehaviour
     /// <summary>
     /// The Direction of the most recent animation track
     /// </summary>
-    private Direction directionOfMostRecentAnimation;
+    private Direction DirectionOfMostRecentAnimation { get; set;}
+
+    /// <summary>
+    /// The number of cycles of the current animation completed.
+    /// </summary>
+    private int NumCyclesOfCurrentAnimationCompleted { get; set; }
 
     /// <summary>
     /// The most up to date frame number of this Model's active animation.
@@ -37,112 +58,47 @@ public abstract class Model : MonoBehaviour
     private SpriteRenderer modelRenderer;
 
     /// <summary>
-    /// Coordinates of the bottom-leftmost Tile on which this Model rests.
-    /// </summary>
-    private Vector2Int coordinates;
-
-    /// <summary>
-    /// This Model's Collider component. 
+    /// Backing field for ModelCollider.
     /// </summary>
     [SerializeField]
     private Collider2D modelCollider;
 
     /// <summary>
-    /// The Direction to which this Model faces.
+    /// This Model's Collider2D component.
     /// </summary>
-    private Direction direction;
+    public Collider2D ModelCollider => modelCollider;
 
     /// <summary>
-    /// true if this Model is holding a Nexus; otherwise, false. 
+    /// All active IEffect instances on this Model.
     /// </summary>
-    private bool holdingNexus;
-
-    /// <summary>
-    /// The number of cycles of the current animation completed.
-    /// </summary>
-    private int numCyclesOfCurrentAnimationCompleted;
-
-    /// <summary>
-    /// All IEffect instances on this Model.
-    /// </summary>
-    private List<IEffect> effects = new List<IEffect>();
+    protected List<IEffect> ActiveEffects { get; private set; }
 
     /// <summary>
     /// All IEffect instances to add to this Model before the current
     /// logic of ProcessEffects.
     /// </summary>
-    private List<IEffect> effectsToAddSafely = new List<IEffect>();
+    private List<IEffect> EffectsToAddSafely { get; set; }
 
     /// <summary>
     /// All IEffect instances to remove from this Model after the current
     /// logic of ProcessEffects.
     /// </summary>
-    private List<IEffect> effectsToRemoveSafely = new List<IEffect>();
+    private List<IEffect> EffectsToRemoveSafely { get; set; }
 
     /// <summary>
-    /// The current base color of this Model.
+    /// Set of all equipment types allowed for this Model.
     /// </summary>
-    private Color32 baseColor;
+    protected virtual HashSet<ModelType> AllowedEquipmentTypes { get; } = new();
 
     /// <summary>
-    /// The current base tint of this Model: when tint is removed, this is the color
-    /// of the Model's tint.
+    /// Backing field for EquippedItems.
     /// </summary>
-    private Color32 baseTint;
+    private List<ModelType> _equippedItems = new();
 
     /// <summary>
-    /// The current applied tint of this Model: the color placed over the base tint.
+    /// The items equipped on this Model.
     /// </summary>
-    private Color32 appliedTint = Color.white;
-
-    /// <summary>
-    /// true if a Mob is targeting this Model; otherwise, false.
-    /// </summary>
-    private bool isTargetOfMob;
-
-    #endregion
-
-    #region Stats
-
-    /// <summary>
-    /// How much currency is required to buy this Model.
-    /// </summary>
-    public virtual int COST => 100;
-
-    /// <summary>
-    /// Name of this Model.
-    /// </summary>
-    public string NAME => TYPE.ToString();
-
-    /// <summary>
-    /// Type of this Model.
-    /// </summary>
-    public abstract ModelType TYPE { get; }
-
-    /// <summary>
-    /// The (X, Y) dimensions of this Model.
-    /// </summary>
-    /// <value></value>
-    public virtual Vector2Int SIZE => new Vector2Int(1, 1);
-
-    /// <summary>
-    /// The offset of this Model's held Nexii. 
-    /// </summary>
-    public virtual Vector2 HOLDER_OFFSET => new Vector2(0, 0);
-
-    /// <summary>
-    /// The base color of this Model.
-    /// </summary>
-    public virtual Color32 BASE_COLOR => new Color32(255, 255, 255, 255);
-
-    /// <summary>
-    /// The starting base tint of this Model.
-    /// </summary>
-    protected virtual Color32 STARTING_BASE_TINT => CalculateStartingBaseTint();
-
-    #endregion
-
-    #region Events
+    public List<ModelType> EquippedItems => new(_equippedItems);
 
     /// <summary>
     /// Delegate for handling collision events.
@@ -165,9 +121,68 @@ public abstract class Model : MonoBehaviour
     /// </summary>
     public event Action<Projectile> OnProjectileImpact;
 
+    /// <summary>
+    /// All Collider2Ds that this Model should not interact with.
+    /// </summary>
+    private HashSet<Collider2D> CollidersToIgnore { get; set; }
+
     #endregion
 
     #region Methods
+
+    /// <summary>
+    /// Resets this Model's state.
+    /// </summary>
+    public virtual void ResetModel()
+    {
+        OnCollision = null;
+        OnProjectileImpact = null;
+        SetColor(ColorConstants.BaseModelColor);
+        InstantiateObjects();
+    }
+
+    /// <summary>
+    /// Creates the necessary objects for this Model.
+    /// </summary>
+    private void InstantiateObjects()
+    {
+        ActiveEffects = new List<IEffect>();
+        EffectsToAddSafely = new List<IEffect>();
+        EffectsToRemoveSafely = new List<IEffect>();
+        CollidersToIgnore = new HashSet<Collider2D>();
+    }
+
+    /// <summary>
+    /// Equips an item to this Model.
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns></returns>
+    public void Equip(ModelType item)
+    {
+        Assert.IsTrue(CanEquip(item), "Cannot equip this item.");
+        _equippedItems.Add(item);
+    }
+
+    /// <summary>
+    /// Returns true if this Model can equip a given item.
+    /// </summary>
+    /// <param name="item">the item to check.</param>
+    /// <returns>true if this Model can equip a given item; otherwise,
+    /// false. </returns>
+    public virtual bool CanEquip(ModelType item)
+    {
+        if (!ModelTypeHelper.IsEquipment(item)) return false;
+        if (_equippedItems == null) return false;
+        if (_equippedItems.Count >= GameConstants.MaxEquipmentSlots) return false;
+        return AllowedEquipmentTypes.Contains(item);
+    }
+
+    /// <summary>
+    /// Returns true if this Model is equipped with a given item.
+    /// </summary>
+    /// <param name="item">the item to check.</param>
+    /// <returns>true if this Model is equipped with a given item; otherwise, false.</returns>
+    public bool IsEquipped(ModelType item) => EquippedItems.Contains(item);
 
     /// <summary>
     /// Sets this Model's SpriteRenderer to its most up-to date
@@ -198,98 +213,19 @@ public abstract class Model : MonoBehaviour
     /// Sets this Model's SpriteRenderer's color.
     /// </summary>
     /// <param name="color">the color to set to.</param>
-    public virtual void SetColor(Color32 newColor) => modelRenderer.color = newColor;
+    public void SetColor(Color32 newColor) => modelRenderer.color = newColor;
 
     /// <summary>
-    /// Sets this Model's base color.
+    /// Sets this Model's SpriteRenderer's color.
     /// </summary>
-    /// <param name="color">the base color to set to.</param>
-    public void SetBaseColor(Color32 color) => baseColor = color; 
-
-    /// <summary>
-    /// Returns this Model's base color.
-    /// </summary>
-    /// <returns>this model's base color. </returns>
-    public Color GetBaseColor() => baseColor;
+    /// <param name="color">the color to set to.</param>
+    public void SetColor(Color newColor) => modelRenderer.color = newColor;
 
     /// <summary>
     /// Returns this Model's current color.
     /// </summary>
     /// <returns>this Model's current color.</returns>
     public Color32 GetColor() => modelRenderer.color;
-
-    /// <summary>
-    /// Returns this Model's starting base tint.
-    /// </summary>
-    /// <returns>this Model's starting base tint.</returns>
-    protected virtual Color32 CalculateStartingBaseTint() => new Color32(255, 255, 255, 255);
-
-    /// <summary>
-    /// Combines the base tint and the applied tint of this Model
-    /// and applies the result to the Model's SpriteRenderer component.
-    /// </summary>
-    private void CombineAndApplyTint()
-    {
-        MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
-        modelRenderer.GetPropertyBlock(propertyBlock);
-        Color32 combinedTint = new Color32(
-            (byte)(appliedTint.r * baseTint.r / 255),
-            (byte)(appliedTint.g * baseTint.g / 255),
-            (byte)(appliedTint.b * baseTint.b / 255),
-            (byte)(appliedTint.a * baseTint.a / 255)
-        );
-        propertyBlock.SetColor("_Color", combinedTint);
-        modelRenderer.SetPropertyBlock(propertyBlock);
-    }
-
-    /// <summary>
-    /// Returns the current tint of the Model's SpriteRenderer component.
-    /// </summary>
-    /// <returns>the tint of the Model's SpriteRenderer component.</returns>
-    public Color32 GetCurrentTint()
-    {
-        MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
-        modelRenderer.GetPropertyBlock(propertyBlock);
-        Color32 currentTint = propertyBlock.GetColor("_Color");
-        return currentTint;
-    }
-
-    /// <summary>
-    /// Sets the tint of the Model's SpriteRenderer component to its
-    /// base tint. Defines the base tint of the Model.
-    /// </summary>
-    /// <param name="tintColor">the color of the tint to apply.</param>
-    public virtual void SetBaseTint(Color32 tintColor)
-    {
-        baseTint = tintColor;
-        CombineAndApplyTint();
-    }
-
-    /// <summary>
-    /// Sets the tint of the Model's SpriteRenderer component over its
-    /// current tint. 
-    /// </summary>
-    /// <param name="tintColor">the color of the tint to apply.</param>
-    public void SetAppliedTint(Color32 tintColor)
-    {
-        appliedTint = tintColor;
-        CombineAndApplyTint();
-    }
-
-    /// <summary>
-    /// Sets the tint of the Model's SpriteRenderer component to its
-    /// starting base tint.
-    /// </summary>
-    public void ResetBaseTint()
-    {
-        baseTint = STARTING_BASE_TINT;
-        CombineAndApplyTint();
-    }
-
-    /// <summary>
-    /// Sets the applied tint to white, effectively removing any tint.
-    /// </summary>
-    public void ResetAppliedTint() => SetAppliedTint(Color.white);
 
     /// <summary>
     /// Sets this Model's SpriteRenderer component's sorting
@@ -304,48 +240,16 @@ public abstract class Model : MonoBehaviour
     public int GetSortingOrder() => modelRenderer.sortingOrder;
 
     /// <summary>
-    /// Sets this Model's (X, Y) Tile coordinates.
-    /// </summary>
-    /// <param name="x">The X-Coordinate.</param>
-    /// <param name="y">The Y-Coordinate.</param>
-    public void SetTileCoordinates(int x, int y) => coordinates = new Vector2Int(x, y);
-
-    /// <summary>
     /// Sets the world position of this Model.
     /// </summary>
     /// <param name="pos">the position to set.</param>
-    public void SetWorldPosition(Vector3 pos)
-    {
-        pos.z = 1;
-        transform.position = pos;
-    }
+    public void SetWorldPosition(Vector3 pos) => transform.position = pos;
 
     /// <summary>
     /// Returns the world position of this Model.
     /// </summary>
     /// <returns>the world position of this Model.</returns>
-    public Vector3 GetPosition() => transform.position;
-
-    /// <summary>
-    /// Sets this Model's Transform's local scale. The scale is
-    /// dependent on the TileGrid's TILE_SIZE.
-    /// </summary>
-    /// <param name="x">The X-Scale.</param>
-    /// <param name="y">The Y-Scale.</param>
-    public void SetLocalScale(float x, float y) => transform.localScale = new Vector3(x, y, 1);
-
-    /// <summary>
-    /// Sets this Model's Transform's local scale. The scale is
-    /// dependent on the TileGrid's TILE_SIZE.
-    /// </summary>
-    /// <param name="newSize">The new scale.</param>
-    public void SetLocalScale(Vector3 newSize) => SetLocalScale(newSize.x, newSize.y);
-
-    /// <summary>
-    /// Returns the local scale of this Model.
-    /// </summary>
-    /// <returns>the local scale of this Model. </returns>
-    public Vector3 GetLocalScale() => transform.localScale;
+    public Vector3 GetWorldPosition() => transform.position;
 
     /// <summary>
     /// Sets this Model's Transform's local rotation.
@@ -354,59 +258,41 @@ public abstract class Model : MonoBehaviour
     public void SetRotation(Quaternion rotation) => transform.rotation = rotation;
 
     /// <summary>
-    /// Returns the X-Coordinate of the Tile on which this Model sits.
-    /// </summary>
-    /// <returns>the X-Coordinate of the Tile on which this Model sits.</returns>
-    public int GetX() => coordinates.x;
-
-    /// <summary>
-    /// Returns the Y-Coordinate of the Tile on which this Model sits.
-    /// </summary>
-    /// <returns>the Y-Coordinate of the Tile on which this Model sits.</returns>
-    public int GetY() => coordinates.y;
-
-    /// <summary>
-    /// Returns this Model's Transform component.
-    /// </summary>
-    /// <returns>this Model's Transform component.</returns>
-    public Transform GetTransform() => transform;
-
-    /// <summary>
     /// Returns the position of where attacks directed at this PlaceableObject
     /// should go.
     /// </summary>
     /// <returns>the position of where attacks directed at this PlaceableObject
     /// should go.</returns>
-    public virtual Vector3 GetAttackPosition() => GetPosition();
+    public virtual Vector3 GetAttackPosition() => GetWorldPosition();
 
     /// <summary>
-    /// Rotates this Model such that it faces a given direction.
+    /// Changes this Model's direction such that it faces a given position.
     /// </summary>
-    /// <param name="direction">The direction to face.</param>
-    public void FaceDirection(Direction direction) => this.direction = direction;
-
-    /// <summary>
-    /// Changes this Model's direction such that it faces some position.
-    /// </summary>
-    /// <param name="t">The position to face.</param>
-    public void FaceDirection(Vector3 t)
+    /// <param name="target">The position to face.</param>
+    public void FaceDirection(Vector3 target)
     {
-        float xDistance = GetPosition().x - t.x;
-        float yDistance = GetPosition().y - t.y;
-        bool xGreater = Mathf.Abs(xDistance) > Mathf.Abs(yDistance)
-            ? true : false;
+        Vector3 dominantAxis = GetDominantAxis(target);
 
-        if (xGreater && xDistance <= 0) FaceDirection(Direction.EAST);
-        if (xGreater && xDistance > 0) FaceDirection(Direction.WEST);
-        if (!xGreater && yDistance <= 0) FaceDirection(Direction.NORTH);
-        if (!xGreater && yDistance > 0) FaceDirection(Direction.SOUTH);
+        if (dominantAxis.x > 0) Direction = Direction.WEST;
+        else if (dominantAxis.x < 0) Direction = Direction.EAST;
+        else if (dominantAxis.y > 0) Direction = Direction.SOUTH;
+        else Direction = Direction.NORTH;
     }
 
     /// <summary>
-    /// Returns the Direction to which this Model faces.
+    /// Determines whether the x-axis or y-axis has the greater distance.
+    /// Returns a vector indicating the dominant direction.
     /// </summary>
-    /// <returns>the Direction to which this Model faces</returns>
-    public Direction GetDirection() => direction;
+    /// <param name="target">The position to compare.</param>
+    /// <returns>A Vector2 indicating the dominant direction.</returns>
+    private Vector3 GetDominantAxis(Vector3 target)
+    {
+        float xDistance = GetWorldPosition().x - target.x;
+        float yDistance = GetWorldPosition().y - target.y;
+        return Mathf.Abs(xDistance) > Mathf.Abs(yDistance)
+            ? new Vector3(Mathf.Sign(xDistance), 0)
+            : new Vector3(0, Mathf.Sign(yDistance));
+    }
 
     /// <summary>
     /// Subscribes a handler (this model's controller) to the collision event.
@@ -440,17 +326,7 @@ public abstract class Model : MonoBehaviour
     /// some other collider.
     /// </summary>
     /// <param name="other">The other collider.</param>
-    public void OnTriggerEnter2D(Collider2D other)
-    {
-        //!! Ignore 0 references, this is an event.
-        OnCollision?.Invoke(other);
-    }
-
-    /// <summary>
-    /// Returns the Collider2D component used by this Model.
-    /// </summary>
-    /// <returns>the Collider2D component used by this Model.</returns>
-    public Collider2D GetCollider() => modelCollider;
+    public void OnTriggerEnter2D(Collider2D other) => OnCollision?.Invoke(other);
 
     /// <summary>
     /// Sets this Model's Collider2D properties, such as its position,
@@ -459,39 +335,62 @@ public abstract class Model : MonoBehaviour
     public virtual void SetColliderProperties() { }
 
     /// <summary>
-    /// Resets this Model's state.
+    /// Returns the name of the sorting layer of this Model.
     /// </summary>
-    public virtual void ResetModel()
-    {
-        OnCollision = null; 
-        OnProjectileImpact = null;
-        SetColor(BASE_COLOR);
-        ResetAppliedTint();
-        ResetBaseTint();
-    }
-
-    /// <summary>
-    /// Sets this Model's sorting layer.
-    /// </summary>
-    /// <param name="layer">The layer to set to.</param>
-    public void SetSortingLayer(SortingLayers layer) => modelRenderer.sortingLayerName = layer.ToString().ToLower();
-
-    /// <summary>
-    /// Returns this Model's sorting layer.
-    /// </summary>
-    /// <returns>This Model's sorting layer. </returns>
-    public SortingLayers GetSortingLayer()
-    {
-        string currentLayerName = modelRenderer.sortingLayerName.ToLower();
-        if (Enum.TryParse<SortingLayers>(currentLayerName, true, out SortingLayers result)) return result;
-        else return default;
-    }
+    /// <returns>the name of the sorting layer of this Model.</returns>
+    public string GetSortingLayerName() => modelRenderer.sortingLayerName;
 
     /// <summary>
     /// Returns a fresh GameObject that represents this Model. 
     /// </summary>
     /// <returns>a fresh GameObject that represents this Model.</returns>
     public abstract GameObject CreateNew();
+
+    /// <summary>
+    /// Clones this Model from another Model, setting all of its
+    /// fields to the same values.
+    /// </summary>
+    /// <param name="m">The Model to clone from.</param>
+    public virtual void CloneFrom(Model m) 
+    {
+        Assert.IsNotNull(m, "Cannot clone from a null model.");
+        Direction = m.Direction;
+        CurrentAnimationTrack = m.CurrentAnimationTrack;
+        CurrentAnimationDuration = m.CurrentAnimationDuration;
+        DirectionOfMostRecentAnimation = m.DirectionOfMostRecentAnimation;
+        NumCyclesOfCurrentAnimationCompleted = m.NumCyclesOfCurrentAnimationCompleted;
+        CurrentFrame = m.CurrentFrame;
+        modelRenderer = m.modelRenderer;
+        modelCollider = m.modelCollider;
+        ActiveEffects = m.ActiveEffects;
+        EffectsToAddSafely = m.EffectsToAddSafely;
+        EffectsToRemoveSafely = m.EffectsToRemoveSafely;
+        _equippedItems = m.EquippedItems;
+    }
+
+    /// <summary>
+    /// Adds a Collider2D to the list of Colliders2D to ignore.
+    /// The projectile will not detonate when colliding with this Collider2D.
+    /// </summary>
+    /// <param name="other">The collider to ignore. </param>
+    public void AddColliderToIgnore(Collider2D other)
+    {
+        Assert.IsNotNull(other);
+        if (CollidersToIgnore == null) CollidersToIgnore = new HashSet<Collider2D>();
+        CollidersToIgnore.Add(other);
+    }
+
+    /// <summary>
+    /// Returns true if this Projectile should ignore a given Collider2D.
+    /// </summary>
+    /// <param name="other">the Collider2D to check</param>
+    /// <returns>true if this Projectile should ignore a given Collider2D;
+    /// otherwise, false. </returns>
+    public bool IgnoresCollider(Collider2D other)
+    {
+        if (CollidersToIgnore == null) return false;
+        return CollidersToIgnore.Contains(other);
+    }
 
     /// <summary>
     /// Returns a Sprite that represents this Model when it is
@@ -505,33 +404,13 @@ public abstract class Model : MonoBehaviour
     /// Returns the (X, Y) dimensions of this Model's placement track.
     /// </summary>
     /// <returns>the (X, Y) dimensions of this Model's placement track.</returns>
-    public virtual Vector2Int GetPlacementTrackDimensions() => new Vector2Int(16, 16);
+    public virtual Vector2Int GetPlacementSize() => new Vector2Int(16, 16);
 
     /// <summary>
-    /// Returns the euclidian distance from this Model to another Model.
+    /// Called when placed.
     /// </summary>
-    /// <param name="other">The other model.</param>
-    /// <returns>the euclidian distance from this Model to another Model.</returns>
-    public float GetDistanceTo(Model other)
-    {
-        Assert.IsNotNull(other, "Other model is null.");
-        return Vector3.Distance(GetPosition(), other.GetPosition());
-    }
-
-    /// <summary>
-    /// Called when a Nexus determines this Model has picked it up. 
-    /// </summary>
-    public void OnHoldNexus() => holdingNexus = true;
-
-    /// <summary>
-    /// Returns true if this Model is currently holding a Nexus. 
-    /// </summary>
-    /// <returns></returns>
-    public bool IsHoldingNexus() => holdingNexus;
-
-    #endregion
-
-    #region Animation
+    /// <param name="worldPosition">The world position where this Model was placed.</param>
+    public virtual void OnPlace(Vector3 worldPosition) { }
 
     /// <summary>
     /// Sets this Model's current animation track.
@@ -545,26 +424,26 @@ public abstract class Model : MonoBehaviour
         Assert.IsTrue(track.Length > 0, "Cannot have an empty animation track.");
         CurrentAnimationTrack = track;
         CurrentFrame = startFrame;
-        directionOfMostRecentAnimation = direction;
-        if (isNewTrack) numCyclesOfCurrentAnimationCompleted = 0;
+        DirectionOfMostRecentAnimation = Direction;
+        if (isNewTrack) NumCyclesOfCurrentAnimationCompleted = 0;
     }
 
     /// <summary>
     /// Returns the Direction of the most recent animation.
     /// </summary>
     /// <returns>the Direction of the most recent animation.</returns>
-    public Direction GetDirectionOfMostRecentAnimation() => directionOfMostRecentAnimation;
+    public Direction GetDirectionOfMostRecentAnimation() => DirectionOfMostRecentAnimation;
 
     /// <summary>
     /// Returns the number of cycles of the current animation completed.
     /// </summary>
     /// <returns>the number of cycles of the current animation completed. </returns>
-    public int GetNumCyclesOfCurrentAnimationCompleted() => numCyclesOfCurrentAnimationCompleted;
+    public int GetNumCyclesOfCurrentAnimationCompleted() => NumCyclesOfCurrentAnimationCompleted;
 
     /// <summary>
     /// Increments the number of cycles of the current animation completed.
     /// </summary>
-    public void IncrementNumCyclesOfCurrentAnimationCompleted() => numCyclesOfCurrentAnimationCompleted++;
+    public void IncrementNumCyclesOfCurrentAnimationCompleted() => NumCyclesOfCurrentAnimationCompleted++;
 
     /// <summary>
     /// Returns true if this Model has a valid animation track set up.
@@ -609,16 +488,6 @@ public abstract class Model : MonoBehaviour
         return CurrentAnimationTrack[CurrentFrame];
     }
 
-    #endregion  
-
-    #region Effects
-
-    /// <summary>
-    /// Returns all IEffect instances on this Model.
-    /// </summary>
-    /// <returns>a list of IEffect instances on this Model. </returns>
-    protected List<IEffect> GetEffects() => effects;
-
     /// <summary>
     /// Returns true if this Model has the maximum number of stacks
     /// of a given IEffect instance.
@@ -626,7 +495,7 @@ public abstract class Model : MonoBehaviour
     /// <param name="effect">The IEffect to check. </param>
     /// <returns>true if this Model has the maximum number of stacks
     /// of a given IEffect instance; otherwise, false.</returns>
-    private bool HasMaximumStacksOfEffect(IEffect effect) => GetEffects().FindAll(e=>e.GetType() == effect.GetType()).Count >= effect.MaxStacks;
+    private bool HasMaximumStacksOfEffect(IEffect effect) => ActiveEffects.FindAll(e=>e.GetType() == effect.GetType()).Count >= effect.MaxStacks;
 
     /// <summary>
     /// Adds an IEffect instance to this Model.
@@ -640,26 +509,27 @@ public abstract class Model : MonoBehaviour
         {
             if(effect.MaxStacks == 1)
             {
-                IEffect existingEffect = GetEffects().Find(e=>e.GetType() == effect.GetType());
+                // If the effect is a one-time effect, refresh it.
+                IEffect existingEffect = ActiveEffects.Find(e=>e.GetType() == effect.GetType());
                 TimedEffect timedEffect = existingEffect as TimedEffect;
                 if(timedEffect != null) timedEffect.RefreshEffect();
             }
             return;
         }
 
-        effectsToAddSafely.Add(effect);
+        EffectsToAddSafely.Add(effect);
     }
 
     /// <summary>
     /// Removes an IEffect instance from this Model.
     /// </summary>
     /// <param name="effect">the effect to remove. </param>
-    public void TryRemoveEffect(IEffect effect)
+    public void RemoveEffect(IEffect effect)
     {
         Assert.IsNotNull(effect, "Cannot remove a null effect.");
-        Assert.IsTrue(GetEffects().Contains(effect), "Effect not found on this model.");
+        Assert.IsTrue(ActiveEffects.Contains(effect), "Effect not found on this model.");
 
-        if(!effect.IsEffectActive) effectsToRemoveSafely.Add(effect);
+        if(!effect.IsEffectActive) EffectsToRemoveSafely.Add(effect);
     }
 
     /// <summary>
@@ -670,20 +540,20 @@ public abstract class Model : MonoBehaviour
     /// <param name="effects">The effects to process.</param>
     public virtual void ProcessEffects()
     {
-        foreach(IEffect effect in effectsToAddSafely)
+        foreach(IEffect effect in EffectsToAddSafely)
         {
-            GetEffects().Add(effect);
+            ActiveEffects.Add(effect);
         }
-        effectsToAddSafely.Clear();
+        EffectsToAddSafely.Clear();
 
-        GetEffects().ForEach(effect=>TryRemoveEffect(effect));
-        GetEffects().ForEach(effect=>effect.UpdateEffect(this));
+        ActiveEffects.ForEach(effect=>RemoveEffect(effect));
+        ActiveEffects.ForEach(effect=>effect.UpdateEffect(this));
         
-        foreach(IEffect effect in effectsToRemoveSafely)
+        foreach(IEffect effect in EffectsToRemoveSafely)
         {
-            GetEffects().Remove(effect);
+            ActiveEffects.Remove(effect);
         }
-        effectsToRemoveSafely.Clear();
+        EffectsToRemoveSafely.Clear();
     }
 
     #endregion

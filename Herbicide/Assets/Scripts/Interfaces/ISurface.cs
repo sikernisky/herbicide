@@ -1,132 +1,88 @@
 using UnityEngine;
+
 /// <summary>
-/// Contract for a model that can host a PlaceableObject. In other
-/// words, a PlaceableObject can be placed on an ISurface.
+/// Contract for a model that can host a ISurfacePlaceable. In other
+/// words, a ISurfacePlaceable can be placed on an ISurface.
 /// </summary>
 public interface ISurface
 {
+    /// <summary>
+    /// The PlaceableObject that is currently on this ISurface.
+    /// </summary>
+    PlaceableObject Occupant { get; }
+
+    /// <summary>
+    /// The Ghost GameObject that is currently on this ISurface.
+    /// </summary>
+    GameObject GhostOccupant { get; }
+
+    /// <summary>
+    /// The LineRenderer component of this ISurface.
+    /// </summary>
+    LineRenderer LineRenderer { get; }
+
+    /// <summary>
+    /// true if this ISurface is walkable by default; otherwise, false.
+    /// </summary>
+    bool IsTraversable { get; }
+
     /// <summary>
     /// Returns true if a PlaceableObject can be placed on this ISurface.
     /// If it can, places the PlaceableObject.
     /// </summary>
     /// <param name="candidate">The PlaceableObject to place.</param>
-    /// <param name="neighbors">This ISurface's neighbors.</param>
     /// <returns>true if a PlaceableObject can be placed on this ISurface;
     /// otherwise, false.</returns>
-    void Place(PlaceableObject candidate, ISurface[] neighbors);
-
-    /// <summary>
-    /// Returns true if a PlaceableObject can be placed on this ISurface.
-    /// </summary>
-    /// <param name="candidate">The PlaceableObject to place.</param>
-    /// <param name="neighbors">This ISurface's neighbors.</param>
-    /// <returns>true if a PlaceableObject can be placed on this ISurface;
-    /// otherwise, false.</returns>
-    bool CanPlace(PlaceableObject candidate, ISurface[] neighbors);
-
-    /// <summary>
-    /// Removes the PlaceableObject on this ISurface.
-    /// </summary>
-    /// <param name="neighbors">This ISurface's neighbors.</param>
-    /// <returns>the PlaceableObject that was removed; null if there was none.</returns>
-    PlaceableObject Remove(ISurface[] neighbors);
-
-    /// <summary>
-    /// Returns true if there is a PlaceableObject on this ISurface that
-    /// can be removed.
-    /// </summary>
-    /// <param name="neighbors">This ISurface's neighbors.</param>
-    /// <returns>true if there is a PlaceableObject on this ISurface that
-    /// can be removed; otherwise, false. </returns>
-    bool CanRemove(ISurface[] neighbors);
+    bool Place(ISurfacePlaceable candidate);
 
     /// <summary>
     /// Returns true if this ISurface is occupied; otherwise, returns false.
     /// </summary>
     /// <returns> true if this ISurface is occupied; otherwise, returns false.
     ///</returns>
-    bool Occupied();
+    bool IsOccupied();
 
     /// <summary>
-    /// Informs this ISurface whether an Enemy is on it or not.
+    /// Returns true if the given Model type lies on this Surface or
+    /// any of its occupants.
     /// </summary>
-    void SetOccupiedByEnemy(bool occupiedByEnemy);
+    /// <typeparam name="T">The Model type to check for.</typeparam>
+    /// <returns> true if the given Model type lies on this Surface or
+    /// any of its occupants; otherwise, false.</returns>
+    bool HasModel<T>();
 
     /// <summary>
-    /// Returns true if an Enemy is on this ISurface.
+    /// Returns true if the given Model type lies on this Surface or
+    /// any of its occupants.
     /// </summary>
-    /// <returns>true if an Enemy is on this ISurface; otherwise, false.
-    /// </returns>
-    bool OccupiedByEnemy();
+    /// <param name="modelType">The Model type to check for.</param>
+    /// <returns>true if the given Model type lies on this Surface or
+    /// any of its occupants; otherwise, false.</returns>
+    bool HasModel(ModelType modelType);
 
     /// <summary>
-    /// Notifies this ISurface of its new neighboring ISurface components.
+    /// Removes the PlaceableObject on this ISurface.
     /// </summary>
-    /// <param name="newNeighbors">this ISurface's new neighbors.</param>
-    void UpdateSurfaceNeighbors(ISurface[] newNeighbors);
+    /// <returns>the PlaceableObject that was removed; null if there was none.</returns>
+    PlaceableObject Remove();
 
     /// <summary>
-    /// Returns this ISurface's four neighbors. 
-    /// </summary>
-    /// <returns>this ISurface's four neighbors.</returns>
-    ISurface[] GetSurfaceNeighbors();
-
-    /// <summary>
-    /// Returns this ISurface's four neighbors' PlaceableObjects.
-    /// </summary>
-    /// <returns>this ISurface's four neighbors' PlaceableObjects.</returns>
-    PlaceableObject[] GetPlaceableObjectNeighbors();
-
-    /// <summary>
-    /// Returns the PlaceableObject on this ISurface.
-    /// </summary>
-    /// <returns> the PlaceableObject on this ISurface;
-    /// null if it has none.</returns>
-    PlaceableObject GetOccupant();
-
-    /// <summary>
-    /// Returns the X-coordinate of this ISurface.
-    /// </summary>
-    /// <returns>the X-coordinate of this ISurface.</returns>
-    int GetX();
-
-    /// <summary>
-    /// Returns the Y-coordinate of this ISurface.
-    /// </summary>
-    /// <returns>the Y-coordinate of this ISurface.</returns>
-    int GetY();
-
-    /// <summary>
-    /// Provides a visual simulation of placing a PlaceableObject on
+    /// Provides a visual simulation of placing a candidate on
     /// this ISurface and is called during a hover / placement action.
-    /// This method does not carry out actual placement of the PlaceableObject on
-    /// the ISurface. Instead, it displays a potential placement scenario. If
-    /// the PlaceableObject is allowed to be positioned  on this ISurface, the ISurface
-    /// appears highlighted in blue. Conversely, if the placement is disallowed, 
-    /// the ISurface will be highlighted in red.
+    /// This method does not carry out actual placement of the candidate on
+    /// the ISurface. Instead, it displays a potential placement scenario.
     /// </summary>
-    /// <param name="ghost">The PlaceableObject object that we are
+    /// <param name="candidate">The candidate object that we are
     /// trying to virtually place on the ISurface.</param>
     /// <returns> true if the ghost place was successful; otherwise,
     /// false. </returns> 
-    bool GhostPlace(PlaceableObject ghost);
+    bool GhostPlace(ISurfacePlaceable candidate);
 
     /// <summary>
-    /// Determines whether an PlaceableObject object can be potentially placed
-    /// on the given ISurface. This method is invoked alongside GhostPlace()
-    /// during a hover or placement action to validate the placement feasibility.
+    /// Draws the range indicator for a given Defender on this ISurface.
     /// </summary>
-    /// <param name="ghost">The PlaceableObject object that we are
-    /// trying to virtually place on the ISurface.</param>
-    /// <returns>true if the PlaceableObject object can be placed on the ISurface;
-    /// otherwise, false.</returns>
-    bool CanGhostPlace(PlaceableObject ghost);
-
-    /// <summary>
-    /// Removes all visual simulations of placing a PlaceableObject on this
-    /// ISurface. If there are none, does nothing.
-    /// </summary>
-    void GhostRemove();
+    /// <param name="defender">the given Defender</param>
+    void DrawRangeIndicator(Defender defender);
 
     /// <summary>
     /// Returns true if the ghost occupant on this ISurface is not null.
@@ -135,29 +91,18 @@ public interface ISurface
     /// </summary>
     /// <returns>true if the ghost occupant on this ISurface is not null;
     /// otherwise, false.</returns>
-    bool HasActiveGhostOccupant();
+    bool IsGhostOccupied();
+
+    /// <summary>
+    /// Removes all visual simulations of placing a PlaceableObject on this
+    /// ISurface. If there are none, does nothing.
+    /// </summary>
+    void GhostRemove();
 
     /// <summary>
     /// Returns true if a pathfinder can walk across this ISurface.
     /// </summary>
     /// <returns>true if a pathfinder can walk across this ISurface;
     /// otherwise, false. </returns>
-    bool IsWalkable();
-
-    /// <summary>
-    /// Displays information about the occupant of this ISurface using
-    /// the InsightManager singleton.
-    /// </summary>
-    void ShowMobOccupantAbility();
-
-    /// <summary>
-    /// Sets the tint of the surface and all occupants on it.
-    /// </summary>
-    /// <param name="tintColor">The color to set the tint to.</param>
-    void SetTintOfSurfaceAndAllOccupants(Color32 tintColor);
-
-    /// <summary>
-    /// Removes the tint of the surface and all occupants on it.
-    /// </summary>
-    void RemoveTintOfSurfaceAndAllOccupants();
+    bool IsCurrentlyWalkable();
 }

@@ -27,6 +27,18 @@ public abstract class Effect : IEffect
     public Effect() { }
 
     /// <summary>
+    /// Creates a new Effect with the same values as the given Effect.
+    /// </summary>
+    /// <param name="other">the given Effect</param>
+    protected Effect(Effect other) { }
+
+    /// <summary>
+    /// Clones this Effect.
+    /// </summary>
+    /// <returns>a copy of this Effect.</returns>
+    public abstract Effect Clone();
+
+    /// <summary>
     /// Apply this Effect to the given Model.
     /// </summary>
     /// <param name="model">the Model to afflict. </param>

@@ -34,10 +34,19 @@ public class IceChunkEffect : TimedEffect, IMovementSpeedEffect
     /// <summary>
     /// Makes a new IceChunkEffect with the default duration and magnitude.
     /// </summary>
-    public IceChunkEffect() : base(ICE_CHUNK_DURATION)
-    {
-        MovementSpeedMagnitude = ICE_CHUNK_MAGNITUDE;
-    }
+    public IceChunkEffect() : base(ICE_CHUNK_DURATION) => MovementSpeedMagnitude = ICE_CHUNK_MAGNITUDE;
+
+    /// <summary>
+    /// Makes a copy of an IceChunkEffect.
+    /// </summary>
+    /// <param name="other">the given IceChunkEffect</param>
+    protected IceChunkEffect(IceChunkEffect other) : base(other) => MovementSpeedMagnitude = other.MovementSpeedMagnitude;
+
+    /// <summary>
+    /// Returns a copy of this IceChunkEffect.
+    /// </summary>
+    /// <returns>a copy of this IceChunkEffect</returns>
+    public override Effect Clone() => new IceChunkEffect(this);
 
     /// <summary>
     /// Returns true if the IceChunkEffect can afflict the given Model.

@@ -30,10 +30,10 @@ public class SoilFlooring : Flooring
     /// SoilFlooring's tile set.</returns>
     protected override int GetTilingIndex(ISurface[] neighbors)
     {
-        bool hasNorth = neighbors[0] as SoilFlooring != null;
-        bool hasEast = neighbors[1] as SoilFlooring != null;
-        bool hasSouth = neighbors[2] as SoilFlooring != null;
-        bool hasWest = neighbors[3] as SoilFlooring != null;
+        bool hasNorth = neighbors[0].HasModel<SoilFlooring>();
+        bool hasEast = neighbors[1].HasModel<SoilFlooring>();
+        bool hasSouth = neighbors[2].HasModel<SoilFlooring>();
+        bool hasWest = neighbors[3].HasModel<SoilFlooring>();
 
         if (hasEast && !hasWest && !hasSouth && !hasNorth) return 0;
         if (hasEast && hasWest && !hasSouth && !hasNorth) return 1;
@@ -59,6 +59,12 @@ public class SoilFlooring : Flooring
     /// <returns>the GameObject that represents this SoilFlooring on the grid.
     /// </returns>
     public override GameObject CreateNew() => FlooringFactory.GetFlooringPrefab(ModelType.SOIL_FLOORING);
+
+    /// <summary>
+    /// R
+    /// </summary>
+    /// <returns></returns>
+    public override bool Dead() => false;
 
     #endregion
 }

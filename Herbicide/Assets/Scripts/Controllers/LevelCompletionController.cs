@@ -71,7 +71,7 @@ public class LevelCompletionController : MonoBehaviour
     /// The ordered list of UpgradeSaveData for each model that our progress tracks
     /// will use.
     /// </summary>
-    private List<ModelUpgradeSaveData> orderedUpgradeSaveData;
+    private List<ModelSaveData> orderedUpgradeSaveData;
 
     /// <summary>
     /// The position the progress track moves towards after upgrading.
@@ -95,6 +95,11 @@ public class LevelCompletionController : MonoBehaviour
     /// true if the coroutine for upgrading is running; false otherwise.
     /// </summary>
     private bool upgrading;
+
+    /// <summary>
+    /// true if the level complete logic, upgrading, and process is enabled; false otherwise.
+    /// </summary>
+    private readonly bool LEVEL_COMPLETE_ENABLED = false;
 
 
     #endregion
@@ -125,7 +130,8 @@ public class LevelCompletionController : MonoBehaviour
     {
         if (instance == null) return;
         instance.gameState = gameState;
-        if(!instance.LevelOver()) return;   
+        if(!instance.LevelOver()) return;
+        if(!instance.LEVEL_COMPLETE_ENABLED) return;
 
         instance.ExecuteInitialResultState();
         instance.ExecuteProgressTracksUpdatingState();
@@ -186,11 +192,11 @@ public class LevelCompletionController : MonoBehaviour
     /// </summary>
     private void LoadUpgradeQueue()
     {
-        orderedUpgradeSaveData = new List<ModelUpgradeSaveData>();
-        HashSet<ModelType> unlockedModels = CollectionManager.GetAllUnlockedModelTypes(); 
+        orderedUpgradeSaveData = new List<ModelSaveData>();
+        HashSet<ModelType> unlockedModels = CollectionManager.GetAllUnlockedModels(); 
         foreach(ModelType unlockedModel in unlockedModels)
         {
-            orderedUpgradeSaveData.Add(CollectionManager.GetUnlockedModelUpgradeSaveData(unlockedModel));
+            orderedUpgradeSaveData.Add(CollectionManager.GetUnlockedModelSaveData(unlockedModel));
         }
     }
 
@@ -204,9 +210,9 @@ public class LevelCompletionController : MonoBehaviour
         Assert.IsNotNull(orderedUpgradeSaveData, "orderedUpgradeSaveData is null.");
         Assert.IsTrue(orderedUpgradeSaveData.Count > 0, "orderedUpgradeSaveData is empty.");
 
-        ModelUpgradeSaveData upgradeSaveData = orderedUpgradeSaveData[0];
+        ModelSaveData upgradeSaveData = orderedUpgradeSaveData[0];
         orderedUpgradeSaveData.RemoveAt(0);
-        Requirements upgradeRequirements = CollectionManager.GetUpgradeRequirementsData(upgradeSaveData.GetModelType());
+        Requirements upgradeRequirements = CollectionManager.GetModelUpgradeRequirementsData(upgradeSaveData.GetModelType());
         GameObject progressTrack = Instantiate(progressTrackPrefab, progressTrackObjects.transform);
         progressTrack.transform.position = startPosition;
         ProgressTrack progressComp = progressTrack.GetComponent<ProgressTrack>();  
@@ -315,7 +321,6 @@ public class LevelCompletionController : MonoBehaviour
         if(completionState != CompletionState.INITIAL_RESULT) return;
 
         if(!LevelCompletePanelOpen()) OpenLevelCompletePanel();
-        if (PlacementController.IsPlacing()) PlacementController.StopPlacingObject();
     }
 
     /// <summary>
@@ -345,7 +350,6 @@ public class LevelCompletionController : MonoBehaviour
     public void ClickLevelCompleteNextButton()
     {
         if (!LevelCompletePanelOpen()) OpenLevelCompletePanel();
-        Debug.Log(completionState);
         switch (completionState)
         {
             case CompletionState.INITIAL_RESULT:

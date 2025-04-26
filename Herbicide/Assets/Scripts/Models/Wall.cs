@@ -12,36 +12,20 @@ public abstract class Wall : Mob
     /// <summary>
     /// Starting health of a Wall
     /// </summary>
-    public override float BASE_HEALTH => int.MaxValue;
+    public override float BaseHealth => int.MaxValue;
 
     /// <summary>
     /// Maximum health of a Wall
     /// </summary> 
-    public override float MAX_HEALTH => int.MaxValue;
+    public override float MaxHealth => int.MaxValue;
     /// <summary>
     /// Minimum health of a Wall
     /// </summary>
-    public override float MIN_HEALTH => 0;
-
-    /// <summary>
-    /// true if this Wall is an occupier, false otherwise.
-    /// </summary>
-    public override bool OCCUPIER => true;
+    public override float MinHealth => 0;
 
     #endregion
 
     #region Methods
-
-    /// <summary>
-    /// Updates this Wall with its newest four neighbors. Sets its sprite
-    /// accordingly. /// 
-    /// </summary>
-    /// <param name="neighbors"> The four neighbors that surround this Wall.</param>
-    public override void UpdateNeighbors(PlaceableObject[] neighbors)
-    {
-        base.UpdateNeighbors(neighbors);
-        SetTilingIndex(GetTilingIndex(neighbors));
-    }
 
     /// <summary>
     /// Sets the tiling index of this Wall to the given index.

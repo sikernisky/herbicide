@@ -33,6 +33,11 @@ public class Owl : Defender
     public override float MIN_MAIN_ACTION_RANGE => 0f;
 
     /// <summary>
+    /// Starting generation speed of an Owl.
+    /// </summary>
+    public override float BASE_MAIN_ACTION_SPEED => 1f;
+
+    /// <summary>
     /// Maximum attack speed of a Owl.
     /// </summary>
     public override float MAX_MAIN_ACTION_SPEED => float.MaxValue;
@@ -40,7 +45,7 @@ public class Owl : Defender
     /// <summary>
     /// Starting main action animation duration of an Owl.
     /// </summary>
-    public override float BASE_MAIN_ACTION_ANIMATION_DURATION => .2f;
+    public override float BaseMainActionAnimationDuration => .2f;
 
     /// <summary>
     /// Starting chase range of a Owl.
@@ -75,17 +80,17 @@ public class Owl : Defender
     /// <summary>
     /// Starting health value of a Owl.
     /// </summary>
-    public override float BASE_HEALTH => 100f;
+    public override float BaseHealth => 100f;
 
     /// <summary>
     /// Largest health value a Owl can have.
     /// </summary>
-    public override float MAX_HEALTH => 100f;
+    public override float MaxHealth => 100f;
 
     /// <summary>
     /// Smallest health value a Owl can have.
     /// </summary>
-    public override float MIN_HEALTH => 0f;
+    public override float MinHealth => 0f;
 
     /// <summary>
     /// How many seconds a Owl's idle animation lasts,
@@ -111,26 +116,7 @@ public class Owl : Defender
     /// Returns the (X, Y) dimensions of the Owl's placement track.
     /// </summary>
     /// <returns>the (X, Y) dimensions of the Owl's placement track.</returns>
-    public override Vector2Int GetPlacementTrackDimensions() => new Vector2Int(32, 32);
-
-    /// <summary>
-    /// Returns the Owl's base main action speed. Depends on the Owl's tier.
-    /// </summary>
-    /// <returns>the Owl's base main action speed.</returns>
-    protected override float CalculateBaseMainActionSpeed()
-    {
-        switch (GetTier())
-        {
-            case 1:
-                return 0.50f;
-            case 2:
-                return 0.75f;
-            case 3:
-                return 1.00f;
-            default:
-                return 0.50f;
-        }
-    }
+    public override Vector2Int GetPlacementSize() => new Vector2Int(32, 32);
 
     #endregion
 }

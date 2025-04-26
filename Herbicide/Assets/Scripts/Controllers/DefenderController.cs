@@ -46,7 +46,7 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     ///  <param name="tier">The tier of the Defender.</param>
     public DefenderController(Defender defender, int tier = 1) : base(defender)
     {
-        GetDefender().Upgrade(tier);
+        GetDefender().SetTier(tier);
     }
 
     /// <summary>
@@ -69,11 +69,11 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
         if (enemyTarget == null) return false;
         if (!enemyTarget.Spawned()) return false;
         if (!enemyTarget.Targetable()) return false;
-        if (!GetDefender().IsPlaced()) return false;
+        if (!GetDefender().PlacedOnSurface) return false;
 
         bool previousTarget = (target as Enemy) == stickyTarget;
-        if (previousTarget && !IsMobInLeniencyRangeOfPosition(enemyTarget.GetPosition())) return false;
-        if (!previousTarget && !IsMobInRangeOfPosition(enemyTarget.GetPosition())) return false; 
+        if (previousTarget && !IsMobInLeniencyRangeOfPosition(enemyTarget.GetWorldPosition())) return false;
+        if (!previousTarget && !IsMobInRangeOfPosition(enemyTarget.GetWorldPosition())) return false; 
 
         return true;
     }
@@ -84,20 +84,14 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     /// </summary>
     /// <param name="targetPosition">The position of the target.</param>
     /// <returns>true if in range; otherwise, false.</returns>
-    protected override bool IsMobInRangeOfPosition(Vector2 targetPosition)
-    {
-        return DistanceToPositionFromTree(targetPosition) <= GetDefender().GetMainActionRange();
-    }
+    protected override bool IsMobInRangeOfPosition(Vector2 targetPosition) => DistanceToPositionFromTree(targetPosition) <= GetDefender().GetMainActionRange();
 
     /// <summary>
     /// Returns true if the Model is within the grace range of the Defender.
     /// </summary>
     /// <param name="targetPosition">The position of the target.</param>
     /// <returns>true if within grace range; otherwise, false.</returns>
-    protected override bool IsMobInLeniencyRangeOfPosition(Vector2 targetPosition)
-    {
-        return DistanceToPositionFromTree(targetPosition) <= GetDefender().GetMainActionRange() * GetDefender().LIENENCY_RANGE_MULTIPLIER;
-    }
+    protected override bool IsMobInLeniencyRangeOfPosition(Vector2 targetPosition) => DistanceToPositionFromTree(targetPosition) <= GetDefender().GetMainActionRange() * GetDefender().LIENENCY_RANGE_MULTIPLIER;
 
     /// <summary>
     /// Sets the Defender's sorting order to be correct
@@ -141,7 +135,7 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
         Assert.IsNotNull(GetTargets(), "Targets is null.");
         Model target = GetTargets()[0];
         Assert.IsNotNull(target, "Target is null.");
-        return DistanceToPositionFromTree(target.GetPosition());
+        return DistanceToPositionFromTree(target.GetWorldPosition());
     }
 
     /// <summary>
@@ -151,7 +145,7 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
     /// </returns>
     protected float DistanceToPositionFromTree(Vector3 targetPosition)
     {
-        float tileScale = TileGrid.TILE_SIZE;
+        float tileScale = BoardConstants.TileSize;
         Vector3 treePosition = GetDefender().GetTreePosition();
         float distance = Vector3.Distance(treePosition, targetPosition);
         return distance / tileScale; // Normalize the distance by the tile scale
@@ -167,30 +161,9 @@ public abstract class DefenderController<T> : MobController<T> where T : Enum
 
         Assert.IsTrue(targets.All(t => t is Enemy), "Not all targets are valid Enemies.");
         List<Enemy> enemyTargets = targets.Cast<Enemy>().ToList();
-        Enemy nexusCarrier = null;
 
-        foreach (Enemy enemy in enemyTargets)
-        {
-            Assert.IsNotNull(enemy, "Enemy is null.");
-            if (enemy.IsHoldingNexus())
-            {
-                nexusCarrier = enemy;
-                break;
-            }
-        }
-
-        // Prioritize the Nexus Carrier.
-        if (nexusCarrier != null) 
-        {
-            stickyTarget = nexusCarrier;
-            enemyTargets.Remove(nexusCarrier);
-            enemyTargets.Insert(0, nexusCarrier);
-            targets.Clear();
-            targets.AddRange(enemyTargets);
-            return;
-        }
         // Prioritize the prev. sticky target.
-        else if (stickyTarget != null && enemyTargets.Contains(stickyTarget)) 
+        if (stickyTarget != null && enemyTargets.Contains(stickyTarget)) 
         {
             enemyTargets.Remove(stickyTarget);
             enemyTargets.Insert(0, stickyTarget);

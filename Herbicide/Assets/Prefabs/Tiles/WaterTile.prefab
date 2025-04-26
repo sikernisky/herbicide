@@ -100,7 +100,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelRenderer: {fileID: 5117693834016305980}
   modelCollider: {fileID: 0}
-  lineRenderer: {fileID: 7418753032784791145}
+  _lineRenderer: {fileID: 7418753032784791145}
 --- !u!120 &7418753032784791145
 LineRenderer:
   m_ObjectHideFlags: 0

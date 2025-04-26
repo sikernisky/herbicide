@@ -20,7 +20,7 @@ public abstract class Currency : Collectable
     /// <summary>
     /// Starting value of this currency.
     /// </summary>
-    public virtual int BASE_VALUE => 1;
+    public virtual int Value => 1;
 
     /// <summary>
     /// Maximum value of this currency.
@@ -55,7 +55,7 @@ public abstract class Currency : Collectable
     /// <summary>
     /// Resets this Currency's value to its starting amount.
     /// </summary>
-    public void ResetValue() => value = BASE_VALUE;
+    public void ResetValue() => value = Value;
 
     /// <summary>
     /// Returns this Currency's current value.

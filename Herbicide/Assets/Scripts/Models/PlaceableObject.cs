@@ -1,18 +1,38 @@
 using UnityEngine;
-using UnityEngine.Assertions;
 
 /// <summary>
 /// Represents a static Model that has a health value and can be
 /// placed on the TileGrid. <br></br>
 /// </summary>
-public abstract class PlaceableObject : Model
+public abstract class PlaceableObject : Model, ISurfacePlaceable, IHasCoordinates
 {
     #region Fields
 
     /// <summary>
-    /// This PlaceableObject's four neighbors.
+    /// The Object of the IPlaceable.
     /// </summary>
-    private PlaceableObject[] neighbors;
+    public PlaceableObject Object => this;
+
+    /// <summary>
+    /// The (X, Y) coordinates of where this PlaceableObject was last placed.
+    /// </summary>
+    public Vector2Int Coordinates { get; protected set; }
+
+    /// <summary>
+    /// true if this PlaceableObject prevents surface traversal; otherwise,
+    /// false.
+    /// </summary>
+    public virtual bool IsTraversable => false;
+
+    /// <summary>
+    /// true if this PlaceableObject is placed; otherwise, false.
+    /// </summary>
+    public bool PlacedOnSurface { get; private set; }
+
+    /// <summary>
+    /// How much time remains in the current Damage Flash animation.
+    /// </summary>
+    private float remainingFlashAnimationTime;
 
     /// <summary>
     /// Current amount of health.
@@ -20,44 +40,20 @@ public abstract class PlaceableObject : Model
     private float health;
 
     /// <summary>
-    /// The tile coordinates where this PlaceableObject is placed.
-    /// </summary>
-    private Vector2Int placedCoords;
-
-    /// <summary>
-    /// true if this PlaceableObject is placed; otherwise, false.
-    /// </summary>
-    private bool placed;
-
-    /// <summary>
-    /// How much time remains in the current Damage Flash animation.
-    /// </summary>
-    private float remainingFlashAnimationTime;
-
-    #endregion
-
-    #region Stats
-
-    /// <summary>
     /// Amount of health this PlaceableObject starts with.
     /// </summary>
-    public abstract float BASE_HEALTH { get; }
+    public abstract float BaseHealth { get; }
 
     /// <summary>
     /// Most amount of health this PlaceableObject can have.
     /// </summary>
-    public abstract float MAX_HEALTH { get; }
+    public abstract float MaxHealth { get; }
 
     /// <summary>
     /// Least amount of health this PlaceableObject can have.
     /// </summary>
-    public abstract float MIN_HEALTH { get; }
+    public abstract float MinHealth { get; }
 
-    /// <summary>
-    /// true if this PlaceableObject occupies a Tile, preventing
-    /// further placement; otherwise, false.
-    /// </summary>
-    public abstract bool OCCUPIER { get; }
     /// <summary>
     /// How long to flash when this PlaceableObject takes damage.
     /// </summary>
@@ -66,6 +62,13 @@ public abstract class PlaceableObject : Model
     #endregion
 
     #region Methods
+
+    /// <summary>
+    /// Defines this PlaceableObject with its coordinates.
+    /// </summary>
+    /// <param name="x">The X-coordinate of this PlaceableObject.</param>
+    /// <param name="y">The Y-coordinate of this PlaceableObject.</param>
+    public virtual void DefineWithCoordinates(int x, int y) => Coordinates = new Vector2Int(x, y);
 
     /// <summary>
     /// Returns a GameObject that holds a SpriteRenderer component with
@@ -100,25 +103,18 @@ public abstract class PlaceableObject : Model
     public virtual bool Targetable() => !Dead() && gameObject.activeSelf;
 
     /// <summary>
-    /// Called when this PlaceableObject is placed.
+    /// Called when this PlaceableObject is placed or moved on the TileGrid.
     /// </summary>
-    /// <param name="placedCoords">The coordinates where this PlaceableObject
-    /// is placed.</param>
-    public virtual void OnPlace(Vector2Int placedCoords)
+    /// <param name="worldPosition">the world position where this PlaceableObject was
+    /// placed.</param>
+    public override void OnPlace(Vector3 worldPosition)
     {
-        this.placedCoords = placedCoords;
-        placed = true;
+        base.OnPlace(worldPosition);
+        PlacedOnSurface = true;
+        int coordX = TileGrid.PositionToCoordinate(worldPosition.x);
+        int coordY = TileGrid.PositionToCoordinate(worldPosition.y);
+        DefineWithCoordinates(coordX, coordY);
     }
-
-    /// <summary>
-    /// Called when this PlaceableObject is removed.
-    /// </summary>
-    public virtual void OnRemove() => placed = false;
-
-    /// <summary>
-    /// Returns true if this PlaceableObject is placed.
-    /// </summary>
-    public bool IsPlaced() => placed;
 
     /// <summary>
     /// Starts the Damage Flash animation by resetting the amount of time
@@ -150,7 +146,7 @@ public abstract class PlaceableObject : Model
     public virtual void AdjustHealth(float amount)
     {
         float healthBefore = GetHealth();
-        health = Mathf.Clamp(GetHealth() + amount, MIN_HEALTH, MAX_HEALTH);
+        health = Mathf.Clamp(GetHealth() + amount, MinHealth, MaxHealth);
         if (GetHealth() < healthBefore) FlashDamage();
     }
 
@@ -163,7 +159,7 @@ public abstract class PlaceableObject : Model
     /// <summary>
     /// Resets this PlaceableObject's health to its starting health value.
     /// </summary>
-    public void ResetHealth() => health = Mathf.Clamp(BASE_HEALTH, MIN_HEALTH, MAX_HEALTH);
+    public void ResetHealth() => health = Mathf.Clamp(BaseHealth, MinHealth, MaxHealth);
 
     /// <summary>
     /// Resets this PlaceableObject's stats to their default values.
@@ -173,28 +169,6 @@ public abstract class PlaceableObject : Model
         base.ResetModel();
         ResetHealth();
     }
-
-    /// <summary>
-    /// Updates this PlaceableObject with its newest four neighbors.
-    /// </summary>
-    /// <param name="neighbors"> The four neighbors that surround this PlaceableObject.</param>
-    public virtual void UpdateNeighbors(PlaceableObject[] neighbors)
-    {
-        Assert.IsNotNull(neighbors, "Neighbors cannot be null.");
-        Assert.IsTrue(neighbors.Length == 4, "Neighbors must have 8 elements.");
-
-        this.neighbors = neighbors;
-    }
-
-    /// <summary>
-    /// Returns this PlaceableObject's neighbors.
-    /// </summary>
-    /// <returns>this PlaceableObject's neighbors.</returns>
-    protected PlaceableObject[] GetNeighbors() => neighbors;
-    /// <summary>
-    /// Returns the Tile coordinates where this PlaceableObject is placed.
-    /// </summary>
-    public Vector2Int GetPlacedCoords() => placedCoords;
 
     #endregion
 }

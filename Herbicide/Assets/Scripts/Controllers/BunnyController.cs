@@ -61,7 +61,7 @@ public class BunnyController : DefenderController<BunnyController.BunnyState>
     {
         base.UpdateMob();
         if (!ValidModel()) return;
-        if(!GetBunny().IsPlaced()) return;
+        if(!GetBunny().PlacedOnSurface) return;
 
         ExecuteSpawnState();
         ExecuteIdleState();
@@ -73,6 +73,11 @@ public class BunnyController : DefenderController<BunnyController.BunnyState>
     /// </summary>
     /// <returns>this BunnyController's Bunny.</returns>
     private Bunny GetBunny() { return GetMob() as Bunny; }
+
+    /// <summary>
+    /// Generates a resource at the Bunny's location.
+    /// </summary>
+    public void GenerateResource() => ProduceCollectableFromModel(ModelType.DEW, GetBunny().GetTreePosition(), GetBunny().GetMainActionRange(), false);
 
     #endregion
 
@@ -126,7 +131,7 @@ public class BunnyController : DefenderController<BunnyController.BunnyState>
         if (!ValidModel()) return;
         if (GetState() != BunnyState.SPAWN) return;
 
-        GetBunny().FaceDirection(Direction.SOUTH);
+        GetBunny().Direction = Direction.SOUTH;
         base.ExecuteSpawnState();
     }
 
@@ -138,11 +143,11 @@ public class BunnyController : DefenderController<BunnyController.BunnyState>
         if (!ValidModel()) return;
         if (GetState() != BunnyState.IDLE) return;
 
-        GetBunny().FaceDirection(Direction.SOUTH);
+        GetBunny().Direction = Direction.SOUTH;
         SetNextAnimation(GetBunny().IDLE_ANIMATION_DURATION,
             DefenderFactory.GetIdleTrack(
                 ModelType.BUNNY,
-                GetBunny().GetDirection(), GetBunny().GetTier()));
+                GetBunny().Direction, GetBunny().GetTier()));
     }
 
     /// <summary>
@@ -153,37 +158,14 @@ public class BunnyController : DefenderController<BunnyController.BunnyState>
         if (!ValidModel()) return;
         if (GetState() != BunnyState.GENERATE) return;
 
-        GetBunny().FaceDirection(Direction.SOUTH);
+        GetBunny().Direction = Direction.SOUTH;
         if (!CanPerformMainAction()) return;
 
-
-        // Generate
-        GameObject dewPrefab = CollectableFactory.GetCollectablePrefab(ModelType.DEW);
-        Assert.IsNotNull(dewPrefab, "Dew prefab is null.");
-        Dew dewComp = dewPrefab.GetComponent<Dew>();
-        Assert.IsNotNull(dewComp, "Dew component is null.");
-
-        float spawnRadius = GetBunny().GetMainActionRange(); 
-        float angle = Random.Range(0, 2 * Mathf.PI);
-        float randomRadius = Random.Range(0f, 1f) * spawnRadius;
-        Vector2 randomPositionWithinCircle = new Vector2(
-            Mathf.Cos(angle) * randomRadius,
-            Mathf.Sin(angle) * randomRadius
-        );
-
-        int dewValue;
-        if(GetBunny().GetTier() == 1) dewValue = GetBunny().DEW_VALUE_TIER_ONE;
-        else if(GetBunny().GetTier() == 2) dewValue = GetBunny().DEW_VALUE_TIER_TWO;
-        else dewValue = GetBunny().DEW_VALUE_TIER_THREE;
-
-        Vector3 spawnPosition = GetBunny().GetTreePosition() + new Vector3(randomPositionWithinCircle.x, randomPositionWithinCircle.y, 0);
-        DewController dewController = new DewController(dewComp, spawnPosition, dewValue);
-        ControllerManager.AddModelController(dewController);
-        CollectionManager.AddModelUpgradePoints(ModelType.BUNNY, 1);
+        GenerateResource();
 
         SetNextAnimation(GetBunny().GetMainActionAnimationDuration(),
             DefenderFactory.GetIdleTrack(
-            ModelType.BUNNY, GetBunny().GetDirection(), GetBunny().GetTier()));
+            ModelType.BUNNY, GetBunny().Direction, GetBunny().GetTier()));
 
         // Reset attack animation.
         GetBunny().RestartMainActionCooldown();

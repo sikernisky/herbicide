@@ -33,6 +33,11 @@ public class Raccoon : Defender
     public override float MIN_MAIN_ACTION_RANGE => 0f;
 
     /// <summary>
+    /// Starting generation speed of a Raccoon.
+    /// </summary>
+    public override float BASE_MAIN_ACTION_SPEED => .5f;
+
+    /// <summary>
     /// Maximum attack speed of a Raccoon.
     /// </summary>
     public override float MAX_MAIN_ACTION_SPEED => float.MaxValue;
@@ -45,7 +50,7 @@ public class Raccoon : Defender
     /// <summary>
     /// Starting main action animation duration of a Raccoon.
     /// </summary>
-    public override float BASE_MAIN_ACTION_ANIMATION_DURATION => .2f;
+    public override float BaseMainActionAnimationDuration => .2f;
 
     /// <summary>
     /// Maximum chase range of a Raccoon.
@@ -75,17 +80,17 @@ public class Raccoon : Defender
     /// <summary>
     /// Starting health value of a Raccoon.
     /// </summary>
-    public override float BASE_HEALTH => 100f;
+    public override float BaseHealth => 100f;
 
     /// <summary>
     /// Largest health value a Raccoon can have.
     /// </summary>
-    public override float MAX_HEALTH => 100f;
+    public override float MaxHealth => 100f;
 
     /// <summary>
     /// Smallest health value a Raccoon can have.
     /// </summary>
-    public override float MIN_HEALTH => 0f;
+    public override float MinHealth => 0f;
 
     /// <summary>
     /// How many seconds a Raccoon's idle animation lasts,
@@ -111,26 +116,7 @@ public class Raccoon : Defender
     /// Returns the (X, Y) dimensions of the Raccoon's placement track.
     /// </summary>
     /// <returns>the (X, Y) dimensions of the Raccoon's placement track.</returns>
-    public override Vector2Int GetPlacementTrackDimensions() => new Vector2Int(21, 23);
-
-    /// <summary>
-    /// Returns the Raccoon's base main action speed. Depends on the Raccoon's tier.
-    /// </summary>
-    /// <returns>the Raccoon's base main action speed.</returns>
-    protected override float CalculateBaseMainActionSpeed()
-    {
-        switch (GetTier())
-        {
-            case 1:
-                return 0.50f;
-            case 2:
-                return 0.75f;
-            case 3:
-                return 1.00f;
-            default:
-                return 0.50f;
-        }
-    }
+    public override Vector2Int GetPlacementSize() => new Vector2Int(21, 23);
 
     #endregion
 }

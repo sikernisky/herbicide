@@ -11,7 +11,32 @@ public abstract class Collectable : Model
     /// <summary>
     /// true if the player collected this Collectable; false otherwise
     /// </summary>
-    private bool collected;
+    private bool IsCollected { get; set; }
+
+    /// <summary>
+    /// Seconds to complete a bob cycle.
+    /// </summary>
+    public virtual float BobbingSpeed => ModelStatConstants.CollectableBobbingSpeed;
+
+    /// <summary>
+    /// How "tall" this Currency bobs.
+    /// </summary>
+    public virtual float BobbingHeight => ModelStatConstants.CollectableBobbingHeight;
+
+    /// <summary>
+    /// How fast this Collectable moves towards the cursor.
+    /// </summary>
+    public virtual float HomingSpeed => ModelStatConstants.CollectableHomingSpeed;
+
+    /// <summary>
+    /// How far away this Collectable can be from the cursor before it starts homing.
+    /// </summary>
+    public virtual float HomingRange => ModelStatConstants.CollectableHomingRange;
+
+    /// <summary>
+    /// How far away the Collectable can be from the cursor before it can be collected.
+    /// </summary>
+    public virtual float CollectingRange => ModelStatConstants.CollectableCollectingRange;
 
     /// <summary>
     /// The AnimationCurve this Collectable follows when drifting upwards.
@@ -33,25 +58,6 @@ public abstract class Collectable : Model
 
     #endregion
 
-    #region Stats
-
-    /// <summary>
-    /// Seconds to complete a bob cycle.
-    /// </summary>
-    public virtual float BOB_SPEED => 3f;
-
-    /// <summary>
-    /// How "tall" this Currency bobs.
-    /// </summary>
-    public virtual float BOB_HEIGHT => .15f;
-
-    /// <summary>
-    /// How fast this Collectable moves towards the cursor.
-    /// </summary>
-    public virtual float HOME_SPEED => 12f;
-
-    #endregion
-
     #region Methods
 
     /// <summary>
@@ -59,8 +65,8 @@ public abstract class Collectable : Model
     /// </summary>
     public virtual void OnCollect()
     {
-        if (collected) return;
-        collected = true;
+        if (IsCollected) return;
+        IsCollected = true;
     }
 
     /// <summary>
@@ -69,7 +75,7 @@ public abstract class Collectable : Model
     /// </summary>
     /// <returns>true if the player picked up this Collectable;
     /// otherwise, false.</returns>
-    public bool Collected() => collected;
+    public bool Collected() => IsCollected;
 
     /// <summary>
     /// Returns this Collectable's homing curve.
@@ -118,7 +124,7 @@ public abstract class Collectable : Model
     public override void ResetModel()
     {
         base.ResetModel();
-        collected = false;
+        IsCollected = false;
     }
 
     #endregion

@@ -15,7 +15,7 @@ public class ProgressTrack : MonoBehaviour
     /// <summary>
     /// The current progress the player has made on the given Model's upgrades.
     /// </summary>
-    public ModelUpgradeSaveData SavedModelUpgradeData { get; private set; }
+    public ModelSaveData SavedModelUpgradeData { get; private set; }
 
     /// <summary>
     /// The upgrade requirements for the given Model.
@@ -81,7 +81,7 @@ public class ProgressTrack : MonoBehaviour
     /// </summary>
     /// <param name="upgradeSaveData">The saved progress the player has made on the given Model's upgrades.</param>
     /// <param name="upgradeRequirementsData">The requirements, per level, to upgrade the given Model.</param>
-    public void InitializeProgressTrack(ModelUpgradeSaveData upgradeSaveData, Requirements upgradeRequirementsData)
+    public void InitializeProgressTrack(ModelSaveData upgradeSaveData, Requirements upgradeRequirementsData)
     {
         Assert.IsNotNull(upgradeSaveData, "upgradeSaveData is null.");
         Assert.IsTrue(upgradeSaveData.GetModelType() == upgradeRequirementsData.GetModelType(), "Saved data for " + 

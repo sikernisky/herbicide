@@ -6,22 +6,20 @@ public abstract class EdgeTile : Tile
 {
     #region Fields
 
+    /// <summary>
+    /// true if this EdgeTile is walkable; otherwise, false.
+    /// </summary>
+    public override bool IsTraversable => false;
+
     #endregion
 
     #region Methods
 
     /// <summary>
-    /// Defines this EdgeTile to be within a TileGrid at coordinates (x, y).
-    /// Sets its sprite to reflect the passed in tiling index.
+    /// Sets the local Tiled index of this EdgeTile.
     /// </summary>
-    /// <param name="x">the x-coordinate of this EdgeTile</param>
-    /// <param name="y">the y-coordinate of this EdgeTile</param>
-    /// <param name="tilingIndex"> the tiling index of this EdgeTile</param>
-    public void Define(int x, int y, int tilingIndex)
-    {
-        base.Define(x, y);
-        SetSprite(EdgeFactory.GetEdgeSprite(GetTileType().ToString(), tilingIndex));
-    }
+    /// <param name="localIndex">the local Tiled ID of this EdgeTile in its Tiled tile set.</param>
+    public override void SetSpriteUsingLocalTiledIndex(int localIndex) => SetSprite(EdgeFactory.GetEdgeSprite(TYPE, localIndex));
 
     #endregion
 }

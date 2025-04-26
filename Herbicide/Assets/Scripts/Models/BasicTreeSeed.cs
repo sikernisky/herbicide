@@ -12,7 +12,7 @@ public class BasicTreeSeed : Currency
     /// <summary>
     /// Starting value of a BasicTreeSeed.
     /// </summary>
-    public override int BASE_VALUE => 0;
+    public override int Value => 0;
 
     /// <summary>
     /// Maximum value of a BasicTreeSeed.

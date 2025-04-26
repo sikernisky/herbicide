@@ -8,21 +8,6 @@ public class Squirrel : Defender
     #region Fields
 
     /// <summary>
-    /// The amount of damage a Squirrel's acorn does in tier one.
-    /// </summary>
-    public int ACORN_DAMAGE_TIER_ONE => 5;
-
-    /// <summary>
-    /// The amount of damage a Squirrel's acorn does in tier two.
-    /// </summary>
-    public int ACORN_DAMAGE_TIER_TWO => 5;
-
-    /// <summary>
-    /// The amount of damage a Squirrel's acorn does in tier three.
-    /// </summary>
-    public int ACORN_DAMAGE_TIER_THREE => 5;
-
-    /// <summary>
     /// The Ability of a Squirrel in tier two.
     /// </summary>
     [SerializeField]
@@ -46,17 +31,17 @@ public class Squirrel : Defender
     /// <summary>
     /// Starting health of a Squirrel
     /// </summary>
-    public override float BASE_HEALTH => 200;
+    public override float BaseHealth => 200;
 
     /// <summary>
     /// Maximum health of a Squirrel
     /// </summary>
-    public override float MAX_HEALTH => 200;
+    public override float MaxHealth => 200;
 
     /// <summary>
     /// Minimum health of a Squirrel
     /// </summary>
-    public override float MIN_HEALTH => 0;
+    public override float MinHealth => 0;
 
     /// <summary>
     /// Starting attack range of a Squirrel
@@ -72,6 +57,11 @@ public class Squirrel : Defender
     /// Minimum attack range of a Squirrel
     /// </summary>
     public override float MIN_MAIN_ACTION_RANGE => 0f;
+
+    /// <summary>
+    /// Starting attack speed of a Squirrel.
+    /// </summary>
+    public override float BASE_MAIN_ACTION_SPEED => 1f;
 
     /// <summary>
     /// Most amount of attack cooldown this Squirrel can have.
@@ -112,7 +102,7 @@ public class Squirrel : Defender
     /// How many seconds a Squirrel's attack animation lasts,
     /// from start to finish. 
     /// </summary>
-    public override float BASE_MAIN_ACTION_ANIMATION_DURATION => .25f;
+    public override float BaseMainActionAnimationDuration => .25f;
 
     /// <summary>
     /// How many seconds a Squirrel's idle animation lasts,
@@ -145,7 +135,7 @@ public class Squirrel : Defender
     /// Returns the (X, Y) dimensions of the Bear's placement track.
     /// </summary>
     /// <returns>the (X, Y) dimensions of the Bear's placement track.</returns>
-    public override Vector2Int GetPlacementTrackDimensions() => new Vector2Int(32, 32);
+    public override Vector2Int GetPlacementSize() => new Vector2Int(32, 32);
 
     /// <summary>
     /// Returns the Squirrel's ability. This depends on the Squirrel's tier.
@@ -156,25 +146,6 @@ public class Squirrel : Defender
         if (GetTier() == 1) return base.GetAbility();
         else if (GetTier() == 2) return tierTwoAbility;
         else return tierThreeAbility;
-    }
-
-    /// <summary>
-    /// Returns the Squirrel's base main action speed. Depends on the Squirrel's tier.
-    /// </summary>
-    /// <returns>the Squirrel's base main action speed.</returns>
-    protected override float CalculateBaseMainActionSpeed()
-    {
-        switch (GetTier())
-        {
-            case 1:
-                return 1.00f;
-            case 2:
-                return 1.25f;
-            case 3:
-                return 1.75f;
-            default:
-                return 1.00f;
-        }
     }
 
     #endregion

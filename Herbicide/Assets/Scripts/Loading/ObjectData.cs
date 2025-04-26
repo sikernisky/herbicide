@@ -53,6 +53,16 @@ public class ObjectData
     private string enemySpawnData;
 
     /// <summary>
+    /// The unparsed path id data for a Waypoint.
+    /// </summary>
+    private string pathIdData;
+
+    /// <summary>
+    /// The unparsed order in path data for a Waypoint.
+    /// </summary>
+    private string orderInPathData;
+
+    /// <summary>
     /// The name of this ObjectData. The Tiled2d mappings are:<br></br>
     /// 
     /// (1) Enemy: enemyName
@@ -111,6 +121,17 @@ public class ObjectData
     {
         Assert.IsNotNull(type, "This ObjectData's `type` field is null.");
         return type.ToLower() == "flooring";
+    }
+
+    /// <summary>
+    /// Returns true if this ObjectData is a deserialized waypoint.
+    /// </summary>
+    /// <returns>true if this ObjectData is a deserialized waypoint;
+    /// otherwise, false.</returns>
+    public bool IsWaypoint()
+    {
+        Assert.IsNotNull(type, "This ObjectData's `type` field is null.");
+        return type.ToLower() == "waypoint";
     }
 
     /// <summary>
@@ -237,6 +258,66 @@ public class ObjectData
             if (pd.GetPropertyName().ToLower() == "enemyspawndata")
             {
                 enemySpawnData = pd.GetPropertyValue();
+                return;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Returns the path id data of this ObjectData.
+    /// </summary>
+    /// <returns>the path id data of this ObjectData.</returns> 
+    public string GetPathIdData()
+    {
+        Assert.IsTrue(IsWaypoint(), "This ObjectData has no path id data property.");
+        if (pathIdData == null) FindPathIdData();
+        return pathIdData;
+    }
+
+    /// <summary>
+    /// Searches through this ObjectData's custom properties to find the path ids
+    /// property. Sets it.
+    /// </summary>
+    private void FindPathIdData()
+    {
+        Assert.IsTrue(IsWaypoint(), "This ObjectData has no path id data property.");
+        if (pathIdData != null) return;
+
+        foreach (PropertiesData pd in properties)
+        {
+            if (pd.GetPropertyName().ToLower() == "pathids")
+            {
+                pathIdData = pd.GetPropertyValue();
+                return;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Returns the order in paths data of this ObjectData.
+    /// </summary>
+    /// <returns>the order in paths data of this ObjectData.</returns>
+    public string GetOrderInPathData()
+    {
+        Assert.IsTrue(IsWaypoint(), "This ObjectData has no order in path data property.");
+        if (orderInPathData == null) FindOrderInPathData();
+        return orderInPathData;
+    }
+
+    /// <summary>
+    /// Searches through this ObjectData's custom properties to find the order in paths
+    /// property. Sets it.
+    /// </summary>
+    private void FindOrderInPathData()
+    {
+        Assert.IsTrue(IsWaypoint(), "This ObjectData has no order in path data property.");
+        if (orderInPathData != null) return;
+
+        foreach (PropertiesData pd in properties)
+        {
+            if (pd.GetPropertyName().ToLower() == "orderinpaths")
+            {
+                orderInPathData = pd.GetPropertyValue();
                 return;
             }
         }

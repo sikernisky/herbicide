@@ -8,15 +8,6 @@ public class Acorn : Projectile
     #region Fields
 
     /// <summary>
-    /// Number of times this Acorn will split.
-    /// </summary>
-    private int numSplits;
-
-    #endregion
-
-    #region Stats
-
-    /// <summary>
     /// ModelType of an Acorn.
     /// </summary>
     public override ModelType TYPE => ModelType.ACORN;
@@ -24,68 +15,47 @@ public class Acorn : Projectile
     /// <summary>
     /// Starting speed of an Acorn.
     /// </summary>
-    public override float BASE_SPEED => 20f;
+    public override float BaseSpeed => ModelStatConstants.AcornBaseSpeed;
 
     /// <summary>
     /// Maximum speed of an Acorn.
     /// </summary>
-    public override float MAX_SPEED => float.MaxValue;
+    public override float MaxSpeed => ModelStatConstants.AcornMaxSpeed;
 
     /// <summary>
     /// Minimum speed of an Acorn.
     /// </summary>
-    public override float MIN_SPEED => 0f;
+    public override float MinSpeed => ModelStatConstants.AcornMinSpeed;
 
     /// <summary>
     /// Starting damage of an Acorn.
     /// </summary>
-    public override int BASE_DAMAGE => 5;
+    public override int BaseDamage => ModelStatConstants.AcornBaseDamage;
 
     /// <summary>
     /// Maximum damage of an Acorn.
     /// </summary>
-    public override int MAX_DAMAGE => int.MaxValue;
+    public override int MaxDamage => ModelStatConstants.AcornMaxDamage;
 
     /// <summary>
     /// Minimum damage of an Acorn.
     /// </summary>
-    public override int MIN_DAMAGE => 0;
+    public override int MinDamage => ModelStatConstants.AcornMinDamage;
 
     /// <summary>
     /// Lifespan of an Acorn.
     /// </summary>
-    public override float LIFESPAN => float.MaxValue;
+    public override float Lifespan => float.MaxValue;
 
     /// <summary>
     /// How many seconds an Acorn's move animation lasts,
     /// from start to finish. 
     /// </summary>
-    public override float MOVE_ANIMATION_DURATION => 0f;
+    public override float MovementAnimationDuration => 0f;
 
     #endregion
 
     #region Methods
-
-    /// <summary>
-    /// Sets the number of splits this Acorn has left.
-    /// </summary>
-    /// <param name="numSplits">the number of splits this Acorn has left.</param>
-    public void SetNumSplits(int numSplits)
-    {
-        if(numSplits < 0) numSplits = 0;
-        this.numSplits = numSplits;
-    }
-    
-    /// <summary>
-    /// Reduces the number of splits this Acorn has left by one.
-    /// </summary>
-    public void Split() => numSplits = numSplits > 0 ? numSplits - 1 : 0;
-
-    /// <summary>
-    /// Returns the number of splits this Acorn has left.
-    /// </summary>
-    /// <returns>the number of splits this Acorn has left.</returns>
-    public int GetNumSplits() => numSplits;
 
     #endregion
 }

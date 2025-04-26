@@ -25,7 +25,7 @@ public class BlackberryController : ProjectileController<BlackberryController.Bl
     /// <summary>
     /// Blackberries do not angle towards their target.
     /// </summary>
-    protected override bool angleTowardsTarget => false;
+    protected override bool ShouldAngleTowardsTarget => false;
 
     #endregion
 
@@ -62,7 +62,7 @@ public class BlackberryController : ProjectileController<BlackberryController.Bl
         int explosionY = TileGrid.PositionToCoordinate(explosionPosition.y);
         Vector2 tileExplosionPos = new Vector2(explosionX, explosionY);
         ExplosionController.ExplodeOnEnemies(tileExplosionPos,
-            GetBlackberry().EXPLOSION_RADIUS, GetBlackberry().BASE_DAMAGE, immuneObjects);
+            GetBlackberry().EXPLOSION_RADIUS, GetBlackberry().BaseDamage, immuneObjects);
 
     }
 
@@ -135,7 +135,7 @@ public class BlackberryController : ProjectileController<BlackberryController.Bl
         if (!ValidModel()) return;
         if (GetState() != BlackberryState.MOVING) return;
 
-        SetNextAnimation(GetBlackberry().MID_AIR_ANIMATION_DURATION, ProjectileFactory.GetMidAirAnimationTrack(GetBlackberry()));
+        SetNextAnimation(GetBlackberry().MidAirAnimationDuration, ProjectileFactory.GetMidAirAnimationTrack(GetProjectile().TYPE));
         LobShot();
     }
 
@@ -150,7 +150,7 @@ public class BlackberryController : ProjectileController<BlackberryController.Bl
     public override void AgeAnimationCounter()
     {
         BlackberryState state = GetState();
-        if (state == BlackberryState.MOVING) midAirAnimationCounter += Time.deltaTime;
+        if (state == BlackberryState.MOVING) MidAirAnimationCounter += Time.deltaTime;
     }
 
     /// <summary>
@@ -160,7 +160,7 @@ public class BlackberryController : ProjectileController<BlackberryController.Bl
     public override float GetAnimationCounter()
     {
         BlackberryState state = GetState();
-        if (state == BlackberryState.MOVING) return midAirAnimationCounter;
+        if (state == BlackberryState.MOVING) return MidAirAnimationCounter;
         return 0;
     }
 
@@ -170,7 +170,7 @@ public class BlackberryController : ProjectileController<BlackberryController.Bl
     public override void ResetAnimationCounter()
     {
         BlackberryState state = GetState();
-        if (state == BlackberryState.MOVING) midAirAnimationCounter = 0;
+        if (state == BlackberryState.MOVING) MidAirAnimationCounter = 0;
     }
 
     #endregion

@@ -95,14 +95,14 @@ public class OwlController : DefenderController<OwlController.OwlState>
             SetNextAnimation(GetOwl().GetMainActionAnimationDuration() / numIceChunks,
                 DefenderFactory.GetIdleTrack(
                     ModelType.OWL,
-                    GetOwl().GetDirection(), GetOwl().GetTier()));
+                    GetOwl().Direction, GetOwl().GetTier()));
 
             GameObject iceChunkPrefab = ProjectileFactory.GetProjectilePrefab(ModelType.ICE_CHUNK);
             Assert.IsNotNull(iceChunkPrefab);
             IceChunk iceChunkComp = iceChunkPrefab.GetComponent<IceChunk>();
             Assert.IsNotNull(iceChunkComp);
             Vector3 targetPosition = GetTarget().GetAttackPosition();
-            IceChunkController iceChunkController = new IceChunkController(iceChunkComp, GetOwl().GetPosition(), targetPosition);
+            IceChunkController iceChunkController = new IceChunkController(iceChunkComp, GetOwl().GetWorldPosition(), targetPosition);
             ControllerManager.AddModelController(iceChunkController);
             CollectionManager.AddModelUpgradePoints(ModelType.OWL, 1);
 
@@ -184,7 +184,7 @@ public class OwlController : DefenderController<OwlController.OwlState>
         if (!ValidModel()) return;
         if (GetState() != OwlState.SPAWN) return;
 
-        GetOwl().FaceDirection(Direction.SOUTH);
+        GetOwl().Direction = Direction.SOUTH;
         base.ExecuteSpawnState();
     }
 
@@ -198,12 +198,12 @@ public class OwlController : DefenderController<OwlController.OwlState>
         Enemy target = GetTarget() as Enemy;
         if (target != null && DistanceToTargetFromTree() <= GetOwl().GetMainActionRange())
             FaceTarget();
-        else GetOwl().FaceDirection(Direction.SOUTH);
+        else GetOwl().Direction = Direction.SOUTH;
 
         SetNextAnimation(GetOwl().IDLE_ANIMATION_DURATION,
             DefenderFactory.GetIdleTrack(
                 ModelType.OWL,
-                GetOwl().GetDirection(), GetOwl().GetTier()));
+                GetOwl().Direction, GetOwl().GetTier()));
     }
 
     /// <summary>

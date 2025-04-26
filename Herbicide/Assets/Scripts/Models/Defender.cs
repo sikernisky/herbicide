@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -37,9 +38,19 @@ public abstract class Defender : Mob
     /// </summary>
     public virtual bool DRAWS_RANGE_INDICATOR => true;
 
+    /// <summary>
+    /// The list of allowed equipment types for this Defender.
+    /// </summary>
+    protected override HashSet<ModelType> AllowedEquipmentTypes => base.AllowedEquipmentTypes.Concat(ModelTypeConstants.AllowedEquipmentForDefenders).ToHashSet();
+
     #endregion
 
     #region Stats
+
+    /// <summary>
+    /// How much currency is required to buy this Model.
+    /// </summary>
+    public virtual int COST => 100;
 
     /// <summary>
     /// Class of this Defender.
@@ -59,12 +70,7 @@ public abstract class Defender : Mob
     /// <summary>
     /// Starting movement animation duration of a Defender.
     /// </summary>
-    public override float BASE_MOVEMENT_ANIMATION_DURATION => 0;
-
-    /// <summary>
-    /// Returns the base attack speed of this Defender. Depends on the Defender's tier.
-    /// </summary>
-    public override float BASE_MAIN_ACTION_SPEED => CalculateBaseMainActionSpeed();
+    public override float BaseMovementAnimationDuration => 0;
 
     #endregion
 
@@ -75,7 +81,7 @@ public abstract class Defender : Mob
     /// </summary>
     /// <param name="treePos">the position of the tree on which this Defender sits.
     /// </param>
-    public void SetTreePosition(Vector3 treePos) => this.treePos = treePos;
+    public void ProvideTreePosition(Vector3 treePos) => this.treePos = treePos;
 
     /// <summary>
     /// Returns the position of the tree on which this Defender sits.
@@ -92,21 +98,14 @@ public abstract class Defender : Mob
     /// Upgrades this Defender's tier to the given tier.
     /// </summary>
     /// <param name="newTier">the new tier of this Defender.</param>
-    public virtual void Upgrade(int newTier)
+    public virtual void SetTier(int newTier)
     {
         Assert.IsFalse(newTier > MAX_TIER, "Cannot upgrade a Defender that is already at max tier.");
         Assert.IsTrue(newTier >= MIN_TIER, "Cannot upgrade a Defender that is at a tier less than 1.");
 
         tier = newTier;
-        ResetBaseTint();
         RestartMainActionCooldown();
     }
-
-    /// <summary>
-    /// Returns the Defender's base main action speed. Depends on the Defender's tier.
-    /// </summary>
-    /// <returns>the Defender's base main action speed.</returns>
-    protected abstract float CalculateBaseMainActionSpeed();
 
     /// <summary>
     /// Returns this Defender's current tier.
@@ -128,14 +127,16 @@ public abstract class Defender : Mob
     public override Sprite[] GetPlacementTrack() => DefenderFactory.GetPlacementTrack(TYPE, GetTier());
 
     /// <summary>
-    /// Returns this Defender's starting base tint. Depends on the Defender's tier.
+    /// Called when this Defender is placed or moved on the TileGrid.
     /// </summary>
-    /// <returns>this Defender's starting base tint.</returns>
-    protected override Color32 CalculateStartingBaseTint()
+    /// <param name="worldPosition">the world position where this Defender was
+    /// placed.</param>
+    public override void OnPlace(Vector3 worldPosition)
     {
-        if(GetTier() == 1) return Color.white;
-        else if(GetTier() == 2) return Color.cyan;
-        else return Color.magenta;
+        base.OnPlace(worldPosition);
+        int coordX = TileGrid.PositionToCoordinate(GetTreePosition().x);
+        int coordY = TileGrid.PositionToCoordinate(worldPosition.y);
+        DefineWithCoordinates(coordX, coordY);
     }
 
     #endregion

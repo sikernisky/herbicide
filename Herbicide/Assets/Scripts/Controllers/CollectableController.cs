@@ -34,16 +34,6 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
     private float timeOffset;
 
     /// <summary>
-    /// Cursor detection range.
-    /// </summary>
-    private float homingRange = 2f;
-
-    /// <summary>
-    /// Collection range.
-    /// </summary>
-    private float collectionRange = 0.25f;
-
-    /// <summary>
     /// true if the Collectable got close enough to the cursor and should
     /// complete its homing movement. 
     /// </summary>
@@ -94,36 +84,22 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
     /// </summary>
     /// <returns>true if the Collectable is within homing range of the cursor;
     /// otherwise, false. /// </returns>
-    protected bool InHomingRange()
-    {
-        Vector3 mousePos = InputController.GetWorldMousePosition();
-        mousePos.z = 1;
-
-        return Vector3.Distance(mousePos, GetCollectable().GetPosition())
-            < homingRange;
-    }
+    protected bool InHomingRange() => Vector2.Distance(InputManager.WorldMousePosition, GetCollectable().GetWorldPosition()) < GetCollectable().HomingRange;
 
     /// <summary>
     /// Returns true if the Collectable is within collection range of the cursor.
     /// </summary>
     /// <returns>true if the Collectable is within collection range of the cursor;
     /// otherwise, false. /// </returns>
-    protected bool InCollectionRange()
-    {
-        Vector3 mousePos = InputController.GetWorldMousePosition();
-        mousePos.z = 1;
-
-        return Vector3.Distance(mousePos, GetCollectable().GetPosition())
-        < collectionRange;
-    }
+    protected bool InCollectionRange() => Vector2.Distance(InputManager.WorldMousePosition, GetCollectable().GetWorldPosition()) < GetCollectable().CollectingRange;
 
     /// <summary>
     /// Bobs the Collectable up and down.
     /// </summary>
     protected virtual void BobUpAndDown()
     {
-        float t = (Mathf.Cos((Time.time + timeOffset) * GetCollectable().BOB_SPEED) + 1) * 0.5f;
-        float newY = Mathf.Lerp(-GetCollectable().BOB_HEIGHT, GetCollectable().BOB_HEIGHT, t);
+        float t = (Mathf.Cos((Time.time + timeOffset) * GetCollectable().BobbingSpeed) + 1) * 0.5f;
+        float newY = Mathf.Lerp(-GetCollectable().BobbingHeight, GetCollectable().BobbingHeight, t);
         Vector3 newPosition = new Vector3(
             bobStartPosition.x,
             bobStartPosition.y + newY,
@@ -139,12 +115,12 @@ public abstract class CollectableController<T> : ModelController, IStateTracker<
         if (!InHomingRange() && !isHoming) return;
         isHoming = true;
         float minSpeed = 4f;
-        Vector2 mousePos = InputController.GetWorldMousePosition();
-        float distanceToCursor = Vector2.Distance(GetCollectable().GetPosition(), mousePos);
-        float normalizedDistance = Mathf.Clamp01(distanceToCursor / homingRange);
+        Vector2 mousePos = InputManager.WorldMousePosition;
+        float distanceToCursor = Vector2.Distance(GetCollectable().GetWorldPosition(), mousePos);
+        float normalizedDistance = Mathf.Clamp01(distanceToCursor / GetCollectable().HomingRange);
         float speedMultiplier = GetCollectable().GetHomingCurve().Evaluate(normalizedDistance);
-        float movementSpeed = Mathf.Lerp(minSpeed, GetCollectable().HOME_SPEED, speedMultiplier) * Time.deltaTime;
-        Vector2 currentPosition = GetCollectable().GetPosition();
+        float movementSpeed = Mathf.Lerp(minSpeed, GetCollectable().HomingSpeed, speedMultiplier) * Time.deltaTime;
+        Vector2 currentPosition = GetCollectable().GetWorldPosition();
         float distanceToMouse = Vector2.Distance(currentPosition, mousePos);
         float epsilon = 0.01f;
         if (distanceToMouse > epsilon)

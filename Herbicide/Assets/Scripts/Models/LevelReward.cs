@@ -130,5 +130,14 @@ public class LevelReward : Collectable
         }
     }
 
+    /// <summary>
+    /// Called when the player collects this LevelReward.
+    /// </summary>
+    public override void OnCollect()
+    {
+        base.OnCollect();
+        SceneController.LoadNextLevelWithFadeDelay();
+    }
+
     #endregion
 }

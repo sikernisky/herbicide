@@ -53,6 +53,11 @@ public class Bear : Defender
     public override float MIN_MAIN_ACTION_RANGE => 0f;
 
     /// <summary>
+    /// Starting generation speed of a Bear.
+    /// </summary>
+    public override float BASE_MAIN_ACTION_SPEED => 1f;
+
+    /// <summary>
     /// Maximum attack cooldown of a Bear.
     /// </summary>
     public override float MAX_MAIN_ACTION_SPEED => float.MaxValue;
@@ -60,7 +65,7 @@ public class Bear : Defender
     /// <summary>
     /// Starting main action animation duration of a Bear.
     /// </summary>
-    public override float BASE_MAIN_ACTION_ANIMATION_DURATION => .25f;
+    public override float BaseMainActionAnimationDuration => .25f;
 
     /// <summary>
     /// Starting chase range of a Bear.
@@ -95,17 +100,17 @@ public class Bear : Defender
     /// <summary>
     /// Starting health of a Bear.
     /// </summary>
-    public override float BASE_HEALTH => 300;
+    public override float BaseHealth => 300;
 
     /// <summary>
     /// Maximum health of a Bear.
     /// </summary>
-    public override float MAX_HEALTH => int.MaxValue;
+    public override float MaxHealth => int.MaxValue;
 
     /// <summary>
     /// Minimum health of a Bear.
     /// </summary>
-    public override float MIN_HEALTH => 0;
+    public override float MinHealth => 0;
 
     /// <summary>
     /// ModelType of a Bear.
@@ -131,26 +136,7 @@ public class Bear : Defender
     /// Returns the (X, Y) dimensions of the Bear's placement track.
     /// </summary>
     /// <returns>the (X, Y) dimensions of the Bear's placement track.</returns>
-    public override Vector2Int GetPlacementTrackDimensions() => new Vector2Int(19, 26);
-
-    /// <summary>
-    /// Returns the Bear's base main action speed. Depends on the Bear's tier.
-    /// </summary>
-    /// <returns>the Bear's base main action speed.</returns>
-    protected override float CalculateBaseMainActionSpeed()
-    {
-        switch (GetTier())
-        {
-            case 1:
-                return 0.50f;
-            case 2:
-                return 0.75f;
-            case 3:
-                return 1.00f;
-            default:
-                return 0.50f;
-        }
-    }
+    public override Vector2Int GetPlacementSize() => new Vector2Int(19, 26);
 
     #endregion
 }

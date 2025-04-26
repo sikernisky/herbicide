@@ -3,7 +3,6 @@ using UnityEngine;
 using System.Linq;
 using UnityEngine.Assertions;
 using System.Text.RegularExpressions;
-using StageOfDay = StageController.StageOfDay;
 
 /// <summary>
 /// Manages what and how many Enemies spawn in a level.
@@ -46,124 +45,138 @@ public class EnemyManager : MonoBehaviour
     /// These values are clamped depending on how many stages are in the level.
     ///  </summary>
     /// <param name="markers">All Enemy spawn markers.</param>
-    /// <param name="mapHeight">The height, in tiles, of the map. </param>
-    public static void PopulateWithEnemies(Dictionary<Vector2Int, string> markers, int mapHeight)
+    public static void PopulateWithEnemies(Dictionary<Vector2Int, string> markers)
     {
         if (markers == null) return;
         Assert.IsFalse(Populated(), "Already populated.");
 
         // Store a dictionary where the key is the stage and the value is the latest spawn time for that stage.
-        Dictionary<StageOfDay, float> latestStageTimes = new Dictionary<StageOfDay, float>();
 
         // Parse the data.
         foreach (KeyValuePair<Vector2Int, string> marker in markers)
         {
             Vector2Int spawnLocation = marker.Key;
             string unparsedData = marker.Value;
-            List<(string, StageOfDay, float)> parsedData = instance.ParseMarkerData(unparsedData);
-            parsedData = parsedData.OrderBy(x => x.Item2).ThenBy(x => x.Item3).ToList();
+            //List<(string, StageOfDay, float)> parsedData = instance.ParseMarkerDataOld(unparsedData);
+            List<(string, float)> parsedDataNew = instance.ParseMarkerDataNew(unparsedData);
+            //parsedData = parsedData.OrderBy(x => x.Item2).ThenBy(x => x.Item3).ToList();
+            parsedDataNew = parsedDataNew.OrderBy(x => x.Item2).ToList();
 
-            foreach (var enemyData in parsedData)
+            foreach(var enemyData in parsedDataNew)
             {
-                string enemyName = enemyData.Item1;
-                GameObject enemy = instance.GetEnemyPrefabFromString(enemyName);
-                Assert.IsNotNull(enemy);
-                Enemy enemyComp = enemy.GetComponent<Enemy>();
-                enemy.gameObject.SetActive(false);
-                enemyComp.GetCollider().enabled = false;
-                float spawnX = TileGrid.CoordinateToPosition(marker.Key.x);
-                float spawnY = TileGrid.CoordinateToPosition(marker.Key.y);
-                Vector3 spawnWorldPos = new Vector3(spawnX, spawnY, 1);
-                StageOfDay spawnStage = enemyData.Item2;
-                float spawnTime = enemyData.Item3;
-                instance.spawnTimes.Add(spawnTime);
-                enemyComp.SetStage(spawnStage);
-                enemyComp.SetSpawnTime(spawnTime);
-                enemyComp.SetSpawnWorldPosition(spawnWorldPos);
-
-                Spurge spurgeComp = enemyComp as Spurge;
-                if(spurgeComp != null)
-                {
-                    // Spurge in front of enemy to be spawned.
-                    GameObject enemySpurgeMinionInFront = EnemyFactory.GetEnemyPrefab(ModelType.SPURGE_MINION);
-                    Assert.IsNotNull(enemySpurgeMinionInFront);
-                    SpurgeMinion spurgeMinionCompInFront = enemySpurgeMinionInFront.GetComponent<SpurgeMinion>();
-                    Assert.IsNotNull(spurgeMinionCompInFront);
-                    spurgeMinionCompInFront.gameObject.SetActive(false);
-                    spurgeMinionCompInFront.GetCollider().enabled = false;
-                    spurgeMinionCompInFront.SetSpawnWorldPosition(spawnWorldPos);
-                    spurgeMinionCompInFront.SetStage(spawnStage);
-                    spurgeMinionCompInFront.SetSpawnTime(spawnTime - 1.0f);
-
-                    // Spurge behind enemy to be spawned.
-                    GameObject enemySpurgeMinionBehind = EnemyFactory.GetEnemyPrefab(ModelType.SPURGE_MINION);
-                    Assert.IsNotNull(enemySpurgeMinionBehind);
-                    SpurgeMinion spurgeMinionCompBehind = enemySpurgeMinionBehind.GetComponent<SpurgeMinion>();
-                    Assert.IsNotNull(spurgeMinionCompBehind);
-                    spurgeMinionCompBehind.gameObject.SetActive(false);
-                    spurgeMinionCompBehind.GetCollider().enabled = false;
-                    spurgeMinionCompBehind.SetSpawnWorldPosition(spawnWorldPos);
-                    spurgeMinionCompBehind.SetStage(spawnStage);
-                    spurgeMinionCompBehind.SetSpawnTime(spawnTime + 1.0f);
-
-                    // Add the SpurgeMinions to the Spurge.
-                    spurgeComp.AddMinion(spurgeMinionCompInFront);
-                    spurgeComp.AddMinion(spurgeMinionCompBehind);
-
-                    // Make the controllers for the SpurgeMinions.
-                    ControllerManager.MakeModelController(spurgeMinionCompInFront);
-                    ControllerManager.MakeModelController(spurgeMinionCompBehind);
-                }
-
+                GameObject enemyPrefab = instance.GetEnemyPrefabFromString(enemyData.Item1);
+                enemyPrefab.SetActive(false);
+                Enemy enemyComp = enemyPrefab.GetComponent<Enemy>();
+                enemyComp.SetSpawnTime(enemyData.Item2);
+                enemyComp.SetSpawnWorldPosition(instance.GetSpawnWorldPositionFromCoordinatePosition(spawnLocation));
                 ControllerManager.MakeModelController(enemyComp);
-
-                // Store the latest spawn time for this stage.
-                if (latestStageTimes.ContainsKey(spawnStage))
-                {
-                    if (spawnTime > latestStageTimes[spawnStage]) latestStageTimes[spawnStage] = spawnTime;
-                }
-                else latestStageTimes.Add(spawnStage, spawnTime);
-
             }
+
+            /* foreach (var enemyData in parsedData)
+             {
+                 string enemyName = enemyData.Item1;
+                 GameObject enemy = instance.GetEnemyPrefabFromString(enemyName);
+                 Assert.IsNotNull(enemy);
+                 Enemy enemyComp = enemy.GetComponent<Enemy>();
+                 enemy.gameObject.SetActive(false);
+                 float spawnX = TileGrid.CoordinateToPosition(marker.Key.x);
+                 float spawnY = TileGrid.CoordinateToPosition(marker.Key.y);
+                 Vector3 spawnWorldPos = new Vector3(spawnX, spawnY, 1);
+                 StageOfDay spawnStage = enemyData.Item2;
+                 float spawnTime = enemyData.Item3;
+                 instance.spawnTimes.Add(spawnTime);
+                 enemyComp.SetStage(spawnStage);
+                 enemyComp.SetSpawnTime(spawnTime);
+                 enemyComp.SetSpawnWorldPosition(spawnWorldPos);
+
+                 Spurge spurgeComp = enemyComp as Spurge;
+                 if(spurgeComp != null)
+                 {
+                     // Spurge in front of enemy to be spawned.
+                     GameObject enemySpurgeMinionInFront = EnemyFactory.GetEnemyPrefab(ModelType.SPURGE_MINION);
+                     Assert.IsNotNull(enemySpurgeMinionInFront);
+                     SpurgeMinion spurgeMinionCompInFront = enemySpurgeMinionInFront.GetComponent<SpurgeMinion>();
+                     Assert.IsNotNull(spurgeMinionCompInFront);
+                     spurgeMinionCompInFront.gameObject.SetActive(false);
+                     spurgeMinionCompInFront.SetSpawnWorldPosition(spawnWorldPos);
+                     spurgeMinionCompInFront.SetStage(spawnStage);
+                     spurgeMinionCompInFront.SetSpawnTime(spawnTime - 1.0f);
+
+                     // Spurge behind enemy to be spawned.
+                     GameObject enemySpurgeMinionBehind = EnemyFactory.GetEnemyPrefab(ModelType.SPURGE_MINION);
+                     Assert.IsNotNull(enemySpurgeMinionBehind);
+                     SpurgeMinion spurgeMinionCompBehind = enemySpurgeMinionBehind.GetComponent<SpurgeMinion>();
+                     Assert.IsNotNull(spurgeMinionCompBehind);
+                     spurgeMinionCompBehind.gameObject.SetActive(false);
+                     spurgeMinionCompBehind.SetSpawnWorldPosition(spawnWorldPos);
+                     spurgeMinionCompBehind.SetStage(spawnStage);
+                     spurgeMinionCompBehind.SetSpawnTime(spawnTime + 1.0f);
+
+                     // Add the SpurgeMinions to the Spurge.
+                     spurgeComp.AddMinion(spurgeMinionCompInFront);
+                     spurgeComp.AddMinion(spurgeMinionCompBehind);
+
+                     // Make the controllers for the SpurgeMinions.
+                     ControllerManager.MakeModelController(spurgeMinionCompInFront);
+                     ControllerManager.MakeModelController(spurgeMinionCompBehind);
+                 }*/
+
+            /*
+                            // Store the latest spawn time for this stage.
+                            if (latestStageTimes.ContainsKey(spawnStage))
+                            {
+                                if (spawnTime > latestStageTimes[spawnStage]) latestStageTimes[spawnStage] = spawnTime;
+                            }
+                            else latestStageTimes.Add(spawnStage, spawnTime);*/
+
+            //}
         }
 
-        StageController.SetStageData(latestStageTimes);
+        //StageController.SetStageData(latestStageTimes);
 
         instance.spawnTimes.Sort();
         instance.populated = true;
     }
 
+    /// <summary>
+    /// Returns the world position of the spawn location from the coordinate position.
+    /// </summary>
+    /// <param name="coordinatePosition">the coordinate position of the spawn location.</param>
+    /// <returns>the world position of the spawn location from the coordinate position.</returns>
+    private Vector2 GetSpawnWorldPositionFromCoordinatePosition(Vector2Int coordinatePosition)
+    {
+        float worldX = TileGrid.CoordinateToPosition(coordinatePosition.x);
+        float worldY = TileGrid.CoordinateToPosition(coordinatePosition.y);
+        return new Vector2(worldX, worldY);
+    }
 
     /// <summary>
-    /// Returns a list of tuples of Enemy names, their stages, and spawn times.
+    /// Returns a list of tuples of Enemy names and spawn times.
     /// </summary>
-    /// <param name="input">A string of comma separated names followed
-    /// by their stage and spawn times. </param>
-    /// <returns>a list of tuples of Enemy names, their stages, and spawn times.</returns>
-    private List<(string, StageOfDay, float)> ParseMarkerData(string input)
+    /// <param name="input">A string of comma-separated names followed by their spawn times.</param>
+    /// <returns>A list of tuples of Enemy names and spawn times.</returns>
+    private List<(string, float)> ParseMarkerDataNew(string input)
     {
         Assert.IsNotNull(input);
 
         string[] sliced = input.Split(',');
-        List<(string, StageOfDay, float)> result = new List<(string, StageOfDay, float)>();
-        string pattern = @"([a-zA-Z]+)(\d+)-(\d+(\.\d+)?)";
+        List<(string, float)> result = new List<(string, float)>();
+        string pattern = @"([a-zA-Z]+)-(\d+(\.\d+)?)";
 
         foreach (string item in sliced)
         {
-            Match match = Regex.Match(item, pattern);
+            Match match = Regex.Match(item.Trim(), pattern);
             if (!match.Success) continue;
+
             string enemyName = match.Groups[1].Value;
+            float spawnTime = float.Parse(match.Groups[2].Value);
 
-            int stage = int.Parse(match.Groups[2].Value);
-            stage = Mathf.Clamp(stage, 0, (int)StageController.GetFinalStage());
-            StageOfDay timeOfDay = (StageOfDay)stage;
-
-            float spawnTime = float.Parse(match.Groups[3].Value);
-            result.Add((enemyName, timeOfDay, spawnTime));
+            result.Add((enemyName, spawnTime));
         }
 
         return result;
     }
+
 
     /// <summary>
     /// Returns the number of Enemies that have yet to be spawned in this level. 

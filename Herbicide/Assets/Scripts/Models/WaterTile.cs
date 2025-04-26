@@ -10,19 +10,24 @@ public class WaterTile : Tile
     #region Stats
 
     /// <summary>
-    /// WaterTiles are not walkable.
+    /// true if this WaterTile is walkable; otherwise, false.
     /// </summary>
-    public override bool WALKABLE => false;
+    public override bool IsTraversable => false;
 
     /// <summary>
     /// ModelType of a Water Tile.
     /// </summary>
     public override ModelType TYPE => ModelType.WATER_TILE;
 
+    #endregion
+
+    #region Methods
+
     /// <summary>
-    /// Type of a WaterTile.
+    /// Sets the local Tiled index of this WaterTile.
     /// </summary>
-    protected override TileType type => TileType.WATER;
+    /// <param name="localIndex">the local Tiled ID of this WaterTile in its Tiled tile set.</param>
+    public override void SetSpriteUsingLocalTiledIndex(int localIndex) { }
 
     #endregion
 }

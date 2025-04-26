@@ -29,12 +29,10 @@ public class DewController : CollectableController<DewController.DewState>
     /// Assigns a Dew to a DewController.
     /// </summary>
     /// <param name="dew">The Dew to assign.</param>
-    /// <param name="dropPos">Where the Dew first dropped.</param>
-    /// <param name="value">How much the Dew collectable is worth..</param>
-    public DewController(Dew dew, Vector3 dropPos, int value) : base(dew, dropPos)
+    /// <param name="worldSpawnPosition">Where the Dew first dropped.</param>
+    public DewController(Dew dew, Vector3 worldSpawnPosition) : base(dew, worldSpawnPosition)
     {
-        GetDew().SetWorldPosition(dropPos);
-        GetDew().SetValue(value);
+        GetDew().SetWorldPosition(worldSpawnPosition);
     }
 
     /// <summary>

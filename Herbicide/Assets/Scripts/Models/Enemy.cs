@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
-using StageOfDay = StageController.StageOfDay;
 
 /// <summary>
 /// Represents a Model who works to make the player lose the game.
@@ -38,11 +37,6 @@ public abstract class Enemy : Mob
     private float spawnTime;
 
     /// <summary>
-    /// The stage during which this Enemy spawns.
-    /// </summary>
-    private StageOfDay stage;
-
-    /// <summary>
     /// Current health state of this Enemy.
     /// </summary>
     private EnemyHealthState healthState;
@@ -75,7 +69,7 @@ public abstract class Enemy : Mob
     /// <summary>
     /// the position where the Enemy is entering towards
     /// </summary>
-    private Vector3 enterPos;
+    private Vector3 enteringTowardsPos;
 
     /// <summary>
     /// Set of active DamageOverTime effects on this Enemy.
@@ -102,6 +96,11 @@ public abstract class Enemy : Mob
     /// </summary>
     public virtual int CURRENCY_VALUE_ON_DEATH => 5;
 
+    /// <summary>
+    /// The number of lives lost when this Enemy exits.
+    /// </summary>
+    public virtual int LIVES_LOST_ON_EXIT => 1;
+
     #endregion
 
     #region Methods
@@ -116,7 +115,7 @@ public abstract class Enemy : Mob
         base.OnSpawn();
 
         ToggleHealthBar(false);
-        GetCollider().enabled = true;
+        ModelCollider.enabled = true;
         activeDOTs = new HashSet<DamageOverTime>();
         appliedDOTsThisCycle = new HashSet<DamageOverTime.DOTType>();
     }
@@ -126,20 +125,19 @@ public abstract class Enemy : Mob
     /// </summary>
     /// <returns>true if this Enemy is due to spawn and it has not yet spawned;
     /// otherwise, returns false. /// </returns>
-    public bool ReadyToSpawn()
+    public override bool ReadyToSpawn()
     {
-        StageOfDay currStage = StageController.GetCurrentStage();
-        float timeSinceLastStage = StageController.GetTimeSinceLastStageBegan();
-        bool timeToSpawn = GetStage() == currStage && timeSinceLastStage >= GetSpawnTime();
-        return !Spawned() && timeToSpawn;
+        if(!base.ReadyToSpawn()) return false;
+        bool timeToSpawn = Time.timeSinceLevelLoad >= GetSpawnTime();
+        return timeToSpawn;
     }
 
     /// <summary>
-    /// Updates this Enemy's HealthState.
+    /// Updates this Enemy's HealthState based on its current health.
     /// </summary>
     public void UpdateHealthState()
     {
-        float currentPercent = (float)GetHealth() / (float)MAX_HEALTH;
+        float currentPercent = (float)GetHealth() / (float)MaxHealth;
         if (currentPercent >= .66f) healthState = EnemyHealthState.HEALTHY;
         else if (currentPercent >= .33f) healthState = EnemyHealthState.DAMAGED;
         else healthState = EnemyHealthState.CRITICAL;
@@ -164,27 +162,16 @@ public abstract class Enemy : Mob
     public float GetSpawnTime() => spawnTime;
 
     /// <summary>
-    /// Sets the stage during which this Enemy spawns.
-    /// </summary>
-    /// <param name="stage">The stage during which this Enemy spawns.</param>
-    public void SetStage(StageOfDay stage) => this.stage = stage;
-
-    /// <summary>
-    /// Returns the stage during which this Enemy spawns.
-    /// </summary>
-    /// <returns>the stage during which this Enemy spawns.</returns>
-    public StageOfDay GetStage() => stage;
-
-    /// <summary>
     /// Sets the Enemy as entering.
     /// </summary>
-    /// <param name="enterPos">The position where the Enemy is entering towards.</param>
-    public void SetEntering(Vector3 enterPos)
+    /// <param name="enteringTowardsPos">The position where the Enemy is entering towards.</param>
+    public void SetEntering(Vector3 enteringTowardsPos)
     {
         entered = false;
         entering = true;
         ToggleHealthBar(true);
-        this.enterPos = enterPos;
+        SetMaskInteraction(SpriteMaskInteraction.VisibleOutsideMask);
+        this.enteringTowardsPos = enteringTowardsPos;
     }
 
     /// <summary>
@@ -194,6 +181,7 @@ public abstract class Enemy : Mob
     {
         entering = false;
         entered = true;
+        SetMaskInteraction(SpriteMaskInteraction.None);
     }
 
     /// <summary>
@@ -212,18 +200,18 @@ public abstract class Enemy : Mob
     /// Returns the position where the Enemy is entering towards.
     /// </summary>
     /// <returns>the position where the Enemy is entering towards.</returns>
-    public Vector3 GetEnterPos() => enterPos;
+    public Vector3 GetEnterPos() => enteringTowardsPos;
 
     /// <summary>
-    /// Returns true if this Enemy exited.
+    /// Returns true if this Enemy escaped.
     /// </summary>
-    /// <returns>true if this Enemy exited; otherwise, false. </returns>
-    public bool Exited() => exited;
+    /// <returns>true if this Enemy escaped; otherwise, false. </returns>
+    public bool IsEscaped() => exited;
 
     /// <summary>
-    /// Sets this Enemy as exited.
+    /// Sets this Enemy as escaped.
     /// </summary>
-    public void SetExited()
+    public void SetEscaped()
     {
         exiting = false;
         exited = true;
@@ -240,6 +228,7 @@ public abstract class Enemy : Mob
         exiting = true;
         ToggleHealthBar(false);
         this.exitPos = exitPos;
+        SetMaskInteraction(SpriteMaskInteraction.VisibleOutsideMask);
     }
 
     /// <summary>
@@ -247,7 +236,6 @@ public abstract class Enemy : Mob
     /// </summary>
     /// <returns>true if this Enemy is exiting; otherwise, false. </returns>
     public bool IsExiting() => exiting;
-
 
     /// <summary>
     /// Returns the position of the structure the Enemy is
@@ -280,7 +268,7 @@ public abstract class Enemy : Mob
     public override void AdjustHealth(float amount)
     {
         base.AdjustHealth(amount);
-        float healthPercentage = (float)GetHealth() / BASE_HEALTH;
+        float healthPercentage = (float)GetHealth() / BaseHealth;
         healthBarFill.transform.localScale = new Vector3(healthPercentage, 1, 1);
     }
 
@@ -330,6 +318,12 @@ public abstract class Enemy : Mob
         healthBarBackground.enabled = showHealthBar;
         healthBarFill.enabled = showHealthBar;
     }
+
+    /// <summary>
+    /// Returns true if the Enemy's health bar is visible; otherwise, false.
+    /// </summary>
+    /// <returns>true if the Enemy's health bar is visible; otherwise, false.</returns>
+    public bool IsHealthBarVisible() => healthBarBackground.enabled || healthBarFill.enabled;
 
     /// <summary>
     /// Sticks a Quill in this Enemy.

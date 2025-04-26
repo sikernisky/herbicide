@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -75,8 +76,6 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
         Assert.IsNotNull(mob, "Mob cannot be null.");
         targets = new List<Model>();
         modelsHolding = new List<Model>();
-        
-        SpawnMob();
     }
 
     /// <summary>
@@ -87,8 +86,8 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     {
         base.UpdateController(gameState);
         UpdateDamageFlash();
-        UpdateMob();
         UpdateFSM();
+        UpdateMob();
     }
 
     /// <summary>
@@ -97,7 +96,10 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     protected virtual void UpdateMob()
     {
         if (!ValidModel()) return;
-        if (FINDS_TARGETS) UpdateTargets(GetAllModels(), TileGrid.GetAllTiles());
+        if(GetMob().ReadyToSpawn() && !GetMob().Spawned()) SpawnMob();
+        if(!GetMob().Spawned()) return;
+
+        if (FINDS_TARGETS) UpdateTargets(GetAllModels());
         GetMob().StepMainActionCooldownByDeltaTime();
     }
 
@@ -120,7 +122,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
         float remainingFlashTime = GetMob().TimeRemainingInFlashAnimation();
         if (remainingFlashTime <= 0)
         {
-            GetModel().SetColor(GetModel().GetBaseColor());
+            //GetModel().SetColor(Color.white);
             return;
         }
 
@@ -136,7 +138,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
         float lerpFactor = 1 - Mathf.Cos((Mathf.PI * remainingFlashTime) / FLASH_DURATION);
         lerpFactor = Mathf.Clamp(lerpFactor, 0, 1);
         Color32 hitColor = new Color32(255, 0, 0, 255);
-        Color32 color = Color32.Lerp(GetModel().GetBaseColor(), hitColor, lerpFactor);
+        Color32 color = Color32.Lerp(Color.white, hitColor, lerpFactor);
         GetModel().SetColor(color);
     }
 
@@ -170,6 +172,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// </summary>
     protected virtual void SpawnMob()
     {
+        Assert.IsFalse(GetMob().Spawned(), "Mob is already spawned.");
         GetMob().RefreshRenderer();
         GetMob().OnSpawn();
         GetMob().gameObject.SetActive(true);
@@ -181,6 +184,22 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// <returns>true if the Mob can perform its main action this frame; 
     /// otherwise, false. </returns>
     public virtual bool CanPerformMainAction() { return GetMob().GetMainActionCooldownRemaining() <= 0; }
+
+    /// <summary>
+    /// Modifies Collectable behavior based on equipped items.
+    /// </summary>
+    /// <param name="collectable">the Collectable to apply effects to.</param>
+    /// <param name="spawnCenter">the center of the circle to spawn within.</param>
+    /// <param name="spawnRadius">the radius of the circle to spawn within.</param>
+    protected override void HandleCollectableEquipmentEffects(Collectable collectable, Vector2 spawnCenter, float spawnRadius)
+    {
+        base.HandleCollectableEquipmentEffects(collectable, spawnCenter, spawnRadius);
+        if (GetModel().IsEquipped(ModelType.INVENTORY_ITEM_BUNADRYL))
+        {
+            if (!DirectionConstants.AllDirections.Any(dir => TileGrid.ClassTypeExistsOnSurfaceAt<Defender>(TileGrid.GetCoordinatesOfNeighborInDirection(GetMob().Coordinates, dir))))
+                ProduceCollectableFromModel(collectable.TYPE, spawnCenter, spawnRadius, true);
+        }
+    }
 
     #endregion
 
@@ -260,19 +279,13 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// this Mob can target to its targets list.
     /// </summary>
     /// <param name="nonTiles">All targetable Models that are not Tiles..</param>
-    /// <param name="tiles">All targetable Models that are Tiles.</param>
-    private void UpdateTargets(IReadOnlyList<Model> nonTiles, IReadOnlyList<Model> tiles)
+    private void UpdateTargets(IReadOnlyList<Model> nonTiles)
     {
         Assert.IsNotNull(nonTiles, "List of targets is null.");
 
         ClearTargets();
 
         foreach (Model targetable in nonTiles)
-        {
-            if (CanTargetOtherModel(targetable)) AddTarget(targetable);
-        }
-
-        foreach (Model targetable in tiles)
         {
             if (CanTargetOtherModel(targetable)) AddTarget(targetable);
         }
@@ -288,7 +301,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// <returns>true if in range; otherwise, false.</returns>
     protected virtual bool IsMobInRangeOfPosition(Vector2 targetPosition)
     {
-        return Vector2.Distance(GetMob().GetPosition(), targetPosition) <= GetMob().GetMainActionRange();
+        return Vector2.Distance(GetMob().GetWorldPosition(), targetPosition) <= GetMob().GetMainActionRange();
     }
 
     /// <summary>
@@ -298,7 +311,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// <returns>true if within leniency range; otherwise, false.</returns>
     protected virtual bool IsMobInLeniencyRangeOfPosition(Vector2 targetPosition)
     {
-        return Vector2.Distance(GetMob().GetPosition(), targetPosition) <= GetMob().GetMainActionRange() * GetMob().LIENENCY_RANGE_MULTIPLIER;
+        return Vector2.Distance(GetMob().GetWorldPosition(), targetPosition) <= GetMob().GetMainActionRange() * GetMob().LIENENCY_RANGE_MULTIPLIER;
     }
 
     /// <summary>
@@ -325,45 +338,6 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// <returns>the current number of targets the Mob has
     /// elected.</returns>
     protected int NumTargets() => targets.Count;
-
-    /// <summary>
-    /// Returns true if the Mob can hold some Nexus.
-    /// </summary>
-    /// <returns>true if the Mob can hold the Nexus; otherwise,
-    /// false. </returns>
-    /// <param name="target">The target to check. </param> 
-    protected virtual bool CanHoldTarget(Nexus target)
-    {
-        if (target == null) return false;
-        if (!GetTargets().Contains(target)) return false; // Need to target before holding
-        if (NumTargetsHolding() >= HOLDING_LIMIT) return false;
-        if (target.PickedUp()) return false;
-        if (target.DroppedByMob()) return false;
-
-        return true;
-    }
-
-    /// <summary>
-    /// Adds a target to the list of targets the Mob is holding.
-    /// </summary>
-    /// <param name="target">The target to hold. </param> 
-    protected virtual void HoldTarget(Nexus target)
-    {
-        Assert.IsNotNull(modelsHolding, "List of holding targets is null.");
-        Assert.IsTrue(CanHoldTarget(target), "Need to check holding validity.");
-
-        modelsHolding.Add(target);
-        target.SetPickedUp(GetMob(), GetMob().HOLDER_OFFSET);
-        int nexusCoordX = TileGrid.PositionToCoordinate(target.GetPosition().x);
-        int nexusCoordY = TileGrid.PositionToCoordinate(target.GetPosition().y);
-        //TileGrid.RemoveFromTile(new Vector2Int(nexusCoordX, nexusCoordY));
-
-        // Make a new Nexus at this spot to simulate infinite Nexus
-        GameObject nexusOb = NexusFactory.GetNexusPrefab();
-        Nexus nexusComp = nexusOb.GetComponent<Nexus>();
-        ControllerManager.MakeModelController(nexusComp);
-        TileGrid.PlaceOnTileUsingCoordinates(new Vector2Int(nexusCoordX, nexusCoordY), nexusComp);
-    }
 
     /// <summary>
     /// Returns the number of targets the Mob is currently holding.
@@ -393,9 +367,9 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
 
         Model target = GetTargets()[0];
         Assert.IsNotNull(target, "Target is null.");
-        Vector2 mobPosition = GetModel().GetPosition();  
-        Vector2 targetPosition = target.GetPosition();
-        float tileScale = TileGrid.TILE_SIZE;
+        Vector2 mobPosition = GetModel().GetWorldPosition();  
+        Vector2 targetPosition = target.GetWorldPosition();
+        float tileScale = BoardConstants.TileSize;
         float distance = Vector2.Distance(mobPosition, targetPosition);
         return distance / tileScale; // Normalize the distance by the tile scale
     }
@@ -407,7 +381,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     {
         if (GetTargets().Count == 0) return;
         Model target = GetTarget();
-        if (target != null) GetMob().FaceDirection(target.GetPosition());
+        if (target != null) GetMob().FaceDirection(target.GetWorldPosition());
     }
 
     #endregion
@@ -419,8 +393,8 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// </summary>
     protected void MoveLinearlyTowardsMovePos()
     {
-        if (GetMovementDestinationPosition() == null) return;
-        MoveLinearlyTowards(GetMovementDestinationPosition().Value, GetMob().GetMovementSpeed());
+        if (GetNextMovePos() == null) return;
+        MoveLinearlyTowards(GetNextMovePos().Value, GetMob().GetMovementSpeed());
     }
 
     /// <summary>
@@ -431,8 +405,8 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
 
     protected void FallIntoMovePos(float acceleration)
     {
-        if (GetMovementDestinationPosition() == null) return;
-        FallTowards(GetMovementDestinationPosition().Value, GetMob().GetMovementSpeed(), acceleration);
+        if (GetNextMovePos() == null) return;
+        FallTowards(GetNextMovePos().Value, GetMob().GetMovementSpeed(), acceleration);
     }
 
     /// <summary>
@@ -442,8 +416,8 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// <param name="startPosition">Where the mob is popping from.</param>
     protected void PopOutOfMovePos(Vector3 startPosition)
     {
-        if (GetMovementDestinationPosition() == null) return;
-        PopFrom(startPosition, GetMovementDestinationPosition().Value, GetMob().ENTERING_MOVEMENT_SPEED);
+        if (GetNextMovePos() == null) return;
+        PopFrom(startPosition, GetNextMovePos().Value, GetMob().ENTERING_MOVEMENT_SPEED);
     }
 
     /// <summary>
@@ -451,8 +425,8 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// </summary>
     protected void MoveParabolicallyTowardsMovePos()
     {
-        if (GetMovementDestinationPosition() == null) return;
-        MoveParabolicallyTowards(GetMovementDestinationPosition().Value, GetMob().GetMovementSpeed());
+        if (GetNextMovePos() == null) return;
+        MoveParabolicallyTowards(GetNextMovePos().Value, GetMob().GetMovementSpeed());
     }
 
     /// <summary>
@@ -464,7 +438,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
         movementDestinationPosition = nextPos;
         Vector3 newParabolicTarget = new Vector3(movementDestinationPosition.Value.x, movementDestinationPosition.Value.y, 1);
         float newParabolicScale = GetMob().GetMovementSpeed() /
-            Vector3.Distance(GetMob().GetPosition(), newParabolicTarget);
+            Vector3.Distance(GetMob().GetWorldPosition(), newParabolicTarget);
 
         ResetParabolicFields(newParabolicScale, newParabolicTarget);
     }
@@ -473,7 +447,7 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// Returns where the Mob is moving towards. 
     /// </summary>
     /// <returns>where the Mob is moving towards. .</returns>
-    protected Vector3? GetMovementDestinationPosition() { return movementDestinationPosition; }
+    protected Vector3? GetNextMovePos() { return movementDestinationPosition; }
 
     /// <summary>
     /// Returns true if the Mob's position is at the spot it
@@ -483,15 +457,15 @@ public abstract class MobController<T> : ModelController, IStateTracker<T> where
     /// otherwise, false. </returns>
     protected bool ReachedMovementTarget()
     {
-        if (GetMovementDestinationPosition() == null) return true;
+        if (GetNextMovePos() == null) return true;
 
         Vector3 nextMovePos = new Vector3(
-            GetMovementDestinationPosition().Value.x,
-            GetMovementDestinationPosition().Value.y,
+            GetNextMovePos().Value.x,
+            GetNextMovePos().Value.y,
             1
         );
 
-        return Vector3.Distance(GetMob().GetPosition(), nextMovePos) < 0.01f;
+        return Vector3.Distance(GetMob().GetWorldPosition(), nextMovePos) < 0.01f;
     }
 
     #endregion
